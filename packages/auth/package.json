@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@jp/db": "workspace:*",
-    "@jp/twilio": "workspace:*",
+    "@jp/notifications": "workspace:*",
     "better-auth": "^1.6.20",
     "next-safe-action": "^8.5.5",
     "server-only": "^0.0.1"

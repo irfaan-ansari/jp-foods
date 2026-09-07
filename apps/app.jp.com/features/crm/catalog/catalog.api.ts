@@ -2,8 +2,7 @@ import { Hono } from "hono"
 import { customerInvite, db } from "@jp/db"
 import { AppContext } from "@/lib/hono/middlewares"
 import { and, count, eq, ilike, or } from "drizzle-orm"
-import { parsePagination } from "@/lib/hono/lib/parse-pagination"
-import { getStatusCounts } from "@/lib/hono/lib/counts"
+import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 
 const app = new Hono<AppContext>()
 

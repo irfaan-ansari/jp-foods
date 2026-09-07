@@ -67,7 +67,7 @@ export const PopDrawer = ({
       <PopoverContent
         {...props}
         className={cn(
-          "w-[max(var(--radix-popover-trigger-width),192px)] gap-0 rounded-2xl p-2",
+          "w-[max(var(--radix-popover-trigger-width),192px)] gap-0 rounded-2xl p-1",
           className
         )}
         align="end"

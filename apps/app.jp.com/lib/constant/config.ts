@@ -23,7 +23,9 @@ import {
 export const ORG_NAV = [
   {
     label: "",
-    items: [{ label: "Dashboard", icon: GraphUp, href: "/org", items: [] }],
+    items: [
+      { label: "Dashboard", icon: GraphUp, href: "/org/dashboard", items: [] },
+    ],
   },
   {
     label: "Sales",
@@ -157,7 +159,7 @@ export const CRM_NAV = [
       {
         label: "Dashboard",
         icon: GraphUp,
-        href: "/crm",
+        href: "/crm/dashboard",
         items: [],
       },
     ],

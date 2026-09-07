@@ -37,7 +37,7 @@ export const MemberDropdown = ({ data }: { data: Member }) => {
           } else {
             queryClient.invalidateQueries({ queryKey: ["members"] })
             queryClient.invalidateQueries({
-              queryKey: ["/api/v1/org/members/count"],
+              queryKey: ["/org/members/count"],
             })
           }
         },

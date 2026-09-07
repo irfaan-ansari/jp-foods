@@ -39,10 +39,7 @@ const ProductsPage = () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex gap-4">
-          <FilterTab
-            tabs={Object.values(STATUS)}
-            path="/api/v1/org/products/count"
-          />
+          <FilterTab tabs={Object.values(STATUS)} path="/org/products/count" />
           <CategorySelector selected={""}>
             <Button variant="outline" className="ml-auto">
               <Sort />

@@ -26,7 +26,6 @@ export const UserCard = ({ data }: { data: UserType }) => {
     >
       <CardHeader className="relative">
         <CardAction className="absolute top-0 right-4 flex items-center gap-2">
-          <UserBadge status={data.banned ? "banned" : "active"} />
           <UserDropdown data={data} />
         </CardAction>
         <div className="flex items-start gap-2">
@@ -38,7 +37,10 @@ export const UserCard = ({ data }: { data: UserType }) => {
           </Avatar>
           <div className="flex-1 space-y-1">
             <CardTitle>{data.name}</CardTitle>
-            <UserRoleBadge status={data.role!} />
+            <div className="flex gap-2">
+              <UserRoleBadge status={data.role!} />
+              <UserBadge status={data.banned ? "banned" : "active"} />
+            </div>
           </div>
         </div>
       </CardHeader>

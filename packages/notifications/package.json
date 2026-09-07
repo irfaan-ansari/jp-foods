@@ -1,12 +1,8 @@
 {
-  "name": "@jp/email",
+  "name": "@jp/notifications",
   "version": "0.0.0",
   "type": "module",
   "private": true,
-  "exports": {
-    ".": "./src/index.ts",
-    "./templates": "./src/templates/index.ts"
-  },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.ts\"",
@@ -22,6 +18,12 @@
   "dependencies": {
     "react": "19.2.7",
     "react-dom": "19.2.4",
-    "react-email": "6.8.1"
+    "react-email": "6.8.1",
+    "resend": "^6.26.0",
+    "twilio": "^6.0.2"
+  },
+  "exports": {
+    ".": "./src/index.ts",
+    "./templates": "src/templates/*.tsx"
   }
 }

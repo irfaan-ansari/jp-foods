@@ -27,7 +27,7 @@ const TaxRulePage = () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex items-start justify-between gap-3">
-          <FilterTab tabs={OPTIONS} path="/api/v1/org/tax-rules/count" />
+          <FilterTab tabs={OPTIONS} path="/org/tax-rules/count" />
           <SearchQueryParam />
         </div>
         <TaxRuleClient />

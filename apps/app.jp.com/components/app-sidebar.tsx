@@ -265,9 +265,9 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
             </Tooltip>
 
             {/* ordering */}
-            <Tooltip content="Ordering">
-              <UserAccess permission={{ portal: ["organization"] }}>
-                {(disabled) => (
+            <UserAccess permission={{ portal: ["organization"] }}>
+              {(disabled) => (
+                <Tooltip content="Ordering">
                   <SidebarMenuItem
                     onClick={() => {
                       if (!disabled) {
@@ -285,14 +285,14 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       <CompassSquare className="size-5" />
                     </Button>
                   </SidebarMenuItem>
-                )}
-              </UserAccess>
-            </Tooltip>
+                </Tooltip>
+              )}
+            </UserAccess>
 
             {/* application */}
-            <Tooltip content="Applications">
-              <UserAccess permission={{ portal: ["crm"] }}>
-                {(disabled) => (
+            <UserAccess permission={{ portal: ["crm"] }}>
+              {(disabled) => (
+                <Tooltip content="Applications">
                   <SidebarMenuItem
                     onClick={() => {
                       if (!disabled) setActivePanel("/crm", true)
@@ -308,9 +308,9 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       <Widget className="size-5" />
                     </Button>
                   </SidebarMenuItem>
-                )}
-              </UserAccess>
-            </Tooltip>
+                </Tooltip>
+              )}
+            </UserAccess>
 
             {/* fleet */}
             <Tooltip content="Fleet">
@@ -336,7 +336,7 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
             <SidebarMenuItem onClick={() => setActivePanel("/settings", true)}>
               <Button
                 variant="ghost"
-                data-active={activePanel === "/org/settings"}
+                data-active={activePanel === "/settings"}
                 className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
                 size="icon-lg"
                 asChild
@@ -353,6 +353,7 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
               <Button
                 size="icon-lg"
                 variant="ghost"
+                disabled
                 className="hover:bg-background [&>svg]:transition hover:[&>svg]:scale-105"
               >
                 <QuestionCircle className="size-5" />

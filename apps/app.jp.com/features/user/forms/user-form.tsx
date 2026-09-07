@@ -110,25 +110,17 @@ export const UserForm = ({
           />
           <form.Field
             name="role"
-            mode="array"
             children={(field) => {
               const isInvalid =
                 field.state.meta.isTouched && !field.state.meta.isValid
-              const items = field.state.value
+
               return (
                 <Field>
                   <FieldLabel htmlFor={field.name}>Role</FieldLabel>
                   <UserRoleSelector
-                    selected={items.map((item) => item.value as string)}
+                    selected={field.state.value}
                     onChange={(value) => {
-                      const index = items.findIndex(
-                        (item) => item.value === value.value
-                      )
-                      if (index >= 0) {
-                        field.removeValue(index)
-                      } else {
-                        field.pushValue({ ...value })
-                      }
+                      field.handleChange(value.value)
                     }}
                   >
                     <Button
@@ -139,11 +131,13 @@ export const UserForm = ({
                       className="w-full justify-start text-muted-foreground"
                     >
                       <Plus />
-                      {field.state.value.length > 0
-                        ? field.state.value.map((value) => (
-                            <Badge variant="warning-light">{value.label}</Badge>
-                          ))
-                        : "Select role..."}
+                      {field.state.value ? (
+                        <Badge variant="warning-light">
+                          {field.state.value}
+                        </Badge>
+                      ) : (
+                        "Select role..."
+                      )}
                       <ChevronDown className="ml-auto" />
                     </Button>
                   </UserRoleSelector>
@@ -162,50 +156,7 @@ export const UserForm = ({
               )
             }}
           />
-          <form.Field
-            name="organizations"
-            mode="array"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
-              const items = field.state.value
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Organization</FieldLabel>
-                  <OrganizationSelector
-                    selected={items.map((item) => item.id as string)}
-                    setSelectedChange={(value) => {
-                      const index = items.findIndex(
-                        (item) => item.id === value.id
-                      )
-                      if (index >= 0) {
-                        field.removeValue(index)
-                      } else {
-                        field.pushValue({ ...value })
-                      }
-                    }}
-                  >
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      type="button"
-                      id={field.name}
-                      className="w-full justify-start text-muted-foreground"
-                    >
-                      <Plus />
-                      {field.state.value.length > 0
-                        ? field.state.value.map((value) => (
-                            <Badge variant="warning-light">{value.name}</Badge>
-                          ))
-                        : "Select organization..."}
-                      <ChevronDown className="ml-auto" />
-                    </Button>
-                  </OrganizationSelector>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              )
-            }}
-          />
+
           <form.Field
             name="teams"
             mode="array"

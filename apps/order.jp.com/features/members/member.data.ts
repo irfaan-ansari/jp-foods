@@ -1,18 +1,19 @@
 "use client"
 
-import { type AppError, fetcher } from "@jp/utils"
+import { type AppError } from "@jp/utils"
 import { useQuery } from "@tanstack/react-query"
 import { ApiResponse } from "../shared/shared.type"
 import { Member } from "./member.type"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+
+import { apiClient } from "@/lib/api-client"
 
 export const useTeamMembers = (kv?: Record<string, any>) => {
-  const { getQueryString } = useRouterStuff()
-  const queryString = getQueryString(kv)
-
   return useQuery<ApiResponse<Member[]>, AppError>({
-    queryKey: ["members"],
-    queryFn: () => fetcher(`/api/v1/team/members${queryString}`),
+    queryKey: ["members", kv],
+    queryFn: () =>
+      apiClient.get("/members", {
+        params: kv,
+      }),
     staleTime: 1000 * 60 * 5,
   })
 }

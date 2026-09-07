@@ -1,16 +1,16 @@
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { useQuery } from "@tanstack/react-query"
 import { PaginatedResponse } from "../../shared/shared.type"
-import { AppError, fetcher } from "@jp/utils"
+import { AppError } from "@jp/utils"
 import type { OrderGuide } from "./order-guide.type"
+import { apiClient } from "@/lib/api-client"
 
 export const useOrderGuides = (kv?: Record<string, any>) => {
-  const { getQueryString } = useRouterStuff()
-  const queryString = getQueryString(kv)
-
   return useQuery<PaginatedResponse<OrderGuide>, AppError>({
-    queryKey: ["order-guides", queryString],
-    queryFn: () => fetcher(`/api/v1/org/order-guides${queryString}`),
+    queryKey: ["order-guides", kv],
+    queryFn: () =>
+      apiClient.get(`/org/order-guides`, {
+        params: kv,
+      }),
     staleTime: 1000 * 60 * 5,
   })
 }

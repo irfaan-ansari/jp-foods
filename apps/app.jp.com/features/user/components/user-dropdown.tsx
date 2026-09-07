@@ -32,11 +32,6 @@ export const UserDropdown = ({ data }: { data: User }) => {
 
   const [isOpen, setIsOpen] = useState(false)
 
-  const roles =
-    data.role
-      ?.split(",")
-      .map((role) => USER_ROLES[role as keyof typeof USER_ROLES]) ?? []
-
   const handleSessionRevoke = () => {
     open({
       variant: "warning",
@@ -131,7 +126,7 @@ export const UserDropdown = ({ data }: { data: User }) => {
         {(disabled) => (
           <UserDialog
             id={id}
-            values={{ ...data, phoneNumber: data.phoneNumber!, role: roles }}
+            values={{ ...data, phoneNumber: data.phoneNumber! }}
           >
             <Button
               variant="ghost"
@@ -158,7 +153,11 @@ export const UserDropdown = ({ data }: { data: User }) => {
       <UserAccess permission={{ user: ["set-password"] }}>
         {(disabled) => (
           <UserPasswordDialog id={data.id}>
-            <Button variant="ghost" disabled={disabled}>
+            <Button
+              variant="ghost"
+              disabled={disabled}
+              className="justify-start"
+            >
               <Key /> Change Password
             </Button>
           </UserPasswordDialog>

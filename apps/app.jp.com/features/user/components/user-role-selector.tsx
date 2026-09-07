@@ -8,6 +8,7 @@ import { Button } from "@jp/ui/components/button"
 import { PopDrawer, SearchBar } from "@jp/ui/components/jp"
 
 type UserRole = (typeof USER_ROLES)[keyof typeof USER_ROLES]
+
 type UserRoleSelectorProps = {
   children: React.ReactNode
   selected?: string | string[]
@@ -56,7 +57,7 @@ export const UserRoleSelector = ({
   return (
     <PopDrawer open={open} setOpen={setOpen} trigger={children}>
       <div className="flex flex-col gap-1.5">
-        <SearchBar className="h-8" onSearch={setSearch} />
+        <SearchBar className="h-8 max-w-full" onSearch={setSearch} />
 
         <div className="no-scrollbar flex-1 overflow-auto">
           {Object.values(filtered).map((role) => {

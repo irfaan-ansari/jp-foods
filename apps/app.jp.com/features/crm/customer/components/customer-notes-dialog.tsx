@@ -47,7 +47,7 @@ export const CustomerApplicationNotesDialog = ({
           queryKey: ["customer-application"],
         })
         queryClient.invalidateQueries({
-          queryKey: ["/api/v1/crm/customers/count"],
+          queryKey: ["/crm/customers/count"],
         })
       }
     },

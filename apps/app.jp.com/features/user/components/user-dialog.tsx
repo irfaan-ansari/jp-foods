@@ -29,7 +29,7 @@ export const UserDialog = ({
     setOpen(false)
     queryClient.invalidateQueries({ queryKey: ["users"] })
     queryClient.invalidateQueries({
-      queryKey: ["count", "/api/v1/users/count"],
+      queryKey: ["count", "/users/count"],
     })
   }
 

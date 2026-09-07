@@ -29,11 +29,7 @@ const Orders = async () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex items-center justify-between gap-3">
-          <FilterTab
-            queryKey="status"
-            tabs={OPTIONS}
-            path="/api/v1/team/orders/count"
-          />
+          <FilterTab queryKey="status" tabs={OPTIONS} path="/orders/count" />
 
           <SearchQueryParam />
         </div>

@@ -14,10 +14,7 @@ const CustomerInvites = () => {
 
       <PageContent className="space-y-6">
         <div className="gap flex justify-between">
-          <FilterTab
-            path="/api/v1/crm/catalog-inquiries/count"
-            tabs={options}
-          />
+          <FilterTab path="/crm/catalog-inquiries/count" tabs={options} />
           <SearchQueryParam />
         </div>
         <CatalogInquiryClient />

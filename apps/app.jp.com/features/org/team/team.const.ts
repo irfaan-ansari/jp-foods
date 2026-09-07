@@ -22,3 +22,8 @@ export const STATUS: Record<string, BadgeStatus> = {
     color: "#71717A",
   },
 }
+
+export const TEAM_STATUS = [
+  { label: "Active", value: "active" },
+  { label: "inactive", value: "inactive" },
+]

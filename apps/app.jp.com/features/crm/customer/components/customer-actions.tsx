@@ -53,7 +53,7 @@ const CustomerApplicationActions = ({
                   queryKey: ["customer-application", data.id],
                 })
                 queryClient.invalidateQueries({
-                  queryKey: ["/api/v1/crm/customers/count"],
+                  queryKey: ["/crm/customers/count"],
                 })
               }
             },
@@ -78,7 +78,7 @@ const CustomerApplicationActions = ({
                   queryKey: ["customer-application", data.id],
                 })
                 queryClient.invalidateQueries({
-                  queryKey: ["/api/v1/crm/customers/count"],
+                  queryKey: ["/crm/customers/count"],
                 })
               }
             },

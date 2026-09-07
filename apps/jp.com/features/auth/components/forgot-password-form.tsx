@@ -4,10 +4,9 @@ import z from "zod"
 import React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
+import { authClient } from "@jp/auth/client"
 import { useStore } from "@tanstack/react-form"
 import { AlertCircleIcon, CircleCheck, Loader2, X } from "lucide-react"
-
-import { authClient } from "@jp/auth/client"
 
 import {
   Alert,
@@ -50,7 +49,8 @@ export function ForgotPasswordForm({
       await authClient.requestPasswordReset(
         {
           email: value.username,
-          redirectTo: process.env.NEXT_PUBLIC_SITE_URL + "/reset-password",
+          redirectTo:
+            process.env.NEXT_PUBLIC_SITE_URL + "/auth/create-password",
         },
         {
           onError: (error) => {

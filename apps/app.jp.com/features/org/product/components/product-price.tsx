@@ -18,29 +18,19 @@ export const ProductPrice = ({
   const prices = sellUnits
 
   return (
-    <div className="grid w-full gap-1.5">
-      <div className="flex gap-2">
-        {prices.map((item, index) => (
-          <div
-            key={`${item.unit}-${index}`}
-            className="flex items-center gap-2"
-          >
-            <div className="flex items-baseline gap-0">
-              <span className="text-sm font-semibold text-primary">
-                {formatUSD(item.price)}
-              </span>
-              <span className="text-xs font-normal text-muted-foreground">
-                / {item.unit}
-              </span>
-            </div>
-            {index < prices.length - 1 && (
-              <span className="text-xs font-normal text-muted-foreground">
-                |
-              </span>
-            )}
+    <div className="grid w-full gap-0.5">
+      {prices.map((item, index) => (
+        <div key={`${item.unit}-${index}`} className="flex items-center gap-2">
+          <div className="flex items-baseline gap-0">
+            <span className="text-sm font-semibold text-primary">
+              {formatUSD(item.price)}
+            </span>
+            <span className="text-xs font-normal text-muted-foreground">
+              / {item.unit}
+            </span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   )
 }

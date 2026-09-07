@@ -11,7 +11,7 @@ import {
   or,
   sql,
 } from "drizzle-orm"
-import { parsePagination } from "@jp/utils"
+import { parsePagination } from "@/lib/hono/lib"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { resolveTeamPrices } from "@/features/org/price-level/price-level.resolver"
 
@@ -61,6 +61,7 @@ export const products = app
             limit: 1,
             orderBy: (li, { desc }) => [desc(li.createdAt)],
           },
+          sellUnits: true,
         },
         limit,
         offset,

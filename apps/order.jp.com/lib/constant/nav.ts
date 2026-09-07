@@ -15,6 +15,7 @@ export const SIDEBAR_NAV = [
         label: "Dashboard",
         icon: GraphUp,
         href: "/dashboard",
+        disabled: false,
         items: [],
       },
     ],
@@ -22,12 +23,25 @@ export const SIDEBAR_NAV = [
   {
     label: "Ordering",
     items: [
-      { label: "Orders", icon: InboxLine, href: "/orders", items: [] },
-      { label: "Catalog", icon: Tag, href: "/create/all", items: [] },
+      {
+        label: "Orders",
+        icon: InboxLine,
+        href: "/orders",
+        items: [],
+        disabled: false,
+      },
+      {
+        label: "Catalog",
+        icon: Tag,
+        href: "/create/all",
+        items: [],
+        disabled: false,
+      },
       {
         label: "Order Guides",
         icon: BookmarkSquare,
         href: "/create/guides",
+        disabled: false,
         items: [],
       },
     ],
@@ -35,11 +49,18 @@ export const SIDEBAR_NAV = [
   {
     label: "Billing",
     items: [
-      { label: "Invoices", icon: BillCheck, href: "/invoices", items: [] },
+      {
+        label: "Invoices",
+        icon: BillCheck,
+        href: "/invoices",
+        disabled: true,
+        items: [],
+      },
       {
         label: "Transactions",
         icon: CardTransfer,
         href: "/transactions",
+        disabled: true,
         items: [],
       },
     ],

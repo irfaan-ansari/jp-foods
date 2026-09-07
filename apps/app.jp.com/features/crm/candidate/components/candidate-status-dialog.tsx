@@ -46,7 +46,7 @@ export function CandidateApplicationStatusDialog({
           queryKey: ["candidate-application"],
         })
         queryClient.invalidateQueries({
-          queryKey: ["/api/v1/crm/candidates/count"],
+          queryKey: ["/crm/candidates/count"],
         })
       }
     },

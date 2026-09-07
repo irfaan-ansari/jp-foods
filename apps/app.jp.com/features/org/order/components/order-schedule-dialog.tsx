@@ -31,7 +31,7 @@ export const OrderScheduleDialog = ({ children, defaultValues, id }: Props) => {
     setOpen(false)
     queryClient.invalidateQueries({ queryKey: ["orders"] })
     queryClient.invalidateQueries({
-      queryKey: ["count", "/api/v1/org/orders/count"],
+      queryKey: ["count", "/org/orders/count"],
     })
     toast.success("Order updated successfully.")
   }

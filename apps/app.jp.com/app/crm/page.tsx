@@ -1,13 +1,7 @@
-import React from "react"
-import { PageContent, PageHeader } from "@/components/page-content"
+import { redirect } from "next/navigation"
 
 const ApplicationsPage = () => {
-  return (
-    <React.Fragment>
-      <PageHeader title="Dashboard" />
-      <PageContent>Application dashboard</PageContent>
-    </React.Fragment>
-  )
+  redirect("/crm/dashboard")
 }
 
 export default ApplicationsPage

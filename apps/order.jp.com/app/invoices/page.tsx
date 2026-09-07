@@ -21,11 +21,7 @@ const InvoicePage = async () => {
       <PageHeader title="Invoices" />
       <PageContent className="space-y-6">
         <div className="flex items-center justify-between gap-3">
-          <FilterTab
-            queryKey="role"
-            tabs={OPTIONS}
-            path="/api/v1/team/orders/count"
-          />
+          <FilterTab queryKey="role" tabs={OPTIONS} path="/orders/count" />
 
           <SearchQueryParam />
         </div>

@@ -54,7 +54,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
       queryKey: ["order", String(order.id)],
     })
     queryClient.invalidateQueries({
-      queryKey: ["/api/v1/team/orders/count"],
+      queryKey: ["/orders/count"],
     })
 
     if (order.id) {

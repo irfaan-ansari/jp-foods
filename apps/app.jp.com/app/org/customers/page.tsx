@@ -26,7 +26,7 @@ const CustomersPage = () => {
 
       <PageContent className="space-y-6">
         <div className="flex flex-col items-start justify-between gap-4 md:flex-row">
-          <FilterTab tabs={OPTIONS} path="/api/v1/org/teams/count" />
+          <FilterTab tabs={OPTIONS} path="/org/teams/count" />
           <SearchQueryParam />
         </div>
         <TeamClient />

@@ -16,18 +16,7 @@ import {
   AlertDescription,
   AlertTitle,
 } from "@jp/ui/components/alert"
-
-const schema = z.object({
-  username: z.union(
-    [
-      z.string().regex(/^[6-9]\d{9}$/, "Enter a valid phone number"),
-      z.email("Enter valid email"),
-    ],
-    "Enter valid email or phone number"
-  ),
-  password: z.string().min(2, "Enter password"),
-  error: z.string(),
-})
+import { loginFormSchema } from "../auth.schema"
 
 export function LoginForm({
   className,
@@ -40,7 +29,7 @@ export function LoginForm({
       error: "",
     },
     validators: {
-      onChange: schema,
+      onChange: loginFormSchema,
     },
     onSubmit: async ({ value }) => {
       const { username, password } = value
@@ -53,13 +42,11 @@ export function LoginForm({
           email: username,
           password,
         })
-        console.log(response)
       } else {
         response = await authClient.signIn.phoneNumber({
           phoneNumber: username,
           password,
         })
-        console.log(response)
       }
 
       if (response?.error) {
@@ -67,7 +54,6 @@ export function LoginForm({
         form.setFieldValue("error", response?.error?.message ?? "Login failed!")
       } else {
         toast.success("Login successfull, redirecting...", { id: toastId })
-        // window.location.reload()
       }
     },
   })
@@ -175,7 +161,7 @@ export function LoginForm({
             className="bg-primary/20 hover:bg-primary/30"
             asChild
           >
-            <Link href="/signin-otp">Login with OTP</Link>
+            <Link href="/auth/signin">Login with OTP</Link>
           </Button>
         </Field>
       </FieldGroup>

@@ -53,7 +53,7 @@ export const CandidateApplicationActions = ({
                   queryKey: ["candidate-application"],
                 })
                 queryClient.invalidateQueries({
-                  queryKey: ["/api/v1/crm/candidates/count"],
+                  queryKey: ["/crm/candidates/count"],
                 })
               }
             },
@@ -79,7 +79,7 @@ export const CandidateApplicationActions = ({
                   queryKey: ["candidate-application"],
                 })
                 queryClient.invalidateQueries({
-                  queryKey: ["/api/v1/crm/candidates/count"],
+                  queryKey: ["/crm/candidates/count"],
                 })
               }
             },

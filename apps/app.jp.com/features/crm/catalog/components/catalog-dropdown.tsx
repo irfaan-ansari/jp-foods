@@ -44,7 +44,7 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
           })
 
           queryClient.invalidateQueries({
-            queryKey: ["/api/v1/crm/catalog-inquiries/count"],
+            queryKey: ["/crm/catalog-inquiries/count"],
           })
         },
       },
@@ -79,7 +79,7 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
           })
 
           queryClient.invalidateQueries({
-            queryKey: ["/api/v1/crm/catalog-inquiries/count"],
+            queryKey: ["/crm/catalog-inquiries/count"],
           })
         },
       },

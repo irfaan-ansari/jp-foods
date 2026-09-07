@@ -14,8 +14,7 @@ import {
 } from "drizzle-orm"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { AppError } from "@jp/utils"
-import { parsePagination } from "@/lib/hono/lib/parse-pagination"
-import { getStatusCounts } from "@/lib/hono/lib/counts"
+import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 
 const app = new Hono<OrgAppContext>()
 

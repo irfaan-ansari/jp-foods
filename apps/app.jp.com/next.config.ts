@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     "@jp/db",
     "@jp/auth",
     "@jp/utils",
-    "@jp/twilio",
+    "@jp/notifications",
   ],
   images: {
     remotePatterns: [
