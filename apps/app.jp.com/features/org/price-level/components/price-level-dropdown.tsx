@@ -33,7 +33,7 @@ export const PriceLevelDropdown = ({ data }: { data: PriceLevel }) => {
           } else {
             queryClient.invalidateQueries({ queryKey: ["price-levels"] })
             queryClient.invalidateQueries({
-              queryKey: ["/api/v1/org/price-levels/count"],
+              queryKey: ["/org/price-levels/count"],
             })
           }
         },

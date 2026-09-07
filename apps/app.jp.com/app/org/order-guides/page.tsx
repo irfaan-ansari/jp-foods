@@ -28,7 +28,7 @@ const OrderGuidePage = () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex gap-4">
-          <FilterTab tabs={OPTIONS} path="/api/v1/org/order-guides/count" />
+          <FilterTab tabs={OPTIONS} path="/org/order-guides/count" />
           <SearchQueryParam className="ml-auto" />
         </div>
         <OrderGuideClient />

@@ -15,7 +15,6 @@
     "@duo-icons/react": "^1.0.1",
     "@jp/auth": "workspace:*",
     "@jp/db": "workspace:*",
-    "@jp/twilio": "workspace:*",
     "@jp/ui": "workspace:*",
     "@jp/utils": "workspace:*",
     "@omit/react-confirm-dialog": "^2.0.0",

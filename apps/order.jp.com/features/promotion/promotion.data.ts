@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query"
 import { ApiResponse } from "../shared/shared.type"
-import { AppError, fetcher } from "@jp/utils"
+import { AppError } from "@jp/utils"
 import { Promotion } from "./promotion.type"
+import { apiClient } from "@/lib/api-client"
 
 export const usePromotions = () => {
   return useQuery<ApiResponse<Promotion[]>, AppError>({
     queryKey: ["promotions"],
-    queryFn: () => fetcher(`/api/v1/team/promotions`),
+    queryFn: () => apiClient.get("/promotions"),
   })
 }

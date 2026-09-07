@@ -4,12 +4,7 @@ export const userSchema = z.object({
   name: z.string(),
   phoneNumber: z.string(),
   email: z.string(),
-  role: z
-    .object({
-      label: z.string(),
-      value: z.string(),
-    })
-    .array(),
+  role: z.string(),
   organizations: z
     .object({
       id: z.string(),

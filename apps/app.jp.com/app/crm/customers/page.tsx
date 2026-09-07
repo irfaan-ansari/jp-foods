@@ -19,7 +19,7 @@ const CustomerApplications = () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="gap flex justify-between">
-          <FilterTab path="/api/v1/crm/customers/count" tabs={options} />
+          <FilterTab path="/crm/customers/count" tabs={options} />
           <SearchQueryParam />
         </div>
         <CustomerApplicationClient />

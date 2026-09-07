@@ -1,6 +1,5 @@
 import { db, team } from "@jp/db"
-import { getStatusCounts } from "@/lib/hono/lib/counts"
-import { parsePagination } from "@/lib/hono/lib/parse-pagination"
+import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
 import { Hono } from "hono"

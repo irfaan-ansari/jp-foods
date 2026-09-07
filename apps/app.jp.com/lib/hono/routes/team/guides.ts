@@ -2,8 +2,8 @@ import { Hono } from "hono"
 
 import { db, orderGuide } from "@jp/db"
 import { eq } from "drizzle-orm"
-import { parsePagination } from "@jp/utils"
 import { TeamAppContext } from "@/lib/hono/middlewares"
+import { parsePagination } from "@/lib/hono/lib"
 import { getTeamPriceResolver } from "@/features/org/price-level/price-level.resolver"
 
 const app = new Hono<TeamAppContext>()
@@ -31,6 +31,7 @@ export const guides = app.get("/", async (c) => {
                   limit: 1,
                   orderBy: (li, { desc }) => [desc(li.createdAt)],
                 },
+                sellUnits: true,
               },
             },
           },

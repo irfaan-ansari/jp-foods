@@ -41,7 +41,7 @@ export const TransactionCard = () => {
           </CardDescription>
         </div>
         <CardAction className="flex items-center gap-2">
-          <StatusBadge status={randomStatus} />
+          <StatusBadge status={randomStatus!} />
         </CardAction>
       </CardHeader>
 

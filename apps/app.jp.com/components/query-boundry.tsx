@@ -7,15 +7,11 @@ import { AppError } from "@jp/utils"
 
 type QueryBoundaryProps<T> = {
   query: UseQueryResult<T>
-
   children: (data: T) => ReactNode
-
   loading: ReactNode
-
   isEmpty?: (data: T) => boolean
   empty?: ReactNode
-
-  error?: (error: unknown) => ReactNode
+  error?: (error: AppError) => ReactNode
 
   /**
    * Show loading on refetches (pagination, filters, etc.)
@@ -39,7 +35,7 @@ export function QueryBoundary<T>({
 
   if (query.isError) {
     return (
-      error?.(query.error) ?? (
+      error?.(query.error as AppError) ?? (
         <ErrorState
           title={query.error?.message}
           description={(query.error as AppError)?.description}

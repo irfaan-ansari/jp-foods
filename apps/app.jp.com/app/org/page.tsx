@@ -1,12 +1,8 @@
+import { redirect } from "next/navigation"
 import React from "react"
-import { PageHeader } from "@/components/page-content"
 
 const OrgPage = () => {
-  return (
-    <React.Fragment>
-      <PageHeader title="Dashboard" />
-    </React.Fragment>
-  )
+  redirect("/org/dashboard")
 }
 
 export default OrgPage

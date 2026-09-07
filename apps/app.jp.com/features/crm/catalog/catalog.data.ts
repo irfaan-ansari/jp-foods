@@ -1,17 +1,13 @@
-import { AppError, fetcher } from "@jp/utils"
+import { AppError } from "@jp/utils"
+import { apiClient } from "@/lib/api-client"
 import { useQuery } from "@tanstack/react-query"
-
 import { PaginatedResponse } from "@/features/shared/shared.type"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { CatalogInquiry } from "./catalog.type"
 
 export const useCatalogInquiries = (kv?: Record<string, any>) => {
-  const { getQueryString } = useRouterStuff()
-  const queryString = getQueryString(kv)
-
   return useQuery<PaginatedResponse<CatalogInquiry>, AppError>({
     queryKey: ["catalog-inquiry", kv],
-    queryFn: () => fetcher(`/api/v1/crm/catalog-inquiries${queryString}`),
+    queryFn: () => apiClient.get(`/crm/catalog-inquiries`, { params: kv }),
     staleTime: 1000 * 60 * 5,
   })
 }

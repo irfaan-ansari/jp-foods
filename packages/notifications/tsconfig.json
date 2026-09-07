@@ -1,10 +1,11 @@
 {
-  "extends": "@jp/typescript-config/base.json",
+  "extends": "@jp/typescript-config/react-library.json",
   "compilerOptions": {
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "types": ["node"],
     "paths": {
-      "@jp/twilio/*": ["./src/*"]
+      "@jp/notifications/*": ["./src/*"]
     }
   },
   "include": ["."],

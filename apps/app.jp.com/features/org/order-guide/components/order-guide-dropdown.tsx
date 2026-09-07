@@ -34,7 +34,7 @@ export const OrderGuideDropdown = ({ data }: { data: OrderGuide }) => {
           } else {
             queryClient.invalidateQueries({ queryKey: ["order-guides"] })
             queryClient.invalidateQueries({
-              queryKey: ["/api/v1/org/order-guides/count"],
+              queryKey: ["/org/order-guides/count"],
             })
           }
         },

@@ -47,11 +47,7 @@ const UsersPage = () => {
 
       <PageContent className="space-y-3 lg:space-y-6">
         <div className="flex items-center justify-start gap-3">
-          <FilterTab
-            queryKey="role"
-            tabs={OPTIONS}
-            path="/api/v1/users/count"
-          />
+          <FilterTab queryKey="role" tabs={OPTIONS} path="/users/count" />
           <UserRoleSelector>
             <Button
               variant="outline"

@@ -25,10 +25,7 @@ const Orders = () => {
 
       <PageContent className="space-y-6">
         <div className="flex items-start justify-between gap-4">
-          <FilterTab
-            tabs={Object.values(STATUS)}
-            path="/api/v1/org/orders/count"
-          />
+          <FilterTab tabs={Object.values(STATUS)} path="/org/orders/count" />
           <SearchQueryParam />
         </div>
 

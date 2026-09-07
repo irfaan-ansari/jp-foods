@@ -1,5 +1,5 @@
 import React from "react"
-import { Letter, MenuDots, Phone, User } from "@solar-icons/react"
+import { Letter, Phone, User } from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -18,13 +18,13 @@ import {
 import { Progress } from "@jp/ui/components/progress"
 import { CopyButton } from "@jp/ui/components/jp/copy-button"
 import { formatPhone, formatUSD } from "@jp/utils"
-import { Button } from "@jp/ui/components/button"
 import { Skeleton } from "@jp/ui/components/skeleton"
 
 import Link from "next/link"
+import { STATUS } from "../team.const"
 import type { Team } from "../team.type"
 import { Tooltip } from "@jp/ui/components/jp"
-import { STATUS } from "../team.const"
+import { TeamDropdown } from "./team-dropdown"
 import { StatusBadge } from "@/components/status-badge"
 
 export const TeamCard = ({ data }: { data: Team }) => {
@@ -36,12 +36,10 @@ export const TeamCard = ({ data }: { data: Team }) => {
       size="sm"
     >
       <Link href="/org/customers/457" className="absolute inset-0" />
-      <CardHeader>
-        <CardAction className="flex items-center gap-2">
+      <CardHeader className="relative">
+        <CardAction className="absolute top-0 right-4 flex items-center gap-2">
           <TeamBadge status={data.status ?? "active"} />
-          <Button size="icon-sm" variant="outline" className="relative z-1">
-            <MenuDots />
-          </Button>
+          <TeamDropdown data={data} />
         </CardAction>
         <div className="flex min-w-0 items-start gap-2">
           <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-xl">

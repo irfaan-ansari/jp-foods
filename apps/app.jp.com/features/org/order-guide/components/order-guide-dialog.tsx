@@ -31,7 +31,7 @@ export const OrderGuideDialog = ({
     toast.success("Order guide saved.")
     queryClient.invalidateQueries({ queryKey: ["order-guides"] })
     queryClient.invalidateQueries({
-      queryKey: ["/api/v1/org/order-guides/count"],
+      queryKey: ["/org/order-guides/count"],
     })
     setOpen(false)
   }

@@ -233,7 +233,10 @@ const OrderPage = () => {
                     </Button>
 
                     <Button className="w-full" asChild>
-                      <a href={`/api/orders/${data.id}/slip`} target="_blank">
+                      <a
+                        href={`/api/v1/org/orders//${data.id}/slip`}
+                        target="_blank"
+                      >
                         <Package />
                         Packing Slip
                       </a>

@@ -1,11 +1,11 @@
 "use client"
 
-import { AppError, fetcher } from "@jp/utils"
-
-import { useQuery } from "@tanstack/react-query"
-import type { PaginatedResponse } from "@/features/shared/shared.type"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import { AppError } from "@jp/utils"
 import type { User } from "./user.type"
+import { apiClient } from "@/lib/api-client"
+import { useQuery } from "@tanstack/react-query"
+import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import type { PaginatedResponse } from "@/features/shared/shared.type"
 
 export const useUsers = (kv?: Record<string, any>) => {
   const { getQueryString } = useRouterStuff()
@@ -13,7 +13,7 @@ export const useUsers = (kv?: Record<string, any>) => {
 
   return useQuery<PaginatedResponse<User>, AppError>({
     queryKey: ["users", queryString],
-    queryFn: () => fetcher(`/api/v1/users${queryString}`),
+    queryFn: () => apiClient.get(`/users`, { params: kv }),
     staleTime: 1000 * 60 * 5,
   })
 }

@@ -1,18 +1,15 @@
 "use client"
 
 import { Order, Orders } from "./order.type"
-import { type AppError, fetcher } from "@jp/utils"
+import { type AppError } from "@jp/utils"
 import { useQuery } from "@tanstack/react-query"
 import { ApiResponse, PaginatedResponse } from "../shared/shared.type"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import { apiClient } from "@/lib/api-client"
 
 export const useOrders = (kv?: Record<string, any>) => {
-  const { getQueryString } = useRouterStuff()
-  const queryString = getQueryString(kv)
-
   return useQuery<PaginatedResponse<Orders>, AppError>({
     queryKey: ["orders", kv],
-    queryFn: () => fetcher(`/api/v1/team/orders${queryString}`),
+    queryFn: () => apiClient.get("/orders", { params: kv }),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   })
@@ -21,7 +18,7 @@ export const useOrders = (kv?: Record<string, any>) => {
 export const useOrder = (id: string) => {
   return useQuery<ApiResponse<Order>, AppError>({
     queryKey: ["order", id],
-    queryFn: () => fetcher(`/api/v1/team/orders/${id}`),
+    queryFn: () => apiClient.get(`/orders/${id}`),
     staleTime: 1000 * 60 * 5,
     refetchOnWindowFocus: false,
   })

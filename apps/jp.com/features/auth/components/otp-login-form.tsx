@@ -4,14 +4,6 @@ import z from "zod"
 import React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
-import { REGEXP_ONLY_DIGITS } from "input-otp"
-import { useStore } from "@tanstack/react-form"
-import { AlertCircleIcon, Loader2, X } from "lucide-react"
-
-import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
-
-import { phoneSchema } from "@jp/utils"
-
 import {
   Field,
   FieldError,
@@ -23,9 +15,13 @@ import {
   InputOTPGroup,
   InputOTPSlot,
 } from "@jp/ui/components/input-otp"
-
+import { phoneSchema } from "@jp/utils"
+import { REGEXP_ONLY_DIGITS } from "input-otp"
+import { useStore } from "@tanstack/react-form"
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
+import { AlertCircleIcon, Loader2, X } from "lucide-react"
+import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
 import { Alert, AlertAction, AlertTitle } from "@jp/ui/components/alert"
 
 const phone = z.object({
@@ -75,23 +71,24 @@ export function OTPLoginForm({
       // verify otp
       if (step === "verify") {
         const toastId = toast.loading("Please wait...")
-        const { success, error } = await verifyOtp({
+        const { serverError } = await verifyOtp({
           phoneNumber,
           code,
         })
 
-        if (success) {
-          // clear error
-          form.setFieldValue("error", "")
-
-          toast.success("Login successfull, redirecting...", { id: toastId })
-          window.location.reload()
-        } else {
-          toast.error(error?.message, {
+        if (serverError) {
+          toast.error(serverError?.message, {
             id: toastId,
           })
-          form.setFieldValue("error", error?.message)
+          form.setFieldValue("error", serverError?.message)
+          return
         }
+
+        // clear error
+        form.setFieldValue("error", "")
+
+        toast.success("Login successfull, redirecting...", { id: toastId })
+        window.location.reload()
       }
     },
   })
@@ -109,27 +106,28 @@ export function OTPLoginForm({
     const phoneNumber = form.state.values.phoneNumber
     const toastId = toast.loading("Please wait...")
 
-    const { success, error } = await sendOtp({
+    const { serverError } = await sendOtp({
       phoneNumber,
     })
 
-    if (success) {
-      // clear error
-      form.setFieldValue("error", "")
-      // go to next step
-      form.setFieldValue("seconds", 60)
-      form.setFieldValue("step", "verify")
-      form.setFieldValue("canResend", false)
-      form.setFieldMeta
-      toast.success("OTP sent successfully!", {
+    if (serverError) {
+      toast.error(serverError?.message, {
         id: toastId,
       })
-    } else {
-      toast.error(error?.message, {
-        id: toastId,
-      })
-      form.setFieldValue("error", error?.message)
+      form.setFieldValue("error", serverError?.message)
+      return
     }
+
+    // clear error
+    form.setFieldValue("error", "")
+    // go to next step
+    form.setFieldValue("seconds", 60)
+    form.setFieldValue("step", "verify")
+    form.setFieldValue("canResend", false)
+    form.setFieldMeta
+    toast.success("OTP sent successfully!", {
+      id: toastId,
+    })
   }
 
   React.useEffect(() => {
@@ -304,7 +302,7 @@ export function OTPLoginForm({
           className="bg-primary/20 hover:bg-primary/30"
           asChild
         >
-          <Link href="/signin">Login with password</Link>
+          <Link href="/auth/signin-password">Login with password</Link>
         </Button>
       </Field>
     </form>

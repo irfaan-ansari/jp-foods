@@ -29,7 +29,7 @@ export const ProductDialog = ({
     setOpen(false)
     queryClient.invalidateQueries({ queryKey: ["products"] })
     queryClient.invalidateQueries({
-      queryKey: ["count", "/api/v1/org/products/count"],
+      queryKey: ["count", "/org/products/count"],
     })
   }
 

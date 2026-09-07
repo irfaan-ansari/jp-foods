@@ -45,7 +45,7 @@ export function CustomerApplicationStatusDialog({
           queryKey: ["customer-application", id],
         })
         queryClient.invalidateQueries({
-          queryKey: ["/api/v1/crm/customers/count"],
+          queryKey: ["/crm/customers/count"],
         })
       }
     },

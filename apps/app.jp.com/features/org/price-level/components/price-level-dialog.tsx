@@ -29,7 +29,7 @@ export const PriceLevelDialog = ({
     setOpen(false)
     queryClient.invalidateQueries({ queryKey: ["price-levels"] })
     queryClient.invalidateQueries({
-      queryKey: ["count", "/api/v1/org/price-levels/count"],
+      queryKey: ["count", "/org/price-levels/count"],
     })
   }
 

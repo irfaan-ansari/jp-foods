@@ -70,7 +70,7 @@ export function AppSidebar({ session }: { session: AuthType }) {
               {label && <SidebarGroupLabel>{label}</SidebarGroupLabel>}
               <SidebarMenu>
                 {items.map((item) => {
-                  const { label, href, icon, items } = item
+                  const { label, href, icon, items, disabled } = item
                   return (
                     <MenuButton
                       key={label + href}
@@ -78,6 +78,7 @@ export function AppSidebar({ session }: { session: AuthType }) {
                       href={href}
                       icon={icon}
                       subItems={items}
+                      disabled={disabled}
                     />
                   )
                 })}
@@ -120,16 +121,20 @@ const MenuButton = ({
   href,
   icon: Icon,
   subItems,
+  disabled = false,
 }: {
   label: string
   href: string
   icon: MenuIcon
   subItems: { label: string; href: string }[] | []
+  disabled: boolean
 }) => {
   const { pathname, getQueryString } = useRouterStuff()
 
   if (subItems.length === 0) {
-    return <MenuLink label={label} icon={Icon} href={href} />
+    return (
+      <MenuLink label={label} icon={Icon} href={href} disabled={disabled} />
+    )
   }
 
   const isOpen = subItems.some(
@@ -142,7 +147,11 @@ const MenuButton = ({
     <Collapsible defaultOpen={isOpen} className="group/collapsible">
       <SidebarMenuItem>
         <CollapsibleTrigger asChild>
-          <SidebarMenuButton isActive={isOpen} className="px-2.5">
+          <SidebarMenuButton
+            isActive={isOpen}
+            className="px-2.5"
+            disabled={disabled}
+          >
             <Icon className="size-5" />
             <span>{label}</span>
             <AltArrowRight className="ml-auto transition-transform group-data-[state=open]/collapsible:rotate-90" />
@@ -172,10 +181,12 @@ const MenuLink = ({
   label,
   href = "#",
   icon: Icon,
+  disabled = false,
 }: {
   label: string
   href?: string
   icon: MenuIcon
+  disabled?: boolean
 }) => {
   const { pathname } = useRouterStuff()
 
@@ -189,11 +200,19 @@ const MenuLink = ({
         isActive={isActive}
         tooltip={label}
         className="px-2.5 transition duration-200"
+        disabled={disabled}
       >
-        <Link href={href}>
-          <Icon className="size-5" />
-          <span>{label}</span>
-        </Link>
+        {disabled ? (
+          <span className="opacity-60">
+            <Icon className="size-5" />
+            <span>{label}</span>
+          </span>
+        ) : (
+          <Link href={href}>
+            <Icon className="size-5" />
+            <span>{label}</span>
+          </Link>
+        )}
       </SidebarMenuButton>
     </SidebarMenuItem>
   )

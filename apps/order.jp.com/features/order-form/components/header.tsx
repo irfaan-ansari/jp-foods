@@ -48,7 +48,10 @@ export const OrderPageHeader = ({
                   className="justify-start"
                   asChild
                 >
-                  <Link href={opt.href}>{opt.label}</Link>
+                  <Link href={opt.href}>
+                    {" "}
+                    <opt.icon /> {opt.label}
+                  </Link>
                 </Button>
               ))}
             </PopDrawer>

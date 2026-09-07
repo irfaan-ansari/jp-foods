@@ -16,7 +16,7 @@ const MembersPage = () => {
         <FilterTab
           queryKey="team-members"
           tabs={OPTIONS}
-          path="/api/v1/team/members/count"
+          path="/members/count"
         />
 
         <SearchQueryParam className="ml-auto" />

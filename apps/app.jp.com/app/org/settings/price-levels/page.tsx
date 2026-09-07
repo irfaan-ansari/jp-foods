@@ -33,7 +33,7 @@ const PriceListPage = () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex justify-between gap-4">
-          <FilterTab tabs={OPTIONS} path="/api/v1/org/price-levels/count" />
+          <FilterTab tabs={OPTIONS} path="/org/price-levels/count" />
           <SearchQueryParam />
         </div>
         <PriceLevelClient />

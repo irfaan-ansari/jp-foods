@@ -1,8 +1,7 @@
 import { db } from "@jp/db"
 import { waitUntil } from "@vercel/functions"
 import { betterAuth } from "better-auth"
-
-import { twilioSendOTP, twilioVerifyOTP } from "@jp/twilio"
+import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
   organization as organizationPlugin,
@@ -17,7 +16,7 @@ import { createAuthMiddleware } from "better-auth/api"
 import { getActiveAccount } from "./session"
 
 export const auth = betterAuth({
-  baseURL: "http://localhost:3001",
+  baseURL: process.env.BETTER_AUTH_URL,
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -47,12 +46,12 @@ export const auth = betterAuth({
     }),
     organizationPlugin({
       allowUserToCreateOrganization: async (user) => {
-        const allowedRoles = ['admin','superAdmin']
+        const allowedRoles = ["admin", "superAdmin"]
         return allowedRoles.includes(user.role)
       },
-       async sendInvitationEmail(data) {
-        const inviteLink = `https://example.com/accept-invitation/${data.id}`;
-         console.log('send email:', inviteLink)
+      async sendInvitationEmail(data) {
+        const inviteLink = `https://example.com/accept-invitation/${data.id}`
+        console.log("send email:", inviteLink)
       },
       ac: orgAc,
       roles: orgRoles,
