@@ -1,0 +1,22 @@
+{
+  "name": "@jp/twilio",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "twilio": "^6.0.2"
+  },
+  "devDependencies": {
+    "@jp/typescript-config": "workspace:*",
+    "@types/node": "^20.19.43",
+    "tsx": "^4.22.4"
+  }
+}

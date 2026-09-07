@@ -1,0 +1,24 @@
+{
+  "name": "@jp/utils",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./error": "./src/error/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "^0.45.2",
+    "zod": "^4.4.3",
+    "date-fns": "^4.0.0"
+  },
+  "devDependencies": {
+    "@jp/typescript-config": "workspace:*",
+    "@types/node": "^20.19.43"
+  }
+}

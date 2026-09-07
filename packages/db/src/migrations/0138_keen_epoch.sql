@@ -1,0 +1,1 @@
+ALTER TABLE "product" RENAME COLUMN "sell_unit" TO "sell_units";

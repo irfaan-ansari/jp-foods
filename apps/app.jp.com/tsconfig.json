@@ -1,0 +1,27 @@
+{
+  "extends": "@jp/typescript-config/nextjs.json",
+
+  "compilerOptions": {
+    "paths": {
+      "@/*": ["./*"],
+      "@jp/ui/*": ["../../packages/ui/src/*"]
+    },
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "strict": true
+  },
+  "include": [
+    "next-env.d.ts",
+    "next.config.ts",
+    "**/*.ts",
+    "**/*.d.ts",
+    "**/*.tsx",
+    "**/*.mts",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": ["node_modules"]
+}

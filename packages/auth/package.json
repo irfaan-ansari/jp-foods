@@ -1,0 +1,35 @@
+{
+  "name": "@jp/auth",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts"
+  },
+  "scripts": {
+    "auth:generate": "pnpm dlx auth generate --config ./src/server.ts --yes",
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.{ts,tsx}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@jp/db": "workspace:*",
+    "@jp/twilio": "workspace:*",
+    "better-auth": "^1.6.20",
+    "next-safe-action": "^8.5.5",
+    "server-only": "^0.0.1"
+  },
+  "peerDependencies": {
+    "@vercel/functions": "^3.7.2",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "@jp/typescript-config": "workspace:*",
+    "@types/node": "^26.0.0",
+    "@types/react": "^19",
+    "next": "^16.2.6",
+    "react": "^19.2.4",
+    "tsx": "^4.22.4"
+  }
+}

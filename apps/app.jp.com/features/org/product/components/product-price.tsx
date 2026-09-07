@@ -1,0 +1,46 @@
+import { formatUSD } from "@jp/utils"
+
+type PriceProps = {
+  sellUnits: {
+    unit: string
+    price: string | number
+    inventoryPerUnit: string
+  }[]
+  trackInventory?: boolean
+  stock?: string | number
+}
+
+export const ProductPrice = ({
+  sellUnits,
+  stock,
+  trackInventory = false,
+}: PriceProps) => {
+  const prices = sellUnits
+
+  return (
+    <div className="grid w-full gap-1.5">
+      <div className="flex gap-2">
+        {prices.map((item, index) => (
+          <div
+            key={`${item.unit}-${index}`}
+            className="flex items-center gap-2"
+          >
+            <div className="flex items-baseline gap-0">
+              <span className="text-sm font-semibold text-primary">
+                {formatUSD(item.price)}
+              </span>
+              <span className="text-xs font-normal text-muted-foreground">
+                / {item.unit}
+              </span>
+            </div>
+            {index < prices.length - 1 && (
+              <span className="text-xs font-normal text-muted-foreground">
+                |
+              </span>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

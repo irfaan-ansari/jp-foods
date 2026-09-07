@@ -1,0 +1,1 @@
+ALTER TABLE "product" RENAME COLUMN "pack" TO "pack_size";

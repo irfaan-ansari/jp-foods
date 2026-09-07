@@ -1,0 +1,30 @@
+{
+  "name": "@jp/pdf",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@jp/typescript-config": "workspace:*",
+    "@types/node": "^20.19.43",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
+  },
+  "peerDependencies": {
+    "date-fns": "^4.4.0"
+  },
+  "dependencies": {
+    "@jp/db": "workspace:*",
+    "@jp/utils": "workspace:*",
+    "@react-pdf/renderer": "^4.5.1",
+    "react": "19.2.7",
+    "react-dom": "19.2.4"
+  }
+}

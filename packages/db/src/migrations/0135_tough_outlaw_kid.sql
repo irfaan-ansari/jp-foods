@@ -1,0 +1,1 @@
+ALTER TABLE "order" ALTER COLUMN "cancel_reason" SET DATA TYPE text;

@@ -1,0 +1,39 @@
+import z from "zod"
+
+export const userSchema = z.object({
+  name: z.string(),
+  phoneNumber: z.string(),
+  email: z.string(),
+  role: z
+    .object({
+      label: z.string(),
+      value: z.string(),
+    })
+    .array(),
+  organizations: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .array(),
+  teams: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .array(),
+})
+
+export type UserFormSchema = z.infer<typeof userSchema>
+
+export const userPasswordSchema = z
+  .object({
+    password: z.string().min(8, "Password must be at least 8 characters long"),
+    newPassword: z.string(),
+  })
+  .refine((data) => data.password === data.newPassword, {
+    message: "Passwords do not match",
+    path: ["newPassword"],
+  })
+
+export type UserPasswordFormSchema = z.infer<typeof userPasswordSchema>

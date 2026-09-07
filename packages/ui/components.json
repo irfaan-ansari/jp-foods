@@ -10,14 +10,19 @@
     "cssVariables": true
   },
   "iconLibrary": "lucide",
-  "aliases": {
-    "components": "@workspace/ui/components",
-    "utils": "@workspace/ui/lib/utils",
-    "hooks": "@workspace/ui/hooks",
-    "lib": "@workspace/ui/lib",
-    "ui": "@workspace/ui/components"
-  },
   "rtl": false,
   "menuColor": "default",
-  "menuAccent": "bold"
+  "menuAccent": "bold",
+  "aliases": {
+    "components": "@jp/ui/components",
+    "utils": "@jp/ui/lib/utils",
+    "ui": "@jp/ui/components",
+    "lib": "@jp/ui/lib",
+    "hooks": "@jp/ui/hooks"
+  },
+  "registries": {
+    "@magicui": "https://magicui.design/r/{name}",
+    "@diceui": "https://diceui.com/r/{style}/{name}.json",
+    "@reui": "https://reui.io/r/{style}/{name}.json"
+  }
 }

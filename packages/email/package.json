@@ -1,0 +1,27 @@
+{
+  "name": "@jp/email",
+  "version": "0.0.0",
+  "type": "module",
+  "private": true,
+  "exports": {
+    ".": "./src/index.ts",
+    "./templates": "./src/templates/index.ts"
+  },
+  "scripts": {
+    "lint": "eslint",
+    "format": "prettier --write \"**/*.ts\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@jp/typescript-config": "workspace:*",
+    "@react-email/ui": "6.8.1",
+    "@types/node": "^20.19.43",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3"
+  },
+  "dependencies": {
+    "react": "19.2.7",
+    "react-dom": "19.2.4",
+    "react-email": "6.8.1"
+  }
+}

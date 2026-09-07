@@ -1,0 +1,35 @@
+import { auth } from "./server"
+import {
+  inferOrgAdditionalFields,
+  adminClient as adminClientPlugin,
+  phoneNumberClient as phoneNumberClientPlugin,
+  organizationClient as organizationClientPlugin,
+} from "better-auth/client/plugins"
+import { createAuthClient } from "better-auth/react"
+import { orgAc, orgRoles } from "./permissions/organization"
+import type { AuthQueryAtom } from "better-auth/client"
+import { userAc, userRoles } from "./permissions/user"
+
+export const authClient = createAuthClient({
+  baseURL: "http://localhost:3001",
+  fetchOptions: {
+    credentials: "include",
+  },
+  plugins: [
+    adminClientPlugin({
+      ac: userAc,
+      roles: userRoles,
+    }),
+    organizationClientPlugin({
+      teams: {
+        enabled: true,
+      },
+      ac: orgAc,
+      roles: orgRoles,
+      schema: inferOrgAdditionalFields<typeof auth>(),
+    }),
+    phoneNumberClientPlugin(),
+  ],
+})
+
+export type AuthClient = typeof authClient

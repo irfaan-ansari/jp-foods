@@ -1,0 +1,13 @@
+{
+  "extends": "@jp/typescript-config/base.json",
+  "compilerOptions": {
+    "module": "ESNext",
+    "types": ["node"],
+    "moduleResolution": "bundler",
+    "paths": {
+      "@jp/db/*": ["./src/*"]
+    }
+  },
+  "include": ["."],
+  "exclude": ["node_modules", "dist", "./src/migrations"]
+}
