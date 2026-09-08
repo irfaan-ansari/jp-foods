@@ -2,9 +2,12 @@
 
 import { AppError } from "@jp/utils"
 import { apiClient } from "@/lib/api-client"
-import type { Team } from "@/features/org/team/team.type"
+import type { Team, TeamAnalytics } from "@/features/org/team/team.type"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
-import type { PaginatedResponse } from "@/features/shared/shared.type"
+import type {
+  ApiResponse,
+  PaginatedResponse,
+} from "@/features/shared/shared.type"
 
 export const useTeams = (kv?: Record<string, any>) => {
   return useQuery<PaginatedResponse<Team>, AppError>({
@@ -31,6 +34,24 @@ export const useInfiniteTeams = (kv?: Record<string, any>) => {
         : undefined
     },
 
+    staleTime: 1000 * 60 * 5,
+  })
+}
+
+export const useTeam = (id: string) => {
+  return useQuery<ApiResponse<Team>, AppError>({
+    queryKey: ["teams", id],
+    queryFn: () => apiClient.get(`/org/teams/${id}`),
+    staleTime: 1000 * 60 * 5,
+  })
+}
+export const useTeamAnalytics = (id: string, kv?: Record<string, any>) => {
+  return useQuery<ApiResponse<TeamAnalytics>, AppError>({
+    queryKey: ["teams", id, "analytics", kv],
+    queryFn: () =>
+      apiClient.get(`/org/teams/${id}/analytics`, {
+        params: { ...kv },
+      }),
     staleTime: 1000 * 60 * 5,
   })
 }

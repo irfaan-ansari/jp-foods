@@ -1,5 +1,5 @@
 import React from "react"
-import { Letter, Phone, User } from "@solar-icons/react"
+import { Letter, MenuDots, Phone, User } from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -26,6 +26,7 @@ import type { Team } from "../team.type"
 import { Tooltip } from "@jp/ui/components/jp"
 import { TeamDropdown } from "./team-dropdown"
 import { StatusBadge } from "@/components/status-badge"
+import { Button } from "@jp/ui/components/button"
 
 export const TeamCard = ({ data }: { data: Team }) => {
   const progress = Math.floor(Math.random() * 100) + 1
@@ -35,11 +36,15 @@ export const TeamCard = ({ data }: { data: Team }) => {
       className="relative h-full shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
       size="sm"
     >
-      <Link href="/org/customers/457" className="absolute inset-0" />
-      <CardHeader className="relative">
-        <CardAction className="absolute top-0 right-4 flex items-center gap-2">
+      <Link href={`/org/customers/${data.id}`} className="absolute inset-0" />
+      <CardHeader>
+        <CardAction className="flex items-center gap-2">
           <TeamBadge status={data.status ?? "active"} />
-          <TeamDropdown data={data} />
+          <TeamDropdown data={data}>
+            <Button size="icon-xs" variant="outline" className="relative z-1">
+              <MenuDots />
+            </Button>
+          </TeamDropdown>
         </CardAction>
         <div className="flex min-w-0 items-start gap-2">
           <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-xl">
@@ -85,24 +90,35 @@ export const TeamCard = ({ data }: { data: Team }) => {
           />
         </div>
         <div className="mt-auto flex items-center justify-between">
-          {data.salesRep?.name && (
-            <span className="inline-flex items-center justify-start gap-1 text-sm leading-tight text-muted-foreground">
-              <User className="size-3.5" />
-              {data.salesRep?.name}
-            </span>
-          )}
-          <AvatarGroup className="ml-auto">
-            {data.teamMembers?.map((member, i) => (
-              <Tooltip content={member.name} key={member.id}>
-                <Avatar key={member.id}>
-                  <AvatarImage src={member.image as string} />
-                  <AvatarFallback>
-                    <User className="size-4" />
-                  </AvatarFallback>
-                </Avatar>
-              </Tooltip>
-            ))}
-          </AvatarGroup>
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">Sales Rep.</span>
+            {data.salesRep?.name ? (
+              <span className="inline-flex items-center justify-start gap-1 text-sm leading-tight text-muted-foreground">
+                <User className="size-3.5" />
+                {data.salesRep?.name}
+              </span>
+            ) : (
+              <span className="text-muted-foreground">NA</span>
+            )}
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="text-muted-foreground">Users</span>
+            {data.teamMembers.length === 0 && (
+              <span className="text-muted-foreground">NA</span>
+            )}
+            <AvatarGroup className="ml-auto">
+              {data.teamMembers?.map((member, i) => (
+                <Tooltip content={member.name} key={member.id}>
+                  <Avatar key={member.id}>
+                    <AvatarImage src={member.image as string} />
+                    <AvatarFallback>
+                      <User className="size-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                </Tooltip>
+              ))}
+            </AvatarGroup>
+          </div>
         </div>
       </CardContent>
     </Card>
