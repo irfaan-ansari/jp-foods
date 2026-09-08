@@ -51,28 +51,30 @@ const VARIANTS = {
     title: "Are you sure?",
     description: "Please confirm that you want to continue.",
     icon: CheckCircle2,
-    iconClass: "bg-primary/10 text-primary",
+    iconClass: "bg-primary/10 border-primary/10 text-primary",
     buttonVariant: "default" as const,
   },
   destructive: {
     title: "Delete this item?",
     description: "This action cannot be undone.",
     icon: Trash2,
-    iconClass: "bg-destructive/10 text-destructive",
+    iconClass: "bg-destructive/10 border-destructive/10 text-destructive",
     buttonVariant: "destructive" as const,
   },
   warning: {
     title: "Proceed with caution?",
     description: "This action may have unintended consequences.",
     icon: AlertTriangle,
-    iconClass: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-500",
+    iconClass:
+      "bg-yellow-500/10 border-yellow-500/10 text-yellow-600 dark:text-yellow-500",
     buttonVariant: "default" as const,
   },
   info: {
     title: "Continue?",
     description: "Please confirm that you want to continue.",
     icon: Info,
-    iconClass: "bg-blue-500/10 text-blue-600 dark:text-blue-400",
+    iconClass:
+      "bg-blue-500/10 border-blue-500/10 text-blue-600 dark:text-blue-400",
     buttonVariant: "default" as const,
   },
 }
@@ -154,7 +156,7 @@ export function ConfirmDialogProvider({ children }: React.PropsWithChildren) {
           <AlertDialogHeader className="items-center gap-3 text-center sm:flex sm:flex-row">
             <div
               className={cn(
-                "flex size-11 shrink-0 items-center justify-center rounded-xl sm:size-10",
+                "flex size-11 shrink-0 items-center justify-center rounded-xl border sm:size-10",
                 config.iconClass
               )}
             >

@@ -271,7 +271,7 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                   <SidebarMenuItem
                     onClick={() => {
                       if (!disabled) {
-                        setActivePanel("/org", true)
+                        setActivePanel("/org", false)
                       }
                     }}
                   >
@@ -281,8 +281,11 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       disabled={disabled}
                       className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
                       size="icon-lg"
+                      asChild
                     >
-                      <CompassSquare className="size-5" />
+                      <Link href="/org/dashboard">
+                        <CompassSquare className="size-5" />
+                      </Link>
                     </Button>
                   </SidebarMenuItem>
                 </Tooltip>
@@ -295,7 +298,7 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                 <Tooltip content="Applications">
                   <SidebarMenuItem
                     onClick={() => {
-                      if (!disabled) setActivePanel("/crm", true)
+                      if (!disabled) setActivePanel("/crm", false)
                     }}
                   >
                     <Button
@@ -304,8 +307,11 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       disabled={disabled}
                       data-active={activePanel === "/crm"}
                       className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
+                      asChild
                     >
-                      <Widget className="size-5" />
+                      <Link href="/crm/dashboard">
+                        <Widget className="size-5" />
+                      </Link>
                     </Button>
                   </SidebarMenuItem>
                 </Tooltip>

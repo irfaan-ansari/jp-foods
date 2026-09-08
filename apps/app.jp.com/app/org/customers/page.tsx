@@ -6,6 +6,8 @@ import { PageContent, PageHeader } from "@/components/page-content"
 import { FilterTab } from "@/components/filter-tabs"
 import { TeamClient } from "@/features/org/team/components/team-client"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
+import { TeamDialog } from "@/features/org/team/components/team-dialog"
+import Link from "next/link"
 
 const OPTIONS = [
   { label: "All", value: "", color: "#71717A" },
@@ -18,9 +20,11 @@ const CustomersPage = () => {
   return (
     <React.Fragment>
       <PageHeader title="Customers">
-        <Button>
-          <Plus />
-          Add New
+        <Button asChild>
+          <Link href="/org/customers/new">
+            <Plus />
+            Add New
+          </Link>
         </Button>
       </PageHeader>
 

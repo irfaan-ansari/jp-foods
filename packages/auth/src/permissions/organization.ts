@@ -73,7 +73,6 @@ const customer = ac.newRole({
 
 const orgRoles = {
   owner,
-
   manager,
   sales,
   customer,

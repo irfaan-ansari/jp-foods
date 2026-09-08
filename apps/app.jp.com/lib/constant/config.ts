@@ -165,7 +165,7 @@ export const CRM_NAV = [
     ],
   },
   {
-    label: "Submissions",
+    label: "Applications",
     items: [
       {
         label: "Customers",
@@ -179,8 +179,13 @@ export const CRM_NAV = [
         icon: UsersGroupRounded,
         items: [],
       },
+    ],
+  },
+  {
+    label: "Inquiries",
+    items: [
       {
-        label: "Catalog Inquiry",
+        label: "Catalog",
         href: "/crm/catalog-inquiries",
         icon: Tag,
         items: [],
