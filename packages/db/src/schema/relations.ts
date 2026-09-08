@@ -77,6 +77,7 @@ export const teamRelations = relations(team, ({ one, many }) => ({
     references: [taxRule.id],
   }),
   products: many(teamProduct),
+  orders: many(order),
   salesRep: one(user, {
     fields: [team.salesRepId],
     references: [user.id],

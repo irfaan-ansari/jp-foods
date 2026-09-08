@@ -19,7 +19,7 @@ export const TeamClient = () => {
     <QueryBoundary
       query={teams}
       loading={
-        <GridWrapper>
+        <GridWrapper className="@7xl:grid-cols-3 @8xl:grid-cols-4">
           {Array.from({ length: 12 }).map((_, i) => (
             <TeamCardSkeleton key={i} />
           ))}
@@ -35,7 +35,7 @@ export const TeamClient = () => {
     >
       {(data) => (
         <div className="h-full flex-1 space-y-3">
-          <GridWrapper>
+          <GridWrapper className="@7xl:grid-cols-3 @8xl:grid-cols-4">
             {data.data.map((team, i) => (
               <BlurFade
                 key={team.id}

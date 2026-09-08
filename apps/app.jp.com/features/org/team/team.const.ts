@@ -27,3 +27,18 @@ export const TEAM_STATUS = [
   { label: "Active", value: "active" },
   { label: "Inactive", value: "inactive" },
 ]
+
+export const RANGE_DAYS: Record<string, { label: string; days: number }> = {
+  "7d": {
+    label: "Last 7 days",
+    days: 7,
+  },
+  "30d": {
+    label: "Last 30 days",
+    days: 30,
+  },
+  "90d": {
+    label: "Last 90 days",
+    days: 90,
+  },
+}
