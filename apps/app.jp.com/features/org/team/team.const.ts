@@ -25,5 +25,5 @@ export const STATUS: Record<string, BadgeStatus> = {
 
 export const TEAM_STATUS = [
   { label: "Active", value: "active" },
-  { label: "inactive", value: "inactive" },
+  { label: "Inactive", value: "inactive" },
 ]

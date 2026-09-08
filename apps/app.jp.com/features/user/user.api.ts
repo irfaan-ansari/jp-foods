@@ -1,6 +1,6 @@
 import { Hono } from "hono"
 import { db, session, user } from "@jp/db"
-import { count, inArray, max } from "drizzle-orm"
+import { and, count, eq, ilike, inArray, max, or } from "drizzle-orm"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { AppContext, authMiddleware } from "@/lib/hono/middlewares"
 
@@ -10,16 +10,34 @@ app.use("*", authMiddleware({ user: ["list"] }))
 
 export const userRoutes = app
   .get("/", async (c) => {
-    const { q, status, ...rest } = c.req.query()
+    const { q, status, role, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)
+
+    const conditions = []
+    if (role) {
+      conditions.push(eq(user.role, role))
+    }
+    if (status) {
+      conditions.push(eq(user.banned, status === "banned"))
+    }
+    if (q) {
+      conditions.push(
+        or(
+          ilike(user.email, `%${q}%`),
+          ilike(user.name, `%${q}%`),
+          ilike(user.phoneNumber, `%${q}%`)
+        )
+      )
+    }
 
     const [response, total] = await Promise.all([
       db.query.user.findMany({
+        where: and(...conditions),
         limit,
         offset,
         orderBy: (u, { desc }) => [desc(u.createdAt), desc(u.id)],
       }),
-      db.$count(user),
+      db.$count(user, and(...conditions)),
     ])
 
     const userIds = response.map((r) => r.id)

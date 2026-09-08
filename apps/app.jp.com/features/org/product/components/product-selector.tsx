@@ -8,40 +8,46 @@ import {
   PopDrawer,
   LoadMore,
   SearchBar,
-  CopyButton,
 } from "@jp/ui/components/jp"
-import {
-  Field,
-  FieldContent,
-  FieldLabel,
-  FieldTitle,
-} from "@jp/ui/components/field"
 import { formatUSD } from "@jp/utils"
-import { Badge } from "@jp/ui/components/badge"
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { useInfiniteProducts } from "@/features/org/product/product.data"
+import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
-import { Product } from "../product.type"
-
-type ProductType = Pick<
-  Product,
-  "id" | "title" | "itemCode" | "image" | "basePrice"
-> & { sellUnitId: number }
+type SellUnit = {
+  id: number
+  unit: string
+  price: string
+}
+type ProductType = {
+  id: number
+  title: string
+  itemCode: string
+  image: string
+  sellUnits: SellUnit[]
+}
 
 type ProductSelectorProps = {
   selected: number | number[] | undefined
   setSelectedChange: (value: ProductType) => void
   children: React.ReactNode
+  status?: string
 }
 
 export const ProductSelector = ({
+  status,
   selected = [],
   setSelectedChange,
   children,
 }: ProductSelectorProps) => {
   const [open, setOpen] = React.useState(false)
-  const [filters, setFilters] = React.useState({ q: "", page: "1", cat: "" })
+  const [filters, setFilters] = React.useState({
+    q: "",
+    page: "1",
+    cat: "",
+    ...(status ? { status } : {}),
+  })
   const multiple = Array.isArray(selected)
 
   const {
@@ -91,44 +97,56 @@ export const ProductSelector = ({
             {options.map((item) => {
               const checked = isSelected(Number(item.id))
               return (
-                <div key={item.id} className="py-2 not-last:border-b">
-                  <Field orientation="horizontal">
-                    <Checkbox
-                      id={item.id}
-                      checked={checked}
-                      className="absolute top-2 right-2 size-4 rounded-full"
-                      onCheckedChange={() => {
-                        setSelectedChange({
-                          ...item,
-                          id: Number(item.id),
-                          sellUnitId: Number(item.sellUnits[0].id),
-                        })
-                        if (!multiple) {
-                          setOpen(false)
-                        }
-                      }}
-                    />
-                    <FieldContent>
-                      <div className="flex flex-1 items-start gap-3">
-                        <Avatar className="rounded-lg *:rounded-lg" size="lg">
-                          <AvatarImage src={item?.image as string} />
-                          <AvatarFallback>
-                            <ImageOff className="size-4" />
-                          </AvatarFallback>
-                        </Avatar>
-
-                        <div className="min-w-0 flex-1 space-y-1">
-                          <FieldTitle className="line-clamp-1">
-                            {item.title}
-                          </FieldTitle>
-                          <span className="text-sm text-muted-foreground">
-                            {item.itemCode}
-                          </span>
-                        </div>
+                <FieldLabel
+                  key={item.id}
+                  className="relative w-full rounded-xl px-2.5 py-1.5 hover:bg-secondary has-data-checked:bg-secondary"
+                >
+                  <FieldContent className="flex-1 gap-0">
+                    <div className="flex flex-1 items-start gap-3">
+                      <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                        <AvatarImage src={item?.image as string} />
+                        <AvatarFallback>
+                          <ImageOff className="size-4" />
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1 space-y-0">
+                        <FieldTitle className="line-clamp-1">
+                          {item.title}
+                        </FieldTitle>
+                        <span className="text-xs text-muted-foreground">
+                          {item.itemCode}
+                        </span>
                       </div>
-                    </FieldContent>
-                  </Field>
-                </div>
+
+                      <div className="shrink-0 space-y-0">
+                        {item.sellUnits?.map((unit) => (
+                          <div key={unit.id}>
+                            <FieldTitle className="line-clamp-1">
+                              {formatUSD(unit.price)}
+                              <span className="pl-1 text-xs text-muted-foreground">
+                                {unit.unit}
+                              </span>
+                            </FieldTitle>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </FieldContent>
+                  <Checkbox
+                    id={item.id}
+                    checked={checked}
+                    className="rounded-full"
+                    onCheckedChange={() => {
+                      setSelectedChange({
+                        ...item,
+                        id: Number(item.id),
+                      })
+                      if (!multiple) {
+                        setOpen(false)
+                      }
+                    }}
+                  />
+                </FieldLabel>
               )
             })}
           </QueryState>

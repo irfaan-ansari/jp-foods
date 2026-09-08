@@ -7,7 +7,7 @@ import { apiClient } from "@/lib/api-client"
 export const useCandidateApplications = (kv?: Record<string, any>) => {
   return useQuery<PaginatedResponse<CandidateApplication>, AppError>({
     queryKey: ["candidate-applications", kv],
-    queryFn: () => apiClient.get(`crm/candidates`, { params: kv }),
+    queryFn: () => apiClient.get(`/crm/candidates`, { params: kv }),
     staleTime: 1000 * 60 * 5,
   })
 }

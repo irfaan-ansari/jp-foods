@@ -7,7 +7,7 @@ import type {
   PaginatedResponse,
   ApiResponse,
 } from "@/features/shared/shared.type"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+
 import type { Category, Product } from "@/features/org/product/product.type"
 import { apiClient } from "@/lib/api-client"
 

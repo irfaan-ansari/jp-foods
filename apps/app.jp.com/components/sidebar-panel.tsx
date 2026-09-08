@@ -44,10 +44,6 @@ export function SidebarPanelProvider({
   const { setOpen, setOpenMobile } = useSidebar()
   const [activePanel, setActivePanel] = React.useState("")
 
-  const isActive = (href: string) => {
-    return pathname === href || (pathname.startsWith(href) && href !== "/")
-  }
-
   const handlePanelChange = (path: string, redirect: boolean) => {
     setActivePanel(path)
     if (redirect) {
@@ -60,7 +56,7 @@ export function SidebarPanelProvider({
     }
   }
 
-  // disable on some route
+  // disable on home
   React.useEffect(() => {
     if (pathname === "/") setOpen(false)
   }, [])
@@ -172,6 +168,7 @@ export const SidebarPanelMenu = ({
   path,
   ...props
 }: React.ComponentProps<"div"> & { path?: string }) => {
+  const id = React.useId()
   // perform animation here
   const pathname = usePathname()
 
@@ -187,7 +184,7 @@ export const SidebarPanelMenu = ({
 
   return (
     <motion.div
-      key={path}
+      key={id + path}
       initial={{ x: -20, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       exit={{ x: -20, opacity: 0 }}
