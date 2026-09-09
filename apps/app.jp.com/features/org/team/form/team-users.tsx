@@ -6,25 +6,27 @@ import {
 } from "@jp/ui/components/card"
 import { TeamFormValues } from "../team.schema"
 import { withForm } from "@/hooks/use-app-form"
-import { ProductSelector } from "../../product/components/product-selector"
+
 import { Button } from "@jp/ui/components/button"
 import { ChevronDown, ImageOff, Plus } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { FieldTitle } from "@jp/ui/components/field"
-import { formatUSD } from "@jp/utils"
-import { TrashBinMinimalistic } from "@solar-icons/react"
 
-export const TeamPrivateItems = withForm({
+import { Letter, Smartphone, TrashBinMinimalistic } from "@solar-icons/react"
+import { UserSelector } from "@/features/user/components/user-selector"
+import { CopyButton } from "@jp/ui/components/jp"
+
+export const TeamUsers = withForm({
   defaultValues: {} as TeamFormValues,
   render: function ({ form }) {
     return (
       <Card size="sm">
         <CardHeader>
-          <CardTitle className="text-base font-bold">Private Items</CardTitle>
+          <CardTitle className="text-base font-bold">Users</CardTitle>
         </CardHeader>
         <CardContent>
           <form.AppField
-            name="privateItems"
+            name="users"
             mode="array"
             children={(field) => (
               <div className="space-y-4">
@@ -42,27 +44,20 @@ export const TeamPrivateItems = withForm({
                               <ImageOff className="size-4" />
                             </AvatarFallback>
                           </Avatar>
-                          <div className="min-w-0 flex-1 space-y-0">
-                            <FieldTitle className="line-clamp-1">
-                              {item.title}
+                          <div className="grid min-w-0 flex-1 space-y-0 @5xl/page-content:block">
+                            <FieldTitle className="mb-1 line-clamp-1">
+                              {item.name}
                             </FieldTitle>
-                            <span className="text-xs text-muted-foreground">
-                              {item.itemCode}
-                            </span>
+                            <CopyButton
+                              prefix={<Smartphone className="sm" />}
+                              value={item.phoneNumber}
+                            />
+                            <CopyButton
+                              prefix={<Letter className="sm" />}
+                              value={item.email}
+                            />
                           </div>
 
-                          <div className="shrink-0 space-y-0">
-                            {item.sellUnits?.map((unit) => (
-                              <div key={unit.id}>
-                                <FieldTitle className="line-clamp-1">
-                                  {formatUSD(unit.price)}
-                                  <span className="pl-1 text-xs text-muted-foreground">
-                                    {unit.unit}
-                                  </span>
-                                </FieldTitle>
-                              </div>
-                            ))}
-                          </div>
                           <Button
                             size="icon-sm"
                             variant="destructive"
@@ -76,24 +71,25 @@ export const TeamPrivateItems = withForm({
                   </div>
                 ) : (
                   <div className="flex flex-col gap-1">
-                    <span>No private items selected</span>
+                    <span>No users selected</span>
                     <span className="text-xs text-muted-foreground">
-                      Click the button below to add private items
+                      Click the button below to add user
                     </span>
                   </div>
                 )}
 
-                <ProductSelector
-                  status="private"
+                <UserSelector
+                  role="customer"
                   selected={
-                    (field.state.value.map((item) => item.id) ?? []) as number[]
+                    (field.state.value.map((item) => item.id) ?? []) as string[]
                   }
                   setSelectedChange={(selected) => {
                     const index = field.state.value.findIndex(
                       (item) => item.id === selected.id
                     )
+
                     if (index === -1) {
-                      field.pushValue(selected)
+                      field.pushValue({ ...selected })
                     } else {
                       field.removeValue(index)
                     }
@@ -106,7 +102,7 @@ export const TeamPrivateItems = withForm({
                     <Plus /> Select...
                     <ChevronDown className="ml-auto" />
                   </Button>
-                </ProductSelector>
+                </UserSelector>
               </div>
             )}
           />

@@ -2,7 +2,11 @@
 
 import { AppError } from "@jp/utils"
 import { apiClient } from "@/lib/api-client"
-import type { Team, TeamAnalytics } from "@/features/org/team/team.type"
+import type {
+  Team,
+  TeamAnalytics,
+  TeamDetail,
+} from "@/features/org/team/team.type"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import type {
   ApiResponse,
@@ -39,7 +43,7 @@ export const useInfiniteTeams = (kv?: Record<string, any>) => {
 }
 
 export const useTeam = (id: string) => {
-  return useQuery<ApiResponse<Team>, AppError>({
+  return useQuery<ApiResponse<TeamDetail>, AppError>({
     queryKey: ["teams", id],
     queryFn: () => apiClient.get(`/org/teams/${id}`),
     staleTime: 1000 * 60 * 5,

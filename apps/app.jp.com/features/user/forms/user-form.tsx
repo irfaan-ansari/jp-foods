@@ -12,13 +12,14 @@ import {
 } from "@jp/ui/components/field"
 import { UserRole } from "@jp/auth"
 import { authClient } from "@jp/auth/client"
-import { Badge } from "@jp/ui/components/badge"
+
 import { useAppForm } from "@/hooks/use-app-form"
 import { Button } from "@jp/ui/components/button"
 import { ChevronDown, Loader2, Plus } from "lucide-react"
 import { type UserFormSchema, userSchema } from "../user.schema"
 import { UserRoleSelector } from "../components/user-role-selector"
-import { OrganizationSelector } from "@/features/org/components/organization-selector"
+import { UserRoleBadge } from "../components/user-card"
+import { User } from "../user.type"
 
 export const UserForm = ({
   id,
@@ -29,11 +30,11 @@ export const UserForm = ({
 }: {
   id?: string
   values?: UserFormSchema
-  onSuccess?: () => void
+  onSuccess?: (user: User) => void
   onError?: () => void
   onCancel?: () => void
 }) => {
-  const { name = "", phoneNumber = "", email = "", role = [] } = values || {}
+  const { name = "", phoneNumber = "", email = "", role = "" } = values || {}
 
   const form = useAppForm({
     defaultValues: {
@@ -41,8 +42,6 @@ export const UserForm = ({
       phoneNumber,
       email,
       role,
-      organizations: [] as UserFormSchema["organizations"],
-      teams: [] as UserFormSchema["teams"],
     },
     validators: {
       onChange: userSchema,
@@ -50,24 +49,24 @@ export const UserForm = ({
 
     onSubmit: async ({ value }) => {
       const { name, phoneNumber, email, role } = value
-      const roles = role.map((r) => r.value)
+
       if (id) {
-        const { error } = await authClient.admin.updateUser({
+        const { error, data } = await authClient.admin.updateUser({
           userId: id,
-          data: { name, phoneNumber, email, role: roles as UserRole[] },
+          data: { name, phoneNumber, email, role: role as UserRole },
         })
         if (error) {
-          toast.error(error.message ?? "Failed to update user.")
+          toast.error(error.message ?? "Failed to update user details.")
           onError?.()
         } else {
           toast.success("User update.")
-          onSuccess?.()
+          onSuccess?.(data as User)
         }
       } else {
-        const { error } = await authClient.admin.createUser({
+        const { error, data } = await authClient.admin.createUser({
           name,
           email,
-          role: roles as UserRole[],
+          role: role as UserRole,
           password: "",
           data: { phoneNumber, image: "" },
         })
@@ -75,8 +74,8 @@ export const UserForm = ({
           toast.error(error.message ?? "Failed to create user.")
           onError?.()
         } else {
-          toast.success("User created.")
-          onSuccess?.()
+          toast.success("User account created.")
+          onSuccess?.(data.user as User)
         }
       }
     },
@@ -88,7 +87,7 @@ export const UserForm = ({
           <form.AppField
             name="name"
             children={(field) => (
-              <field.TextField label="Name" placeholder="Weekly essentials" />
+              <field.TextField label="Name" placeholder="John" />
             )}
           />
 
@@ -132,9 +131,7 @@ export const UserForm = ({
                     >
                       <Plus />
                       {field.state.value ? (
-                        <Badge variant="warning-light">
-                          {field.state.value}
-                        </Badge>
+                        <UserRoleBadge status={field.state.value} />
                       ) : (
                         "Select role..."
                       )}
@@ -151,51 +148,6 @@ export const UserForm = ({
                     </Link>
                     .
                   </FieldDescription>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              )
-            }}
-          />
-
-          <form.Field
-            name="teams"
-            mode="array"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
-              const items = field.state.value
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Organization</FieldLabel>
-                  <OrganizationSelector
-                    selected={items.map((item) => item.id as string)}
-                    setSelectedChange={(value) => {
-                      const index = items.findIndex(
-                        (item) => item.id === value.id
-                      )
-                      if (index >= 0) {
-                        field.removeValue(index)
-                      } else {
-                        field.pushValue({ ...value })
-                      }
-                    }}
-                  >
-                    <Button
-                      variant="outline"
-                      size="lg"
-                      type="button"
-                      id={field.name}
-                      className="w-full justify-start text-muted-foreground"
-                    >
-                      <Plus />
-                      {field.state.value.length > 0
-                        ? field.state.value.map((value) => (
-                            <Badge variant="warning-light">{value.name}</Badge>
-                          ))
-                        : "Select organization..."}
-                      <ChevronDown className="ml-auto" />
-                    </Button>
-                  </OrganizationSelector>
                   {isInvalid && <FieldError errors={field.state.meta.errors} />}
                 </Field>
               )

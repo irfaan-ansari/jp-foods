@@ -1,15 +1,17 @@
 import { auth } from "@jp/auth"
-import { db, team } from "@jp/db"
-import { AppError } from "@jp/utils/error"
-import { teamCreateSchema, teamUpdateSchema } from "./team.schema"
-import { orgActionClient } from "@/lib/safe-action"
 import { eq } from "drizzle-orm"
+import { AppError } from "@jp/utils/error"
+import { db, team, teamProduct } from "@jp/db"
+import { orgActionClient } from "@/lib/safe-action"
+import { teamCreateSchema, teamUpdateSchema } from "./team.schema"
 
 export const createTeam = orgActionClient({ team: ["create"] })
   .inputSchema(teamCreateSchema)
   .action(async ({ ctx, parsedInput }) => {
     const { data } = parsedInput
-    const { address, city, state, zip, ...teamData } = data
+    const { street, city, state, zip, privateItems, userIds, ...teamData } =
+      data
+
     const existing = await db.query.team.findFirst({
       where: (team, { eq, or }) =>
         or(eq(team.email, data.email), eq(team.phoneNumber, data.phoneNumber)),
@@ -25,7 +27,7 @@ export const createTeam = orgActionClient({ team: ["create"] })
       body: {
         ...teamData,
         metadata: {
-          address,
+          street,
           city,
           state,
           zip,
@@ -33,6 +35,33 @@ export const createTeam = orgActionClient({ team: ["create"] })
         organizationId: ctx.organizationId,
       },
     })
+
+    // add members
+    await Promise.all([
+      ...(Array.isArray(userIds)
+        ? userIds.map((id) =>
+            auth.api.addMember({
+              body: {
+                userId: id,
+                role: "customer",
+                organizationId: ctx.organizationId,
+                teamId: res.id,
+              },
+            })
+          )
+        : []),
+
+      ...(privateItems.length > 0
+        ? [
+            db.insert(teamProduct).values(
+              privateItems.map((item) => ({
+                teamId: res.id,
+                productId: item.id,
+              }))
+            ),
+          ]
+        : []),
+    ])
 
     return { id: res.id }
   })
@@ -42,7 +71,7 @@ export const updateTeam = orgActionClient({ team: ["update"] })
   .action(async ({ ctx, parsedInput }) => {
     const { id, data } = parsedInput
 
-    const { address, city, state, zip, ...teamData } = data
+    const { street, city, state, zip, ...teamData } = data
 
     const existing = await db.query.team.findFirst({
       where: (team, { eq }) => eq(team.id, id),
@@ -54,7 +83,7 @@ export const updateTeam = orgActionClient({ team: ["update"] })
 
     await db
       .update(team)
-      .set({ ...teamData, metadata: { address, city, state, zip } })
+      .set({ ...teamData, metadata: { street, city, state, zip } })
       .where(eq(team.id, id))
 
     return { id }

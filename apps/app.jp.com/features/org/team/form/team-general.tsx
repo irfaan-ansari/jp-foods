@@ -63,7 +63,7 @@ export const TeamGeneral = withForm({
               )}
             />
             <form.AppField
-              name="address"
+              name="street"
               children={(field) => (
                 <field.TextField
                   label="Street Address"

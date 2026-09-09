@@ -389,10 +389,7 @@ const PhoneField = ({
 
       <InputGroup className="bg-background">
         <InputGroupAddon>
-          <Badge
-            variant="focus-light"
-            className="h-4 rounded-none bg-transparent pl-0 text-sm text-muted-foreground"
-          >
+          <Badge variant="invert-light" className="h-6 rounded-md">
             <img src="https://flagsapi.com/US/flat/64.png" width={20} />
             +1
           </Badge>
