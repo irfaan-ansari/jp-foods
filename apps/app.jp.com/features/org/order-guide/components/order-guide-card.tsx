@@ -38,18 +38,11 @@ export const OrderGuideCard = ({ data }: { data: OrderGuide }) => {
       className="h-full shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
     >
       <CardHeader className="relative">
-        <div className="flex items-start gap-2">
-          <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-md">
-            <AvatarImage src={data.team?.logo ?? ""} />
-            <AvatarFallback>
-              <User className="size-4" />
-            </AvatarFallback>
-          </Avatar>
-          <div className="flex-1">
-            <CardTitle>{data.name}</CardTitle>
-            <CardDescription>{data.team?.name}</CardDescription>
-          </div>
+        <div className="grid">
+          <CardTitle>{data.name}</CardTitle>
+          <CardDescription>{data.team?.name}</CardDescription>
         </div>
+
         <CardAction className="absolute top-0 right-4 flex items-center gap-2">
           <OrderGuideDropdown data={data} />
         </CardAction>
@@ -75,8 +68,8 @@ export const OrderGuideCard = ({ data }: { data: OrderGuide }) => {
             </Tooltip>
           ))}
           {remainingProducts > 0 && (
-            <AvatarGroupCount className="size-[38px] rounded-xl">
-              <span className="">+{remainingProducts}</span>
+            <AvatarGroupCount className="rounded-full">
+              <span className="text-xs font-medium">+{remainingProducts}</span>
             </AvatarGroupCount>
           )}
         </div>

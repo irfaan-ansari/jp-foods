@@ -97,35 +97,31 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
       }
       className="*:data-[slot=button]:justify-start"
     >
-      {data.status !== "approved" && (
-        <UserAccess permission={{ "catalog-inquiry": ["update"] }}>
-          {(disabled) => (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleAction("approve")}
-              disabled={disabled}
-            >
-              <CheckCircle /> Approve
-            </Button>
-          )}
-        </UserAccess>
-      )}
+      <UserAccess permission={{ "catalog-inquiry": ["update"] }}>
+        {(disabled) => (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleAction("approve")}
+            disabled={disabled || data.status === "approved"}
+          >
+            <CheckCircle /> Approve
+          </Button>
+        )}
+      </UserAccess>
 
-      {data.status !== "rejected" && (
-        <UserAccess permission={{ "catalog-inquiry": ["update"] }}>
-          {(disabled) => (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => handleAction("reject")}
-              disabled={disabled}
-            >
-              <CloseCircle /> Reject
-            </Button>
-          )}
-        </UserAccess>
-      )}
+      <UserAccess permission={{ "catalog-inquiry": ["update"] }}>
+        {(disabled) => (
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => handleAction("reject")}
+            disabled={disabled || data.status === "rejected"}
+          >
+            <CloseCircle /> Reject
+          </Button>
+        )}
+      </UserAccess>
 
       <UserAccess permission={{ "catalog-inquiry": ["delete"] }}>
         {(disabled) => (

@@ -13,6 +13,7 @@ import { Tooltip } from "@jp/ui/components/jp/tooltip"
 import { type AuthType } from "@jp/auth"
 import { authClient } from "@jp/auth/client"
 import { useLoader } from "@jp/ui/components/jp"
+import { UserRoleBadge } from "./user-card"
 
 export const UserProfileDropdown = ({
   session,
@@ -78,10 +79,10 @@ export const UserProfileDropdown = ({
             <span className="truncate text-sm leading-tight font-semibold">
               {user?.name ?? "User Name"}
             </span>
-            <span className="truncate text-sm leading-tight font-medium text-muted-foreground">
-              {user?.email ?? "email@domain.com"}
+            <span className="mb-1.5 truncate text-sm leading-tight font-medium text-muted-foreground">
+              {user?.email}
             </span>
-            <span>{user?.role}</span>
+            <UserRoleBadge status={user?.role as any} />
           </div>
         </div>
 

@@ -6,7 +6,6 @@ import { PageContent, PageHeader } from "@/components/page-content"
 import { FilterTab } from "@/components/filter-tabs"
 import { TeamClient } from "@/features/org/team/components/team-client"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
-import { TeamDialog } from "@/features/org/team/components/team-dialog"
 import Link from "next/link"
 
 const OPTIONS = [

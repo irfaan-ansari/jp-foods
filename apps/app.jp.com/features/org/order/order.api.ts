@@ -1,8 +1,8 @@
 import { Hono } from "hono"
 
-import { db, order } from "@jp/db"
+import { db, order, team } from "@jp/db"
 
-import { and, count, eq, ilike } from "drizzle-orm"
+import { and, count, eq, exists, ilike, or, sql } from "drizzle-orm"
 import { HTTPException } from "hono/http-exception"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
@@ -20,45 +20,53 @@ export const orders = app
     const { q, status, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)
 
-    const response = await db.query.order.findMany({
-      where: (o, { eq, and, ilike }) =>
-        and(
-          eq(o.organizationId, organizationId),
-          status ? eq(o.status, status) : undefined,
-          q ? ilike(o.id, `%${q}%`) : undefined
-        ),
-      with: {
-        lineItems: true,
-        team: {
-          columns: {
-            id: true,
-            name: true,
-            phoneNumber: true,
-            email: true,
-          },
-        },
-        user: {
-          columns: {
-            id: true,
-            name: true,
-            phoneNumber: true,
-            email: true,
-          },
-        },
-      },
-      limit,
-      offset,
-      orderBy: (order, { desc }) => [desc(order.createdAt)],
-    })
+    const conditions = [
+      eq(order.organizationId, organizationId),
+      status ? eq(order.status, status) : undefined,
+    ]
 
-    const total = await db.$count(
-      order,
-      and(
-        eq(order.organizationId, organizationId),
-        status ? eq(order.status, status) : undefined,
-        q ? ilike(order.id, `%${q}%`) : undefined
+    if (q) {
+      conditions.push(
+        or(
+          exists(
+            db
+              .select({ id: team.id })
+              .from(team)
+              .where(and(ilike(team.name, `%${q}%`)))
+          ),
+          ilike(sql`${order.id}::text`, `%${q}%`)
+        )
       )
-    )
+    }
+
+    const [response, total] = await Promise.all([
+      db.query.order.findMany({
+        where: and(...conditions),
+        with: {
+          lineItems: true,
+          team: {
+            columns: {
+              id: true,
+              name: true,
+              phoneNumber: true,
+              email: true,
+            },
+          },
+          user: {
+            columns: {
+              id: true,
+              name: true,
+              phoneNumber: true,
+              email: true,
+            },
+          },
+        },
+        limit,
+        offset,
+        orderBy: (order, { desc }) => [desc(order.createdAt)],
+      }),
+      db.$count(order, and(...conditions)),
+    ])
 
     return c.json({
       success: true,

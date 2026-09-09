@@ -1,5 +1,5 @@
 import React from "react"
-import { Letter, MenuDots, Phone, User } from "@solar-icons/react"
+import { Letter, MenuDots, Phone, Smartphone, User } from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -41,7 +41,7 @@ export const TeamCard = ({ data }: { data: Team }) => {
         <CardAction className="flex items-center gap-2">
           <TeamBadge status={data.status ?? "active"} />
           <TeamDropdown data={data}>
-            <Button size="icon-xs" variant="outline" className="relative z-1">
+            <Button size="icon-sm" variant="outline" className="relative z-1">
               <MenuDots />
             </Button>
           </TeamDropdown>
@@ -64,7 +64,7 @@ export const TeamCard = ({ data }: { data: Team }) => {
       <CardContent className="space-y-4">
         <div className="grid">
           <CopyButton
-            prefix={<Phone className="size-3.5 shrink-0" />}
+            prefix={<Smartphone className="size-3.5 shrink-0" />}
             className="**:data-[slot=copy-value]:leading-tight"
             value={formatPhone(data.phoneNumber)}
           />

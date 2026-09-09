@@ -4,7 +4,15 @@ import Link from "next/link"
 import { toast } from "sonner"
 import { useState } from "react"
 
-import { UserPlus, User, Settings, AddSquare, Shop } from "@solar-icons/react"
+import {
+  UserPlus,
+  User,
+  Settings,
+  AddSquare,
+  Shop,
+  Home,
+  Buildings,
+} from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
@@ -16,6 +24,7 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { useLoader } from "@jp/ui/components/jp"
 import { OrganizationSelector } from "./organization-selector"
 import { useOrganization } from "../organization.data"
+import { Building2 } from "lucide-react"
 
 export const OrganizationSwitcher = ({
   disabled,
@@ -62,8 +71,8 @@ export const OrganizationSwitcher = ({
             <Tooltip content="Organization">
               <Avatar className="size-8">
                 <AvatarImage src={org?.data?.logo ?? ""} alt="Logo" />
-                <AvatarFallback className="bg-sidebar-accent">
-                  <Shop />
+                <AvatarFallback>
+                  <Buildings className="size-4" />
                 </AvatarFallback>
               </Avatar>
             </Tooltip>

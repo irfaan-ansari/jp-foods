@@ -2,6 +2,7 @@
 
 import React from "react"
 import { toast } from "sonner"
+import { authClient } from "@jp/auth/client"
 import { Button } from "@jp/ui/components/button"
 import { PageHeader, PageContent } from "@/components/page-content"
 import { OrganizationForm } from "@/features/org/form/organization-form"
@@ -9,7 +10,6 @@ import { Field, FieldDescription, FieldLabel } from "@jp/ui/components/field"
 import { useOrganization } from "@/features/org/organization.data"
 import { ErrorState, useConfirm } from "@jp/ui/components/jp"
 import { Logout, TrashBinTrash } from "@solar-icons/react"
-import { authClient } from "@jp/auth/client"
 
 const GeneralPage = () => {
   const { open } = useConfirm()
@@ -117,9 +117,9 @@ const GeneralPage = () => {
                     Delete Organization
                   </FieldLabel>
                   <FieldDescription>
-                    Permanently delete your workspace, custom domain, and all
-                    associated links + their stats. This action cannot be undone
-                    - please proceed with caution.
+                    Permanently delete this organization and all associated
+                    data. This action cannot be undone. Please proceed with
+                    caution.
                   </FieldDescription>
                 </Field>
               </div>

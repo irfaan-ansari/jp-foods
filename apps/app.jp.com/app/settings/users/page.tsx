@@ -11,6 +11,8 @@ import { UserRoleSelector } from "@/features/user/components/user-role-selector"
 import { UserDialog } from "@/features/user/components/user-dialog"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
+import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import { USER_ROLES } from "@/features/user/user.const"
 
 const OPTIONS = [
   { label: "All", value: "", color: "#A1A1AA" },
@@ -27,6 +29,7 @@ const OPTIONS = [
 ]
 
 const UsersPage = () => {
+  const { searchParamsObj, queryParams } = useRouterStuff()
   return (
     <React.Fragment>
       <PageHeader title="Users">
@@ -48,13 +51,21 @@ const UsersPage = () => {
       <PageContent className="space-y-3 lg:space-y-6">
         <div className="flex items-center justify-start gap-3">
           <FilterTab queryKey="role" tabs={OPTIONS} path="/users/count" />
-          <UserRoleSelector>
+          <UserRoleSelector
+            selected={searchParamsObj.role || "All"}
+            onChange={(value) => {
+              queryParams({ set: { role: value.value } })
+            }}
+          >
             <Button
               variant="outline"
-              className="ml-auto min-w-28 justify-start text-muted-foreground"
+              className="ml-auto w-40 justify-start text-muted-foreground"
             >
               <Sort />
-              Role: All
+              Role:
+              <span className="truncate">
+                {USER_ROLES[searchParamsObj.role || "all"]?.label}
+              </span>
             </Button>
           </UserRoleSelector>
           <SearchQueryParam />

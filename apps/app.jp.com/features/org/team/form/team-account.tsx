@@ -69,7 +69,8 @@ export const TeamAccount = withForm({
                         prefix="$"
                         inputMode="decimal"
                         label="Credit Limit"
-                        placeholder="1,000"
+                        placeholder="2,000"
+                        description="Leave empty for unlimited credit"
                       />
                     )}
                   />

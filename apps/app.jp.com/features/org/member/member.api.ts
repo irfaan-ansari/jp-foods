@@ -1,6 +1,6 @@
 import { Hono } from "hono"
-import { and, eq, inArray, max } from "drizzle-orm"
-import { db, member, session, team, teamMember } from "@jp/db"
+import { and, eq, or, exists, ilike, inArray, max } from "drizzle-orm"
+import { db, member, session, team, teamMember, user } from "@jp/db"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
 
@@ -15,13 +15,35 @@ export const memberRoutes = app
     const { q, status, role, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)
 
+    const conditions = [
+      eq(member.organizationId, organizationId),
+      role ? eq(member.role, role) : undefined,
+    ]
+
+    if (q) {
+      conditions.push(
+        exists(
+          db
+            .select({ id: user.id })
+            .from(user)
+            .where(
+              and(
+                eq(user.id, member.userId),
+                or(
+                  ilike(user.id, `%${q}%`),
+                  ilike(user.name, `%${q}%`),
+                  ilike(user.email, `%${q}%`),
+                  ilike(user.phoneNumber, `%${q}%`)
+                )
+              )
+            )
+        )
+      )
+    }
+
     const [results, total] = await Promise.all([
       db.query.member.findMany({
-        where: (t, { and, eq, or }) =>
-          and(
-            eq(t.organizationId, organizationId),
-            role ? eq(t.role, role) : undefined
-          ),
+        where: and(...conditions),
         with: {
           user: true,
         },
@@ -29,13 +51,7 @@ export const memberRoutes = app
         offset,
         orderBy: (t, { desc }) => [desc(t.createdAt), desc(t.id)],
       }),
-      db.$count(
-        member,
-        and(
-          eq(member.organizationId, organizationId),
-          role ? eq(member.role, role) : undefined
-        )
-      ),
+      db.$count(member, and(...conditions)),
     ])
 
     const memberIds = results.map((m) => m.userId)

@@ -79,10 +79,12 @@ export function ForgotPasswordForm({
       }}
       className="flex w-full flex-1 flex-col items-start justify-center gap-4 px-6 py-20 lg:max-w-xl lg:px-16"
     >
-      <h2 className="font-heading text-3xl font-bold">Forgot Password</h2>
-      <p className="mb-10 text-muted-foreground">
-        Enter your email or phone number to reset your password.
-      </p>
+      <div className="space-y-2">
+        <h2 className="text-xl font-bold">Forgot Password</h2>
+        <p className="text-sm text-muted-foreground">
+          Enter your email or phone number to reset your password.
+        </p>
+      </div>
       <FieldGroup>
         <form.AppField
           name="username"
@@ -96,42 +98,49 @@ export function ForgotPasswordForm({
         />
 
         {/* success */}
-        {success && (
-          <Alert
-            variant="default"
-            className="rounded-xl border-green-500/5 bg-green-500/5 text-green-600 has-data-[slot=alert-action]:pr-8"
-          >
-            <CircleCheck />
-            <AlertTitle>Check your email or phone</AlertTitle>
-            <AlertDescription>
-              If an account exists with the provided details, you will receive
-              password reset instructions via email and phone.
-            </AlertDescription>
-          </Alert>
-        )}
+        <form.Subscribe
+          selector={(state) => state.values.success}
+          children={(success) => (
+            <Alert
+              variant="default"
+              className={`border-green-500/10 bg-green-500/5 text-green-700 ${!success ? "hidden" : ""}`}
+            >
+              <CircleCheck />
+              <AlertTitle>Check your email or phone</AlertTitle>
+              <AlertDescription>
+                If an account exists with the provided details, you will receive
+                password reset instructions via email and phone.
+              </AlertDescription>
+            </Alert>
+          )}
+        />
+
         {/* alert */}
-        {error && (
-          <Alert
-            variant="destructive"
-            className="rounded-xl border-destructive/5 bg-destructive/5 has-data-[slot=alert-action]:pr-8"
-          >
-            <AlertCircleIcon />
-            <AlertDescription>{error}</AlertDescription>
-            <AlertAction>
-              <Button
-                type="button"
-                size="icon-xs"
-                variant="outline"
-                className="rounded-lg bg-sidebar-accent hover:bg-sidebar-accent/80"
-                onClick={() => {
-                  form.setFieldValue("error", "")
-                }}
-              >
-                <X />
-              </Button>
-            </AlertAction>
-          </Alert>
-        )}
+        <form.Subscribe
+          selector={(state) => state.values.error}
+          children={(error) => (
+            <Alert
+              variant="destructive"
+              className={`border-destructive/10 bg-destructive/5 ${!error ? "hidden" : ""}`}
+            >
+              <AlertCircleIcon />
+              <AlertDescription>{error}</AlertDescription>
+              <AlertAction>
+                <Button
+                  type="button"
+                  size="icon-xs"
+                  variant="outline"
+                  className="rounded-lg bg-sidebar-accent hover:bg-sidebar-accent/80"
+                  onClick={() => {
+                    form.setFieldValue("error", "")
+                  }}
+                >
+                  <X />
+                </Button>
+              </AlertAction>
+            </Alert>
+          )}
+        />
 
         <Field>
           <form.Subscribe
@@ -158,10 +167,10 @@ export function ForgotPasswordForm({
 
         <Field className="text-center">
           <Link
-            href="/signin"
+            href="/auth/signin"
             className="ml-auto text-sm underline-offset-4 hover:underline"
           >
-            Back to signin
+            Back to sign in
           </Link>
         </Field>
       </FieldGroup>
