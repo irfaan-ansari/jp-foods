@@ -103,7 +103,7 @@ export const ProductSelector = ({
                 >
                   <FieldContent className="flex-1 gap-0">
                     <div className="flex flex-1 items-start gap-3">
-                      <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                      <Avatar size="lg">
                         <AvatarImage src={item?.image as string} />
                         <AvatarFallback>
                           <ImageOff className="size-4" />

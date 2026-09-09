@@ -5,18 +5,6 @@ export const userSchema = z.object({
   phoneNumber: z.string(),
   email: z.string(),
   role: z.string(),
-  organizations: z
-    .object({
-      id: z.string(),
-      name: z.string(),
-    })
-    .array(),
-  teams: z
-    .object({
-      id: z.string(),
-      name: z.string(),
-    })
-    .array(),
 })
 
 export type UserFormSchema = z.infer<typeof userSchema>

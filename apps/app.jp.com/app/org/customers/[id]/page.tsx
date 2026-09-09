@@ -21,13 +21,13 @@ const CustomerPage = () => {
     id,
     searchParamsObj
   )
-  const { data: team, isPending: teampending } = useTeam(id)
+  const { data: team, isPending: teamPending } = useTeam(id)
   const analytics = data?.data!
 
   return (
     <React.Fragment>
       <PageHeader
-        loading={isPending || teampending}
+        loading={isPending || teamPending}
         backUrl="/org/customers"
         backLabel={team?.data?.name ?? "Analytics"}
         title=""
@@ -62,11 +62,11 @@ const CustomerPage = () => {
           </TeamDropdown>
         </div>
       </PageHeader>
-      <PageContent loading={isPending || teampending}>
+      <PageContent loading={isPending || teamPending}>
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : (
-          <TeamDetailClient data={analytics} />
+          <TeamDetailClient data={{ analytics, team: team?.data! }} />
         )}
       </PageContent>
     </React.Fragment>

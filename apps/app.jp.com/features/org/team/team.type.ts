@@ -1,14 +1,38 @@
 import { OrderGuideSelectType, TeamSelectType, UserSelectType } from "@jp/db"
 import { Product } from "../product/product.type"
+import { TaxRule } from "../tax-rule/tax-rule.type"
+import { PriceLevel } from "../price-level/price-level.type"
+
+type Metadata = {
+  street?: string
+  city?: string
+  state?: string
+  zipcode?: string
+}
+
+type TeamMember = {
+  id: string
+  userId: string
+  name: string
+  image: string
+}
+
+type TeamMemberDetail = TeamMember & {
+  email: string
+  phoneNumber: string
+}
 
 export type Team = TeamSelectType & {
   salesRep: Pick<UserSelectType, "id" | "name" | "image">
-  teamMembers: {
-    id: string
-    userId: string
-    name: string
-    image: string
-  }[]
+  teamMembers: TeamMember[]
+}
+
+export type TeamDetail = Omit<Team, "teamMembers"> & {
+  priceLevel: PriceLevel
+  taxRule: TaxRule
+  products: Pick<Product, "id" | "title" | "image" | "itemCode" | "sellUnits">[]
+  metadata: Metadata
+  teamMembers: TeamMemberDetail[]
 }
 
 export type TeamAnalytics = {

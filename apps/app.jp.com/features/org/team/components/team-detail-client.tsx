@@ -10,102 +10,133 @@ import {
   Box,
   DollarMinimalistic,
   Inbox,
+  Letter,
+  MapPoint,
+  Smartphone,
+  UserCircle,
   Wallet,
-  WalletMoney,
 } from "@solar-icons/react"
 import React from "react"
-import { TeamAnalytics } from "../team.type"
+import type { TeamAnalytics, TeamDetail } from "../team.type"
 import { formatDate, formatUSD } from "@jp/utils"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { ImageOff } from "lucide-react"
-import { OrderStatusBadge } from "../../order/components/order-card"
+import { OrderStatusBadge } from "@/features/org/order/components/order-card"
+import { StatCard } from "@/features/org/dashboard/components/stat-card"
+import { CopyButton } from "@jp/ui/components/jp"
+import { TeamBadge } from "./team-card"
 
-export const TeamDetailClient = ({ data }: { data: TeamAnalytics }) => {
-  const { recentOrders, summary, topCategories, range, topProducts } = data
+export const TeamDetailClient = ({
+  data,
+}: {
+  data: { analytics: TeamAnalytics; team: TeamDetail }
+}) => {
+  const { analytics, team } = data
+  const { recentOrders, summary, topCategories, range, topProducts } = analytics
+
+  const metadata = team.metadata || {}
+
+  const address = [
+    metadata.street,
+    metadata.city,
+    metadata.state,
+    metadata.zipcode,
+  ]
+    .join(" ")
+    .trim()
+
+  const priceLevel = team.priceLevel || {}
+  const taxRule = team.taxRule || {}
 
   return (
     <div className="grid grid-cols-1 gap-4 @5xl/page-content:grid-cols-3 @5xl/page-content:gap-6">
       <div className="space-y-4 @5xl/page-content:col-span-2 @5xl/page-content:space-y-6">
-        <div className="grid grid-cols-1 gap-4 @5xl/page-content:grid-cols-2 @5xl/page-content:gap-6">
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Total Orders</CardTitle>
-              <CardTitle className="mt-6 text-3xl font-bold">
-                {summary.totalOrders}
-              </CardTitle>
-              <CardAction>
-                <IconTile variant="elevated">
-                  <Inbox className="size-4 text-green-600" />
-                </IconTile>
-              </CardAction>
-            </CardHeader>
-          </Card>
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Total Spend</CardTitle>
-              <CardTitle className="mt-6 text-3xl font-bold">
-                {formatUSD(summary.totalSpend)}
-              </CardTitle>
-
-              <CardAction>
-                <IconTile variant="elevated">
-                  <DollarMinimalistic className="size-4 text-purple-600" />
-                </IconTile>
-              </CardAction>
-            </CardHeader>
-          </Card>
-
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Average Order Value</CardTitle>
-              <CardTitle className="mt-6 text-3xl font-bold">
-                {formatUSD(summary.averageOrderValue)}
-              </CardTitle>
-
-              <CardAction>
-                <IconTile variant="elevated">
-                  <Wallet className="size-4 text-yellow-600" />
-                </IconTile>
-              </CardAction>
-            </CardHeader>
-          </Card>
-          <Card size="sm">
-            <CardHeader>
-              <CardTitle>Open Orders</CardTitle>
-              <CardTitle className="mt-6 text-3xl font-bold">
-                {summary.activeOrders}
-              </CardTitle>
-              <CardAction>
-                <IconTile variant="elevated">
-                  <Box className="size-4 text-sky-600" />
-                </IconTile>
-              </CardAction>
-            </CardHeader>
-          </Card>
-        </div>
-        <Card
-          size="sm"
-          className="bg-linear-to-b from-sky-50 to-green-50 ring-3 ring-sky-100"
-        >
+        <Card size="sm">
           <CardHeader>
-            <CardTitle>Available Credit</CardTitle>
-            <div className="flex items-end gap-1">
-              <CardTitle className="mt-6 text-3xl font-bold">$520</CardTitle>
-              <span className="text-muted-foreground">/</span>
-              <span className="text-muted-foreground">$1020</span>
-            </div>
+            <CardTitle className="text-base font-semibold">
+              {team.name}
+            </CardTitle>
             <CardAction>
-              <IconTile variant="elevated">
-                <WalletMoney className="size-4 text-amber-600" />
-              </IconTile>
+              <TeamBadge status={team.status ?? "active"} />
             </CardAction>
           </CardHeader>
-          <CardContent>
-            <div className="h-2 rounded-full bg-neutral-200">
-              <div className="h-full w-1/2 rounded-full bg-lime-500"></div>
+          <CardContent className="space-y-4">
+            <div className="grid">
+              <div className="flex items-center gap-1.5">
+                <UserCircle />
+                <span className="text-muted-foreground">
+                  {team.managerName}
+                </span>
+              </div>
+              <CopyButton
+                prefix={<Smartphone className="size-3.5" />}
+                value={team.phoneNumber}
+              />
+              <CopyButton
+                prefix={<Letter className="size-3.5" />}
+                value={team.email}
+              />
+              {address && (
+                <div className="flex items-center gap-1.5">
+                  <MapPoint />
+                  <span className="text-muted-foreground">{address}</span>
+                </div>
+              )}
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center">
+                <span className="flex-1">Available credit</span>
+                <div className="flex items-end gap-1">
+                  <CardTitle className="text-xl font-bold">$520</CardTitle>
+                  <span className="text-muted-foreground">/</span>
+                  <span className="text-muted-foreground">$1020</span>
+                </div>
+              </div>
+              <div className="h-2 rounded-full bg-neutral-200">
+                <div className="h-full w-1/2 rounded-full bg-lime-500"></div>
+              </div>
             </div>
           </CardContent>
         </Card>
+        <div className="grid grid-cols-1 gap-4 @5xl/page-content:grid-cols-2 @5xl/page-content:gap-6">
+          <StatCard
+            title="Total Orders"
+            icon={
+              <IconTile variant="elevated">
+                <Inbox className="size-4 text-green-600" />
+              </IconTile>
+            }
+            value={formatUSD(summary.totalOrders)}
+          />
+          <StatCard
+            title="Total Spend"
+            icon={
+              <IconTile variant="elevated">
+                <DollarMinimalistic className="size-4 text-purple-600" />
+              </IconTile>
+            }
+            value={formatUSD(summary.totalSpend)}
+          />
+          <StatCard
+            title="Average Order Value"
+            icon={
+              <IconTile variant="elevated">
+                <Wallet className="size-4 text-yellow-600" />
+              </IconTile>
+            }
+            value={formatUSD(summary.averageOrderValue)}
+          />
+          <StatCard
+            title="Open Orders"
+            icon={
+              <IconTile variant="elevated">
+                <Box className="size-4 text-sky-600" />
+              </IconTile>
+            }
+            value={summary.activeOrders?.toString()}
+          />
+        </div>
+
         <div className="grid grid-cols-1 gap-4 @8xl/page-content:grid-cols-2 @8xl/page-content:gap-6">
           <Card size="sm">
             <CardHeader>
@@ -175,6 +206,104 @@ export const TeamDetailClient = ({ data }: { data: TeamAnalytics }) => {
                     <span className="font-medium">
                       {formatUSD(product.total)}
                     </span>
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* price & tax */}
+          <Card size="sm" className="@8xl/page-content:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-base font-bold">Price & Tax</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-1.5">
+                <span className="text-xs text-muted-foreground">
+                  Price Level
+                </span>
+                <div className="flex rounded-xl bg-secondary/50 p-2">
+                  {priceLevel.name ?? "Price level name"}
+                </div>
+              </div>
+              <div className="grid gap-1.5">
+                <span className="text-xs text-muted-foreground">Tax rule</span>
+                <div className="flex rounded-xl bg-secondary/50 p-2">
+                  {taxRule.name ?? "Tax rule name"}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* private items */}
+          <Card className="@8xl/page-content:col-span-2" size="sm">
+            <CardHeader>
+              <CardTitle className="text-base font-bold">
+                Private Items
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              {team.products.map((product) => (
+                <div className="flex flex-1 items-start gap-3">
+                  <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                    <AvatarImage src={product?.image as string} />
+                    <AvatarFallback>
+                      <ImageOff className="size-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1 space-y-0">
+                    <span className="line-clamp-1 font-medium">
+                      {product.title}
+                    </span>
+                    <span className="text-xs text-muted-foreground">
+                      {product.itemCode}
+                    </span>
+                  </div>
+
+                  <div className="shrink-0 space-y-0">
+                    {product.sellUnits?.map((unit) => (
+                      <div key={unit.id}>
+                        <span className="line-clamp-1 font-semibold">
+                          {formatUSD(unit.price)}
+                          <span className="pl-1 text-xs text-muted-foreground">
+                            {unit.unit}
+                          </span>
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </CardContent>
+          </Card>
+
+          {/* users */}
+          <Card className="@8xl/page-content:col-span-2" size="sm">
+            <CardHeader>
+              <CardTitle className="text-base font-bold">Users</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-2.5">
+              {team.teamMembers.map((member) => (
+                <div className="flex flex-1 items-start gap-3" key={member.id}>
+                  <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                    <AvatarImage src={member?.image as string} />
+                    <AvatarFallback>
+                      <ImageOff className="size-4" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-1 line-clamp-1 font-medium">
+                      {member.name}
+                    </div>
+
+                    <CopyButton
+                      prefix={<Smartphone className="size-3.5" />}
+                      value={member.phoneNumber}
+                    />
+                    <CopyButton
+                      prefix={<Letter className="size-3.5" />}
+                      value={member.email}
+                    />
                   </div>
                 </div>
               ))}

@@ -118,7 +118,7 @@ export function LoginForm({
                   className="border-destructive/10 bg-destructive/5"
                 >
                   <AlertCircleIcon />
-                  <AlertTitle>Login Failed!</AlertTitle>
+                  <AlertTitle>Authentication failed</AlertTitle>
                   <AlertDescription>{error}</AlertDescription>
                   <AlertAction>
                     <Button

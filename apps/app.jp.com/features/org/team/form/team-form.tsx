@@ -9,6 +9,7 @@ import { TeamAccount } from "./team-account"
 import { TeamPreview } from "./team-preview"
 import { teamDefaultValues, teamSchema } from "../team.schema"
 import { TeamPrivateItems } from "./team-private-items"
+import { TeamUsers } from "./team-users"
 
 export const TeamForm = () => {
   const form = useAppForm({
@@ -28,6 +29,7 @@ export const TeamForm = () => {
           <TeamGeneral form={form} />
           <TeamAccount form={form} />
           <TeamPrivateItems form={form} />
+          <TeamUsers form={form} />
         </div>
         <TeamPreview form={form} />
       </div>

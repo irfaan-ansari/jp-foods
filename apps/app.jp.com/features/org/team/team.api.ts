@@ -124,6 +124,13 @@ export const teamRoutes = app
             name: true,
           },
         },
+        taxRule: {
+          columns: {
+            id: true,
+            name: true,
+            rate: true,
+          },
+        },
         teamMembers: {
           with: {
             user: {
@@ -131,6 +138,8 @@ export const teamRoutes = app
                 id: true,
                 name: true,
                 image: true,
+                email: true,
+                phoneNumber: true,
               },
             },
           },
@@ -171,11 +180,14 @@ export const teamRoutes = app
 
     const teamWithMembers = {
       ...result,
+      products: result.products.map(({ product }) => product),
       teamMembers: result.teamMembers.map((m) => {
         return {
           id: m.id,
           userId: m.userId,
           name: m.user.name,
+          email: m.user.email,
+          phoneNumber: m.user.phoneNumber,
           image: m.user.image,
         }
       }),

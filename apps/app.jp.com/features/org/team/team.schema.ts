@@ -13,12 +13,20 @@ const privateItemSchema = z.object({
   sellUnits: z.array(sellUnitSchema),
 })
 
+const userSchema = z.object({
+  id: z.string(),
+  image: z.string().nullable(),
+  name: z.string(),
+  phoneNumber: z.string(),
+  email: z.string(),
+})
+
 export const teamSchema = z.object({
   name: z.string().min(1, "Name is required"),
   managerName: z.string().min(1, "Manager name is required"),
   email: z.email("Invalid email"),
   phoneNumber: z.string().min(1, "Phone is required"),
-  address: z.string().min(1, "Address is required"),
+  street: z.string().min(1, "Street is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zip: z.string().min(1, "Zip code is required"),
@@ -39,6 +47,7 @@ export const teamSchema = z.object({
     name: z.string().nullable(),
   }),
   privateItems: privateItemSchema.array(),
+  users: userSchema.array(),
 })
 
 export type TeamFormValues = z.infer<typeof teamSchema>
@@ -48,7 +57,7 @@ export const teamDefaultValues: TeamFormValues = {
   managerName: "",
   email: "",
   phoneNumber: "",
-  address: "",
+  street: "",
   city: "",
   state: "",
   zip: "",
@@ -68,14 +77,16 @@ export const teamDefaultValues: TeamFormValues = {
     name: null,
   },
   privateItems: [],
+  users: [],
 }
 
 const teamDataSchema = teamSchema
-  .omit({ taxRule: true, priceLevel: true, salesRep: true })
+  .omit({ taxRule: true, priceLevel: true, salesRep: true, users: true })
   .extend({
     taxRuleId: z.number().nullable(),
     priceLevelId: z.number().nullable(),
-    salesRepId: z.string().nullable(), // member with role sales_rep
+    salesRepId: z.string().nullable(), // member with role sales
+    userIds: z.string().array().nullable(),
   })
 
 export const teamCreateSchema = teamSchema.extend({

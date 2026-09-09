@@ -12,21 +12,25 @@ import {
 import { useQueryClient } from "@tanstack/react-query"
 import type { UserFormSchema } from "../user.schema"
 import { UserForm } from "../forms/user-form"
+import type { User } from "../user.type"
 
 export const UserDialog = ({
-  values,
   id,
+  values,
+  callback,
   children,
 }: {
   values?: UserFormSchema
   id?: string
+  callback?: (user: User) => void
   children: React.ReactNode
 }) => {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const handleSuccess = () => {
+  const handleSuccess = (user: User) => {
     setOpen(false)
+    callback?.(user)
     queryClient.invalidateQueries({ queryKey: ["users"] })
     queryClient.invalidateQueries({
       queryKey: ["count", "/users/count"],

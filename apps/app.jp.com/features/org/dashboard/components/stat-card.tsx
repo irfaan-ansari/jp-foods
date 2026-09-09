@@ -28,16 +28,17 @@ export const StatCard = ({
       <CardHeader className="flex flex-row gap-1">
         <div className="grid min-w-0 flex-1 gap-6">
           <CardDescription>{title}</CardDescription>
-          <CardTitle className="text-3xl font-bold tracking-tight">
+          <CardTitle className="text-2xl font-bold tracking-tight">
             {value}
           </CardTitle>
         </div>
         {icon && <CardAction>{icon}</CardAction>}
       </CardHeader>
-
-      <CardContent className="space-y-2">
-        {description && <CardDescription>{description}</CardDescription>}
-      </CardContent>
+      {description && (
+        <CardContent className="space-y-2">
+          <CardDescription>{description}</CardDescription>
+        </CardContent>
+      )}
     </Card>
   )
 }
