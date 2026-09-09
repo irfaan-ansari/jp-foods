@@ -10,13 +10,15 @@ import {
   emailOTP,
 } from "better-auth/plugins"
 
-import { userAc, userRoles } from "./permissions/user"
+import { userAc, UserRole, userRoles } from "./permissions/user"
 import { orgAc, orgRoles } from "./permissions/organization"
 import { createAuthMiddleware } from "better-auth/api"
-import { getActiveAccount } from "./session"
+import { getActiveAccount } from "./utils"
+import { PORTAL_URLS } from "./permissions"
 
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
+  basepath: "/api/auth",
   database: drizzleAdapter(db, {
     provider: "pg",
   }),
@@ -105,20 +107,6 @@ export const auth = betterAuth({
           },
         },
       },
-      organizationHooks: {
-        beforeCreateInvitation: async ({
-          invitation,
-          inviter,
-          organization,
-        }) => {
-          const role = inviter.role
-          if (role === "customer") {
-            invitation.role = "customer"
-          }
-
-          return await Promise.resolve()
-        },
-      },
     }),
     phoneNumberPlugin({
       allowedAttempts: 3,
@@ -141,7 +129,7 @@ export const auth = betterAuth({
           const { teamId, organizationId } = await getActiveAccount(
             session.userId
           )
-          console.log("creating session", teamId, organizationId)
+
           return {
             data: {
               ...session,
@@ -155,25 +143,26 @@ export const auth = betterAuth({
   },
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (ctx.path.startsWith("/sign-in")) {
-        let redirectUrl = "/dashboard"
-        const newSession = ctx.context.newSession
-        if (newSession) {
-          const role = newSession.user.role
-          const returned = ctx.context.returned as Record<string, any>
-          return {
-            ...returned,
-            url: redirectUrl,
-          }
-        }
+      if (!ctx.path.startsWith("/sign-in")) return
+
+      const newSession = ctx.context.newSession
+      if (!newSession) return
+      const returned = ctx.context.returned as Record<string, unknown>
+
+      const role = newSession.user.role as UserRole
+      const redirectUrl = PORTAL_URLS[role as keyof typeof PORTAL_URLS].url
+
+      return {
+        ...returned,
+        redirect: true,
+        url: redirectUrl,
       }
     }),
   },
-  trustedOrigins: [
-    "http://localhost:3000",
-    "http://localhost:3001",
-    "http://localhost:3002",
-  ],
+  trustedOrigins: (process.env.BETTER_AUTH_ORIGINS ?? "")
+    .split(",")
+    .map((value) => value.trim())
+    .filter(Boolean),
 })
 
 export type AuthType = {

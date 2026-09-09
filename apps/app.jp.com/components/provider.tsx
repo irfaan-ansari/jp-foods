@@ -3,25 +3,20 @@
 import React from "react"
 import { Toaster } from "@jp/ui/components/sonner"
 import { TooltipProvider } from "@jp/ui/components/tooltip"
-import { ConfirmDialogProvider } from "@jp/ui/components/jp/confirm-dialog"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { ConfirmDialogProvider } from "@jp/ui/components/jp/confirm-dialog"
 
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
-      retry: (failureCount, error: any) => {
-        const status = error?.status ?? error?.response?.status
-        if (status === 403 || status === 404) {
-          return false
-        }
-        return failureCount < 3
-      },
+      retry: false,
     },
     mutations: {
       retry: false,
     },
   },
 })
+
 export const Provider = ({
   children,
 }: {

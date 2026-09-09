@@ -32,9 +32,9 @@ const MembersPage = () => {
       </PageHeader>
 
       <PageContent className="space-y-3 lg:space-y-6">
-        <div className="flex items-center justify-start gap-3">
+        <div className="flex items-center justify-between gap-3">
           <FilterTab queryKey="role" tabs={OPTIONS} path="/org/members/count" />
-          <MemberRoleSelector>
+          {/* <MemberRoleSelector>
             <Button
               variant="outline"
               className="ml-auto min-w-28 justify-start text-muted-foreground"
@@ -42,7 +42,7 @@ const MembersPage = () => {
               <Sort />
               Role: All
             </Button>
-          </MemberRoleSelector>
+          </MemberRoleSelector> */}
           <SearchQueryParam />
         </div>
         <MemberClient />

@@ -242,27 +242,6 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
           <SidebarMenu className="*:text-center">
             {/* search */}
             <SearchDialog />
-            {/* home */}
-            <Tooltip content="Home">
-              <SidebarMenuItem
-                onClick={() => {
-                  setActivePanel("/", true)
-                  setOpen(false)
-                }}
-              >
-                <Button
-                  variant="ghost"
-                  data-active={activePanel === "/"}
-                  className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
-                  size="icon-lg"
-                  asChild
-                >
-                  <Link href="/">
-                    <Home className="size-5" />
-                  </Link>
-                </Button>
-              </SidebarMenuItem>
-            </Tooltip>
 
             {/* ordering */}
             <UserAccess permission={{ portal: ["organization"] }}>

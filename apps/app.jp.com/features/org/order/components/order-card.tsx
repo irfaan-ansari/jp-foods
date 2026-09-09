@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { StatusBadge } from "@/components/status-badge"
-import { Phone } from "@solar-icons/react"
+import { Phone, Smartphone } from "@solar-icons/react"
 import { CopyButton } from "@jp/ui/components/jp"
 import { formatDate, formatPhone, formatUSD } from "@jp/utils"
 import { OrderDropdown } from "./order-dropdown"
@@ -52,7 +52,7 @@ export const OrderCard = ({ data }: { data: Order }) => {
           <div>
             <p className="font-medium">{data.team.name}</p>
             <CopyButton
-              prefix={<Phone className="size-3.5 shrink-0" />}
+              prefix={<Smartphone className="size-3.5 shrink-0" />}
               className="**:data-[slot=copy-value]:text-xs"
               value={formatPhone(data.team.phoneNumber)}
             />

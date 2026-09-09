@@ -5,7 +5,6 @@ const statement = {
   ...defaultStatements,
   portal: ["organization", "crm", "fleet", "customer", "driver"],
 
-  // will problaly add organization access here in future
   // crm
   "customer-invite": ["create", "read", "delete"],
   "customer-application": ["create", "read", "update", "delete"],

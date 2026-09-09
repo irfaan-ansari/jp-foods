@@ -36,7 +36,7 @@ export function CopyButton({ value, prefix, className }: CopyProps) {
 
   return (
     <div
-      className={`relative z-1 inline-flex min-w-0 shrink-0 items-center gap-1 hover:*:data-[slot=button]:opacity-100 ${className}`}
+      className={`inline-flex min-w-0 shrink-0 items-center gap-1 hover:*:data-[slot=button]:opacity-100 ${className}`}
     >
       {prefix}
       <span
@@ -49,7 +49,7 @@ export function CopyButton({ value, prefix, className }: CopyProps) {
         onClick={copy}
         size="icon-xs"
         variant="ghost"
-        className="rounded-md border text-sm opacity-0"
+        className="relative z-1 rounded-md border text-sm opacity-0"
       >
         {copied ? <Check /> : <Copy />}
       </Button>

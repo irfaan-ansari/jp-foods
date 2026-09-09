@@ -4,37 +4,43 @@ export const USER_ROLES: Record<string, BadgeStatus> = {
   user: {
     label: "User",
     value: "user",
-    color: "#A1A1AA",
+    color: "#64748B", // Slate
   },
+
   admin: {
     label: "Admin",
     value: "admin",
-    color: "#A1A1AA",
+    color: "#E07A3F", // Orange
   },
+
   developer: {
     label: "Developer",
     value: "developer",
-    color: "#A1A1AA",
+    color: "#4F6FD8", // Blue
   },
+
   customer: {
     label: "Customer",
     value: "customer",
-    color: "#A1A1AA",
+    color: "#D05A8A", // Rose
   },
+
   driver: {
     label: "Driver",
     value: "driver",
-    color: "#A1A1AA",
+    color: "#2F9B78", // Emerald
   },
+
   superAdmin: {
     label: "Super Admin",
     value: "superAdmin",
-    color: "#A1A1AA",
+    color: "#8B5CF6", // Purple
   },
+
   reviewer: {
     label: "Application Reviewer",
     value: "reviewer",
-    color: "#A1A1AA",
+    color: "#C49A32", // Gold
   },
 }
 

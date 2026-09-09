@@ -1,11 +1,10 @@
 "use client"
 
-import z from "zod"
 import React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { authClient } from "@jp/auth/client"
-import { useStore } from "@tanstack/react-form"
+
 import { useAppForm } from "@/hooks/use-app-form"
 import { Button } from "@jp/ui/components/button"
 import { Field, FieldGroup } from "@jp/ui/components/field"
@@ -50,15 +49,18 @@ export function LoginForm({
       }
 
       if (response?.error) {
-        toast.error(response?.error?.message, { id: toastId })
-        form.setFieldValue("error", response?.error?.message ?? "Login failed!")
-      } else {
-        toast.success("Login successfull, redirecting...", { id: toastId })
+        const message =
+          response.error.message ?? "Unable to sign in. Please try again."
+
+        toast.error(message, { id: toastId })
+        form.setFieldValue("error", message)
+        return
       }
+      toast.success("Signed in successfully. Redirecting...", {
+        id: toastId,
+      })
     },
   })
-
-  const loginError = useStore(form.store, (state) => state.values.error)
 
   return (
     <form
@@ -70,7 +72,7 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold">Login with password</h2>
+          <h2 className="text-xl font-bold">Sign in with password</h2>
           <p className="text-sm text-muted-foreground">
             Use your email address or phone number to access your account.
           </p>
@@ -81,7 +83,8 @@ export function LoginForm({
             <field.TextField
               label="Email or phone"
               placeholder="email or phone"
-              className="*:data-[slot=input]:bg-background"
+
+              className="*:data-[slot=input]:h-12"
             />
           )}
         />
@@ -93,39 +96,45 @@ export function LoginForm({
               <field.PasswordField
                 label="Password"
                 placeholder="••••••"
-                className="*:data-[slot=input-group]:bg-background"
+                className="*:data-[slot=input-group]:h-12"
               />
             )}
           />
           <Link
-            href="/forgot-password"
+            href="/auth/forgot-password"
             className="block text-sm font-medium text-muted-foreground hover:text-foreground hover:underline"
           >
             Forgot Password?
           </Link>
         </div>
-        {/* alert */}
-        {loginError && (
-          <Alert
-            variant="destructive"
-            className="rounded-xl border-destructive/5 bg-destructive/5 has-data-[slot=alert-action]:pr-8"
-          >
-            <AlertCircleIcon />
-            <AlertTitle>Login Failed!</AlertTitle>
-            <AlertDescription>{loginError}</AlertDescription>
-            <AlertAction>
-              <Button
-                type="button"
-                size="icon-xs"
-                variant="outline"
-                className="rounded-xl"
-                onClick={() => form.setFieldValue("error", "")}
-              >
-                <X />
-              </Button>
-            </AlertAction>
-          </Alert>
-        )}
+
+        <form.Subscribe
+          selector={(state) => state.values.error}
+          children={(error) => {
+            if (error) {
+              return (
+                <Alert
+                  variant="destructive"
+                  className="border-destructive/10 bg-destructive/5"
+                >
+                  <AlertCircleIcon />
+                  <AlertTitle>Login Failed!</AlertTitle>
+                  <AlertDescription>{error}</AlertDescription>
+                  <AlertAction>
+                    <Button
+                      size="icon-xs"
+                      variant="outline"
+                      onClick={() => form.setFieldValue("error", "")}
+                    >
+                      <X />
+                    </Button>
+                  </AlertAction>
+                </Alert>
+              )
+            }
+            return null
+          }}
+        />
 
         <Field>
           <form.Subscribe
@@ -139,7 +148,11 @@ export function LoginForm({
                 size="xl"
                 disabled={isSubmitting || !canSubmit}
               >
-                {isSubmitting ? <Loader2 className="animate-spin" /> : "Login"}
+                {isSubmitting ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Sign in"
+                )}
               </Button>
             )}
           />
@@ -161,7 +174,7 @@ export function LoginForm({
             className="bg-primary/20 hover:bg-primary/30"
             asChild
           >
-            <Link href="/auth/signin">Login with OTP</Link>
+            <Link href="/auth/signin">Sign in with OTP</Link>
           </Button>
         </Field>
       </FieldGroup>

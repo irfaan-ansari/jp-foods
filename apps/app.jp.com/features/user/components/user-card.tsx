@@ -1,5 +1,5 @@
 import React from "react"
-import { Letter, Phone, User } from "@solar-icons/react"
+import { Letter, Smartphone, User } from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -39,7 +39,7 @@ export const UserCard = ({ data }: { data: UserType }) => {
             <CardTitle>{data.name}</CardTitle>
             <div className="flex gap-2">
               <UserRoleBadge status={data.role!} />
-              <UserBadge status={data.banned ? "banned" : "active"} />
+              <UserStatusBadge status={data.banned ? "banned" : "active"} />
             </div>
           </div>
         </div>
@@ -47,7 +47,7 @@ export const UserCard = ({ data }: { data: UserType }) => {
       <CardContent className="space-y-4">
         <div className="space-y-0">
           <CopyButton
-            prefix={<Phone className="size-3.5" />}
+            prefix={<Smartphone className="size-3.5" />}
             className="w-full **:data-[slot=copy-value]:leading-tight"
             value={formatPhone(data.phoneNumber!)}
           />
@@ -88,7 +88,7 @@ export const UserSkeleton = () => {
   )
 }
 
-export const UserBadge = ({ status }: { status: string }) => {
+export const UserStatusBadge = ({ status }: { status: string }) => {
   const map = STATUS[status]! ?? {}
   return <StatusBadge status={map} className="backdrop-blur-lg" />
 }

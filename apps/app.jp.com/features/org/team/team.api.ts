@@ -3,7 +3,7 @@ import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
 import { Hono } from "hono"
-import { and, count, eq, gte, sql, desc } from "drizzle-orm"
+import { and, count, eq, gte, sql, desc, ilike, or } from "drizzle-orm"
 import { AppError } from "@jp/utils"
 import { RANGE_DAYS } from "./team.const"
 
@@ -19,13 +19,23 @@ export const teamRoutes = app
 
     const { page, limit, offset } = parsePagination(rest)
 
+    const conditions = [
+      eq(team.organizationId, organizationId),
+      status ? eq(team.status, status) : undefined,
+    ]
+    if (q) {
+      conditions.push(
+        or(
+          ilike(team.name, `%${q}%`),
+          ilike(team.managerName, `%${q}%`),
+          ilike(team.email, `%${q}%`)
+        )
+      )
+    }
+
     const [results, total] = await Promise.all([
       db.query.team.findMany({
-        where: (t, { and, eq, or }) =>
-          and(
-            eq(t.organizationId, organizationId),
-            status ? eq(t.status, status) : undefined
-          ),
+        where: and(...conditions),
         with: {
           salesRep: {
             columns: {
@@ -49,13 +59,7 @@ export const teamRoutes = app
         offset,
         orderBy: (t, { desc }) => [desc(t.createdAt), desc(t.id)],
       }),
-      db.$count(
-        team,
-        and(
-          eq(team.organizationId, organizationId),
-          status ? eq(team.status, status) : undefined
-        )
-      ),
+      db.$count(team, and(...conditions)),
     ])
 
     const teamWithMembers = results.map((t) => {
@@ -84,6 +88,26 @@ export const teamRoutes = app
         total: total,
         totalPages: Math.ceil(total / Number(limit)),
       },
+    })
+  })
+  .get("/count", async (c) => {
+    const organizationId = c.get("organizationId")!
+
+    const result = await db
+      .select({
+        status: team.status,
+        value: count(),
+      })
+      .from(team)
+      .where(eq(team.organizationId, organizationId))
+      .groupBy(team.status)
+
+    const counts = getStatusCounts(result)
+    console.log(counts)
+
+    return c.json({
+      success: true,
+      data: counts,
     })
   })
   .get("/:id", async (c) => {
@@ -330,24 +354,5 @@ export const teamRoutes = app
         recentOrders,
         orderGuides: orderGuidesWithCount,
       },
-    })
-  })
-  .get("/count", async (c) => {
-    const organizationId = c.get("organizationId")!
-
-    const result = await db
-      .select({
-        status: team.status,
-        value: count(),
-      })
-      .from(team)
-      .where(eq(team.organizationId, organizationId))
-      .groupBy(team.status)
-
-    const counts = getStatusCounts(result)
-
-    return c.json({
-      success: true,
-      data: counts,
     })
   })

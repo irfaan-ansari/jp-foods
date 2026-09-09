@@ -1,10 +1,10 @@
 "use client"
 import React from "react"
+import Link from "next/link"
 import type { Team } from "../team.type"
 import { Button } from "@jp/ui/components/button"
 import { PopDrawer } from "@jp/ui/components/jp"
 import { PenNewRound, UserPlus } from "@solar-icons/react"
-import { TeamDialog } from "./team-dialog"
 
 export const TeamDropdown = ({
   data,
@@ -16,12 +16,12 @@ export const TeamDropdown = ({
   const [open, setOpen] = React.useState(false)
   return (
     <PopDrawer open={open} setOpen={setOpen} trigger={children}>
-      <TeamDialog>
-        <Button variant="ghost" className="justify-start">
+      <Button variant="ghost" className="justify-start" asChild>
+        <Link href={`/org/customers/${data.id}/edit`}>
           <PenNewRound />
           Edit
-        </Button>
-      </TeamDialog>
+        </Link>
+      </Button>
 
       <Button variant="ghost" className="justify-start">
         <UserPlus />

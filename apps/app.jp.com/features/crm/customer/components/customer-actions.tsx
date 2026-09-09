@@ -119,6 +119,7 @@ const CustomerApplicationActions = ({
         <div className="mt-4 grid grid-cols-2 gap-3">
           {actions.map(({ variant, label, className, action }) => (
             <Button
+              key={action}
               variant={variant}
               className={className}
               onClick={() => handleAction(action)}
