@@ -13,7 +13,7 @@ type OrgAccessProps = PermissionProps & {
 export const OrgAccess = ({ permission, children }: OrgAccessProps) => {
   const { data, isPending, isError } = useOrgPermission(permission)
 
-  const disabled = isPending || isError || !data?.data?.success
+  const disabled = isPending || isError || !data?.success
 
   return <>{children(disabled, isPending)}</>
 }

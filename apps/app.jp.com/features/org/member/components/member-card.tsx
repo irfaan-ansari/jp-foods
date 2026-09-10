@@ -35,7 +35,7 @@ export const MemberCard = ({ data }: { data: Member }) => {
           <MemberDropdown data={data} />
         </CardAction>
         <div className="flex items-start gap-2">
-          <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-md">
+          <Avatar size="lg">
             <AvatarImage src={data.user?.image ?? ""} />
             <AvatarFallback>
               <User className="size-4" />

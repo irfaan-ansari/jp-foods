@@ -1,27 +1,84 @@
 "use client"
 
 import React from "react"
+import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import { useAppForm } from "@/hooks/use-app-form"
 import { Button } from "@jp/ui/components/button"
 import { TeamGeneral } from "./team-general"
 import { TeamAccount } from "./team-account"
 import { TeamPreview } from "./team-preview"
-import { teamDefaultValues, teamSchema } from "../team.schema"
+import {
+  teamDefaultValues,
+  type TeamFormValues,
+  teamSchema,
+} from "../team.schema"
 import { TeamPrivateItems } from "./team-private-items"
 import { TeamUsers } from "./team-users"
+import { createTeam, updateTeam } from "../team.action"
+import { useRouter } from "next/navigation"
 
-export const TeamForm = () => {
+export const TeamForm = ({
+  id,
+  values,
+}: {
+  id?: string
+  values?: TeamFormValues
+}) => {
+  const router = useRouter()
   const form = useAppForm({
     validators: {
-      onBlur: teamSchema,
+      onSubmit: teamSchema,
     },
-    defaultValues: teamDefaultValues,
+    defaultValues: values ?? teamDefaultValues,
     onSubmit: async ({ value }) => {
-      console.log(value)
+      const { teamMembers, priceLevel, taxRule, salesRep, ...rest } = value
+      const payload = {
+        ...rest,
+        priceLevelId: priceLevel?.id ?? null,
+        taxRuleId: taxRule?.id ?? null,
+        salesRepId: salesRep?.id ?? null,
+        userIds: teamMembers?.map((member) => member.id) || [],
+      }
+
+      // update
+      if (id) {
+        const { validationErrors, serverError } = await updateTeam({
+          id,
+          data: payload,
+        })
+        if (validationErrors) {
+          toast.error("One or more fields are invalid")
+          return
+        }
+        if (serverError) {
+          toast.error(serverError.message)
+          return
+        }
+        toast.success("Account updated.")
+        return
+      }
+
+      // create
+      const { validationErrors, serverError, data } = await createTeam({
+        data: payload,
+      })
+
+      if (validationErrors) {
+        toast.error("One or more fields are invalid")
+        return
+      }
+      if (serverError) {
+        toast.error(serverError.message)
+        return
+      }
+      toast.success("Account created.")
+      router.push(`/org/customers/${data?.id}`)
     },
   })
-  console.log(form.state.values)
+
+  console.log(form.state.errors, form.state.values)
+
   return (
     <React.Fragment>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

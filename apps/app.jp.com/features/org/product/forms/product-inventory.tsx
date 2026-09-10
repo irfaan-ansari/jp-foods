@@ -14,6 +14,7 @@ import {
 } from "@jp/ui/components/field"
 import { Switch } from "@jp/ui/components/switch"
 import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
+import { getUnit } from "../product.utils"
 
 export const ProductInventory = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -62,72 +63,77 @@ export const ProductInventory = withForm({
         <form.Subscribe
           selector={(state) => ({
             trackInventory: state.values.trackInventory,
+            inventoryUnit: state.values.sellUnits.filter(
+              (unit) => unit.isBaseUnit
+            )?.[0]?.unit,
           })}
-          children={({ trackInventory }) => (
-            <CardContent>
-              <FieldGroup
-                className={`mb-6 grid grid-cols-1 ${!trackInventory ? "hidden" : ""}`}
-              >
-                <form.AppField
-                  name="stock"
-                  children={(field) => (
-                    <field.TextField
-                      label="Current Stock"
-                      inputMode="number"
-                      placeholder={`Available stock in `}
-                      // suffix={getUnit(inventoryUnit)?.label}
-                    />
-                  )}
-                />
+          children={({ trackInventory, inventoryUnit }) => {
+            return (
+              <CardContent>
+                <FieldGroup
+                  className={`mb-6 grid grid-cols-1 ${!trackInventory ? "hidden" : ""}`}
+                >
+                  <form.AppField
+                    name="stock"
+                    children={(field) => (
+                      <field.TextField
+                        label="Current Stock"
+                        inputMode="number"
+                        placeholder={`Available stock in ${getUnit(inventoryUnit)?.label}`}
+                        suffix={getUnit(inventoryUnit)?.label}
+                      />
+                    )}
+                  />
 
-                <form.Field
-                  name="allowBackorder"
-                  children={(field) => {
-                    const isInvalid =
-                      field.state.meta.isTouched && !field.state.meta.isValid
-                    return (
-                      <Field
-                        orientation="horizontal"
-                        className="rounded-xl border px-3 py-2"
-                        data-invalid={isInvalid}
-                      >
-                        <FieldLabel htmlFor={field.name}>
-                          <FieldContent>
-                            <FieldTitle>Allow Backorders</FieldTitle>
-                            <FieldDescription className="text-sm">
-                              Accept orders when out of stock.
-                            </FieldDescription>
-                            {isInvalid && (
-                              <FieldError errors={field.state.meta.errors} />
-                            )}
-                          </FieldContent>
-                        </FieldLabel>
-                        <Switch
-                          className="self-center"
-                          id={field.name}
-                          name={field.name}
-                          checked={field.state.value}
-                          onCheckedChange={field.handleChange}
-                          aria-invalid={isInvalid}
-                        />
-                      </Field>
-                    )
-                  }}
-                />
-              </FieldGroup>
-              <FieldGroup>
-                <form.AppField
-                  name="allowBackorder"
-                  children={(field) => (
-                    <field.TextField
-                      label="Inventory Location"
-                      placeholder="6D"
-                    />
-                  )}
-                />
-              </FieldGroup>
-            </CardContent>
-          )}
+                  <form.Field
+                    name="allowBackorder"
+                    children={(field) => {
+                      const isInvalid =
+                        field.state.meta.isTouched && !field.state.meta.isValid
+                      return (
+                        <Field
+                          orientation="horizontal"
+                          className="rounded-xl border px-3 py-2"
+                          data-invalid={isInvalid}
+                        >
+                          <FieldLabel htmlFor={field.name}>
+                            <FieldContent>
+                              <FieldTitle>Allow Backorders</FieldTitle>
+                              <FieldDescription className="text-sm">
+                                Accept orders when out of stock.
+                              </FieldDescription>
+                              {isInvalid && (
+                                <FieldError errors={field.state.meta.errors} />
+                              )}
+                            </FieldContent>
+                          </FieldLabel>
+                          <Switch
+                            className="self-center"
+                            id={field.name}
+                            name={field.name}
+                            checked={field.state.value}
+                            onCheckedChange={field.handleChange}
+                            aria-invalid={isInvalid}
+                          />
+                        </Field>
+                      )
+                    }}
+                  />
+                </FieldGroup>
+                <FieldGroup>
+                  <form.AppField
+                    name="allowBackorder"
+                    children={(field) => (
+                      <field.TextField
+                        label="Inventory Location"
+                        placeholder="6D"
+                      />
+                    )}
+                  />
+                </FieldGroup>
+              </CardContent>
+            )
+          }}
         />
       </Card>
     )

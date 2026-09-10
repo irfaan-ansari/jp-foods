@@ -1,7 +1,7 @@
 import { OTPLoginForm } from "@/features/auth/components/otp-login-form"
 
 export const metadata = {
-  title: "Signin",
+  title: "Sign in",
 }
 
 const OTPLoginPage = async () => {

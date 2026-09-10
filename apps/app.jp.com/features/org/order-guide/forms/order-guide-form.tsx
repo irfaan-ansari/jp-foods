@@ -2,7 +2,12 @@
 import { useAppForm } from "@/hooks/use-app-form"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { Button } from "@jp/ui/components/button"
-import { Field, FieldError, FieldGroup } from "@jp/ui/components/field"
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+} from "@jp/ui/components/field"
 import { formatUSD, pluralize } from "@jp/utils"
 import {
   ChevronDown,
@@ -88,7 +93,7 @@ const OrderGuideForm = ({
     },
   })
   return (
-    <>
+    <React.Fragment>
       <div className="-mx-px no-scrollbar flex-1 overflow-auto px-px">
         <FieldGroup>
           <div className="flex items-center gap-2 rounded-xl bg-neutral-50 p-2">
@@ -98,10 +103,13 @@ const OrderGuideForm = ({
               </AvatarFallback>
             </Avatar>
             <form.Subscribe
-              selector={(state) => state.values.products}
-              children={(products) => (
+              selector={(state) => ({
+                products: state.values.products,
+                name: state.values.name,
+              })}
+              children={({ products, name }) => (
                 <div className="grid min-w-0 flex-1 text-sm">
-                  <span>{pluralize(products.length, `10 item`)}</span>
+                  <span>{name || "Order guide"}</span>
                   <span className="text-xs text-muted-foreground">
                     {pluralize(products.length, `10 item`)} in this order guide
                   </span>
@@ -132,6 +140,7 @@ const OrderGuideForm = ({
                 field.state.meta.isTouched && !field.state.meta.isValid
               return (
                 <Field>
+                  <FieldLabel htmlFor={field.name}>Customer</FieldLabel>
                   <TeamSelector
                     selected={field.state.value.id}
                     setSelectedChange={(value) => {
@@ -142,8 +151,9 @@ const OrderGuideForm = ({
                   >
                     <Button
                       variant="outline"
-                      size="lg"
+
                       type="button"
+                      id={field.name}
                       className="w-full justify-start text-muted-foreground"
                     >
                       <Plus />
@@ -152,7 +162,7 @@ const OrderGuideForm = ({
                           {field.state.value?.name}
                         </span>
                       ) : (
-                        "Select customer..."
+                        "Select..."
                       )}
                       <ChevronDown className="ml-auto" />
                     </Button>
@@ -172,7 +182,8 @@ const OrderGuideForm = ({
               const items = field.state.value
               return (
                 <div className="space-y-4">
-                  <div className="space-y-2">
+                  <Field>
+                    <FieldLabel htmlFor={field.name}>Products</FieldLabel>
                     <ProductSelector
                       selected={items.map((item) => item.id)}
                       setSelectedChange={(value) => {
@@ -190,14 +201,13 @@ const OrderGuideForm = ({
                     >
                       <Button
                         variant="outline"
-                        size="lg"
+
                         type="button"
+                        id={field.name}
                         className="w-full justify-start text-muted-foreground"
                       >
                         <Plus />
-                        <span className="flex-1 text-left">
-                          Select products...
-                        </span>
+                        <span className="flex-1 text-left">Select...</span>
                         {field.state.value?.length > 0 && (
                           <Badge>{field.state.value?.length} Selected</Badge>
                         )}
@@ -207,7 +217,7 @@ const OrderGuideForm = ({
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
-                  </div>
+                  </Field>
                   <Sortable
                     value={items}
                     className="space-y-1"
@@ -225,7 +235,7 @@ const OrderGuideForm = ({
                       <SortableItem
                         key={String(subField.id)}
                         value={String(subField.id)}
-                        className="relative flex animate-in cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border bg-input/50 p-3 transition fade-in-50 select-none slide-in-from-bottom-10 data-[dragging=true]:opacity-100!"
+                        className="relative flex animate-in cursor-pointer items-center gap-3 overflow-hidden rounded-2xl border bg-input/50 p-2.5 transition fade-in-50 select-none slide-in-from-bottom-10 data-[dragging=true]:opacity-100!"
                       >
                         <SortableItemHandle className="z-1">
                           <GripVerticalIcon className="size-4" />
@@ -241,14 +251,18 @@ const OrderGuideForm = ({
                           </AvatarFallback>
                         </Avatar>
 
-                        <div className="flex-1 space-y-1">
+                        <div className="flex-1 space-y-0.5">
                           <p className="text-sm leading-tight font-medium">
                             {subField.title}
                           </p>
-                          <Badge variant="invert">{subField.itemCode}</Badge>
+                          <span className="text-xs text-muted-foreground">
+                            {subField.itemCode}
+                          </span>
                         </div>
                         <div className="self-center text-right font-semibold text-primary">
-                          {formatUSD(Number(subField.basePrice ?? 0))}
+                          {subField?.sellUnits?.map((unit) => (
+                            <span key={unit.unit}>{unit.price}</span>
+                          ))}
                         </div>
                         <Button
                           size="icon-sm"
@@ -284,7 +298,7 @@ const OrderGuideForm = ({
           )}
         />
       </Field>
-    </>
+    </React.Fragment>
   )
 }
 

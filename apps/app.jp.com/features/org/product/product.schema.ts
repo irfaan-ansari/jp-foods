@@ -9,7 +9,7 @@ export const productFormSchema = z.object({
   isTaxable: z.boolean(),
   categories: z.array(z.string()),
   image: z.string().or(z.any()),
-  type: z.string(),
+  location: z.string(),
   trackInventory: z.boolean(),
   stock: z.string(),
   allowBackorder: z.boolean("Invalid value"),
@@ -27,6 +27,30 @@ export const productFormSchema = z.object({
 })
 
 export type ProductFormSchema = z.infer<typeof productFormSchema>
+
+export const productFormValues = {
+  title: "",
+  description: "",
+  itemCode: "",
+  status: "active",
+  isTaxable: false,
+  categories: [],
+  image: "",
+  location: "",
+  trackInventory: false,
+  stock: "",
+  allowBackorder: false,
+  sellUnits: [
+    {
+      unit: "case",
+      inventoryPerUnit: "",
+      price: "",
+      minQuantity: "",
+      orderIncreament: "",
+      isBaseUnit: true,
+    },
+  ],
+}
 
 export const createProductSchema = z.object({
   data: productFormSchema,

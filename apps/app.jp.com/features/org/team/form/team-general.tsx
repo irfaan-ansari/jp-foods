@@ -6,7 +6,7 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { FieldGroup } from "@jp/ui/components/field"
-import { Letter, Smartphone } from "@solar-icons/react"
+import { Letter } from "@solar-icons/react"
 import { type TeamFormValues } from "../team.schema"
 
 export const TeamGeneral = withForm({
@@ -44,9 +44,8 @@ export const TeamGeneral = withForm({
             <form.AppField
               name="phoneNumber"
               children={(field) => (
-                <field.TextField
+                <field.PhoneField
                   label="Phone Number"
-                  prefix={<Smartphone className="size-4" />}
                   placeholder="+1 234 567 8900"
                 />
               )}

@@ -57,7 +57,10 @@ export const TeamSelector = ({
   return (
     <PopDrawer trigger={children} open={open} setOpen={setOpen} modal>
       <div className="flex max-h-[max(520px,70svh)] flex-col gap-1.5 md:max-h-80">
-        <SearchBar onSearch={(value) => setFilters({ ...filters, q: value })} />
+        <SearchBar
+          onSearch={(value) => setFilters({ ...filters, q: value })}
+          className="max-w-full"
+        />
         <div className="no-scrollbar flex-1 overflow-y-auto">
           <QueryState
             isPending={isPending}
@@ -70,7 +73,7 @@ export const TeamSelector = ({
                 <FieldLabel
                   key={item.id}
                   htmlFor={item.id}
-                  className="relative flex w-full cursor-pointer rounded-lg px-3 py-2"
+                  className="relative flex w-full cursor-pointer rounded-lg px-3 py-2 hover:bg-secondary has-data-checked:bg-secondary"
                 >
                   <Checkbox
                     id={item.id}

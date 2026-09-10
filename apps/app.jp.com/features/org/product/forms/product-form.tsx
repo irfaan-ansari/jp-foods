@@ -12,7 +12,11 @@ import {
   createProduct,
   updateProduct,
 } from "@/features/org/product/product.action"
-import { type ProductFormSchema, productFormSchema } from "../product.schema"
+import {
+  type ProductFormSchema,
+  productFormSchema,
+  productFormValues,
+} from "../product.schema"
 
 import { ProductSellingOptions } from "./product-selling-options"
 import { ProductInventory } from "./product-inventory"
@@ -29,7 +33,7 @@ import { Loader2 } from "lucide-react"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
 interface FormProps {
-  data: ProductFormSchema
+  data?: ProductFormSchema
   id?: number
 }
 
@@ -38,7 +42,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
 
   const { router } = useRouterStuff()
   const form = useAppForm({
-    defaultValues: data,
+    defaultValues: data ?? productFormValues,
     validators: {
       onChange: productFormSchema,
     },
@@ -83,7 +87,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
       }
     },
   })
-  console.log(form.state)
+
   return (
     <React.Fragment>
       <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">

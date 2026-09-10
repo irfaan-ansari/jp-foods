@@ -124,7 +124,6 @@ export const UserForm = ({
                   >
                     <Button
                       variant="outline"
-                      size="lg"
                       type="button"
                       id={field.name}
                       className="w-full justify-start text-muted-foreground"

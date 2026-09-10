@@ -168,9 +168,9 @@ export const ProductSellingOptions = withForm({
                                           : "**:data-[slot=field-label]:capitalize"
                                       }
                                       label={`${baseUnit?.label} per ${currentUnit?.label}`}
-                                      placeholder={`Number of ${currentUnit?.label} in each case.`}
+                                      placeholder={`Number of ${baseUnit?.value} in each ${currentUnit?.value}.`}
                                       inputMode="number"
-                                      suffix={`${field.state.value} `}
+                                      suffix={`${baseUnit?.value} per ${currentUnit?.value}`}
                                     />
                                   )}
                                 />
