@@ -2,16 +2,15 @@
 
 import { toast } from "sonner"
 import { useState } from "react"
+import { Member } from "../member.type"
+import { authClient } from "@jp/auth/client"
 import { Button } from "@jp/ui/components/button"
-import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useQueryClient } from "@tanstack/react-query"
-
+import { MemberRoleDialog } from "./member-role-dialog"
+import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { MenuDots, User, UserMinus } from "@solar-icons/react"
-import { authClient } from "@jp/auth/client"
 import { OrgAccess } from "@/features/auth/components/org-permission"
-import { Member } from "../member.type"
-import { MemberRoleDialog } from "./member-role-dialog"
 
 export const MemberDropdown = ({ data }: { data: Member }) => {
   const { id } = data
@@ -58,7 +57,7 @@ export const MemberDropdown = ({ data }: { data: Member }) => {
     >
       <OrgAccess permission={{ member: ["update"] }}>
         {(disabled) => (
-          <MemberRoleDialog id={id}>
+          <MemberRoleDialog values={{ memberId: id, role: data.role }}>
             <Button
               variant="ghost"
               className="justify-start"

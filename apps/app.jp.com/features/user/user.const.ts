@@ -1,49 +1,47 @@
 import { BadgeStatus } from "../shared/shared.type"
-
 export const USER_ROLES: Record<string, BadgeStatus> = {
   user: {
     label: "User",
     value: "user",
-    color: "#64748B", // Slate
-  },
-
-  admin: {
-    label: "Admin",
-    value: "admin",
-    color: "#E07A3F", // Orange
-  },
-
-  developer: {
-    label: "Developer",
-    value: "developer",
-    color: "#4F6FD8", // Blue
+    color: "#6B7280", // Gray — neutral baseline
   },
 
   customer: {
     label: "Customer",
     value: "customer",
-    color: "#D05A8A", // Rose
+    color: "#EC4899",
   },
 
   driver: {
     label: "Driver",
     value: "driver",
-    color: "#2F9B78", // Emerald
-  },
-
-  superAdmin: {
-    label: "Super Admin",
-    value: "superAdmin",
-    color: "#8B5CF6", // Purple
+    color: "#14B8A6",
   },
 
   reviewer: {
     label: "Application Reviewer",
     value: "reviewer",
-    color: "#C49A32", // Gold
+    color: "#EAB308",
+  },
+
+  developer: {
+    label: "Developer",
+    value: "developer",
+    color: "#3B82F6",
+  },
+
+  admin: {
+    label: "Admin",
+    value: "admin",
+    color: "#F97316",
+  },
+
+  superAdmin: {
+    label: "Super Admin",
+    value: "superAdmin",
+    color: "#DC2626",
   },
 }
-
 export const STATUS: Record<string, BadgeStatus> = {
   all: { label: "All", color: "#A1A1AA", value: "all" },
   active: { label: "Active", value: "active", color: "#22C55E" },

@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { and, eq, or, exists, ilike, inArray, max } from "drizzle-orm"
+import { and, eq, or, exists, ilike, inArray, max, ne } from "drizzle-orm"
 import { db, member, session, team, teamMember, user } from "@jp/db"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
@@ -17,7 +17,7 @@ export const memberRoutes = app
 
     const conditions = [
       eq(member.organizationId, organizationId),
-      role ? eq(member.role, role) : undefined,
+      role ? eq(member.role, role) : ne(member.role, "customer"),
     ]
 
     if (q) {

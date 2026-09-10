@@ -19,8 +19,8 @@ const actionClient = createSafeActionClient({
       }
 
     return {
-      code: "error.code",
-      status: "error.status",
+      code: "INTERNAL_SERVER_ERROR",
+      status: 500,
       message: error.message,
     }
   },

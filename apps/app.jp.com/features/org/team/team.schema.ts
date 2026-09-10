@@ -26,28 +26,34 @@ export const teamSchema = z.object({
   managerName: z.string().min(1, "Manager name is required"),
   email: z.email("Invalid email"),
   phoneNumber: z.string().min(1, "Phone is required"),
-  street: z.string().min(1, "Street is required"),
-  city: z.string().min(1, "City is required"),
-  state: z.string().min(1, "State is required"),
-  zip: z.string().min(1, "Zip code is required"),
+  street: z.string(),
+  city: z.string(),
+  state: z.string(),
+  zipcode: z.string(),
   status: z.enum(["active", "inactive"]),
   creditEnabled: z.boolean(),
   creditLimit: z.string(),
-  taxRule: z.object({
-    id: z.number().nullable(),
-    name: z.string().nullable(),
-  }),
-  priceLevel: z.object({
-    id: z.number().nullable(),
-    name: z.string().nullable(),
-  }),
+  taxRule: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .nullable(),
+  priceLevel: z
+    .object({
+      id: z.number(),
+      name: z.string(),
+    })
+    .nullable(),
 
-  salesRep: z.object({
-    id: z.string().nullable(),
-    name: z.string().nullable(),
-  }),
+  salesRep: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .nullable(),
   privateItems: privateItemSchema.array(),
-  users: userSchema.array(),
+  teamMembers: userSchema.array(),
 })
 
 export type TeamFormValues = z.infer<typeof teamSchema>
@@ -60,28 +66,19 @@ export const teamDefaultValues: TeamFormValues = {
   street: "",
   city: "",
   state: "",
-  zip: "",
+  zipcode: "",
   status: "active",
   creditEnabled: false,
   creditLimit: "",
-  taxRule: {
-    id: null,
-    name: null,
-  },
-  priceLevel: {
-    id: null,
-    name: null,
-  },
-  salesRep: {
-    id: null,
-    name: null,
-  },
+  taxRule: null,
+  priceLevel: null,
+  salesRep: null,
   privateItems: [],
-  users: [],
+  teamMembers: [],
 }
 
 const teamDataSchema = teamSchema
-  .omit({ taxRule: true, priceLevel: true, salesRep: true, users: true })
+  .omit({ taxRule: true, priceLevel: true, salesRep: true, teamMembers: true })
   .extend({
     taxRuleId: z.number().nullable(),
     priceLevelId: z.number().nullable(),
@@ -89,10 +86,11 @@ const teamDataSchema = teamSchema
     userIds: z.string().array().nullable(),
   })
 
-export const teamCreateSchema = teamSchema.extend({
+export const teamCreateSchema = z.object({
   data: teamDataSchema,
 })
-export const teamUpdateSchema = teamSchema.extend({
+
+export const teamUpdateSchema = z.object({
   id: z.string(),
   data: teamDataSchema,
 })

@@ -26,7 +26,7 @@ export const TeamUsers = withForm({
         </CardHeader>
         <CardContent>
           <form.AppField
-            name="users"
+            name="teamMembers"
             mode="array"
             children={(field) => (
               <div className="space-y-4">
@@ -87,7 +87,6 @@ export const TeamUsers = withForm({
                     const index = field.state.value.findIndex(
                       (item) => item.id === selected.id
                     )
-
                     if (index === -1) {
                       field.pushValue({ ...selected })
                     } else {

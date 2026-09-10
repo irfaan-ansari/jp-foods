@@ -163,6 +163,9 @@ export const auth = betterAuth({
     .split(",")
     .map((value) => value.trim())
     .filter(Boolean),
+  advanced: {
+    cookiePrefix: "JP",
+  },
 })
 
 export type AuthType = {

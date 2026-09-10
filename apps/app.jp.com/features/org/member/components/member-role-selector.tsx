@@ -3,42 +3,35 @@
 import React from "react"
 import { Check } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
-import { PopDrawer, SearchBar } from "@jp/ui/components/jp"
-
-const ROLES = [
-  { label: "Admin", value: "admin" },
-  { label: "Manager", value: "manager" },
-  { label: "Sales", value: "sales" },
-  { label: "Customer", value: "customer" },
-]
+import { PopDrawer } from "@jp/ui/components/jp"
+import { MEMBER_ROLES } from "../member.const"
 
 export const MemberRoleSelector = ({
+  selected,
   children,
+  onChange,
 }: {
+  selected: string
   children: React.ReactNode
+  onChange: (value: string) => void
 }) => {
   const [open, setOpen] = React.useState(false)
-  const [search, setSearch] = React.useState("")
-
-  const FILTERED = React.useMemo(() => {
-    const query = search.trim().toLowerCase()
-    if (!query) return ROLES
-    return ROLES.filter((role) => role.label.toLowerCase().includes(query))
-  }, [search])
 
   return (
     <PopDrawer open={open} setOpen={setOpen} trigger={children}>
       <div className="flex flex-col gap-1.5">
-        <SearchBar onSearch={(value) => setSearch(value)} className="h-8" />
         <div className="no-scrollbar flex-1 overflow-auto *:w-full *:justify-start">
-          {FILTERED.map((role) => (
+          {Object.values(MEMBER_ROLES).map((role) => (
             <Button
               variant="ghost"
-              size="sm"
               className="w-fulll items-center justify-start"
+              onClick={() => {
+                onChange(role.value)
+                setOpen(false)
+              }}
             >
               {role.label}
-              <Check className="ml-auto size-3.5 opacity-50" />
+              {selected === role.value && <Check className="ml-auto" />}
             </Button>
           ))}
         </div>

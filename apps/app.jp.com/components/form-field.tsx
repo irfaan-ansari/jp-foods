@@ -48,6 +48,7 @@ import {
 } from "@jp/ui/components/input-group"
 import { Textarea } from "@jp/ui/components/textarea"
 import { Badge } from "@jp/ui/components/badge"
+import { PhoneInput } from "@jp/ui/components/phone-input"
 import { useFieldContext } from "@/hooks/use-app-form"
 
 export interface FieldProps {
@@ -387,28 +388,15 @@ const PhoneField = ({
     <Field className={cn("gap-2", className)} {...props}>
       {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
 
-      <InputGroup className="bg-background">
-        <InputGroupAddon>
-          <Badge variant="invert-light" className="h-6 rounded-md">
-            <img src="https://flagsapi.com/US/flat/64.png" width={20} />
-            +1
-          </Badge>
-        </InputGroupAddon>
+      <PhoneInput
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        aria-invalid={isInvalid}
+        placeholder="123-123-1234"
+        onChange={(value) => field.handleChange(value)}
+      />
 
-        <InputGroupInput
-          id={field.name}
-          name={field.name}
-          value={displayValue}
-          onBlur={field.handleBlur}
-          onChange={(e) => {
-            const digits = e.target.value.replace(/\D/g, "").slice(0, 10)
-            field.handleChange(digits)
-          }}
-          aria-invalid={isInvalid}
-          type="tel"
-          placeholder="123-123-1234"
-        />
-      </InputGroup>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>

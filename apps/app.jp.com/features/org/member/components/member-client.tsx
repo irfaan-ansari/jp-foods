@@ -13,8 +13,8 @@ import { QueryBoundary } from "@/components/query-boundry"
 
 export const MemberClient = () => {
   const { searchParamsObj, queryParams } = useRouterStuff()
-  const members = useMembers(searchParamsObj)
-
+  const members = useMembers({ ...searchParamsObj })
+  console.log(members.data)
   return (
     <QueryBoundary
       query={members}
