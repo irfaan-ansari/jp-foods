@@ -165,7 +165,7 @@ export function OTPLoginForm({
             children={(field) => (
               <field.PhoneField
                 label="Phone Number"
-                className="*:data-[slot=input-group]:h-12"
+                className="[&_.PhoneInput]:h-12"
               />
             )}
           />
