@@ -41,7 +41,7 @@ export const OrderScheduleDialog = ({ children, defaultValues, id }: Props) => {
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
       <AppDialogContent className="md:max-w-xl">
         <AppDialogHeader>
-          <AppDialogTitle className="text-lg font-bold">
+          <AppDialogTitle className="text-base font-bold">
             Edit Schedule
           </AppDialogTitle>
         </AppDialogHeader>

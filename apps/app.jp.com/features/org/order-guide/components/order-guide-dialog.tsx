@@ -41,7 +41,7 @@ export const OrderGuideDialog = ({
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
       <AppDialogContent className="h-full max-h-[max(620px,80svh)] overflow-hidden md:max-w-2xl">
         <AppDialogHeader>
-          <AppDialogTitle className="text-lg font-bold">
+          <AppDialogTitle className="text-base font-bold">
             {id ? "Edit Order Guide" : "New Order Guide"}
           </AppDialogTitle>
         </AppDialogHeader>

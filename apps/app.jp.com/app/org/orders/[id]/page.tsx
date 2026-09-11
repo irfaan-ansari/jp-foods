@@ -117,7 +117,7 @@ const OrderPage = () => {
 
               <Card className="shadow-xs" size="sm">
                 <CardHeader>
-                  <CardTitle className="text-lg font-bold">
+                  <CardTitle className="text-base font-bold">
                     Order Items
                   </CardTitle>
                 </CardHeader>
@@ -163,7 +163,7 @@ const OrderPage = () => {
               <div className="sticky top-18 rounded-2xl border bg-secondary/50 shadow-xs">
                 <div className="space-y-4 py-6 text-sm">
                   <div className="px-6">
-                    <p className="text-lg font-bold">Order Summary</p>
+                    <p className="text-base font-bold">Order Summary</p>
                   </div>
                   <div className="space-y-2 px-6">
                     <div className="flex items-center justify-between text-muted-foreground">

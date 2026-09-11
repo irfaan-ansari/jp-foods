@@ -38,7 +38,7 @@ export const PriceLevelDialog = ({
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
       <AppDialogContent className="md:max-w-2xl">
         <AppDialogHeader className="data-[slot=drawer-header]:sr-only">
-          <AppDialogTitle className="text-lg font-bold">
+          <AppDialogTitle className="text-base font-bold">
             {id ? "Edit Price Level" : "New Price Level"}
           </AppDialogTitle>
         </AppDialogHeader>

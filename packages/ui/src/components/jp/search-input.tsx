@@ -52,7 +52,6 @@ export function SearchBar({
   className,
   placeholder = "Search...",
   value = "",
-
   onSearch,
   ...props
 }: SearchBarProps) {
@@ -66,7 +65,7 @@ export function SearchBar({
 
   React.useEffect(() => {
     onSearch(debouncedSearch)
-  }, [debouncedSearch, onSearch])
+  }, [debouncedSearch])
 
   return (
     <InputGroup className={cn("h-10 max-w-xs shrink-0", className)} {...props}>

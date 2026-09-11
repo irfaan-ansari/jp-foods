@@ -65,7 +65,7 @@ export const MemberRoleDialog = ({
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
       <AppDialogContent className="md:max-w-xl">
         <AppDialogHeader className="data-[slot=drawer-header]:sr-only">
-          <AppDialogTitle className="text-lg font-bold">
+          <AppDialogTitle className="text-base font-bold">
             Change Role
           </AppDialogTitle>
         </AppDialogHeader>

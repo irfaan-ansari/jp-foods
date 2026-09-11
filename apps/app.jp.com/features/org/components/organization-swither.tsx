@@ -9,8 +9,6 @@ import {
   User,
   Settings,
   AddSquare,
-  Shop,
-  Home,
   Buildings,
 } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
@@ -24,7 +22,6 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { useLoader } from "@jp/ui/components/jp"
 import { OrganizationSelector } from "./organization-selector"
 import { useOrganization } from "../organization.data"
-import { Building2 } from "lucide-react"
 
 export const OrganizationSwitcher = ({
   disabled,
@@ -80,7 +77,7 @@ export const OrganizationSwitcher = ({
         }
       >
         <div className="mb-3 flex flex-col gap-3 rounded-lg border bg-neutral-100/50 p-2">
-          <div className="flex items-center gap-2">
+          <div className="flex items-start gap-2">
             <Avatar className="size-9">
               <AvatarImage src={org?.data?.logo || ""} alt={org?.data?.name} />
               <AvatarFallback>
@@ -91,7 +88,14 @@ export const OrganizationSwitcher = ({
               {orgLoading ? (
                 <Skeleton className="h-4 w-24" />
               ) : (
-                <span className="truncate font-medium">{org?.data?.name}</span>
+                <div className="grid">
+                  <span className="truncate font-medium">
+                    {org?.data?.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {org?.data?.email}
+                  </span>
+                </div>
               )}
             </div>
           </div>
@@ -103,7 +107,7 @@ export const OrganizationSwitcher = ({
               </Link>
             </Button>
             <Button variant="outline" asChild size="sm" className="h-7 px-2">
-              <Link href="/settings/members">
+              <Link href="/org/settings/members">
                 <UserPlus className="size-3.5" />
                 Invite members
               </Link>

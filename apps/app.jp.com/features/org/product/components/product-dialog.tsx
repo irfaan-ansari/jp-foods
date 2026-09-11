@@ -25,28 +25,16 @@ export const ProductDialog = ({
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const handleSuccess = () => {
-    setOpen(false)
-    queryClient.invalidateQueries({ queryKey: ["products"] })
-    queryClient.invalidateQueries({
-      queryKey: ["count", "/org/products/count"],
-    })
-  }
-
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="px-0 md:max-w-4xl">
         <DialogHeader className="px-6">
-          <DialogTitle className="text-lg font-bold">
+          <DialogTitle className="text-base font-bold">
             {productId ? "Edit Product" : "New Product"}
           </DialogTitle>
         </DialogHeader>
-        <ProductForm
-          data={defaultValue!}
-          id={productId}
-          onSuccess={handleSuccess}
-        />
+        <ProductForm data={defaultValue!} id={productId} />
       </DialogContent>
     </Dialog>
   )

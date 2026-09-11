@@ -210,7 +210,7 @@ export const CustomerDetailsClient = ({
           <CardHeader className="border-b border-dashed">
             <CardTitle>Documents</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-2 gap-3">
+          <CardContent className="grid grid-cols-1 gap-3">
             <FilePreview
               data={{
                 label: "Sale Tax/Certificate",
@@ -280,7 +280,7 @@ const ApplicationStatusInfo = ({ data }: { data: CustomerApplication }) => {
   }
 
   return (
-    <Alert variant={data.status === "rejected" ? "destructive" : "warning"}>
+    <Alert variant={data.status === "rejected" ? "destructive" : "default"}>
       <AlertTriangleIcon />
       <AlertTitle>{data.statusReason}</AlertTitle>
 

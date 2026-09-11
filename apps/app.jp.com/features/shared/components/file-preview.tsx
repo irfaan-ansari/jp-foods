@@ -4,9 +4,11 @@ import { QueryBoundary } from "@/components/query-boundry"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { HeadBlobResult } from "@vercel/blob"
 import { FileText, PenNewRound } from "@solar-icons/react"
-import { ExternalLink } from "lucide-react"
+import { ArrowUpRight, ExternalLink } from "lucide-react"
 import { cn } from "@jp/ui/lib/utils"
 import { Button } from "@jp/ui/components/button"
+import { Card, CardAction, CardHeader } from "@jp/ui/components/card"
+import Link from "next/link"
 
 type FileItem = {
   label: string | undefined
@@ -34,18 +36,21 @@ export const FilePreview = ({
       query={query}
     >
       {(result) => (
-        <div
-          className={cn(
-            "grid overflow-hidden rounded-2xl border shadow-xs",
-            className
-          )}
-        >
-          <PreviewItem data={result} />
-          <div className="flex gap-2 p-4">
-            <span className="min-w-0 flex-1 text-muted-foreground">
-              {data.label || result.pathname}
-            </span>
-
+        <div className="relative flex rounded-2xl bg-secondary/40 p-2 shadow-xs ring-1 ring-border">
+          <div className="flex gap-2">
+            <div className="inline-flex size-12 shrink-0 items-center justify-center rounded-xl border bg-secondary lg:size-16">
+              <FileText className="size-4 text-muted-foreground" />
+            </div>
+            <div className="grid flex-1 items-start gap-1 self-start py-1">
+              <span className="font-medium">
+                {data.label || result.pathname}
+              </span>
+              <span className="text-xs text-muted-foreground">
+                {data.label || result.pathname}
+              </span>
+            </div>
+          </div>
+          <div className="absolute top-1/2 right-2 -translate-y-1/2">
             {result.contentType?.startsWith("image/") && (
               <Button size="icon-sm" variant="secondary">
                 <PenNewRound />
@@ -59,7 +64,6 @@ export const FilePreview = ({
 }
 
 const PreviewItem = ({ data }: { data: HeadBlobResult }) => {
-  console.log(data)
   const contentType = data.contentType
   if (!contentType)
     return (
@@ -69,7 +73,7 @@ const PreviewItem = ({ data }: { data: HeadBlobResult }) => {
     )
 
   switch (true) {
-    case contentType.startsWith("image/"):
+    case contentType.startsWith("imagea/"):
       return (
         <div className="relative aspect-video bg-secondary">
           <img
@@ -89,7 +93,7 @@ const PreviewItem = ({ data }: { data: HeadBlobResult }) => {
       )
     default:
       return (
-        <div className="relative flex aspect-video items-center justify-center rounded-xl bg-secondary">
+        <div className="relative flex items-center justify-center rounded-xl bg-secondary">
           <FileText className="size-6 text-muted-foreground" />
           <a
             href={data.url}

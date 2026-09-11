@@ -120,11 +120,13 @@ export const ProductSelector = ({
 
                       <div className="shrink-0 space-y-0">
                         {item.sellUnits?.map((unit) => (
-                          <div key={unit.id}>
-                            <FieldTitle className="line-clamp-1">
-                              {formatUSD(unit.price)}
+                          <div key={unit.id} className="text-right">
+                            <FieldTitle className="line-clamp-1 w-full text-right">
+                              <span className="text-xs">
+                                {formatUSD(unit.price)}
+                              </span>
                               <span className="pl-1 text-xs text-muted-foreground">
-                                {unit.unit}
+                                / {unit.unit}
                               </span>
                             </FieldTitle>
                           </div>

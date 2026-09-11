@@ -63,7 +63,7 @@ const CustomerApplicationActions = ({
       case "review":
         open({
           variant: "info",
-          title: "Mark Application as Under Review",
+          title: "Mark as Under Review",
           description:
             "Move this application to the review queue. The applicant may be notified that additional assessment is in progress.",
           action: {

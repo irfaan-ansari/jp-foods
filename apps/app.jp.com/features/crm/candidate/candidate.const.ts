@@ -30,9 +30,9 @@ export const APPLICATION_FILTER_STATUS: Record<string, BadgeStatus> = {
     value: "rejected",
     color: "#EF4444",
   },
-  accepted: {
-    label: "Accepted",
-    value: "accepted",
+  hired: {
+    label: "Hired",
+    value: "hired",
     color: "#22C55E",
   },
 }
@@ -73,16 +73,6 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
     label: "Verification Failed",
     value: "verification_failed",
     color: "#EF4444",
-  },
-  active: {
-    label: "Active",
-    value: "active",
-    color: "#22C55E",
-  },
-  accepted: {
-    label: "Accepted",
-    value: "accepted",
-    color: "#22C55E",
   },
 }
 

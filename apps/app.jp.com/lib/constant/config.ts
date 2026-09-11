@@ -4,6 +4,7 @@ import {
   InboxLine,
   Tag,
   User,
+  Clipboard,
   SettingsMinimalistic,
   UsersGroupRounded,
   ShieldKeyhole,
@@ -16,8 +17,10 @@ import {
   TagPrice,
   UserCheck,
   CardTransfer,
-  Buildings2,
   ChatLine,
+  LetterUnread,
+  ClipboardCheck,
+  UserPlus,
 } from "@solar-icons/react"
 
 export const ORG_NAV = [
@@ -165,18 +168,35 @@ export const CRM_NAV = [
     ],
   },
   {
-    label: "Applications",
+    label: "Customers",
     items: [
       {
-        label: "Customers",
-        href: "/crm/customers",
-        icon: Buildings2,
+        label: "Invites",
+        href: "/crm/invite/customers",
+        icon: LetterUnread,
         items: [],
       },
       {
-        label: "Candidates",
-        href: "/crm/candidates",
-        icon: UsersGroupRounded,
+        label: "Applications",
+        href: "/crm/application/customers",
+        icon: Clipboard,
+        items: [],
+      },
+    ],
+  },
+  {
+    label: "Candidates",
+    items: [
+      {
+        label: "Invites",
+        href: "/crm/invite/candidates",
+        icon: UserPlus,
+        items: [],
+      },
+      {
+        label: "Applications",
+        href: "/crm/application/candidates",
+        icon: ClipboardCheck,
         items: [],
       },
     ],

@@ -8,6 +8,7 @@ import { TaxRuleClient } from "@/features/org/tax-rule/components/tax-rule-clien
 import { FilterTab } from "@/components/filter-tabs"
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
+import { TaxRuleDialog } from "@/features/org/tax-rule/components/tax-rule-dialog"
 
 const OPTIONS = [{ label: "All", value: "", color: "#A1A1AA" }]
 
@@ -18,10 +19,12 @@ const TaxRulePage = () => {
         <OrgAccess
           permission={{ taxRule: ["create"] }}
           children={(disabled) => (
-            <Button disabled={disabled}>
-              <Plus />
-              Add New
-            </Button>
+            <TaxRuleDialog>
+              <Button disabled={disabled}>
+                <Plus />
+                Add New
+              </Button>
+            </TaxRuleDialog>
           )}
         />
       </PageHeader>
