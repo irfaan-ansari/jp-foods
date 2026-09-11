@@ -56,9 +56,17 @@ export function CustomerApplicationStatusDialog({
     <AppDialog open={open} onOpenChange={onOpenChange}>
       <AppDialogContent className="sm:max-w-xl">
         <AppDialogHeader>
-          <AppDialogTitle className="text-lg font-bold">{title}</AppDialogTitle>
+          <AppDialogTitle className="text-base font-bold">
+            {title}
+          </AppDialogTitle>
         </AppDialogHeader>
-        <form className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
           <FieldGroup>
             <form.AppField
               name="statusReason"

@@ -1,6 +1,6 @@
 import React from "react"
 import { PageContent, PageHeader } from "@/components/page-content"
-import { OrganizationForm } from "@/features/org/form/organization-form"
+import { OrganizationForm } from "@/features/org/components/organization-form"
 
 const NewOrganizationPage = () => {
   return (

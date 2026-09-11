@@ -63,6 +63,7 @@ function PhoneInput({
       value={{ variant: phoneInputSize, popupClassName, scrollAreaClassName }}
     >
       <BasePhoneInput.default
+        data-slot="input-group"
         className={cn(
           "group/input-group relative flex h-10 w-full min-w-0 items-center overflow-hidden rounded-xl border bg-input/50 transition-[color,box-shadow,background-color] outline-none in-data-[slot=combobox-content]:focus-within:border-inherit in-data-[slot=combobox-content]:focus-within:ring-0 has-focus:border-ring has-focus:ring-1 has-focus:ring-ring has-data-[align=block-end]:rounded-3xl has-data-[align=block-start]:rounded-3xl has-[[data-slot][aria-invalid=true]]:border-destructive/50 has-[[data-slot][aria-invalid=true]]:ring-1 has-[[data-slot][aria-invalid=true]]:ring-destructive/50 has-[textarea]:rounded-2xl has-[>[data-align=block-end]]:h-auto has-[>[data-align=block-end]]:flex-col has-[>[data-align=block-start]]:h-auto has-[>[data-align=block-start]]:flex-col has-[>textarea]:h-auto dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40 has-[>[data-align=block-end]]:[&>input]:pt-3 has-[>[data-align=block-start]]:[&>input]:pb-3 has-[>[data-align=inline-end]]:[&>input]:pr-1.5 has-[>[data-align=inline-start]]:[&>input]:pl-1.5",
 

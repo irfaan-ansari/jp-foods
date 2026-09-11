@@ -31,7 +31,10 @@ export const CandidateApplicationCard = ({
       className="relative h-full shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
       style={{ "--icon-color": map.color } as React.CSSProperties}
     >
-      <Link href={`/crm/candidates/${data.id}`} className="absolute inset-0" />
+      <Link
+        href={`/crm/application/candidates/${data.id}`}
+        className="absolute inset-0"
+      />
       <CardHeader>
         <div className="flex items-start gap-2">
           <IconTile variant="elevated">

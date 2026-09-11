@@ -53,7 +53,7 @@ export function PageHeader({
             )}
 
             <div className="truncate">
-              <h1 className="truncate text-lg font-bold">{title}</h1>
+              <h1 className="truncate text-base font-bold">{title}</h1>
               {description && (
                 <p className="mt-1 text-sm text-muted-foreground">
                   {description}

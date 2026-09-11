@@ -5,7 +5,12 @@ import { Image } from "lucide-react"
 import { authClient } from "@jp/auth/client"
 import { QueryState } from "@jp/ui/components/jp"
 import { Checkbox } from "@jp/ui/components/checkbox"
-import { FieldLabel, FieldTitle } from "@jp/ui/components/field"
+import {
+  FieldContent,
+  FieldDescription,
+  FieldLabel,
+  FieldTitle,
+} from "@jp/ui/components/field"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 type OrganizationSelectorProps = {
@@ -31,7 +36,7 @@ export const OrganizationSelector = ({
           <FieldLabel
             key={item.id}
             htmlFor={item.id}
-            className="relative flex w-full cursor-pointer rounded-lg px-2 py-1 hover:bg-primary/5"
+            className="relative flex w-full cursor-pointer rounded-lg px-2 py-1 not-last:mb-0.5 hover:bg-secondary has-data-checked:bg-secondary"
           >
             <Checkbox
               id={item.id}
@@ -47,7 +52,9 @@ export const OrganizationSelector = ({
                 <Image className="size-3.5" />
               </AvatarFallback>
             </Avatar>
-            <FieldTitle className="line-clamp-1">{item.name}</FieldTitle>
+            <FieldContent>
+              <FieldTitle className="line-clamp-1">{item.name}</FieldTitle>
+            </FieldContent>
           </FieldLabel>
         )
       })}

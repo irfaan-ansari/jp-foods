@@ -11,6 +11,7 @@ import { Button } from "@jp/ui/components/button"
 import { Calendar } from "@jp/ui/components/calendar"
 import { useFieldContext } from "@/hooks/use-app-form"
 import { formatPhone } from "@jp/utils"
+import { PhoneInput } from "@jp/ui/components/phone-input"
 import {
   Field,
   FieldContent,
@@ -427,40 +428,22 @@ const PhoneField = ({
   ...props
 }: FieldProps) => {
   const field = useFieldContext<string>()
-
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-
   const displayValue = formatPhone(field.state.value ?? "")
 
   return (
     <Field className={cn("gap-2", className)} {...props}>
       {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
 
-      <InputGroup className="bg-background">
-        <InputGroupAddon>
-          <Badge
-            variant="secondary"
-            className="h-4 rounded-none bg-transparent pl-0 text-sm"
-          >
-            <img src="https://flagsapi.com/US/flat/64.png" width={20} />
-            +1
-          </Badge>
-        </InputGroupAddon>
+      <PhoneInput
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        aria-invalid={isInvalid}
+        placeholder="123-123-1234"
+        onChange={(value) => field.handleChange(value)}
+      />
 
-        <InputGroupInput
-          id={field.name}
-          name={field.name}
-          value={displayValue}
-          onBlur={field.handleBlur}
-          onChange={(e) => {
-            const digits = e.target.value.replace(/\D/g, "").slice(0, 10)
-            field.handleChange(digits)
-          }}
-          aria-invalid={isInvalid}
-          type="tel"
-          placeholder="123-123-1234"
-        />
-      </InputGroup>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>

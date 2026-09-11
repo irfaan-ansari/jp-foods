@@ -126,7 +126,10 @@ export const priceLevelItem = pgTable(
     sellUnitId: integer("sell_unit_id").references(() => productSellUnit.id, {
       onDelete: "cascade",
     }),
-    price: text("price").notNull(),
+    price:
+      text(
+        "price"
+      ).notNull() /** adjustmentType == percentage ? increase or decrease by percent  */,
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

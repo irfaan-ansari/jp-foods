@@ -19,7 +19,7 @@ export const ChangeEmailForm = ({
         <div className="h-full w-1/3 shrink-0 bg-primary/10"></div>
         <div className="p-6">
           <AppDialogHeader>
-            <AppDialogTitle className="text-lg font-semibold">
+            <AppDialogTitle className="text-base font-semibold">
               Change Email
             </AppDialogTitle>
           </AppDialogHeader>

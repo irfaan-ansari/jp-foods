@@ -16,6 +16,7 @@ import { Button } from "@jp/ui/components/button"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import type { TaxRule } from "../tax-rule.type"
 import { Badge } from "@jp/ui/components/badge"
+import { TaxRuleDropdown } from "./tax-rule-dropdown"
 
 export const TaxRuleCard = ({ data }: { data: TaxRule }) => {
   return (
@@ -27,9 +28,7 @@ export const TaxRuleCard = ({ data }: { data: TaxRule }) => {
         <CardTitle>{data.name}</CardTitle>
 
         <CardAction className="absolute top-0 right-4 flex items-center gap-2">
-          <Button size="icon-sm" variant="outline">
-            <MenuDots />
-          </Button>
+          <TaxRuleDropdown data={data} />
         </CardAction>
       </CardHeader>
 

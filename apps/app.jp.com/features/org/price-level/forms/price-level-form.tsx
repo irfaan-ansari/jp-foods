@@ -22,6 +22,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { ProductSelector } from "@/features/org/product/components/product-selector"
 import { formatUSD, pluralize } from "@jp/utils"
 import { createPriceLevel, updatePriceLevel } from "../price-level.action"
+import { TrashBinMinimalistic } from "@solar-icons/react"
 
 type FormProps = {
   values?: PriceLevelFormSchema
@@ -85,11 +86,6 @@ export const PriceLevelForm = ({
       }
     },
   })
-
-  const { appliesTo: apply, adjustmentType: type } = useStore(
-    form.store,
-    (state) => state.values
-  )
 
   return (
     <form
@@ -162,130 +158,187 @@ export const PriceLevelForm = ({
             )}
           />
           {/* all items */}
-          <form.AppField
-            name="adjustmentValue"
-            children={(field) => (
-              <field.TextField
-                label="Adjustment Value"
-                inputMode="decimal"
-                description=" Use positive for markup and negative for discount."
-                className={apply !== "all" ? "hidden" : ""}
-                prefix={adjustmentType === "percentage" ? "%" : "$"}
-              />
-            )}
-          />
-          {/* per item  */}
-          <form.Field
-            name="products"
-            mode="array"
-            children={(field) => (
-              <div
-                className={
-                  apply == "per_item" ? "flex flex-col gap-4" : "hidden"
-                }
-              >
-                <ProductSelector
-                  selected={field.state.value?.map((t) => t.id)}
-                  setSelectedChange={(value) => {
-                    const { id, title, itemCode, basePrice, image } = value
-                    const index = field.state.value.findIndex((t) => t.id == id)
-                    if (index === -1) {
-                      field.pushValue({
-                        id,
-                        title,
-                        itemCode,
-                        image,
-                        basePrice,
-                        price: "",
-                      })
-                    }
-                  }}
-                >
-                  <Button variant="outline" className="justify-start">
-                    <Plus /> Select items...
-                    <Badge className="ml-auto">
-                      {pluralize(
-                        field.state.value.length,
-                        `${field.state.value.length} item`
-                      )}
-                    </Badge>
-                    <ChevronDown />
-                  </Button>
-                </ProductSelector>
-                <div className="space-y-0.5">
-                  {field.state.value?.map((item, i) => {
-                    const basePrice = Number(item.basePrice)
-                    const percentage = Number(
-                      form.getFieldValue(`products[${i}].price`) ?? 0
-                    )
+          <form.Subscribe
+            selector={(state) => ({
+              appliesTo: state.values.appliesTo,
+              adjustmentType: state.values.adjustmentType,
+            })}
+            children={({ appliesTo, adjustmentType }) => (
+              <React.Fragment>
+                <form.AppField
+                  name="adjustmentValue"
+                  children={(field) => (
+                    <field.TextField
+                      label="Adjustment Value"
+                      inputMode="decimal"
+                      description=" Use positive for markup and negative for discount."
+                      className={appliesTo !== "all" ? "hidden" : ""}
+                      prefix={adjustmentType === "percentage" ? "%" : "$"}
+                    />
+                  )}
+                />
+                {/* per item  */}
+                <form.Field
+                  name="products"
+                  mode="array"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
 
                     return (
                       <div
-                        className="flex gap-3 rounded-xl border p-2"
-                        key={item.id}
+                        className={
+                          appliesTo === "per_item"
+                            ? "flex flex-col gap-4"
+                            : "hidden"
+                        }
                       >
-                        <div className="flex flex-1 items-start gap-3">
-                          <Avatar className="rounded-xl *:rounded-xl" size="lg">
-                            <AvatarImage src={item?.image as string} />
-                            <AvatarFallback>
-                              <ImageOff className="size-4" />
-                            </AvatarFallback>
-                          </Avatar>
-
-                          <div className="min-w-0 flex-1 space-y-1">
-                            <h4 className="leading-tight font-medium whitespace-normal">
-                              {item.title}
-                            </h4>
-                            <Badge variant="secondary">{item.itemCode}</Badge>
-                          </div>
-                        </div>
-
-                        <div className="flex gap-1.5 self-center text-right">
-                          <div
-                            className={`flex w-16 items-center justify-between gap-1.5 ${type !== "fixed" ? "hidden" : ""}`}
-                          >
-                            <span className="text-xs font-medium text-primary">
-                              {formatUSD(basePrice)}
-                            </span>
-                            <ArrowRight className="size-3 text-muted-foreground" />
-                          </div>
-                          <form.AppField
-                            name={`products[${i}].price`}
-                            children={(field) => (
-                              <field.TextField
-                                className="h-8 w-20 text-right"
-                                placeholder="0"
-                                inputMode="decimal"
-                                suffix={type === "percentage" ? "%" : "$"}
-                              />
-                            )}
-                          />
-                          <div
-                            className={`flex w-16 items-center justify-between gap-1.5 ${type !== "percentage" ? "hidden" : ""}`}
-                          >
-                            <ArrowRight className="size-3 text-muted-foreground" />
-                            <span className="text-xs font-medium text-primary">
-                              {formatUSD(
-                                basePrice + (basePrice * percentage) / 100
-                              )}
-                            </span>
-                          </div>
-                        </div>
-                        <Button
-                          size="icon-xs"
-                          variant="destructive"
-                          className="self-center"
-                          onClick={() => {
-                            field.removeValue(i)
+                        <ProductSelector
+                          selected={field.state.value?.map((t) => t.id)}
+                          setSelectedChange={(value) => {
+                            const { id, title, itemCode, image } = value
+                            const index = field.state.value.findIndex(
+                              (t) => t.id == id
+                            )
+                            if (index === -1) {
+                              field.pushValue({
+                                id,
+                                title,
+                                itemCode,
+                                image,
+                                sellUnits: value.sellUnits.map((su) => ({
+                                  ...su,
+                                  basePrice: su.price,
+                                })),
+                              })
+                            }
                           }}
                         >
-                          <Trash2 />
-                        </Button>
+                          <Button
+                            variant="outline"
+                            aria-invalid={isInvalid}
+                            className="justify-start"
+                          >
+                            <Plus /> Select items...
+                            <Badge className="ml-auto">
+                              {pluralize(
+                                field.state.value.length,
+                                `${field.state.value.length} item`
+                              )}
+                            </Badge>
+                            <ChevronDown />
+                          </Button>
+                        </ProductSelector>
+                        <div className="space-y-0.5">
+                          {field.state.value?.map((item, itemIndex) => {
+                            return (
+                              <div
+                                className="grid gap-3 rounded-xl border p-2"
+                                key={item.id}
+                              >
+                                <div className="flex items-start gap-3">
+                                  <Avatar
+                                    className="rounded-xl *:rounded-xl"
+                                    size="lg"
+                                  >
+                                    <AvatarImage src={item?.image as string} />
+                                    <AvatarFallback>
+                                      <ImageOff className="size-4" />
+                                    </AvatarFallback>
+                                  </Avatar>
+
+                                  <div className="grid flex-1 gap-2">
+                                    <h4 className="leading-tight font-medium whitespace-normal">
+                                      {item.title}
+                                    </h4>
+                                    <span className="text-xs text-muted-foreground">
+                                      {item.itemCode}
+                                    </span>
+                                  </div>
+                                  <Button
+                                    size="icon-sm"
+                                    variant="destructive"
+                                    onClick={() => field.removeValue(itemIndex)}
+                                  >
+                                    <TrashBinMinimalistic />
+                                  </Button>
+                                </div>
+                                <div className="border border-dashed" />
+                                {/* sell units */}
+                                <div className="space-y-1">
+                                  {/* Header */}
+                                  <div className="grid grid-cols-[1fr_96px_1fr] gap-4 px-1">
+                                    <span className="text-[11px] font-medium text-muted-foreground">
+                                      Current Price
+                                    </span>
+                                    <span className="text-center text-[11px] font-medium text-muted-foreground">
+                                      Adjustment
+                                    </span>
+                                    <span className="text-right text-[11px] font-medium text-muted-foreground">
+                                      New Price
+                                    </span>
+                                  </div>
+
+                                  {/* Prices */}
+                                  {item.sellUnits.map((unit, unitIndex) => {
+                                    const newPrice =
+                                      adjustmentType === "percentage"
+                                        ? Number(unit.basePrice) +
+                                          (Number(unit.basePrice) *
+                                            Number(unit.price)) /
+                                            100
+                                        : Number(unit.basePrice) +
+                                          Number(unit.price)
+                                    const suffix =
+                                      adjustmentType === "percentage"
+                                        ? "%"
+                                        : "$"
+
+                                    return (
+                                      <div
+                                        key={unit.id}
+                                        className="grid grid-cols-[1fr_96px_1fr] items-center gap-4 px-1"
+                                      >
+                                        <div className="inline-flex items-baseline gap-px">
+                                          <span className="text-xs font-medium">
+                                            {formatUSD(unit.basePrice)}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">
+                                            / {unit.unit}
+                                          </span>
+                                        </div>
+
+                                        <form.AppField
+                                          name={`products[${itemIndex}].sellUnits[${unitIndex}].price`}
+                                          children={(field) => (
+                                            <field.TextField
+                                              className="*:data-[slot=field-error]:hidden! *:data-[slot=input-group]:h-8"
+                                              inputMode="decimal"
+                                              suffix={suffix}
+                                            />
+                                          )}
+                                        />
+                                        <div className="inline-flex items-baseline justify-end gap-px">
+                                          <span className="text-xs font-medium text-primary">
+                                            {formatUSD(newPrice)}
+                                          </span>
+                                          <span className="text-xs text-muted-foreground">
+                                            / {unit.unit}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    )
+                                  })}
+                                </div>
+                              </div>
+                            )
+                          })}
+                        </div>
                       </div>
                     )
-                  })}
-                </div>
-              </div>
+                  }}
+                />
+              </React.Fragment>
             )}
           />
         </FieldGroup>
