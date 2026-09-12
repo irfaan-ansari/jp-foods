@@ -75,7 +75,7 @@ export const productSellUnit = pgTable(
     productId: integer("product_id").references(() => product.id, {
       onDelete: "cascade",
     }),
-    unit: text("unit").notNull().default(""),
+    name: text("name").notNull().default(""),
     inventoryPerUnit: text("inventory_per_unit").notNull().default("1"),
     price: text("price").notNull().default(""),
     minQuantity: text("min_quantity").notNull().default("1"),
@@ -89,7 +89,7 @@ export const productSellUnit = pgTable(
   },
   (table) => [
     index("product_sell_option_productId_idx").on(table.productId),
-    unique("product_sell_option_unique").on(table.unit, table.productId),
+    unique("product_sell_option_unique").on(table.name, table.productId),
   ]
 )
 

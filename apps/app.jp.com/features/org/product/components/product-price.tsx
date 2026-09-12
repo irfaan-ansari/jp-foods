@@ -2,7 +2,7 @@ import { formatUSD } from "@jp/utils"
 
 type PriceProps = {
   sellUnits: {
-    unit: string
+    name: string
     price: string | number
     inventoryPerUnit: string
   }[]
@@ -20,13 +20,13 @@ export const ProductPrice = ({
   return (
     <div className="grid w-full gap-0.5">
       {prices.map((item, index) => (
-        <div key={`${item.unit}-${index}`} className="flex items-center gap-2">
+        <div key={`${item.name}-${index}`} className="flex items-center gap-2">
           <div className="flex items-baseline gap-0">
             <span className="text-sm font-semibold text-primary">
               {formatUSD(item.price)}
             </span>
             <span className="text-xs font-normal text-muted-foreground">
-              / {item.unit}
+              / {item.name}
             </span>
           </div>
         </div>

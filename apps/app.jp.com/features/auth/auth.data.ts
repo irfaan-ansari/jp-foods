@@ -1,5 +1,6 @@
 "use client"
-import { UserPermission } from "@jp/auth"
+
+import type { OrganizationPermission, UserPermission } from "@jp/auth"
 import { authClient } from "@jp/auth/client"
 import { useQuery } from "@tanstack/react-query"
 
@@ -16,5 +17,20 @@ export const useUserPermission = ({ ...permissions }: UserPermission) => {
         permissions,
       }),
     enabled: !disabled,
+    staleTime: 60 * 60 * 1000,
+  })
+}
+
+export const useOrgPermission = (permission: OrganizationPermission) => {
+  return useQuery({
+    queryKey: ["org-permission", permission],
+    queryFn: async () => {
+      const { error, data } = await authClient.organization.hasPermission({
+        permissions: permission,
+      })
+      if (error) throw new Error(error.message)
+      return data
+    },
+    staleTime: 60 * 60 * 1000,
   })
 }

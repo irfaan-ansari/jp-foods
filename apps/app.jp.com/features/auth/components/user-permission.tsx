@@ -3,7 +3,7 @@
 import React from "react"
 
 import { UserPermission } from "@jp/auth"
-import { PermissionProps } from "@/features/shared/shared.type"
+import { PermissionProps } from "../auth.type"
 import { useUserPermission } from "../auth.data"
 
 type UserAccessProps = PermissionProps & {

@@ -3,8 +3,8 @@
 import React from "react"
 
 import { OrganizationPermission } from "@jp/auth"
-import { PermissionProps } from "@/features/shared/shared.type"
-import { useOrgPermission } from "@/features/org/organization.data"
+import { PermissionProps } from "../auth.type"
+import { useOrgPermission } from "../auth.data"
 
 type OrgAccessProps = PermissionProps & {
   permission: OrganizationPermission

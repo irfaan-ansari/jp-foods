@@ -16,7 +16,7 @@ export const productFormSchema = z.object({
   sellUnits: z
     .object({
       id: z.number().optional(),
-      unit: z.string().min(1, "Unit is required"),
+      name: z.string().min(1, "Unit is required"),
       inventoryPerUnit: numberSchema,
       price: numberSchema,
       minQuantity: numberSchema,
@@ -42,7 +42,7 @@ export const productFormValues = {
   allowBackorder: false,
   sellUnits: [
     {
-      unit: "case",
+      name: "case",
       inventoryPerUnit: "",
       price: "",
       minQuantity: "",

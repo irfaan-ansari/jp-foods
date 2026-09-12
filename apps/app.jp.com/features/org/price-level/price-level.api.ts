@@ -52,18 +52,22 @@ export const priceLevelRoutes = app
 
     const transformed = response.map((item) => {
       const { priceLevelItem, ...rest } = item
+      const uniqueProductCount = new Set(
+        priceLevelItem.map((item) => item.productId)
+      ).size
+
       return {
         ...rest,
-        productCount: priceLevelItem.length,
+        productCount: uniqueProductCount,
         customerCount: counts.get(item.id) ?? 0,
         products: priceLevelItem.map((priceItem) => {
-          const { id, title, itemCode, image, basePrice } = priceItem.product
+          const { id, title, itemCode, image } = priceItem.product
           return {
             id,
+            sellUnitId: priceItem.sellUnitId,
             title,
             itemCode,
             image,
-            basePrice,
             price: priceItem.price,
           }
         }),

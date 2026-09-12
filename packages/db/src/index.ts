@@ -1,4 +1,4 @@
-import "server-only"
+import "dotenv/config"
 
 import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http"
 

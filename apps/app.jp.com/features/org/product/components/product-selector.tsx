@@ -17,7 +17,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 type SellUnit = {
   id: number
-  unit: string
+  name: string
   price: string
 }
 type ProductType = {
@@ -126,7 +126,7 @@ export const ProductSelector = ({
                                 {formatUSD(unit.price)}
                               </span>
                               <span className="pl-1 text-xs text-muted-foreground">
-                                / {unit.unit}
+                                / {unit.name}
                               </span>
                             </FieldTitle>
                           </div>

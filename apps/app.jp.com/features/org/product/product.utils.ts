@@ -22,7 +22,7 @@ export const getUnit = (value: string | undefined) => {
   return PRODUCT_UNITS.find((u) => u.value === value)
 }
 
-export function getBaseUnit(units: { isBaseUnit?: boolean; unit: string }[]) {
+export function getBaseUnit(units: { isBaseUnit?: boolean; name: string }[]) {
   const unit = units.find((unit) => unit.isBaseUnit === true)
-  return getUnit(unit?.unit ?? "")
+  return getUnit(unit?.name ?? "")
 }
