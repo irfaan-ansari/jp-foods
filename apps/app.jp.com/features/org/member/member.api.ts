@@ -17,7 +17,7 @@ export const memberRoutes = app
 
     const conditions = [
       eq(member.organizationId, organizationId),
-      role ? eq(member.role, role) : ne(member.role, "customer"),
+      role ? eq(member.role, role) : undefined,
     ]
 
     if (q) {

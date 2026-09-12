@@ -266,7 +266,7 @@ export const TeamDetailClient = ({
                         <span className="line-clamp-1 font-semibold">
                           {formatUSD(unit.price)}
                           <span className="pl-1 text-xs text-muted-foreground">
-                            {unit.unit}
+                            {unit.name}
                           </span>
                         </span>
                       </div>

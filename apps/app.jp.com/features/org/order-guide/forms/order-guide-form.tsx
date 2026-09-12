@@ -261,7 +261,7 @@ const OrderGuideForm = ({
                         </div>
                         <div className="self-center text-right font-semibold text-primary">
                           {subField?.sellUnits?.map((unit) => (
-                            <span key={unit.unit}>{unit.price}</span>
+                            <span key={unit.name}>{unit.price}</span>
                           ))}
                         </div>
                         <Button

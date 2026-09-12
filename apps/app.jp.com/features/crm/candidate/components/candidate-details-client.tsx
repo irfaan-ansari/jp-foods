@@ -354,40 +354,12 @@ export const CandidateDetailsClient = ({
             <CardTitle>Documents</CardTitle>
           </CardHeader>
           <CardContent className="grid grid-cols-2 gap-3">
-            <FilePreview data={{ label: "CV", url: data.cvUrl }} />
-            <FilePreview
-              data={{
-                label: "Social Security - (front)",
-                url: data.socialSecurityFrontUrl,
-              }}
-            />
-            <FilePreview
-              data={{
-                label: "Social Security - (back)",
-                url: data.socialSecurityBackUrl,
-              }}
-            />
-            <FilePreview
-              data={{ label: "DOT - (front)", url: data.dotFrontUrl }}
-            />
-            <FilePreview
-              data={{ label: "DOT - (back)", url: data.dotBackUrl }}
-            />
-            <FilePreview
-              data={{
-                label: "Licence - (front)",
-                url: data.drivingLicenseFrontUrl,
-              }}
-            />
-            <FilePreview
-              data={{
-                label: "Licence - (back)",
-                url: data.drivingLicenseBackUrl,
-              }}
-            />
-            <FilePreview
-              data={{ label: "Signature", url: data.signatureUrl }}
-            />
+            {data.documents.map((doc) => (
+              <FilePreview
+                key={doc.field}
+                data={{ label: doc.label, url: doc.url, field: doc.field }}
+              />
+            ))}
           </CardContent>
         </Card>
       </div>
@@ -436,7 +408,7 @@ const ApplicationStatusInfo = ({ data }: { data: CandidateApplication }) => {
   }
 
   return (
-    <Alert variant={data.status === "rejected" ? "destructive" : "warning"}>
+    <Alert variant={data.status === "rejected" ? "destructive" : "default"}>
       <AlertTriangleIcon />
       <AlertTitle>{data.statusReason}</AlertTitle>
 

@@ -3,6 +3,7 @@
 import React from "react"
 import { toast } from "sonner"
 
+import { getNewPrice } from "../price-level.utils"
 import { Badge } from "@jp/ui/components/badge"
 import { formatUSD, pluralize } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
@@ -162,9 +163,9 @@ export const PriceLevelForm = ({
           <form.Subscribe
             selector={(state) => ({
               appliesTo: state.values.appliesTo,
-              adjustmentType: state.values.adjustmentType,
+              type: state.values.adjustmentType,
             })}
-            children={({ appliesTo, adjustmentType }) => (
+            children={({ appliesTo, type }) => (
               <React.Fragment>
                 <form.AppField
                   name="adjustmentValue"
@@ -174,7 +175,7 @@ export const PriceLevelForm = ({
                       inputMode="decimal"
                       description=" Use positive for markup and negative for discount."
                       className={appliesTo !== "all" ? "hidden" : ""}
-                      prefix={adjustmentType === "percentage" ? "%" : "$"}
+                      prefix={type === "percentage" ? "%" : "$"}
                     />
                   )}
                 />
@@ -209,6 +210,7 @@ export const PriceLevelForm = ({
                                 image,
                                 sellUnits: value.sellUnits.map((su) => ({
                                   ...su,
+                                  price: "",
                                   basePrice: su.price,
                                 })),
                               })
@@ -248,7 +250,7 @@ export const PriceLevelForm = ({
                                     </AvatarFallback>
                                   </Avatar>
 
-                                  <div className="grid flex-1 gap-2">
+                                  <div className="grid flex-1 gap-1">
                                     <h4 className="leading-tight font-medium whitespace-normal">
                                       {item.title}
                                     </h4>
@@ -264,7 +266,7 @@ export const PriceLevelForm = ({
                                     <TrashBinMinimalistic />
                                   </Button>
                                 </div>
-                                <div className="border border-dashed" />
+                                <div className="border-b border-dashed" />
                                 {/* sell units */}
                                 <div className="space-y-1">
                                   {/* Header */}
@@ -282,18 +284,13 @@ export const PriceLevelForm = ({
 
                                   {/* Prices */}
                                   {item.sellUnits.map((unit, unitIndex) => {
-                                    const newPrice =
-                                      adjustmentType === "percentage"
-                                        ? Number(unit.basePrice) +
-                                          (Number(unit.basePrice) *
-                                            Number(unit.price)) /
-                                            100
-                                        : Number(unit.basePrice) +
-                                          Number(unit.price)
+                                    const newPrice = getNewPrice(
+                                      type,
+                                      unit.basePrice,
+                                      unit.price
+                                    )
                                     const suffix =
-                                      adjustmentType === "percentage"
-                                        ? "%"
-                                        : "$"
+                                      type === "percentage" ? "%" : "$"
 
                                     return (
                                       <div
@@ -301,11 +298,11 @@ export const PriceLevelForm = ({
                                         className="grid grid-cols-[1fr_96px_1fr] items-center gap-4 px-1"
                                       >
                                         <div className="inline-flex items-baseline gap-px">
-                                          <span className="text-xs font-medium">
+                                          <span className="text-xs font-medium text-muted-foreground">
                                             {formatUSD(unit.basePrice ?? "")}
                                           </span>
                                           <span className="text-xs text-muted-foreground">
-                                            / {unit.name}
+                                            • {unit.name}
                                           </span>
                                         </div>
 
@@ -324,7 +321,7 @@ export const PriceLevelForm = ({
                                             {formatUSD(newPrice)}
                                           </span>
                                           <span className="text-xs text-muted-foreground">
-                                            / {unit.name}
+                                            • {unit.name}
                                           </span>
                                         </div>
                                       </div>

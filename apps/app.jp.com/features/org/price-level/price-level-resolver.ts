@@ -1,24 +1,12 @@
-import { db } from "@jp/db"
-
+import {
+  db,
+  PriceLevelItemSelectType,
+  ProductSelectType,
+  ProductSellUnitSelectType,
+} from "@jp/db"
+import { getNewPrice } from "./price-level.utils"
+import { PriceLevelItem } from "./price-level.type"
 import { Product } from "../product/product.type"
-
-import { PriceLevelItem } from "./team.type"
-
-export const getNewPrice = (
-  adjustmentType: string,
-  basePrice: number | string | null,
-  adjustmentValue: number | string
-): string => {
-  const base = Number(basePrice ?? 0)
-  const adjustment = Number(adjustmentValue)
-
-  const price =
-    adjustmentType === "percentage"
-      ? base + (base * adjustment) / 100
-      : base + adjustment
-
-  return String(Math.max(0, Math.round(price * 100) / 100))
-}
 
 const getPriceLevelConfig = async (teamId: string) => {
   const team = await db.query.team.findFirst({

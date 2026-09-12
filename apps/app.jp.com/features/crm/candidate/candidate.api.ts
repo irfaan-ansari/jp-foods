@@ -39,9 +39,54 @@ export const jobApplicationRoutes = app
       db.$count(jobApplication, and(...conditions)),
     ])
 
+    const transformed = response.map((res) => {
+      const {
+        cvUrl,
+        dotBackUrl,
+        dotFrontUrl,
+        agreementUrl,
+        signatureUrl,
+        drivingLicenseBackUrl,
+        drivingLicenseFrontUrl,
+        socialSecurityBackUrl,
+        socialSecurityFrontUrl,
+        ...application
+      } = res
+      return {
+        ...application,
+        documents: [
+          { label: "CV", field: "cvUrl", url: cvUrl },
+          { label: "DOT Back", field: "dotBackUrl", url: dotBackUrl },
+          { label: "DOT Front", field: "dotFrontUrl", url: dotFrontUrl },
+          { label: "Agreement", field: "agreementUrl", url: agreementUrl },
+          { label: "Signature", field: "signatureUrl", url: signatureUrl },
+          {
+            label: "Driving License Back",
+            field: "drivingLicenseBackUrl",
+            url: drivingLicenseBackUrl,
+          },
+          {
+            label: "Driving License Front",
+            field: "drivingLicenseFrontUrl",
+            url: drivingLicenseFrontUrl,
+          },
+          {
+            label: "Social Security Back",
+            field: "socialSecurityBackUrl",
+            url: socialSecurityBackUrl,
+          },
+          {
+            label: "Social Security Front",
+            field: "socialSecurityFrontUrl",
+            url: socialSecurityFrontUrl,
+          },
+        ].filter((doc) => doc.url),
+      }
+    })
+
     return c.json({
       success: true,
-      data: response,
+      data: transformed,
       pagination: {
         page: page,
         limit: limit,
@@ -79,8 +124,51 @@ export const jobApplicationRoutes = app
 
     if (!response) throw new AppError("NOT_FOUND")
 
+    const {
+      cvUrl,
+      dotBackUrl,
+      dotFrontUrl,
+      agreementUrl,
+      signatureUrl,
+      drivingLicenseBackUrl,
+      drivingLicenseFrontUrl,
+      socialSecurityBackUrl,
+      socialSecurityFrontUrl,
+      ...application
+    } = response
+
+    const transformed = {
+      ...application,
+      documents: [
+        { label: "CV", field: "cvUrl", url: cvUrl },
+        { label: "DOT Back", field: "dotBackUrl", url: dotBackUrl },
+        { label: "DOT Front", field: "dotFrontUrl", url: dotFrontUrl },
+        { label: "Agreement", field: "agreementUrl", url: agreementUrl },
+        { label: "Signature", field: "signatureUrl", url: signatureUrl },
+        {
+          label: "Driving License Back",
+          field: "drivingLicenseBackUrl",
+          url: drivingLicenseBackUrl,
+        },
+        {
+          label: "Driving License Front",
+          field: "drivingLicenseFrontUrl",
+          url: drivingLicenseFrontUrl,
+        },
+        {
+          label: "Social Security Back",
+          field: "socialSecurityBackUrl",
+          url: socialSecurityBackUrl,
+        },
+        {
+          label: "Social Security Front",
+          field: "socialSecurityFrontUrl",
+          url: socialSecurityFrontUrl,
+        },
+      ].filter((doc) => doc.url),
+    }
     return c.json({
       success: true,
-      data: response,
+      data: transformed,
     })
   })

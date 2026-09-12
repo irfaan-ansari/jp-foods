@@ -6,7 +6,7 @@ import { AppError } from "@jp/utils"
 import { orgActionClient } from "@/lib/safe-action"
 import { toOrderItemInput } from "./order-form.utils"
 import { calculateOrder } from "./order-form.calculate"
-import { resolveTeamPrices } from "../team/team.price-resolver"
+import { resolveTeamPrices } from "@jp/utils"
 import { toInsertLineItems, toInsertOrder } from "./order-form.utils"
 import { createOrderSchema, updateOrderSchema } from "./order-form.schema"
 import { eq, inArray } from "drizzle-orm"
@@ -27,6 +27,9 @@ export const createOrder = orgActionClient({ order: ["create"] })
             eq(p.organizationId, organizationId),
             inArray(p.id, [...itemsByProductId.keys()])
           ),
+        with: {
+          sellUnits: true,
+        },
       }),
 
       db.query.team.findFirst({
@@ -118,6 +121,9 @@ export const updateOrder = orgActionClient({ order: ["update"] })
             eq(p.organizationId, organizationId),
             inArray(p.id, [...itemsByProductId.keys()])
           ),
+        with: {
+          sellUnits: true,
+        },
       }),
       db.query.team.findFirst({
         where: (t, { eq }) => eq(t.id, teamId),

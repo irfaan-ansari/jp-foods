@@ -55,7 +55,7 @@ export default async function RootLayout({
               } as React.CSSProperties
             }
           >
-            <AppSidebar session={{ ...session }} />
+            <AppSidebar session={{ ...session! }} />
             <SidebarInset className="@container/page-content no-scrollbar md:h-[calc(100svh-16px)] md:overflow-auto">
               {/* render status */}
               {/* <NetworkStatus /> */}

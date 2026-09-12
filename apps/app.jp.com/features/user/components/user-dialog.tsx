@@ -73,6 +73,8 @@ export const UserDialog = ({
         }
         toast.success("User account update.")
 
+        // TODO
+        // @ts-expect-error
         callback?.(data?.user!)
         queryClient.invalidateQueries({ queryKey: ["users"] })
         queryClient.invalidateQueries({
@@ -92,6 +94,8 @@ export const UserDialog = ({
         }
 
         toast.success("User account created.")
+        // TODO
+        // @ts-expect-error
         callback?.(data?.user!)
         queryClient.invalidateQueries({ queryKey: ["users"] })
         queryClient.invalidateQueries({

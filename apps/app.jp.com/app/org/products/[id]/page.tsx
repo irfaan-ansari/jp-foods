@@ -39,7 +39,7 @@ const ProductPage = () => {
               sellUnits: data?.sellUnits?.map((unit) => ({
                 id: unit.id,
                 isBaseUnit: unit.isBaseUnit,
-                unit: unit.unit,
+                name: unit.name,
                 price: unit.price,
                 minQuantity: unit.minQuantity,
                 inventoryPerUnit: unit.inventoryPerUnit,
@@ -52,7 +52,7 @@ const ProductPage = () => {
               status: data?.status ?? "active",
               isTaxable: !!data.isTaxable,
               categories: data.categories ?? [],
-              type: data.type ?? "",
+              location: data.location ?? "",
               trackInventory: !!data.trackInventory,
               stock: data?.stock ?? "",
               allowBackorder: !!data.allowBackorder,

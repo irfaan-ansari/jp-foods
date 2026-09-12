@@ -16,7 +16,7 @@ export const orderGuideSchema = z.object({
         image: z.any(),
         sellUnits: z
           .object({
-            unit: z.string(),
+            name: z.string(),
             price: z.string(),
           })
           .array(),

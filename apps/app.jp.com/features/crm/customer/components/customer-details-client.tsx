@@ -210,31 +210,17 @@ export const CustomerDetailsClient = ({
           <CardHeader className="border-b border-dashed">
             <CardTitle>Documents</CardTitle>
           </CardHeader>
-          <CardContent className="grid grid-cols-1 gap-3">
-            <FilePreview
-              data={{
-                label: "Sale Tax/Certificate",
-                url: data.certificateUrl ?? "",
-              }}
-            />
-            <FilePreview
-              data={{
-                label: "Driver's Licence (Front)",
-                url: data.dlFrontUrl ?? "",
-              }}
-            />
-            <FilePreview
-              data={{
-                label: "Driver's Licence (Back)",
-                url: data.dlBackUrl ?? "",
-              }}
-            />
-            <FilePreview
-              data={{
-                label: "Signature",
-                url: data.signatureUrl ?? "",
-              }}
-            />
+          <CardContent className="grid grid-cols-1 gap-3 lg:grid-cols-2">
+            {data.documents.map((doc) => (
+              <FilePreview
+                key={doc.field}
+                data={{
+                  field: doc.field,
+                  label: doc.label,
+                  url: doc.url,
+                }}
+              />
+            ))}
           </CardContent>
         </Card>
       </div>

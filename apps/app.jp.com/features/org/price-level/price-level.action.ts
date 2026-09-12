@@ -7,7 +7,7 @@ import {
 } from "./price-level.schema"
 import { db, priceLevel, priceLevelItem } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { eq, inArray, sql } from "drizzle-orm"
+import { and, eq, inArray, sql } from "drizzle-orm"
 
 /**
  * create
@@ -32,6 +32,7 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
         productId: p.id,
         price: p.price,
         priceLevelId: result.id,
+        sellUnitId: p.sellUnitId,
       }))
       await db.insert(priceLevelItem).values(priceLevelItemValues)
     }
@@ -42,48 +43,74 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
 /**
  * update
  */
-export const updatePriceLevel = orgActionClient({ priceLevel: ["update"] })
+export const updatePriceLevel = orgActionClient({
+  priceLevel: ["update"],
+})
   .inputSchema(updatePriceLevelSchema)
   .action(async ({ clientInput, ctx }) => {
     const organizationId = ctx.organizationId
-
     const { id, data } = clientInput
 
     const { products, appliesTo, ...rest } = data
+    console.log("products", products)
 
     const [existing, existingItems] = await Promise.all([
       db.query.priceLevel.findFirst({
         where: (pl, { and, eq }) =>
           and(eq(pl.organizationId, organizationId), eq(pl.id, id)),
       }),
+
       db.query.priceLevelItem.findMany({
-        where: (pl, { eq }) => eq(pl.priceLevelId, id),
+        where: (item, { eq }) => eq(item.priceLevelId, id),
       }),
     ])
 
-    if (!existing) throw new AppError("NOT_FOUND")
+    if (!existing) {
+      throw new AppError("NOT_FOUND")
+    }
 
     const [result] = await db
       .update(priceLevel)
-      .set({ ...rest, appliesTo })
-      .where(eq(priceLevel.id, id))
-      .returning({ id: priceLevel.id })
+      .set({
+        ...rest,
+        appliesTo,
+      })
+      .where(
+        and(
+          eq(priceLevel.id, id),
+          eq(priceLevel.organizationId, organizationId)
+        )
+      )
+      .returning({
+        id: priceLevel.id,
+      })
 
-    if (!result) throw new AppError("VALIDATION_ERROR")
+    if (!result) {
+      throw new AppError("VALIDATION_ERROR")
+    }
 
-    const promises = []
-
-    const priceLevelItems = products.map((p) => ({
-      productId: p.id,
-      price: p.price,
-      priceLevelId: result.id,
-    }))
+    const priceLevelItems =
+      appliesTo === "per_item"
+        ? products.map((product) => ({
+            priceLevelId: result.id,
+            productId: product.id,
+            sellUnitId: product.sellUnitId,
+            price: product.price,
+          }))
+        : []
 
     const toDelete = existingItems
       .filter(
-        (item) => !priceLevelItems.some((f) => f.productId === item.productId)
+        (existingItem) =>
+          !priceLevelItems.some(
+            (item) =>
+              item.productId === existingItem.productId &&
+              item.sellUnitId === existingItem.sellUnitId
+          )
       )
       .map((item) => item.id)
+
+    const promises: Promise<unknown>[] = []
 
     if (toDelete.length > 0) {
       promises.push(
@@ -97,7 +124,11 @@ export const updatePriceLevel = orgActionClient({ priceLevel: ["update"] })
           .insert(priceLevelItem)
           .values(priceLevelItems)
           .onConflictDoUpdate({
-            target: [priceLevelItem.priceLevelId, priceLevelItem.productId],
+            target: [
+              priceLevelItem.priceLevelId,
+              priceLevelItem.productId,
+              priceLevelItem.sellUnitId,
+            ],
             set: {
               price: sql`excluded.price`,
             },

@@ -156,6 +156,7 @@ export const orders = app
       })
 
     const stream = ""
+    // @ts-expect-error
     return c.body(stream as ReadableStream, 400, {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="order-${id}.pdf"`,

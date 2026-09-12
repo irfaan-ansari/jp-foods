@@ -1,4 +1,4 @@
-import { ProductSelectType } from "@jp/db"
+import { ProductSelectType, ProductSellUnitSelectType } from "@jp/db"
 
 type LastOrder = {
   id: number
@@ -9,6 +9,7 @@ type LastOrder = {
 
 export type Product = Omit<ProductSelectType, "basePrice"> & {
   price: string
+  sellUnits: ProductSellUnitSelectType[]
   lastOrder?: LastOrder | undefined
 }
 
