@@ -2,27 +2,18 @@
 
 import React from "react"
 import { toast } from "sonner"
-import {
-  ArrowRight,
-  ChevronDown,
-  ImageOff,
-  Loader2,
-  Plus,
-  Trash2,
-} from "lucide-react"
 
-import { Button } from "@jp/ui/components/button"
 import { Badge } from "@jp/ui/components/badge"
-import { useStore } from "@tanstack/react-form"
+import { formatUSD, pluralize } from "@jp/utils"
+import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
-
+import { TrashBinMinimalistic } from "@solar-icons/react"
 import { Field, FieldGroup } from "@jp/ui/components/field"
+import { ChevronDown, ImageOff, Loader2, Plus } from "lucide-react"
+import { createPriceLevel, updatePriceLevel } from "../price-level.action"
 import { PriceLevelFormSchema, priceLevelSchema } from "../price-level.schema"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { ProductSelector } from "@/features/org/product/components/product-selector"
-import { formatUSD, pluralize } from "@jp/utils"
-import { createPriceLevel, updatePriceLevel } from "../price-level.action"
-import { TrashBinMinimalistic } from "@solar-icons/react"
 
 type FormProps = {
   values?: PriceLevelFormSchema
@@ -60,10 +51,20 @@ export const PriceLevelForm = ({
       onSubmit: priceLevelSchema,
     },
     onSubmit: async ({ value }) => {
+      const products = value.products.flatMap((product) =>
+        product.sellUnits.map((sellUnit) => ({
+          id: product.id,
+
+          sellUnitId: sellUnit.id,
+          name: sellUnit.name,
+          price: sellUnit.price,
+        }))
+      )
+
       if (id) {
-        const { serverError, data, validationErrors } = await updatePriceLevel({
+        const { serverError } = await updatePriceLevel({
           id,
-          data: value,
+          data: { ...value, products },
         })
         if (serverError) {
           toast.error(serverError.message)
@@ -74,7 +75,7 @@ export const PriceLevelForm = ({
         }
       } else {
         const { serverError, data, validationErrors } = await createPriceLevel({
-          data: value,
+          data: { ...value, products },
         })
         if (serverError) {
           toast.error(serverError.message)
@@ -301,10 +302,10 @@ export const PriceLevelForm = ({
                                       >
                                         <div className="inline-flex items-baseline gap-px">
                                           <span className="text-xs font-medium">
-                                            {formatUSD(unit.basePrice)}
+                                            {formatUSD(unit.basePrice ?? "")}
                                           </span>
                                           <span className="text-xs text-muted-foreground">
-                                            / {unit.unit}
+                                            / {unit.name}
                                           </span>
                                         </div>
 
@@ -323,7 +324,7 @@ export const PriceLevelForm = ({
                                             {formatUSD(newPrice)}
                                           </span>
                                           <span className="text-xs text-muted-foreground">
-                                            / {unit.unit}
+                                            / {unit.name}
                                           </span>
                                         </div>
                                       </div>

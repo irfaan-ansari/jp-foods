@@ -3,10 +3,11 @@ import z from "zod"
 
 const sellUnitSchema = z.object({
   id: z.number(),
-  unit: z.string(),
+  name: z.string(),
   basePrice: z.string().nullable(),
   price: z.string().min(1, "Adjustment price is required"),
 })
+
 const productSchema = z.object({
   id: z.number(),
   sellUnits: sellUnitSchema.array(),

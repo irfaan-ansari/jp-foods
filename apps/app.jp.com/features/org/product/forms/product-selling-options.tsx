@@ -39,12 +39,12 @@ export const ProductSellingOptions = withForm({
       const sellUnits = form.getFieldValue("sellUnits")
 
       const units = getAvailableUnits(
-        sellUnits.map((item) => item.unit),
+        sellUnits.map((item) => item.name),
         sellUnits.length
       )
       const hasBaseUnit = sellUnits.some((i) => i.isBaseUnit)
       form.pushFieldValue("sellUnits", {
-        unit: units?.[0]?.value ?? "",
+        name: units?.[0]?.value ?? "",
         orderIncreament: "",
         minQuantity: "",
         inventoryPerUnit: "",
@@ -75,8 +75,8 @@ export const ProductSellingOptions = withForm({
                     <div className="space-y-6">
                       {sellUnits.map((subField, i) => {
                         // get current unit and check if base unit
-                        const currentUnit = getUnit(subField.unit)
-                        const isBaseUnit = subField.unit && subField.isBaseUnit
+                        const currentUnit = getUnit(subField.name)
+                        const isBaseUnit = subField.name && subField.isBaseUnit
 
                         return (
                           <div key={i} className="relative">
@@ -129,14 +129,14 @@ export const ProductSellingOptions = withForm({
 
                               <FieldGroup className="grid flex-1 gap-4 lg:grid-cols-2">
                                 <form.AppField
-                                  name={`sellUnits[${i}].unit`}
+                                  name={`sellUnits[${i}].name`}
                                   children={(unitField) => (
                                     <unitField.SelectField
                                       label="Sell As"
                                       placeholder="Select unit..."
                                       className="lg:col-span-2"
                                       options={getAvailableUnits(
-                                        sellUnits.map((item) => item.unit),
+                                        sellUnits.map((item) => item.name),
                                         i
                                       )}
                                     />
@@ -154,7 +154,7 @@ export const ProductSellingOptions = withForm({
                                       }
                                       prefix="$"
                                       inputMode="decimal"
-                                      suffix={`/${getUnit(subField.unit)?.value}`}
+                                      suffix={`/${getUnit(subField.name)?.value}`}
                                     />
                                   )}
                                 />

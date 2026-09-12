@@ -15,11 +15,6 @@ export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   pagination: Pagination
 }
 
-export type PermissionProps = {
-  children: (disabled: boolean, isPending?: boolean) => React.ReactNode
-  fallback?: React.ReactNode
-}
-
 export type BadgeStatus = {
   label: string
   value: string
