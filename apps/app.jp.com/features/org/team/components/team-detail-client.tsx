@@ -25,6 +25,7 @@ import { OrderStatusBadge } from "@/features/org/order/components/order-card"
 import { StatCard } from "@/features/org/dashboard/components/stat-card"
 import { CopyButton } from "@jp/ui/components/jp"
 import { TeamBadge } from "./team-card"
+import { PriceLevelBadge } from "../../price-level/components/price-level-card"
 
 export const TeamDetailClient = ({
   data,
@@ -223,7 +224,13 @@ export const TeamDetailClient = ({
                   Price Level
                 </span>
                 <div className="flex rounded-xl border bg-secondary/50 p-2.5">
-                  {priceLevel.name ?? "Price level name"}
+                  {priceLevel.name}
+                  <PriceLevelBadge
+                    adjustmentType={team.priceLevel.adjustmentType}
+                    adjustmentValue={team.priceLevel.adjustmentValue!}
+                    appliesTo={team.priceLevel.appliesTo}
+                    productCount={team.priceLevel.productCount}
+                  />
                 </div>
               </div>
               <div className="grid gap-1.5">
@@ -260,19 +267,6 @@ export const TeamDetailClient = ({
                       <span className="text-xs text-muted-foreground">
                         {product.itemCode}
                       </span>
-                    </div>
-
-                    <div className="shrink-0 space-y-0">
-                      {product.sellUnits?.map((unit) => (
-                        <div key={unit.id}>
-                          <span className="line-clamp-1 font-semibold">
-                            {formatUSD(unit.price)}
-                            <span className="pl-1 text-xs text-muted-foreground">
-                              {unit.name}
-                            </span>
-                          </span>
-                        </div>
-                      ))}
                     </div>
                   </div>
                 ))

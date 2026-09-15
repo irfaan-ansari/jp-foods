@@ -16,6 +16,8 @@ import { createAuthMiddleware } from "better-auth/api"
 import { getActiveAccount } from "./utils"
 import { PORTAL_URLS } from "./permissions"
 
+const AVATAR = `https://api.dicebear.com/10.x`
+
 export const auth = betterAuth({
   baseURL: process.env.BETTER_AUTH_URL,
   basepath: "/api/auth",
@@ -54,6 +56,16 @@ export const auth = betterAuth({
       async sendInvitationEmail(data) {
         const inviteLink = `https://example.com/accept-invitation/${data.id}`
         console.log("send email:", inviteLink)
+      },
+      organizationHooks: {
+        beforeCreateTeam: async ({ team }) => {
+          return {
+            data: {
+              ...team,
+              logo: team.logo || `${AVATAR}/initials/svg?seed=${team.name}`,
+            },
+          }
+        },
       },
       ac: orgAc,
       roles: orgRoles,
@@ -123,6 +135,18 @@ export const auth = betterAuth({
     }),
   ],
   databaseHooks: {
+    user: {
+      create: {
+        before: async (user, ctx) => {
+          return {
+            data: {
+              ...user,
+              image: user.image || `${AVATAR}/glyphs/svg?seed=${user.name}`,
+            },
+          }
+        },
+      },
+    },
     session: {
       create: {
         before: async (session) => {
@@ -141,6 +165,7 @@ export const auth = betterAuth({
       },
     },
   },
+
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       if (!ctx.path.startsWith("/sign-in")) return

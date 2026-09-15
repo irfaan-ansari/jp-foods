@@ -147,7 +147,11 @@ export const teamRoutes = app
         },
         priceLevel: {
           with: {
-            priceLevelItem: true,
+            priceLevelItem: {
+              columns: {
+                id: true,
+              },
+            },
           },
         },
         products: {
@@ -162,15 +166,6 @@ export const teamRoutes = app
                 image: true,
                 itemCode: true,
               },
-              with: {
-                sellUnits: {
-                  columns: {
-                    id: true,
-                    name: true,
-                    price: true,
-                  },
-                },
-              },
             },
           },
         },
@@ -181,6 +176,10 @@ export const teamRoutes = app
 
     const teamWithMembers = {
       ...result,
+      priceLevel: {
+        ...result.priceLevel,
+        productCount: result.priceLevel?.priceLevelItem?.length,
+      },
       products: result.products.map(({ product }) => product),
       teamMembers: result.teamMembers.map((m) => {
         return {

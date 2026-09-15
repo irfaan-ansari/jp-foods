@@ -11,7 +11,6 @@ import { Button } from "@jp/ui/components/button"
 import { ChevronDown, ImageOff, Plus } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { FieldTitle } from "@jp/ui/components/field"
-import { formatUSD } from "@jp/utils"
 import { TrashBinMinimalistic } from "@solar-icons/react"
 
 export const TeamPrivateItems = withForm({
@@ -51,18 +50,6 @@ export const TeamPrivateItems = withForm({
                             </span>
                           </div>
 
-                          <div className="shrink-0 space-y-0">
-                            {item.sellUnits?.map((unit) => (
-                              <div key={unit.id}>
-                                <FieldTitle className="line-clamp-1">
-                                  {formatUSD(unit.price)}
-                                  <span className="pl-1 text-xs text-muted-foreground">
-                                    {unit.name}
-                                  </span>
-                                </FieldTitle>
-                              </div>
-                            ))}
-                          </div>
                           <Button
                             size="icon-sm"
                             variant="destructive"

@@ -1,4 +1,8 @@
-import { OrderGuideSelectType, TeamSelectType, UserSelectType } from "@jp/db"
+import type {
+  OrderGuideSelectType,
+  TeamSelectType,
+  UserSelectType,
+} from "@jp/db"
 import { Product } from "../product/product.type"
 import { TaxRule } from "../tax-rule/tax-rule.type"
 import { PriceLevel } from "../price-level/price-level.type"
@@ -28,16 +32,15 @@ export type Team = TeamSelectType & {
 }
 
 export type TeamDetail = Omit<Team, "teamMembers"> & {
-  priceLevel: PriceLevel
   taxRule: TaxRule
-  products: Pick<Product, "id" | "title" | "image" | "itemCode" | "sellUnits">[]
   metadata: Metadata
   teamMembers: TeamMemberDetail[]
+  priceLevel: Omit<PriceLevel, "customerCount" | "products">
+  products: Pick<Product, "id" | "title" | "image" | "itemCode">[]
 }
 
 export type TeamAnalytics = {
   range: string
-
   summary: {
     totalOrders: number
     activeOrders: number

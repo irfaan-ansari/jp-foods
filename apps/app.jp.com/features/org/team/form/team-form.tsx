@@ -17,6 +17,7 @@ import { TeamPrivateItems } from "./team-private-items"
 import { TeamUsers } from "./team-users"
 import { createTeam, updateTeam } from "../team.action"
 import { useRouter } from "next/navigation"
+import { useQueryClient } from "@tanstack/react-query"
 
 export const TeamForm = ({
   id,
@@ -26,6 +27,8 @@ export const TeamForm = ({
   values?: TeamFormValues
 }) => {
   const router = useRouter()
+  const queryClient = useQueryClient()
+
   const form = useAppForm({
     validators: {
       onSubmit: teamSchema,
@@ -72,12 +75,13 @@ export const TeamForm = ({
         toast.error(serverError.message)
         return
       }
+      queryClient.invalidateQueries({
+        queryKey: ["teams", "team", "analytics"],
+      })
       toast.success("Account created.")
       router.push(`/org/customers/${data?.id}`)
     },
   })
-
-  console.log(form.state.errors, form.state.values)
 
   return (
     <React.Fragment>

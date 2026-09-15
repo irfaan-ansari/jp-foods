@@ -116,17 +116,9 @@ const orderApp = app
 
     const lineItems = sortLineItems(response.lineItems)
 
-    const data = {
-      ...response,
-      estimateUrl:
-        process.env.BETTER_AUTH_URL + `/api/v1/org/orders/${id}/estimate`,
-      packingSlipUrl:
-        process.env.BETTER_AUTH_URL + `/api/v1/org/orders/${id}/slip`,
-    }
-
     return c.json({
       success: true,
-      data: { ...data, lineItems },
+      data: { ...response, lineItems },
     })
   })
 

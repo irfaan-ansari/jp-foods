@@ -29,7 +29,11 @@ export function Promotion({ placement }: PromotionProps) {
   const Component = variants[placement]
 
   return (
-    <QueryBoundary query={promotions} loading={null}>
+    <QueryBoundary
+      query={promotions}
+      error={(err) => <span className="hidden" />}
+      loading={null}
+    >
       {({ data }) => (
         <>
           {data

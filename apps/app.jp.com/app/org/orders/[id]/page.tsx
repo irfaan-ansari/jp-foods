@@ -211,29 +211,24 @@ const OrderPage = () => {
                     </span>
                   </div>
 
-                  <div className="grid gap-3 px-6">
+                  <div className="grid gap-2 px-6">
                     {data.status !== "completed" && (
                       <Button className="w-full">
                         <CheckCircle />
-                        Complete Order
+                        Mark as Completed
                       </Button>
                     )}
 
-                    <Button
-                      className="w-full"
-
-                      asChild
-                    >
+                    <Button className="w-full" variant="outline" asChild>
                       <a
                         href={`/api/v1/org/orders/${data.id}/estimate`}
                         target="_blank"
                       >
                         <Download />
-                        Estimate
+                        Download Estimate
                       </a>
                     </Button>
-
-                    <Button className="w-full" asChild>
+                    <Button className="w-full" variant="outline" asChild>
                       <a
                         href={`/api/v1/org/orders//${data.id}/slip`}
                         target="_blank"

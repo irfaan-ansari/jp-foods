@@ -31,7 +31,8 @@ export const OrderDropdown = ({ data }: { data: Order }) => {
       case "completed":
         open({
           title: "Mark as completed",
-          description: "This will mark the order as delivered to the customer.",
+          description:
+            "This will mark the order as completed and update its status.",
           action: {
             action: async () => {
               const { serverError } = await completeOrder({
@@ -83,13 +84,13 @@ export const OrderDropdown = ({ data }: { data: Order }) => {
       className="*:data-[slot=button]:justify-start"
     >
       <Button variant="ghost" asChild>
-        <a href={`/api/orders/${id}/estimate`} target="_blank">
+        <a href={`/api/v1/org/orders/${id}/estimate`} target="_blank">
           <BillCheck /> Estimate
         </a>
       </Button>
 
       <Button variant="ghost" asChild>
-        <a href={`/api/orders/${id}/packing-slip`} target="_blank">
+        <a href={`/api/v1/org/orders/${id}/packing-slip`} target="_blank">
           <Bill /> Packing Slip
         </a>
       </Button>

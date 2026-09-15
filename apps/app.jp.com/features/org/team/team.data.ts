@@ -44,14 +44,14 @@ export const useInfiniteTeams = (kv?: Record<string, any>) => {
 
 export const useTeam = (id: string) => {
   return useQuery<ApiResponse<TeamDetail>, AppError>({
-    queryKey: ["teams", id],
+    queryKey: ["team", id],
     queryFn: () => apiClient.get(`/org/teams/${id}`),
     staleTime: 1000 * 60 * 5,
   })
 }
 export const useTeamAnalytics = (id: string, kv?: Record<string, any>) => {
   return useQuery<ApiResponse<TeamAnalytics>, AppError>({
-    queryKey: ["teams", id, "analytics", kv],
+    queryKey: ["team", id, "analytics", kv],
     queryFn: () =>
       apiClient.get(`/org/teams/${id}/analytics`, {
         params: { ...kv },
