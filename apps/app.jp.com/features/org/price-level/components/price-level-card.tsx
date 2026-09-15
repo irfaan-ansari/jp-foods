@@ -20,6 +20,7 @@ import {
 import { StatusBadge } from "@/components/status-badge"
 import { PriceLevelDropdown } from "./price-level-dropdown"
 import { STATUS } from "../price-level.const"
+import { formatPriceLevelAdjustment } from "../price-level.utils"
 
 export const PriceLevelCard = ({ data }: { data: PriceLevel }) => {
   return (
@@ -74,30 +75,33 @@ export const PriceLevelSkeleton = () => {
   )
 }
 
-function PriceLevelBadge({
+export function PriceLevelBadge({
   appliesTo,
   adjustmentType,
   adjustmentValue,
   productCount,
 }: PriceLevelBadgeProps) {
+  const adjustment = formatPriceLevelAdjustment(
+    appliesTo as "all" | "per_item",
+    adjustmentType as "fixed" | "percentage",
+    adjustmentValue
+  )
+
   if (appliesTo === "per_item") {
+    const count = productCount ?? 0
+
     return (
       <Badge variant="warning-light">
-        <Tag /> {productCount ?? 0} {pluralize(productCount ?? 0, "Product")}
+        {adjustment} • {count} {pluralize(count, "Product")}
       </Badge>
     )
   }
 
   const positive = Number(adjustmentValue) >= 0
 
-  const value =
-    adjustmentType === "percentage"
-      ? `${positive ? "+ " : "- "}${adjustmentValue}%`
-      : `${positive ? "+ " : "- "}$${Math.abs(Number(adjustmentValue)).toFixed(2)}`
-
   return (
     <Badge variant={positive ? "success-light" : "destructive-light"}>
-      {value} • All items
+      {adjustment} • All Products
     </Badge>
   )
 }

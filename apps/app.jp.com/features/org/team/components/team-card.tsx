@@ -1,5 +1,12 @@
 import React from "react"
-import { Letter, MenuDots, Phone, Smartphone, User } from "@solar-icons/react"
+import {
+  Letter,
+  MenuDots,
+  PenNewRound,
+  Phone,
+  Smartphone,
+  User,
+} from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -40,11 +47,18 @@ export const TeamCard = ({ data }: { data: Team }) => {
       <CardHeader>
         <CardAction className="flex items-center gap-2">
           <TeamBadge status={data.status ?? "active"} />
-          <TeamDropdown data={data}>
-            <Button size="icon-sm" variant="outline" className="relative z-1">
-              <MenuDots />
-            </Button>
-          </TeamDropdown>
+
+          <Button
+            size="icon-sm"
+            variant="outline"
+            className="relative z-1"
+            asChild
+          >
+            <Link href={`/org/customers/${data.id}/edit`}>
+              <PenNewRound />
+              Edit
+            </Link>
+          </Button>
         </CardAction>
         <div className="flex min-w-0 items-start gap-2">
           <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-xl">

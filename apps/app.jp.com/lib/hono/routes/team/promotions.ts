@@ -3,7 +3,7 @@ import { Hono } from "hono"
 import { db, promotionTarget } from "@jp/db"
 
 import { TeamAppContext } from "@/lib/hono/middlewares"
-import { resolveTeamPrices } from "@/features/org/price-level/price-level.resolver"
+import { resolveTeamPrices } from "@/features/org/price-level/price-level-resolver"
 
 const app = new Hono<TeamAppContext>()
 
@@ -37,6 +37,9 @@ export const promotions = app.get("/", async (c) => {
   const productIds = [...new Set(promotions.flatMap((p) => p.productIds ?? []))]
   const products = await db.query.product.findMany({
     where: (product, { inArray }) => inArray(product.id, productIds),
+    with: {
+      sellUnits: true,
+    },
   })
 
   const resolvedProducts = await resolveTeamPrices({

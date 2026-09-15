@@ -165,7 +165,7 @@ export const teamRoutes = app
                 sellUnits: {
                   columns: {
                     id: true,
-                    unit: true,
+                    name: true,
                     price: true,
                   },
                 },
@@ -308,7 +308,6 @@ export const teamRoutes = app
           ),
         columns: {
           id: true,
-          orderNumber: true,
           status: true,
           total: true,
           createdAt: true,

@@ -29,7 +29,10 @@ export const MemberDialog = ({ children }: { children: React.ReactNode }) => {
   const [open, setOpen] = useState(false)
   const form = useAppForm({
     defaultValues: {
-      user: {},
+      user: {
+        id: "",
+        name: "",
+      },
       role: "",
     },
     onSubmit: async ({ value }) => {

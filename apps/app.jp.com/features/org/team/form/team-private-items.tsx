@@ -57,7 +57,7 @@ export const TeamPrivateItems = withForm({
                                 <FieldTitle className="line-clamp-1">
                                   {formatUSD(unit.price)}
                                   <span className="pl-1 text-xs text-muted-foreground">
-                                    {unit.unit}
+                                    {unit.name}
                                   </span>
                                 </FieldTitle>
                               </div>

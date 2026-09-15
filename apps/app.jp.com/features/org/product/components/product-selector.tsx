@@ -69,7 +69,6 @@ export const ProductSelector = ({
         itemCode: t.itemCode!,
         status: t.status!,
         image: t.image!,
-        basePrice: t.basePrice!,
         sellUnits: t.sellUnits,
       })) ?? []
     )
@@ -118,15 +117,17 @@ export const ProductSelector = ({
                         </span>
                       </div>
 
-                      <div className="shrink-0 space-y-0">
-                        {item.sellUnits?.map((unit) => (
+                      <div
+                        className={`hidden shrink-0 space-y-0 ${item.sellUnits?.length <= 1 ? "self-center" : ""}`}
+                      >
+                        {item.sellUnits?.slice(0, 2)?.map((unit) => (
                           <div key={unit.id} className="text-right">
                             <FieldTitle className="line-clamp-1 w-full text-right">
-                              <span className="text-xs">
+                              <span className="text-xs font-medium">
                                 {formatUSD(unit.price)}
                               </span>
-                              <span className="pl-1 text-xs text-muted-foreground">
-                                / {unit.name}
+                              <span className="pl-0.5 text-[10px] text-muted-foreground">
+                                • {unit.name}
                               </span>
                             </FieldTitle>
                           </div>

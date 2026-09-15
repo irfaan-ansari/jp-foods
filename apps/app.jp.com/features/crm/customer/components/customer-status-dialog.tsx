@@ -3,6 +3,7 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -10,32 +11,34 @@ import {
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { Field, FieldGroup } from "@jp/ui/components/field"
-import { updateCustomerApplicationStatus } from "../customer.action"
 import { useQueryClient } from "@tanstack/react-query"
 import { APPLICATION_REJECTION_REASONS } from "../customer.const"
+import { CustomerApplication } from "../customer.type"
+import { updateCustomerApplication } from "../customer.action"
 
 export function CustomerApplicationStatusDialog({
   id,
-  action,
+  data,
   open,
   onOpenChange,
 }: {
   id: number
-  action: string
+  data: CustomerApplication
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const queryClient = useQueryClient()
+
   const form = useAppForm({
     defaultValues: {
-      status: action === "hold" ? "on_hold" : "rejected",
+      status: data.status,
       statusReason: "",
       statusDetails: "",
     },
     onSubmit: async ({ value }) => {
-      const { serverError } = await updateCustomerApplicationStatus({
-        id: 1,
-        data: value,
+      const { serverError } = await updateCustomerApplication({
+        id,
+        data: { ...data, ...value, internalNotes: data.internalNotes ?? "" },
       })
       if (serverError) {
         toast.error(serverError.message)
@@ -50,7 +53,8 @@ export function CustomerApplicationStatusDialog({
       }
     },
   })
-  const title = action === "reject" ? "Reject Application" : "Hold Application"
+  const title =
+    data.status === "rejected" ? "Reject Application" : "Hold Application"
 
   return (
     <AppDialog open={open} onOpenChange={onOpenChange}>
@@ -92,9 +96,9 @@ export function CustomerApplicationStatusDialog({
             />
           </FieldGroup>
           <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
-            <Button variant="outline" onClick={() => onOpenChange(false)}>
-              Cancel
-            </Button>
+            <AppDialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </AppDialogClose>
 
             <form.Subscribe
               selector={({ isSubmitting, canSubmit }) => ({

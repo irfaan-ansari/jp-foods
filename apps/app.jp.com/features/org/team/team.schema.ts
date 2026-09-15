@@ -2,7 +2,7 @@ import z from "zod"
 
 const sellUnitSchema = z.object({
   id: z.number(),
-  unit: z.string(),
+  name: z.string(),
   price: z.string(),
 })
 const privateItemSchema = z.object({

@@ -126,7 +126,11 @@ export const UserDropdown = ({ data }: { data: User }) => {
         {(disabled) => (
           <UserDialog
             id={id}
-            values={{ ...data, phoneNumber: data.phoneNumber! }}
+            values={{
+              ...data,
+              phoneNumber: data.phoneNumber!,
+              role: data.role ?? "",
+            }}
           >
             <Button
               variant="ghost"

@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm"
 import { parsePagination } from "@/lib/hono/lib"
 import { TeamAppContext } from "@/lib/hono/middlewares"
-import { resolveTeamPrices } from "@/features/org/price-level/price-level.resolver"
+import { resolveTeamPrices } from "@/features/org/price-level/price-level-resolver"
 
 const app = new Hono<TeamAppContext>()
 

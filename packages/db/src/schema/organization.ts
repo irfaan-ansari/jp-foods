@@ -31,13 +31,6 @@ export const product = pgTable(
       .default(sql`'[]'::jsonb`),
     status: text("status").default("active"),
     image: text("image").default(""),
-
-    /** deprecated */
-    basePrice: text("base_price").notNull().default("0"),
-    unit: text("unit"),
-    unitSize: text("unit_size"),
-    pack: text("pack"),
-    /** deprecated */
     location: text("location"),
     trackInventory: boolean("track_inventory").default(false),
     stock: text("stock").default(""),

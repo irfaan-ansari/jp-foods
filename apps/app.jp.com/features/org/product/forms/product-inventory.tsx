@@ -65,7 +65,7 @@ export const ProductInventory = withForm({
             trackInventory: state.values.trackInventory,
             inventoryUnit: state.values.sellUnits.filter(
               (unit) => unit.isBaseUnit
-            )?.[0]?.unit,
+            )?.[0]?.name,
           })}
           children={({ trackInventory, inventoryUnit }) => {
             return (

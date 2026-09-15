@@ -4,10 +4,18 @@ import {
   ProductSelectType,
 } from "@jp/db"
 
+type SellUnit = {
+  id: number
+  name: string
+  basePrice: string
+  price: string
+}
 type PriceLeveItem = Pick<
   ProductSelectType,
-  "id" | "title" | "image" | "itemCode" | "basePrice"
-> & { price: string }
+  "id" | "title" | "image" | "itemCode"
+> & {
+  sellUnits: SellUnit[]
+}
 
 export type PriceLevel = PriceLevelSelectType & {
   customerCount: number

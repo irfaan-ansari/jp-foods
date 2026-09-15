@@ -40,9 +40,40 @@ export const customerApplicationRoutes = app
       db.$count(customer, and(...conditions)),
     ])
 
+    const transformed = response.map((res) => {
+      const { dlBackUrl, dlFrontUrl, signatureUrl, certificateUrl, ...rest } =
+        res
+
+      return {
+        ...rest,
+        documents: [
+          {
+            label: "Driver's License Front",
+            field: "dlFrontUrl",
+            url: dlFrontUrl,
+          },
+          {
+            label: "Driver's License Back",
+            field: "dlBackUrl",
+            url: dlBackUrl,
+          },
+
+          {
+            label: "Sale Tax/Certificate",
+            field: "certificateUrl",
+            url: certificateUrl,
+          },
+          {
+            label: "Signature",
+            field: "signatureUrl",
+            url: signatureUrl,
+          },
+        ],
+      }
+    })
     return c.json({
       success: true,
-      data: response,
+      data: transformed,
       pagination: {
         page: page,
         limit: limit,
@@ -136,9 +167,38 @@ export const customerApplicationRoutes = app
 
     if (!response) throw new AppError("NOT_FOUND")
 
+    const { dlBackUrl, dlFrontUrl, signatureUrl, certificateUrl, ...rest } =
+      response
+
+    const transformed = {
+      ...rest,
+      documents: [
+        {
+          label: "Driver's License Front",
+          field: "dlFrontUrl",
+          url: dlFrontUrl,
+        },
+        {
+          label: "Driver's License Back",
+          field: "dlBackUrl",
+          url: dlBackUrl,
+        },
+
+        {
+          label: "Sale Tax/Certificate",
+          field: "certificateUrl",
+          url: certificateUrl,
+        },
+        {
+          label: "Signature",
+          field: "signatureUrl",
+          url: signatureUrl,
+        },
+      ],
+    }
     return c.json({
       success: true,
-      data: response,
+      data: transformed,
     })
   })
 

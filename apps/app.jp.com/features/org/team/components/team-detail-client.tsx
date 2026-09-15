@@ -222,14 +222,15 @@ export const TeamDetailClient = ({
                 <span className="text-xs text-muted-foreground">
                   Price Level
                 </span>
-                <div className="flex rounded-xl bg-secondary/50 p-2">
+                <div className="flex rounded-xl border bg-secondary/50 p-2.5">
                   {priceLevel.name ?? "Price level name"}
                 </div>
               </div>
               <div className="grid gap-1.5">
                 <span className="text-xs text-muted-foreground">Tax rule</span>
-                <div className="flex rounded-xl bg-secondary/50 p-2">
+                <div className="flex rounded-xl border bg-secondary/50 p-2.5">
                   {taxRule.name ?? "Tax rule name"}
+                  <span className="ml-auto">Badge 10%</span>
                 </div>
               </div>
             </CardContent>
@@ -243,37 +244,43 @@ export const TeamDetailClient = ({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-2.5">
-              {team.products.map((product) => (
-                <div className="flex flex-1 items-start gap-3">
-                  <Avatar className="rounded-lg *:rounded-lg" size="lg">
-                    <AvatarImage src={product?.image as string} />
-                    <AvatarFallback>
-                      <ImageOff className="size-4" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="min-w-0 flex-1 space-y-0">
-                    <span className="line-clamp-1 font-medium">
-                      {product.title}
-                    </span>
-                    <span className="text-xs text-muted-foreground">
-                      {product.itemCode}
-                    </span>
-                  </div>
+              {team.products.length > 0 ? (
+                team.products.map((product) => (
+                  <div className="flex flex-1 items-start gap-3">
+                    <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                      <AvatarImage src={product?.image as string} />
+                      <AvatarFallback>
+                        <ImageOff className="size-4" />
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="min-w-0 flex-1 space-y-0">
+                      <span className="line-clamp-1 font-medium">
+                        {product.title}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {product.itemCode}
+                      </span>
+                    </div>
 
-                  <div className="shrink-0 space-y-0">
-                    {product.sellUnits?.map((unit) => (
-                      <div key={unit.id}>
-                        <span className="line-clamp-1 font-semibold">
-                          {formatUSD(unit.price)}
-                          <span className="pl-1 text-xs text-muted-foreground">
-                            {unit.unit}
+                    <div className="shrink-0 space-y-0">
+                      {product.sellUnits?.map((unit) => (
+                        <div key={unit.id}>
+                          <span className="line-clamp-1 font-semibold">
+                            {formatUSD(unit.price)}
+                            <span className="pl-1 text-xs text-muted-foreground">
+                              {unit.name}
+                            </span>
                           </span>
-                        </span>
-                      </div>
-                    ))}
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))
+              ) : (
+                <span className="text-muted-foreground">
+                  Not private items added.
+                </span>
+              )}
             </CardContent>
           </Card>
 
