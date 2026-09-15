@@ -3,6 +3,7 @@
 import React from "react"
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -15,29 +16,33 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { Button } from "@jp/ui/components/button"
 import { useQueryClient } from "@tanstack/react-query"
 import { updateCandidateApplication } from "../candidate.action"
+import { CandidateApplication } from "../candidate.type"
 
 export const CandidateApplicationNotesDialog = ({
   id,
-  values,
+  data,
   children,
 }: {
   children: React.ReactNode
   id: number
-  values: {
-    internalNotes: string
-  }
+  data: CandidateApplication
 }) => {
   const queryClient = useQueryClient()
   const [open, setOpen] = React.useState(false)
 
   const form = useAppForm({
     defaultValues: {
-      internalNotes: values.internalNotes ?? "",
+      internalNotes: data.internalNotes ?? "",
     },
     onSubmit: async ({ value }) => {
       const { serverError } = await updateCandidateApplication({
         id,
-        data: { internalNotes: value.internalNotes },
+        data: {
+          status: data.status,
+          statusDetails: data.statusDetails ?? "",
+          statusReason: data.statusReason ?? "",
+          internalNotes: value.internalNotes,
+        },
       })
       if (serverError) {
         toast.error(serverError.message)
@@ -56,21 +61,27 @@ export const CandidateApplicationNotesDialog = ({
       <AppDialogContent className="md:max-w-xl">
         <AppDialogHeader className="data-[slot=drawer-header]:sr-only">
           <AppDialogTitle className="text-base font-bold">
-            {values.internalNotes ? "Edit" : "Add"} Notes
+            {data.internalNotes ? "Edit" : "Add"} Notes
           </AppDialogTitle>
         </AppDialogHeader>
-        <form onSubmit={() => form.handleSubmit()} className="space-y-6">
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+          className="space-y-6"
+        >
           <form.AppField
             name="internalNotes"
             children={(field) => (
-              <field.TextAreaField label="Notes" placeholder="Notes..." />
+              <field.TextAreaField label="" placeholder="Notes..." />
             )}
           />
 
           <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
+            <AppDialogClose asChild>
+              <Button variant="outline">Cancel</Button>
+            </AppDialogClose>
 
             <form.Subscribe
               selector={({ isSubmitting, canSubmit }) => ({

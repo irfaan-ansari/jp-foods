@@ -16,22 +16,6 @@ export const updateCandidateApplicationSchema = z.object({
   data: candidateApplicationSchema.partial(),
 })
 
-export const processCandidateApplicationSchema = z.object({
-  id: z.number(),
-  data: z.object({
-    status: z.enum(["accepted", "verification_in_progress"]),
-  }),
-})
-
-export const updateCandidateApplicationStatusSchema = z.object({
-  id: z.number(),
-  data: z.object({
-    status: z.string(),
-    statusReason: candidateApplicationSchema.shape.statusReason,
-    statusDetails: candidateApplicationSchema.shape.statusDetails,
-  }),
-})
-
 export const deleteCandidateApplicationSchema = z.object({
   id: z.number(),
 })

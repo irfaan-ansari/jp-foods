@@ -1,9 +1,4 @@
-import {
-  db,
-  PriceLevelItemSelectType,
-  ProductSelectType,
-  ProductSellUnitSelectType,
-} from "@jp/db"
+import { db } from "@jp/db"
 import { getNewPrice } from "./price-level.utils"
 import { PriceLevelItem } from "./price-level.type"
 import { Product } from "../product/product.type"

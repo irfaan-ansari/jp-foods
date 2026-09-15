@@ -76,43 +76,12 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   },
 }
 
-export const APPLICATION_ACTIONS = {
-  new: [
-    {
-      label: "Accept",
-      action: "accept",
-      variant: "default",
-      className: "col-span-2",
-    },
-    {
-      label: "Start Verification",
-      action: "start_verification",
-      variant: "outline",
-      className: "col-span-2",
-    },
-    {
-      label: "Reject",
-      action: "reject",
-      variant: "destructive",
-      className: "col-span-2",
-    },
-  ],
-
-  verification_in_progress: [
-    {
-      label: "Accept",
-      action: "accept",
-      variant: "default",
-      className: "col-span-2",
-    },
-    {
-      label: "Reject",
-      action: "reject",
-      variant: "destructive",
-      className: "col-span-2",
-    },
-  ],
-
-  active: [],
-  rejected: [],
-} as const
+export const APPLICATION_ACTIONS = [
+  { label: "Hire Candidate", action: "hired", variant: "default" },
+  {
+    label: "Start Verification",
+    action: "verification_in_progress",
+    variant: "outline",
+  },
+  { label: "Reject", action: "rejected", variant: "destructive" },
+] as const

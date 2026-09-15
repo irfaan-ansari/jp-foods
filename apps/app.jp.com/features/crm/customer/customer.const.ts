@@ -47,67 +47,16 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   },
 }
 
-export const APPLICATION_ACTIONS = {
-  new: [
-    {
-      label: "Approve",
-      action: "approve",
-      variant: "default",
-      className: "col-span-2",
-    },
-    {
-      label: "Review",
-      action: "review",
-      variant: "outline",
-      className: "",
-    },
-    {
-      label: "Hold",
-      action: "hold",
-      variant: "outline",
-      className: "",
-    },
-    {
-      label: "Reject",
-      action: "reject",
-      variant: "destructive",
-      className: "col-span-2",
-    },
-  ],
-
-  under_review: [
-    {
-      label: "Approve",
-      action: "approve",
-      variant: "default",
-      className: "col-span-2",
-    },
-    {
-      label: "Reject",
-      action: "reject",
-      variant: "destructive",
-      className: "col-span-2",
-    },
-  ],
-
-  on_hold: [
-    {
-      label: "Approve",
-      action: "approve",
-      variant: "default",
-      className: "col-span-2",
-    },
-    {
-      label: "Reject",
-      action: "reject",
-      variant: "destructive",
-      className: "col-span-2",
-    },
-  ],
-
-  active: [],
-  rejected: [],
-} as const
+export const APPLICATION_ACTIONS = [
+  { status: "approved", label: "Approve", variant: "default" },
+  {
+    status: "under_review",
+    label: "Mark as Under Review",
+    variant: "outline",
+  },
+  { status: "on_hold", label: "Put on Hold", variant: "outline" },
+  { status: "rejected", label: "Reject", variant: "destructive" },
+] as const
 
 export const INVITE_STATUS: Record<string, BadgeStatus> = {
   all: {
