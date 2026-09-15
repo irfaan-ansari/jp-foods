@@ -298,8 +298,8 @@ export function OTPLoginForm({
         <Button
           type="button"
           size="xl"
-          variant="secondary"
-          className="border border-primary/50 bg-primary/10 hover:bg-primary/30"
+          variant="outline"
+          className="border-primary/30 text-primary"
           asChild
         >
           <Link href="/auth/signin-password">Sign in with password</Link>

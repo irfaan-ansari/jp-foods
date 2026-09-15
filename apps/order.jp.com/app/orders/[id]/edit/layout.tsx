@@ -16,7 +16,6 @@ import { Button } from "@jp/ui/components/button"
 import { useOrder } from "@/features/order/order.data"
 import { BagCheck, BagCross } from "@solar-icons/react"
 import { PageContent } from "@/components/page-content"
-import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
 
@@ -50,10 +49,28 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
       subtotal: Number(data.subtotal),
       total: Number(data.total),
       items: data.lineItems.map((item) => {
-        const inputOrder = toOrderItemInput({
-          ...item,
+        const unit =
+          item.product?.sellUnits.find((unit) => unit.id === item.sellUnitId) ??
+          item.product?.sellUnits.find((unit) => unit.name === item.unitName) ??
+          item.product?.sellUnits[0]
+        const quantity = Number(item.quantity)
+        const inputOrder = {
           id: item.productId,
-        })
+          sellUnitId: unit?.id ?? item.sellUnitId ?? 0,
+          title: item.title,
+          itemCode: item.itemCode,
+          price: Number(item.price),
+          unit: item.unitName ?? unit?.name ?? "",
+          inventoryPerUnit:
+            Number(unit?.inventoryPerUnit ?? item.inventoryQuantity ?? 1) /
+            (unit ? 1 : Math.max(quantity, 1)),
+          minQuantity: Number(unit?.minQuantity ?? 1),
+          orderIncrement: Number(unit?.orderIncreament ?? 1),
+          quantity,
+          isTaxable: !!item.isTaxable,
+          image: item.image ?? "",
+          categories: item.categories ?? [],
+        }
         return {
           ...inputOrder,
           subtotal: Number(item.subtotal),
@@ -64,7 +81,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
     })
 
     initializedRef.current = true
-  }, [order])
+  }, [order, isPending])
 
   return (
     <React.Fragment>

@@ -35,9 +35,12 @@ export const OrderPageHeader = ({
               open={open}
               setOpen={setOpen}
               trigger={
-                <Button variant="ghost" className="truncate text-lg font-bold">
+                <Button
+                  variant="ghost"
+                  className="truncate text-base font-semibold"
+                >
                   {ORDER_NAV.find((opt) => opt.href === pathname)?.label}{" "}
-                  <ChevronsUpDown />
+                  <ChevronsUpDown className="size-3.5 text-muted-foreground" />
                 </Button>
               }
             >

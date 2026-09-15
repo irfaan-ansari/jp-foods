@@ -22,7 +22,7 @@ export const TeamSelector = ({ selected, onChange }: TeamSelectorProps) => {
         <FieldLabel
           key={team.id}
           htmlFor={team.id}
-          className="relative flex w-full cursor-pointer rounded-lg px-2 py-1 hover:bg-primary/5"
+          className="relative flex w-full cursor-pointer rounded-lg px-2 py-1 hover:bg-secondary has-data-checked:bg-secondary"
         >
           <Checkbox
             id={team.id}

@@ -1,25 +1,22 @@
+import { Document, Page, Text, View } from "@react-pdf/renderer"
+import { format } from "date-fns"
+import { styles } from "./styles"
 import {
-  OrderSelectType,
   LineItemSelectType,
+  OrderSelectType,
   OrganizationSelectType,
   TeamSelectType,
-} from "@/lib/db/schema";
-import { format } from "date-fns";
-import { styles } from "./styles";
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
+} from "@jp/db/schema/types"
 
-interface PackingSlipProps {
-  data: OrderSelectType & {
-    lineItems: LineItemSelectType[];
-    organization: OrganizationSelectType;
-    team: TeamSelectType;
-  };
+interface OrderInvoiceProps extends OrderSelectType {
+  lineItems: LineItemSelectType[]
+  organization: OrganizationSelectType
+  team: TeamSelectType
 }
-
-export const PackingSlip = ({ data }: PackingSlipProps) => {
+export const PackingSlip = ({ data }: { data: OrderInvoiceProps }) => {
   const metadata = data.organization.metadata
     ? JSON.parse(data.organization.metadata)
-    : {};
+    : {}
 
   return (
     <Document title={`Packing Slip - ${data.id}`}>
@@ -55,7 +52,7 @@ export const PackingSlip = ({ data }: PackingSlipProps) => {
                   style={{ fontSize: 9 }}
                 >{`${metadata?.city || ""}, ${metadata?.state || ""} ${metadata?.zip || ""}`}</Text>
                 <Text style={{ fontSize: 9 }}>
-                  Phone: {data.organization?.phone}
+                  Phone: {data.organization?.phoneNumber}
                 </Text>
                 <Text style={{ fontSize: 9 }}>
                   Email: {data.organization?.email}
@@ -121,7 +118,7 @@ export const PackingSlip = ({ data }: PackingSlipProps) => {
               </Text>
 
               <Text style={{ fontSize: 9 }}>{data.team.name}</Text>
-              <Text style={{ fontSize: 9 }}>{data.team.phone}</Text>
+              <Text style={{ fontSize: 9 }}>{data.team.phoneNumber}</Text>
               <Text style={{ fontSize: 9 }}>{data.team.email}</Text>
             </View>
             <View
@@ -132,7 +129,7 @@ export const PackingSlip = ({ data }: PackingSlipProps) => {
             >
               <Text style={{ fontSize: 10, marginBottom: 5 }}>Ship To</Text>
               <Text style={{ fontSize: 9 }}>{data.team.name}</Text>
-              <Text style={{ fontSize: 9 }}>{data.team.phone}</Text>
+              <Text style={{ fontSize: 9 }}>{data.team.phoneNumber}</Text>
               <Text style={{ fontSize: 9 }}>{data.team.email}</Text>
             </View>
           </View>
@@ -171,7 +168,7 @@ export const PackingSlip = ({ data }: PackingSlipProps) => {
                   <Text style={styles.tableCellPacking}>{item.quantity}</Text>
                 </View>
                 <View style={{ width: "15%" }}>
-                  <Text style={styles.tableCellPacking}>{item.identifier}</Text>
+                  <Text style={styles.tableCellPacking}>{item.itemCode}</Text>
                 </View>
 
                 <View style={{ width: "70%" }}>
@@ -224,5 +221,5 @@ export const PackingSlip = ({ data }: PackingSlipProps) => {
         </View>
       </Page>
     </Document>
-  );
-};
+  )
+}

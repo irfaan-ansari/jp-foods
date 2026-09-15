@@ -1,26 +1,24 @@
-import {
-  OrderSelectType,
+import { format } from "date-fns"
+import { styles } from "./styles"
+import { formatUSD } from "@jp/utils"
+import { Document, Page, Text, View } from "@react-pdf/renderer"
+import type {
   LineItemSelectType,
+  OrderSelectType,
   OrganizationSelectType,
   TeamSelectType,
-} from "@/lib/db/schema";
-import { format } from "date-fns";
-import { styles } from "./styles";
-import { formatPhone, formatUSD } from "@/lib/utils";
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
+} from "@jp/db"
 
-interface OrderInvoiceProps {
-  data: OrderSelectType & {
-    lineItems: LineItemSelectType[];
-    organization: OrganizationSelectType;
-    team: TeamSelectType;
-  };
+interface OrderInvoiceProps extends OrderSelectType {
+  lineItems: LineItemSelectType[]
+  organization: OrganizationSelectType
+  team: TeamSelectType
 }
 
-export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
+export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
   const metadata = data.organization.metadata
     ? JSON.parse(data.organization.metadata)
-    : {};
+    : {}
 
   return (
     <Document title={`Estimate - ${data.id}`}>
@@ -45,11 +43,6 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                 },
               ]}
             >
-              <Image
-                src={process.env.BETTER_AUTH_URL + "/logo.png"}
-                style={[styles.logo]}
-              />
-
               <View style={[styles.headerContactText]}>
                 <Text
                   style={{ fontSize: 14, fontWeight: "bold", marginBottom: 6 }}
@@ -58,7 +51,7 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                 </Text>
                 <Text>{metadata?.street || ""}</Text>
                 <Text>{`${metadata?.city || ""}, ${metadata?.state || ""} ${metadata?.zip || ""}`}</Text>
-                <Text>Phone: +1 {formatPhone(data.organization?.phone)}</Text>
+                <Text>Phone: +1 {data.organization?.phoneNumber}</Text>
                 <Text>Email: {data.organization?.email}</Text>
               </View>
             </View>
@@ -160,7 +153,7 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                 }}
               >
                 <Text style={{ fontSize: 9 }}>{data.team.name}</Text>
-                <Text style={{ fontSize: 9 }}>{data.team.phone}</Text>
+                <Text style={{ fontSize: 9 }}>{data.team.phoneNumber}</Text>
                 <Text style={{ fontSize: 9 }}>{data.team.email}</Text>
               </View>
             </View>
@@ -190,7 +183,7 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                 }}
               >
                 <Text style={{ fontSize: 9 }}>{data.team.name}</Text>
-                <Text style={{ fontSize: 9 }}>{data.team.phone}</Text>
+                <Text style={{ fontSize: 9 }}>{data.team.phoneNumber}</Text>
                 <Text style={{ fontSize: 9 }}>{data.team.email}</Text>
               </View>
             </View>
@@ -241,25 +234,30 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                 ]}
               >
                 <View style={{ width: "15%" }}>
-                  <Text style={styles.tableCell}>{item.identifier}</Text>
+                  <Text style={styles.tableCellPacking}>{item.itemCode}</Text>
                 </View>
                 <View style={{ width: "45%" }}>
-                  <Text style={styles.tableCell}>{item.title}</Text>
+                  <Text style={styles.tableCellPacking}>{item.title}</Text>
                 </View>
                 <View style={{ width: "10%" }}>
-                  <Text style={[styles.tableCell, { textAlign: "center" }]}>
-                    {item.quantity}
+                  <Text
+                    style={[styles.tableCellPacking, { textAlign: "center" }]}
+                  >
+                    {item.quantity} {item.unitName}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>
-                  <Text style={[styles.tableCell, { textAlign: "right" }]}>
+                  <Text
+                    style={[styles.tableCellPacking, { textAlign: "right" }]}
+                  >
                     {formatUSD(item.price ?? 0)}
+                    {item.unitName && "/" + item.unitName}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>
                   <Text
                     style={[
-                      styles.tableCell,
+                      styles.tableCellPacking,
                       { textAlign: "right", borderRightWidth: 0 },
                     ]}
                   >
@@ -304,7 +302,9 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
                   ]}
                 >
                   <Text style={{ fontSize: 10, flex: 1 }}>Tax</Text>
-                  <Text style={{ fontSize: 10 }}>{formatUSD(data.tax)}</Text>
+                  <Text style={{ fontSize: 10 }}>
+                    {formatUSD(data.taxAmount)}
+                  </Text>
                 </View>
                 {data.charges && (
                   <View
@@ -342,5 +342,5 @@ export const OrderInvoice = ({ data }: OrderInvoiceProps) => {
         </View>
       </Page>
     </Document>
-  );
-};
+  )
+}

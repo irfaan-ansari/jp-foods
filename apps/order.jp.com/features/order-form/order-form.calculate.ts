@@ -1,4 +1,4 @@
-import { OrderItemInput } from "./order-form.type"
+import type { OrderItemInput } from "./order-form.type"
 
 export function calculateOrder({
   items,
@@ -9,7 +9,6 @@ export function calculateOrder({
   taxRate?: number
   charges?: number
 }) {
-  console.log(taxRate)
   let subtotal = 0
   let taxableSubtotal = 0
   let nonTaxableSubtotal = 0
@@ -17,10 +16,7 @@ export function calculateOrder({
   let lineItemTotal = 0
 
   const calculatedItems = items.map((item) => {
-    const pack = Math.max(item.pack, 1)
-    const unitSize = Math.max(item.unitSize, 1)
-
-    const lineSubtotal = item.price * item.quantity * pack * unitSize
+    const lineSubtotal = item.price * item.quantity
 
     const taxAmount = item.isTaxable ? (lineSubtotal * taxRate) / 100 : 0
 

@@ -1,27 +1,27 @@
-import { EmailTemplate } from "./email-template";
-import { Button, Section, Text } from "@react-email/components";
+import { EmailLayout } from "./email-layout"
+import { Button, Section, Text } from "react-email"
 
-interface CustomerApprovedProps {
-  name: string;
-  message?: string;
-  company: string;
-  status: string;
-  link?: string;
-  reason?: string;
+interface CatalogAccessStatusUpdateEmailProps {
+  name: string
+  message?: string
+  company: string
+  status: "approved" | "rejected" | "revoked"
+  link?: string
+  reason?: string
 }
 
-const CatalogRequestUpdate = ({
+export const CatalogAccessStatusUpdateEmail = ({
   name,
   reason,
   message,
   company,
   status = "revoked",
   link,
-}: CustomerApprovedProps) => {
+}: CatalogAccessStatusUpdateEmailProps) => {
   return (
-    <EmailTemplate template="customer" heading="Catalog Access Update">
+    <EmailLayout heading="Catalog Access Update">
       <Section className="p-6">
-        <Text className="text-xl text-black font-semibold mb-2">
+        <Text className="mb-2 text-xl font-semibold text-black">
           Hello {name || "Name"},
         </Text>
 
@@ -56,19 +56,19 @@ const CatalogRequestUpdate = ({
           </Text>
         )}
 
-        {link && (
+        {status === "approved" && link && (
           <Button
             href={link}
             target="_blank"
-            className="bg-[#80b83a] rounded-lg p-4 text-white uppercase text-sm font-semibold text-center mb-4"
+            className="bg-email-brand mb-4 rounded-lg p-4 text-center text-sm font-semibold text-white uppercase"
           >
             View Products
           </Button>
         )}
 
         {reason && (
-          <Section className="p-6 mt-4 border border-[#f4f5f6]">
-            <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+          <Section className="border-email-border mt-4 border p-6">
+            <Text className="text-email-brand text-lg font-semibold uppercase">
               Reason: {reason}
             </Text>
 
@@ -76,8 +76,8 @@ const CatalogRequestUpdate = ({
           </Section>
         )}
 
-        <Section className="p-6 mt-4 border border-[#f4f5f6]">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+        <Section className="border-email-border mt-4 border p-6">
+          <Text className="text-email-brand text-lg font-semibold uppercase">
             Need Assistance?
           </Text>
 
@@ -87,8 +87,6 @@ const CatalogRequestUpdate = ({
           </Text>
         </Section>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default CatalogRequestUpdate;
+    </EmailLayout>
+  )
+}

@@ -1,15 +1,17 @@
-import { Button, Hr, Section, Text } from "@react-email/components";
-import { EmailTemplate } from "./email-template";
+import { Button, Hr, Section, Text } from "react-email"
+import { EmailLayout } from "./email-layout"
 
-export const PasswordResetTemplate = ({
+export const PasswordResetRequestEmail = ({
   name,
   resetUrl,
+  expiresInMinutes,
 }: {
-  name: string;
-  resetUrl: string;
+  name: string
+  resetUrl: string
+  expiresInMinutes?: number
 }) => {
   return (
-    <EmailTemplate template="customer" heading="Reset Your Password">
+    <EmailLayout template="customer" heading="Reset Your Password">
       <Section className="p-6">
         <Text className="text-xl">Hi {name},</Text>
 
@@ -21,7 +23,7 @@ export const PasswordResetTemplate = ({
         <Button
           href={resetUrl}
           target="_blank"
-          className="bg-[#80b83a] p-4 text-white uppercase text-sm font-semibold inline-flex items-center"
+          className="bg-email-brand inline-flex items-center p-4 text-sm font-semibold text-white uppercase"
         >
           Reset Password
         </Button>
@@ -33,24 +35,24 @@ export const PasswordResetTemplate = ({
 
         <Text className="text-base break-all text-blue-600">{resetUrl}</Text>
 
-        <Text className="text-base mb-4">
-          This link will expire in 30 minutes for security reasons.
-        </Text>
+        {expiresInMinutes && (
+          <Text className="mb-4 text-base">
+            This link will expire in {expiresInMinutes} minutes.
+          </Text>
+        )}
 
-        <Text className="text-base mb-6">
+        <Text className="mb-6 text-base">
           If you did not request a password reset, you can safely ignore this
           email. Your password will not be changed.
         </Text>
 
         <Hr />
 
-        <Text className="text-sm mt-6 text-[#888888]">
+        <Text className="text-email-note mt-6 text-sm">
           For security reasons, please do not share this email or link with
           anyone.
         </Text>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default PasswordResetTemplate;
+    </EmailLayout>
+  )
+}

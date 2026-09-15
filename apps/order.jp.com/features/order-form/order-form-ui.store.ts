@@ -33,10 +33,7 @@ export const useOrderFormUI = create<OrderFormUI>()(
     (set, get) => ({
       layout: "grid",
 
-      filters: {
-        q: "",
-        cat: "",
-      },
+      filters: { q: "", cat: "" },
 
       isCartOpen: false,
       setCartOpen: (v) => set({ isCartOpen: v }),
@@ -45,7 +42,6 @@ export const useOrderFormUI = create<OrderFormUI>()(
       selected: [],
 
       setLayout: (layout) => set({ layout }),
-
       setFilters: (filters) =>
         set((state) => ({
           filters: {
@@ -55,7 +51,6 @@ export const useOrderFormUI = create<OrderFormUI>()(
               : filters),
           },
         })),
-
       setSelecting: (selecting) =>
         set({
           selecting,

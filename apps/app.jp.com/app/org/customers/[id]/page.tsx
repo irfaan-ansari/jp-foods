@@ -57,14 +57,13 @@ const CustomerPage = () => {
           </PopDrawer>
 
           <Button
-            size="icon-sm"
+            size="icon"
             variant="outline"
             className="relative z-1"
             asChild
           >
             <Link href={`/org/customers/${team?.data?.id}/edit`}>
               <PenNewRound />
-              Edit
             </Link>
           </Button>
         </div>

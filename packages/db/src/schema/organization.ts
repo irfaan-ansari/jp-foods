@@ -341,12 +341,9 @@ export const lineItem = pgTable(
     title: text("title"),
     image: text("image"),
     type: text("type"),
+    location: text("location"),
     itemCode: text("item_code"),
-    unit: text("unit"),
-
-    /** deprecated */
-    pack: text("pack"),
-    unitSize: text("unit_size"),
+    unitName: text("unit_name"),
 
     /** */
     categories: jsonb("categories")
@@ -431,4 +428,29 @@ export const promotionTarget = pgTable(
       table.teamId
     ),
   ]
+)
+
+export const catalog = pgTable(
+  "catalog",
+  {
+    id: serial("id").primaryKey(),
+    name: text("name").notNull(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, {
+        onDelete: "cascade",
+      }),
+    featuredProductIds: jsonb("featured_product_ids")
+      .$type<number[]>()
+      .default([]),
+    pdfUrl: text("pdf_url").notNull().default(""),
+    effectiveFrom: timestamp("effective_from").notNull(),
+    effectiveTo: timestamp("effective_to").notNull(),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [index("catalog_organizationId_idx").on(table.organizationId)]
 )

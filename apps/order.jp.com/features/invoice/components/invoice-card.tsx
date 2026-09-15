@@ -21,7 +21,8 @@ export const InvoiceCard = () => {
   const { searchParams } = useRouterStuff()
   const statuses = Object.keys(STATUS_MAP) as (keyof typeof STATUS_MAP)[]
 
-  const randomStatus = statuses[Math.floor(Math.random() * statuses.length)]
+  const randomStatus =
+    statuses[Math.floor(Math.random() * statuses.length)] ?? "pending"
 
   return (
     <Card

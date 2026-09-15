@@ -25,8 +25,8 @@ export const ProductPrice = ({
             <span className="text-sm font-semibold text-primary">
               {formatUSD(item.price)}
             </span>
-            <span className="text-xs font-normal text-muted-foreground">
-              / {item.name}
+            <span className="ml-1 text-xs font-normal text-muted-foreground">
+              | {item.name}
             </span>
           </div>
         </div>

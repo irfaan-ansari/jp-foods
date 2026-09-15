@@ -1,5 +1,24 @@
-import { numberSchema } from "@jp/utils"
 import z from "zod"
+
+const nonNegativeDecimal = z
+  .string()
+  .refine(
+    (value) =>
+      value.trim() !== "" &&
+      Number.isFinite(Number(value)) &&
+      Number(value) >= 0,
+    { message: "Enter a valid amount" }
+  )
+
+const positiveDecimal = z
+  .string()
+  .refine(
+    (value) =>
+      value.trim() !== "" &&
+      Number.isFinite(Number(value)) &&
+      Number(value) > 0,
+    { message: "Enter a value greater than zero" }
+  )
 
 export const productFormSchema = z.object({
   title: z.string().min(1, "Enter title"),
@@ -17,13 +36,17 @@ export const productFormSchema = z.object({
     .object({
       id: z.number().optional(),
       name: z.string().min(1, "Unit is required"),
-      inventoryPerUnit: numberSchema,
-      price: numberSchema,
-      minQuantity: numberSchema,
-      orderIncreament: numberSchema,
+      inventoryPerUnit: positiveDecimal,
+      price: nonNegativeDecimal,
+      minQuantity: positiveDecimal,
+      orderIncreament: positiveDecimal,
       isBaseUnit: z.boolean(),
     })
-    .array(),
+    .array()
+    .min(1, "Add at least one sell unit")
+    .refine((units) => units.filter((unit) => unit.isBaseUnit).length === 1, {
+      message: "Select exactly one base unit",
+    }),
 })
 
 export type ProductFormSchema = z.infer<typeof productFormSchema>
@@ -43,10 +66,10 @@ export const productFormValues = {
   sellUnits: [
     {
       name: "case",
-      inventoryPerUnit: "",
+      inventoryPerUnit: "1",
       price: "",
-      minQuantity: "",
-      orderIncreament: "",
+      minQuantity: "1",
+      orderIncreament: "1",
       isBaseUnit: true,
     },
   ],

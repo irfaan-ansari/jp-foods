@@ -45,9 +45,9 @@ export const ProductSellingOptions = withForm({
       const hasBaseUnit = sellUnits.some((i) => i.isBaseUnit)
       form.pushFieldValue("sellUnits", {
         name: units?.[0]?.value ?? "",
-        orderIncreament: "",
-        minQuantity: "",
-        inventoryPerUnit: "",
+        orderIncreament: "1",
+        minQuantity: "1",
+        inventoryPerUnit: hasBaseUnit ? "" : "1",
         price: "",
         isBaseUnit: !hasBaseUnit,
       })

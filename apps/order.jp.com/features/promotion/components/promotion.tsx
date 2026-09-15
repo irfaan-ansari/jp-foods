@@ -120,12 +120,22 @@ function PromotionToast({
   id: number | string
   product: PromotionType["products"][number]
 }) {
-  const { setQuantity, value } = useOrderItemQuantity(product)
+  const sellUnit =
+    product.sellUnits.find((unit) => unit.isBaseUnit) ?? product.sellUnits[0]
+  const { setQuantity, value } = useOrderItemQuantity(
+    product,
+    sellUnit?.id ?? 0
+  )
   return (
     <div
       className="relative flex w-sm items-center gap-2 overflow-hidden rounded-2xl border bg-background p-3 shadow-lg"
       onClick={() => {
-        setQuantity(value + 1)
+        if (sellUnit)
+          setQuantity(
+            value
+              ? value + Number(sellUnit.orderIncreament)
+              : Number(sellUnit.minQuantity)
+          )
         toast.dismiss(id)
       }}
     >
@@ -160,7 +170,9 @@ function PromotionToast({
         </p>
         <div className="flex items-center justify-between">
           <span className="font-semibold text-primary">
-            {formatUSD(product.price)}
+            {sellUnit
+              ? `${formatUSD(sellUnit.price)} / ${sellUnit.name}`
+              : "Unavailable"}
           </span>
         </div>
       </div>

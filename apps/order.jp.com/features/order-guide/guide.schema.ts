@@ -1,7 +1,7 @@
 import z from "zod"
 
 export const guideSchema = z.object({
-  name: z.string(),
+  name: z.string().min(1, "Name is required"),
   description: z.string(),
   productIds: z.number().positive().array(),
 })

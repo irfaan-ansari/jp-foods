@@ -1,34 +1,37 @@
-import { EmailTemplate } from "./email-template";
-import { Section, Text } from "@react-email/components";
+import { EmailLayout } from "./email-layout"
+import { Section, Text } from "react-email"
 
-interface JobAppliedProps {
-  name: string;
-  position: string;
+interface JobApplicationReceivedEmailProps {
+  name: string
+  position: string
 }
 
-export const JobApplied = ({ name, position }: JobAppliedProps) => {
+export const JobApplicationReceivedEmail = ({
+  name,
+  position,
+}: JobApplicationReceivedEmailProps) => {
   return (
-    <EmailTemplate template="customer" heading="Application Received">
+    <EmailLayout template="customer" heading="Application Received">
       <Section className="p-6">
-        <Text className="text-xl text-black font-semibold mb-2">
+        <Text className="mb-2 text-xl font-semibold text-black">
           Hello {name || "Applicant"},
         </Text>
 
         <Text className="text-lg">
           Thank you for applying for the{" "}
-          <span className="font-semibold inline-block uppercase">
+          <span className="inline-block font-semibold uppercase">
             {position}
           </span>{" "}
           position with Jimenez Produce.
         </Text>
 
-        <Text className="text-lg mt-4">
+        <Text className="mt-4 text-lg">
           We have successfully received your application, and our team will
           carefully review your qualifications and submitted documents.
         </Text>
 
-        <Section className="border border-[#f4f5f6] p-6 mt-6">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+        <Section className="border-email-border mt-6 border p-6">
+          <Text className="text-email-brand text-lg font-semibold uppercase">
             What Happens Next
           </Text>
 
@@ -44,13 +47,11 @@ export const JobApplied = ({ name, position }: JobAppliedProps) => {
           </Text>
         </Section>
 
-        <Text className="text-lg mt-6">
+        <Text className="mt-6 text-lg">
           We sincerely appreciate your interest in joining our team and look
           forward to reviewing your application.
         </Text>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default JobApplied;
+    </EmailLayout>
+  )
+}

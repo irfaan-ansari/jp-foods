@@ -4,6 +4,7 @@ import { Product } from "../product/product.type"
 type LastOrder = {
   id: number
   quantity: string
+  unitName: string | null
   orderId: number
   createdAt: Date
 }

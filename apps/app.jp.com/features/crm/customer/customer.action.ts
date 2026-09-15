@@ -8,6 +8,7 @@ import {
   updateCustomerApplicationSchema,
 } from "./customer.schema"
 import { authActionClient } from "@/lib/safe-action"
+import { triggerNotification } from "./customer.utils"
 
 // update fields
 export const updateCustomerApplication = authActionClient({
@@ -59,26 +60,3 @@ export const deleteCustomerApplication = authActionClient({
 
     return { id: id }
   })
-
-const triggerNotification = ({
-  status,
-  statusDetails,
-  statusReason,
-}: {
-  status: string
-  statusDetails?: string
-  statusReason?: string
-}) => {
-  switch (status) {
-    case "approved":
-      // trigger approved email
-      return
-    case "under_review":
-      // trigger under review email
-      return
-    case "on_hold":
-    case "rejected":
-      // trigger application update
-      return
-  }
-}

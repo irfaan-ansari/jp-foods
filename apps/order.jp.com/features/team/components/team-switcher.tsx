@@ -104,13 +104,25 @@ export const TeamSwitcher = () => {
             </div>
           </div>
           <div className="flex gap-2">
-            <Button variant="outline" asChild size="sm" className="h-7 px-2">
+            <Button
+              variant="outline"
+              asChild
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setOpen(false)}
+            >
               <Link href="/settings/general">
                 <Settings className="size-3.5" />
                 Settings
               </Link>
             </Button>
-            <Button variant="outline" asChild size="sm" className="h-7 px-2">
+            <Button
+              variant="outline"
+              asChild
+              size="sm"
+              className="h-7 px-2"
+              onClick={() => setOpen(false)}
+            >
               <Link href="/settings/members">
                 <UserPlus className="size-3.5" />
                 Invite members

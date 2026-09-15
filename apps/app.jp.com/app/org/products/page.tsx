@@ -1,20 +1,22 @@
 "use client"
 import React from "react"
-import { Plus } from "lucide-react"
+import { Plus, X } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
-import { FileDownload, Sort, Upload } from "@solar-icons/react"
+import { FileDownload, Sort } from "@solar-icons/react"
 import { PageContent, PageHeader } from "@/components/page-content"
 
-import { ProductDialog } from "@/features/org/product/components/product-dialog"
 import { ProductsClient } from "@/features/org/product/components/products-client"
 import { CategorySelector } from "@/features/org/product/components/category-selector"
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import { STATUS } from "@/features/org/product/product.const"
+import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
 const ProductsPage = () => {
+  const { searchParamsObj, queryParams } = useRouterStuff()
+
   return (
     <React.Fragment>
       <PageHeader title="Products">
@@ -40,10 +42,26 @@ const ProductsPage = () => {
       <PageContent className="space-y-6">
         <div className="flex gap-4">
           <FilterTab tabs={Object.values(STATUS)} path="/org/products/count" />
-          <CategorySelector selected={""}>
+          <CategorySelector
+            selected={searchParamsObj.cat || ""}
+            onSelect={(cat) => queryParams({ set: { cat } })}
+          >
             <Button variant="outline" className="ml-auto">
               <Sort />
-              Categories
+              {searchParamsObj.cat ?? (
+                <span className="text-muted-foreground">All Categories</span>
+              )}
+              {searchParamsObj.cat && (
+                <span
+                  className="inline-flex size-6 items-center justify-center rounded-full bg-secondary hover:text-red-600"
+                  onClick={(e) => {
+                    e.stopPropagation()
+                    queryParams({ set: { cat: "" } })
+                  }}
+                >
+                  <X className="size-3.5" />
+                </span>
+              )}
             </Button>
           </CategorySelector>
           <SearchQueryParam />

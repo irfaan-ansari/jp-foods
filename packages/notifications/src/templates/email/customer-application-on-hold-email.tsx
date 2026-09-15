@@ -1,18 +1,22 @@
-import { Section, Text } from "@react-email/components";
+import { Section, Text } from "react-email"
 
-import { EmailTemplate } from "./email-template";
+import { EmailLayout } from "./email-layout"
 
-interface Props {
-  name: string;
-  reason: string;
-  reasonDetails: string;
+interface CustomerApplicationOnHoldEmailProps {
+  name: string
+  reason: string
+  reasonDetails: string
 }
 
-export const CustomerHold = ({ name, reason, reasonDetails }: Props) => {
+export const CustomerApplicationOnHoldEmail = ({
+  name,
+  reason,
+  reasonDetails,
+}: CustomerApplicationOnHoldEmailProps) => {
   return (
-    <EmailTemplate template="customer" heading="Application On-Hold">
+    <EmailLayout template="customer" heading="Application On-Hold">
       <Section className="p-6">
-        <Text className="text-xl text-black font-semibold mb-2">
+        <Text className="mb-2 text-xl font-semibold text-black">
           Hello {name || "Name"},
         </Text>
 
@@ -23,8 +27,8 @@ export const CustomerHold = ({ name, reason, reasonDetails }: Props) => {
           Your application is currently on hold pending additional information.
         </Text>
 
-        <Section className="border border-[#f4f5f6] p-6">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+        <Section className="border-email-border border p-6">
+          <Text className="text-email-brand text-lg font-semibold uppercase">
             Reason: {reason}
           </Text>
           <Text className="text-lg">{reasonDetails}</Text>
@@ -36,12 +40,10 @@ export const CustomerHold = ({ name, reason, reasonDetails }: Props) => {
           <br />
           If you have any questions, please contact our accounts department.
         </Text>
-        <Text className="font-semibold text-lg">
+        <Text className="text-lg font-semibold">
           We look forward to completing your application.
         </Text>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default CustomerHold;
+    </EmailLayout>
+  )
+}

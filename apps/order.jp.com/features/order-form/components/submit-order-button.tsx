@@ -43,6 +43,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
 
     if (result.serverError) {
       toast.error(result.serverError.message)
+      loader.hide()
       return
     }
 

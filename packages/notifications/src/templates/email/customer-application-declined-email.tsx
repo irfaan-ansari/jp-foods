@@ -1,19 +1,23 @@
-import { Section, Text } from "@react-email/components";
+import { Section, Text } from "react-email"
 
-import { EmailTemplate } from "./email-template";
+import { EmailLayout } from "./email-layout"
 
-interface Props {
-  name: string;
-  company: string;
-  reason: string;
-  reasonDetails: string;
+interface CustomerApplicationDeclinedEmailProps {
+  name: string
+  company: string
+  reason: string
+  reasonDetails: string
 }
 
-export const CustomerDeclined = ({ name, reason, reasonDetails }: Props) => {
+export const CustomerApplicationDeclinedEmail = ({
+  name,
+  reason,
+  reasonDetails,
+}: CustomerApplicationDeclinedEmailProps) => {
   return (
-    <EmailTemplate template="customer" heading="Application Declined">
+    <EmailLayout template="customer" heading="Application Declined">
       <Section className="p-6">
-        <Text className="text-xl text-black font-semibold mb-2">
+        <Text className="mb-2 text-xl font-semibold text-black">
           Hello {name || "Name"},
         </Text>
 
@@ -25,8 +29,8 @@ export const CustomerDeclined = ({ name, reason, reasonDetails }: Props) => {
           unable to approve your account at this time.
         </Text>
 
-        <Section className="border border-[#f4f5f6] p-6">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+        <Section className="border-email-border border p-6">
+          <Text className="text-email-brand text-lg font-semibold uppercase">
             Reason: {reason}
           </Text>
           <Text className="text-lg">{reasonDetails}</Text>
@@ -36,12 +40,10 @@ export const CustomerDeclined = ({ name, reason, reasonDetails }: Props) => {
           If you believe additional information may assist in reconsideration,
           please reply to this email or contact our office.
         </Text>
-        <Text className="font-semibold text-lg">
+        <Text className="text-lg font-semibold">
           We appreciate your interest and wish you continued success.
         </Text>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default CustomerDeclined;
+    </EmailLayout>
+  )
+}

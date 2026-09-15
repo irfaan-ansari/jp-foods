@@ -50,7 +50,7 @@ export const Cart = () => {
           {items.map((item) => (
             <div
               className="flex items-center gap-2 not-first:pt-2 not-last:pb-2"
-              key={item.id}
+              key={`${item.id}:${item.sellUnitId}`}
             >
               <Avatar
                 className="size-12! rounded-xl bg-neutral-100 **:rounded-xl"
@@ -73,8 +73,8 @@ export const Cart = () => {
               <div className="grid min-w-0 flex-1 gap-1">
                 <p className="truncate text-sm font-medium">{item.title}</p>
                 <p className="truncate text-xs font-medium text-muted-foreground">
-                  {formatUSD(item.price)} x {item.quantity}
-                  {item.unit && "/" + item.unit}
+                  {item.quantity} {item.unit} × {formatUSD(item.price)} /{" "}
+                  {item.unit}
                 </p>
               </div>
               <div className="grid min-w-0 gap-1 text-right">
@@ -85,8 +85,8 @@ export const Cart = () => {
                   size="icon-xs"
                   variant="destructive"
                   className="ml-auto"
-                  onClick={(e) => {
-                    removecartItem(item.id)
+                  onClick={() => {
+                    removecartItem(item.id, item.sellUnitId)
                   }}
                 >
                   <TrashBinMinimalistic />
@@ -101,7 +101,8 @@ export const Cart = () => {
             <div className="flex justify-between text-muted-foreground">
               <span className="flex-1">Items</span>
               <span className="font-medium">
-                {cart.lineItemCount} Items •{cart.lineItemQuantity} Units
+                {cart.lineItemCount} Items
+                {/* •{cart.lineItemQuantity} Units */}
               </span>
             </div>
             <div className="flex justify-between text-muted-foreground">

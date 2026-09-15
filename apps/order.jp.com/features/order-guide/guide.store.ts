@@ -2,7 +2,7 @@ import { create } from "zustand"
 import { Guide } from "./guide.type"
 
 interface OrderGuideBoardStore {
-  board: Guide
+  board: Guide | null
 
   initialize: (board: Guide) => void
   setBoard: (board: Guide) => void
@@ -12,7 +12,7 @@ interface OrderGuideBoardStore {
 
 export const useOrderGuideBoardStore = create<OrderGuideBoardStore>()(
   (set) => ({
-    board: {},
+    board: null,
 
     initialize: (board) =>
       set(() => ({
@@ -26,7 +26,7 @@ export const useOrderGuideBoardStore = create<OrderGuideBoardStore>()(
 
     clear: () =>
       set(() => ({
-        board: {},
+        board: null,
       })),
   })
 )

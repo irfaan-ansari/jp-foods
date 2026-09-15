@@ -3,12 +3,14 @@ type Charges = { type: string; amount: number }
 
 export type OrderItemInput = {
   id: number
+  sellUnitId: number
   itemCode: string
   title: string
   price: number
-  pack: number
   unit: string
-  unitSize: number
+  inventoryPerUnit: number
+  minQuantity: number
+  orderIncrement: number
   isTaxable: boolean
   image: string
   categories: string[]

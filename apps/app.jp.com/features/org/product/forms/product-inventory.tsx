@@ -1,8 +1,6 @@
 "use client"
-import React from "react"
-import { withForm } from "@/hooks/use-app-form"
-import { ProductFormSchema } from "../product.schema"
 
+import React from "react"
 import {
   Field,
   FieldContent,
@@ -12,9 +10,11 @@ import {
   FieldLabel,
   FieldTitle,
 } from "@jp/ui/components/field"
-import { Switch } from "@jp/ui/components/switch"
-import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
 import { getUnit } from "../product.utils"
+import { withForm } from "@/hooks/use-app-form"
+import { Switch } from "@jp/ui/components/switch"
+import { ProductFormSchema } from "../product.schema"
+import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
 
 export const ProductInventory = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -122,12 +122,9 @@ export const ProductInventory = withForm({
                 </FieldGroup>
                 <FieldGroup>
                   <form.AppField
-                    name="allowBackorder"
+                    name="location"
                     children={(field) => (
-                      <field.TextField
-                        label="Inventory Location"
-                        placeholder="6D"
-                      />
+                      <field.TextField label="Location" placeholder="6D" />
                     )}
                   />
                 </FieldGroup>

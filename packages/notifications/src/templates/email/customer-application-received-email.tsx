@@ -1,17 +1,20 @@
-import { Section, Text } from "@react-email/components";
+import { Section, Text } from "react-email"
 
-import { EmailTemplate } from "./email-template";
+import { EmailLayout } from "./email-layout"
 
-interface Props {
-  name: string;
-  company: string;
+interface CustomerApplicationReceivedEmailProps {
+  name: string
+  company: string
 }
 
-export const CustomerNew = ({ name, company }: Props) => {
+export const CustomerApplicationReceivedEmail = ({
+  name,
+  company,
+}: CustomerApplicationReceivedEmailProps) => {
   return (
-    <EmailTemplate template="customer" heading="Application Submitted">
+    <EmailLayout template="customer" heading="Application Submitted">
       <Section className="p-6">
-        <Text className="text-xl text-black font-semibold mb-2">
+        <Text className="mb-2 text-xl font-semibold text-black">
           Hello {name || "Name"},
         </Text>
 
@@ -21,24 +24,24 @@ export const CustomerNew = ({ name, company }: Props) => {
           distributor.
         </Text>
 
-        <Text className="text-lg mb-0">
+        <Text className="mb-0 text-lg">
           Our Customer Accounts Department has received your application and
           will review it within 24–48 business hours.
         </Text>
 
-        <Section className="border border-[#f4f5f6] p-6 mt-6">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a] mt-0">
+        <Section className="border-email-border mt-6 border p-6">
+          <Text className="text-email-brand mt-0 text-lg font-semibold uppercase">
             Next steps:
           </Text>
 
-          <Text className="text-base font-semibold mb-0">
+          <Text className="mb-0 text-base font-semibold">
             • Our team reviews your submitted documentation. <br />
             • Once approved, you will receive a confirmation email. <br />•
             After approval, you can start placing orders.
           </Text>
         </Section>
-        <Section className="border border-[#f4f5f6] p-6 mt-6">
-          <Text className="text-lg uppercase font-semibold text-[#80b83a]">
+        <Section className="border-email-border mt-6 border p-6">
+          <Text className="text-email-brand text-lg font-semibold uppercase">
             Ordering & Delivery:
           </Text>
 
@@ -58,12 +61,10 @@ export const CustomerNew = ({ name, company }: Props) => {
           We distribute produce, dairy, dry goods, beverages, and specialty
           foodservice products throughout the Gulf Coast region.
         </Text>
-        <Text className="font-semibold text-lg">
+        <Text className="text-lg font-semibold">
           We look forward to reviewing your application.
         </Text>
       </Section>
-    </EmailTemplate>
-  );
-};
-
-export default CustomerNew;
+    </EmailLayout>
+  )
+}

@@ -5,10 +5,10 @@ import { and, count, eq } from "drizzle-orm"
 import { AppError } from "@jp/utils"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
+import { renderToStream } from "@react-pdf/renderer"
+import { OrderInvoice } from "@jp/pdf"
 
-const app = new Hono<TeamAppContext>()
-
-export const orders = app
+const orderApp = new Hono<TeamAppContext>()
   .get("/", async (c) => {
     const teamId = c.get("teamId")
     const organnizationId = c.get("organizationId")
@@ -86,14 +86,50 @@ export const orders = app
           eq(o.organizationId, organizationId)
         ),
       with: {
-        lineItems: true,
+        lineItems: { with: { product: { with: { sellUnits: true } } } },
       },
     })
 
     if (!result) throw new AppError("NOT_FOUND")
 
+    const data = {
+      ...result,
+      estimateUrl:
+        process.env.BETTER_AUTH_URL + `/api/v1/team/orders/${id}/estimate`,
+    }
+
     return c.json({
       success: true,
-      data: result,
+      data,
     })
   })
+  .get("/:id/estimate", async (c) => {
+    const id = c.req.param("id")
+    const teamId = c.get("teamId")
+    const organizationId = c.get("organizationId")
+    const data = await db.query.order.findFirst({
+      where: (o, { and, eq }) =>
+        and(
+          eq(o.id, Number(id)),
+          eq(o.teamId, teamId),
+          eq(o.organizationId, organizationId)
+        ),
+      with: {
+        lineItems: true,
+        organization: true,
+        team: true,
+      },
+    })
+    if (!data) throw new AppError("NOT_FOUND")
+
+    // @ts-expect-error - Type assertion for PDF props
+    const pdf = await renderToStream(OrderInvoice({ data }))
+
+    // @ts-expect-error - Type assertion for Response body
+    return c.body(pdf, 200, {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `inline; filename="order-${id}.pdf"`,
+    })
+  })
+
+export const orders: Hono<TeamAppContext> = orderApp

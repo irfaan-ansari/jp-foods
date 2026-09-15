@@ -28,7 +28,8 @@ export const teamRoutes = app
         or(
           ilike(team.name, `%${q}%`),
           ilike(team.managerName, `%${q}%`),
-          ilike(team.email, `%${q}%`)
+          ilike(team.email, `%${q}%`),
+          ilike(team.phoneNumber, `%${q}%`)
         )
       )
     }

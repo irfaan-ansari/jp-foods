@@ -31,7 +31,6 @@ import Link from "next/link"
 import { STATUS } from "../team.const"
 import type { Team } from "../team.type"
 import { Tooltip } from "@jp/ui/components/jp"
-import { TeamDropdown } from "./team-dropdown"
 import { StatusBadge } from "@/components/status-badge"
 import { Button } from "@jp/ui/components/button"
 
@@ -56,7 +55,6 @@ export const TeamCard = ({ data }: { data: Team }) => {
           >
             <Link href={`/org/customers/${data.id}/edit`}>
               <PenNewRound />
-              Edit
             </Link>
           </Button>
         </CardAction>

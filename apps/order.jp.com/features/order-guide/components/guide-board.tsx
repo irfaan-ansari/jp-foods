@@ -1,18 +1,15 @@
 import React from "react"
+import { Plus } from "lucide-react"
 import { Guide } from "../guide.type"
 import { Tooltip } from "@jp/ui/components/jp"
-import { MenuDots, Star } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { ProductCard } from "@/features/product/components"
 import { Sortable, SortableItem } from "@jp/ui/components/sortable"
 import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
-import { Plus } from "lucide-react"
-import { Badge } from "@jp/ui/components/badge"
-import { Avatar, AvatarFallback } from "@jp/ui/components/avatar"
+
 import { GuideDropdown } from "./guide-dropdown"
-import { IconTile } from "@jp/ui/components/icon-tile"
 
 export const GuideBoard = ({ data }: { data: Guide }) => {
   const layout = useOrderFormUI((state) => state.layout)
@@ -61,6 +58,7 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
 
   const handleAddToCart = () => {
     for (const item of data.items) {
+      if (item.sellUnits.length === 0) continue
       const orderItem = toOrderItemInput(item)
       addItem({
         ...orderItem,
@@ -70,13 +68,8 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
   return (
     <div className="relative flex items-center gap-3 px-4 py-3">
       <div className="flex flex-1 items-center gap-3">
-        <IconTile variant="elevated">
-          <span className="text-sm font-bold text-fuchsia-500">
-            {data.items.length}
-          </span>
-        </IconTile>
         <div className="grid min-w-0">
-          <span className="truncate text-base font-medium">{data.name}</span>
+          <span className="truncate text-base font-semibold">{data.name}</span>
           <span className="truncate text-xs text-muted-foreground">
             {data.description}
           </span>
@@ -87,6 +80,7 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
           size="sm"
           className="text-sm text-primary hover:text-primary"
           variant={"outline"}
+          disabled
           onClick={handleAddToCart}
         >
           <Plus className="size-3.5" /> Add to Cart

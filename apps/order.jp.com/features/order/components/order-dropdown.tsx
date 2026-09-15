@@ -2,13 +2,17 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Orders } from "../order.type"
+import { OrderSelectType } from "@jp/db"
 import { Button } from "@jp/ui/components/button"
 import { OrderCancelDialog } from "./order-cancel-dialog"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { CloseCircle, MenuDots, PenNewSquare } from "@solar-icons/react"
 
-export const OrderDropdown = ({ data }: { data: Orders }) => {
+export const OrderDropdown = ({
+  data,
+}: {
+  data: Pick<OrderSelectType, "id" | "status">
+}) => {
   const { id } = data
   const [open, setOpen] = useState(false)
 
