@@ -109,6 +109,7 @@ export const customerInvite = pgTable(
     statusReason: text("status_reason"),
     statusDetails: text("status_details"),
     internalNotes: text("internal_notes"),
+    token: text("token"),
     ipAddress: text("ip_address"),
     userAgent: text("user_agent"),
     createdBy: text("created_by"),
