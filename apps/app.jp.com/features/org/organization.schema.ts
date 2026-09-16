@@ -3,10 +3,10 @@ import { phoneSchema } from "@jp/utils"
 
 export const organizationFormSchema = z.object({
   name: z.string().min(1, "Name is required"),
-  phoneNumber: phoneSchema,
+  phoneNumber: z.string(),
   email: z.email("Invalid email"),
   logo: z.string(),
-  street: z.string().min(1, "Address is required"),
+  street: z.string().min(1, "Street is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().min(1, "State is required"),
   zip: z.string().min(1, "Zip is required"),

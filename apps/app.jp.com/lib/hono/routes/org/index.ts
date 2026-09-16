@@ -9,12 +9,14 @@ import { taxRulesRoutes } from "@/features/org/tax-rule/tax-rule.api"
 import { orgRoutes as orgRoute } from "@/features/org/organization.api"
 import { priceLevelRoutes } from "@/features/org/price-level/price-level.api"
 import { orderGuideRoutes } from "@/features/org/order-guide/order-guide.api"
+import { dashboardRoutes } from "@/features/org/dashboard/dashboard.api"
 
 const app = new Hono<OrgAppContext>()
 
 app.use("*", orgMiddleware)
 
 export const orgRoutes = app
+  .route("/dashboard", dashboardRoutes)
   .route("/", orgRoute)
   .route("/orders", orders)
   .route("/products", productRoute)

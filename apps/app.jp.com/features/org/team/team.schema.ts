@@ -88,3 +88,13 @@ export const teamUpdateSchema = z.object({
   id: z.string(),
   data: teamDataSchema,
 })
+
+export const addTeamMemberSchema = z.object({
+  userId: z.string(),
+  teamId: z.string(),
+})
+
+export const addTeamPrivateItemSchem = z.object({
+  teamId: z.string(),
+  productId: z.number(),
+})

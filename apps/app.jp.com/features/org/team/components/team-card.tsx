@@ -33,6 +33,7 @@ import type { Team } from "../team.type"
 import { Tooltip } from "@jp/ui/components/jp"
 import { StatusBadge } from "@/components/status-badge"
 import { Button } from "@jp/ui/components/button"
+import { TeamDropdown } from "./team-dropdown"
 
 export const TeamCard = ({ data }: { data: Team }) => {
   const progress = Math.floor(Math.random() * 100) + 1
@@ -45,18 +46,12 @@ export const TeamCard = ({ data }: { data: Team }) => {
       <Link href={`/org/customers/${data.id}`} className="absolute inset-0" />
       <CardHeader>
         <CardAction className="flex items-center gap-2">
-          <TeamBadge status={data.status ?? "active"} />
-
-          <Button
-            size="icon-sm"
-            variant="outline"
-            className="relative z-1"
-            asChild
-          >
-            <Link href={`/org/customers/${data.id}/edit`}>
-              <PenNewRound />
-            </Link>
-          </Button>
+          <TeamBadge status={data.status ?? "suspended"} />
+          <TeamDropdown data={data}>
+            <Button size="icon-sm" variant="outline" className="relative z-1">
+              <MenuDots />
+            </Button>
+          </TeamDropdown>
         </CardAction>
         <div className="flex min-w-0 items-start gap-2">
           <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-xl">

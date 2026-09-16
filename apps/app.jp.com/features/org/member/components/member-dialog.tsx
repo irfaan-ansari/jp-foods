@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { toast } from "sonner"
 import React, { useState } from "react"
 import {
@@ -20,23 +21,62 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@jp/ui/components/field"
-import { MemberRoleSelector } from "../components/member-role-selector"
-import Link from "next/link"
 import { MemberRoleBadge } from "./member-card"
+import { createMember, updateMember } from "../member.action"
+import { MemberRoleSelector } from "../components/member-role-selector"
 import { UserSelector } from "@/features/user/components/user-selector"
+import { useQueryClient } from "@tanstack/react-query"
 
-export const MemberDialog = ({ children }: { children: React.ReactNode }) => {
+export const MemberDialog = ({
+  values,
+  children,
+}: {
+  values?: {
+    id: string
+    role: string
+    user?: {
+      id: string
+      name: string
+    }
+  }
+  children: React.ReactNode
+}) => {
+  const queryClient = useQueryClient()
+
   const [open, setOpen] = useState(false)
   const form = useAppForm({
     defaultValues: {
-      user: {
+      id: values?.id || "",
+      user: values?.user || {
         id: "",
         name: "",
       },
-      role: "",
+      role: values?.role || "",
     },
     onSubmit: async ({ value }) => {
-      //  add member server action
+      if (values?.id) {
+        const { serverError } = await updateMember({
+          memberId: values.id,
+          role: value.role,
+        })
+        if (serverError) {
+          toast.error(serverError.message)
+          return
+        }
+        toast.success("Member updated successfully")
+      } else {
+        const { serverError } = await createMember({
+          userId: value.user.id,
+          role: value.role,
+        })
+        if (serverError) {
+          toast.error(serverError.message)
+          return
+        }
+        toast.success("Member added successfully")
+      }
+      queryClient.invalidateQueries({ queryKey: ["members"] })
+      setOpen(false)
     },
   })
   return (
@@ -45,7 +85,7 @@ export const MemberDialog = ({ children }: { children: React.ReactNode }) => {
       <AppDialogContent className="md:max-w-2xl">
         <AppDialogHeader className="data-[slot=drawer-header]:sr-only">
           <AppDialogTitle className="text-base font-bold">
-            New Member
+            {values?.id ? "Edit Member" : "Add Member"}
           </AppDialogTitle>
         </AppDialogHeader>
         <FieldGroup>
@@ -53,7 +93,7 @@ export const MemberDialog = ({ children }: { children: React.ReactNode }) => {
             name="user"
             children={(field) => {
               return (
-                <Field>
+                <Field className={values?.id ? "hidden" : ""}>
                   <FieldLabel htmlFor={field.name}>User</FieldLabel>
                   <UserSelector
                     selected={field.state.value?.id}
@@ -69,7 +109,7 @@ export const MemberDialog = ({ children }: { children: React.ReactNode }) => {
                       className="w-full justify-start text-muted-foreground"
                     >
                       <Plus />
-                      {field.state.value ? (
+                      {field.state.value?.id ? (
                         field.state.value?.name
                       ) : (
                         <span className="text-muted-foreground">Select...</span>

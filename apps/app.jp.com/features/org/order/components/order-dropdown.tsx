@@ -3,12 +3,12 @@
 import { toast } from "sonner"
 import { useState } from "react"
 import { Button } from "@jp/ui/components/button"
-import type { Order } from "@/features/org/order/order.type"
 
-import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useQueryClient } from "@tanstack/react-query"
-import { cancelOrder, completeOrder } from "@/features/org/order/order.action"
+import type { Order } from "@/features/org/order/order.type"
+import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
+import { cancelOrder, completeOrder } from "@/features/org/order/order.action"
 import {
   Bill,
   BillCheck,
@@ -90,7 +90,7 @@ export const OrderDropdown = ({ data }: { data: Order }) => {
       </Button>
 
       <Button variant="ghost" asChild>
-        <a href={`/api/v1/org/orders/${id}/packing-slip`} target="_blank">
+        <a href={`/api/v1/org/orders/${id}/slip`} target="_blank">
           <Bill /> Packing Slip
         </a>
       </Button>

@@ -2,9 +2,14 @@
 import { auth } from "@jp/auth"
 import { and, eq } from "drizzle-orm"
 import { AppError } from "@jp/utils/error"
-import { db, team } from "@jp/db"
+import { db, team, teamMember, teamProduct } from "@jp/db"
 import { orgActionClient } from "@/lib/safe-action"
-import { teamCreateSchema, teamUpdateSchema } from "./team.schema"
+import {
+  addTeamMemberSchema,
+  addTeamPrivateItemSchem,
+  teamCreateSchema,
+  teamUpdateSchema,
+} from "./team.schema"
 import { syncTeamMembers, syncTeamPrivateItems } from "./team.utils"
 
 export const createTeam = orgActionClient({ team: ["create"] })
@@ -102,4 +107,66 @@ export const updateTeam = orgActionClient({ team: ["update"] })
     ])
 
     return { id }
+  })
+
+/**
+ * Add team member
+ */
+export const addTeamMember = orgActionClient({ team: ["update"] })
+  .inputSchema(addTeamMemberSchema)
+  .action(async ({ ctx, parsedInput }) => {
+    const { userId, teamId } = parsedInput
+    const organizationId = ctx.organizationId
+
+    const exist = await db.query.teamMember.findFirst({
+      where: (tm, { eq, and }) =>
+        and(eq(tm.teamId, teamId), eq(tm.userId, userId)),
+    })
+
+    if (exist)
+      throw new AppError("CONFLICT", {
+        message: "User already exists",
+      })
+
+    const member = await db.query.member.findFirst({
+      where: (m, { and, eq }) =>
+        and(eq(m.organizationId, organizationId), eq(m.userId, userId)),
+    })
+
+    if (member) {
+      await db
+        .insert(teamMember)
+        .values({ id: crypto.randomUUID(), teamId, userId })
+    } else {
+      await auth.api.addMember({
+        body: {
+          userId,
+          role: "customer",
+          organizationId,
+          teamId,
+        },
+      })
+    }
+
+    return { id: teamId }
+  })
+
+export const addTeamPrivateItem = orgActionClient({ team: ["update"] })
+  .inputSchema(addTeamPrivateItemSchem)
+  .action(async ({ ctx, parsedInput }) => {
+    const { teamId, productId } = parsedInput
+
+    const existing = await db.query.teamProduct.findFirst({
+      where: (tp, { eq, and }) =>
+        and(eq(tp.teamId, teamId), eq(tp.productId, productId)),
+    })
+    if (existing)
+      throw new AppError("CONFLICT", { message: "Product already exists" })
+
+    const [result] = await db
+      .insert(teamProduct)
+      .values({ teamId, productId })
+      .returning({ id: teamProduct.id })
+
+    return { id: result?.id }
   })

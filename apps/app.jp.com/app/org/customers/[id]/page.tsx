@@ -56,16 +56,11 @@ const CustomerPage = () => {
             ))}
           </PopDrawer>
 
-          <Button
-            size="icon"
-            variant="outline"
-            className="relative z-1"
-            asChild
-          >
-            <Link href={`/org/customers/${team?.data?.id}/edit`}>
-              <PenNewRound />
-            </Link>
-          </Button>
+          <TeamDropdown data={team?.data!}>
+            <Button size="icon" variant="outline">
+              <MenuDots />
+            </Button>
+          </TeamDropdown>
         </div>
       </PageHeader>
       <PageContent loading={isPending || teamPending}>

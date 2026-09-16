@@ -26,6 +26,8 @@ import { StatCard } from "@/features/org/dashboard/components/stat-card"
 import { CopyButton } from "@jp/ui/components/jp"
 import { TeamBadge } from "./team-card"
 import { PriceLevelBadge } from "../../price-level/components/price-level-card"
+import { Badge } from "@jp/ui/components/badge"
+import { Button } from "@jp/ui/components/button"
 
 export const TeamDetailClient = ({
   data,
@@ -218,27 +220,35 @@ export const TeamDetailClient = ({
             <CardHeader>
               <CardTitle className="text-base font-bold">Price & Tax</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid gap-1.5">
+            <CardContent className="grid gap-4 lg:grid-cols-2">
+              <div className="grid gap-1.5 rounded-2xl border bg-secondary/20 p-4">
                 <span className="text-xs text-muted-foreground">
                   Price Level
                 </span>
-                <div className="flex rounded-xl border bg-secondary/50 p-2.5">
-                  {priceLevel.name}
-                  <PriceLevelBadge
-                    adjustmentType={team.priceLevel.adjustmentType}
-                    adjustmentValue={team.priceLevel.adjustmentValue!}
-                    appliesTo={team.priceLevel.appliesTo}
-                    productCount={team.priceLevel.productCount}
-                  />
-                </div>
+                {priceLevel.name ? (
+                  <div className="flex items-center gap-3">
+                    {priceLevel.name}
+                    <PriceLevelBadge
+                      adjustmentType={team.priceLevel.adjustmentType}
+                      adjustmentValue={team.priceLevel.adjustmentValue!}
+                      appliesTo={team.priceLevel.appliesTo}
+                      productCount={team.priceLevel.productCount}
+                    />
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">None</span>
+                )}
               </div>
-              <div className="grid gap-1.5">
-                <span className="text-xs text-muted-foreground">Tax rule</span>
-                <div className="flex rounded-xl border bg-secondary/50 p-2.5">
-                  {taxRule.name ?? "Tax rule name"}
-                  <span className="ml-auto">Badge 10%</span>
-                </div>
+              <div className="grid gap-1.5 rounded-2xl border bg-secondary/20 p-4">
+                <span className="text-xs text-muted-foreground">Tax Rule</span>
+                {taxRule.name ? (
+                  <div className="flex items-center gap-3">
+                    {taxRule.name}
+                    <Badge variant="warning-light">{taxRule.rate}%</Badge>
+                  </div>
+                ) : (
+                  <span className="text-xs text-muted-foreground">None</span>
+                )}
               </div>
             </CardContent>
           </Card>
@@ -253,7 +263,7 @@ export const TeamDetailClient = ({
             <CardContent className="space-y-2.5">
               {team.products.length > 0 ? (
                 team.products.map((product) => (
-                  <div className="flex flex-1 items-start gap-3">
+                  <div className="flex items-start gap-3">
                     <Avatar className="rounded-lg *:rounded-lg" size="lg">
                       <AvatarImage src={product?.image as string} />
                       <AvatarFallback>
@@ -268,6 +278,9 @@ export const TeamDetailClient = ({
                         {product.itemCode}
                       </span>
                     </div>
+                    <Button size="xs" variant="destructive" disabled>
+                      Remove
+                    </Button>
                   </div>
                 ))
               ) : (
@@ -285,7 +298,7 @@ export const TeamDetailClient = ({
             </CardHeader>
             <CardContent className="space-y-2.5">
               {team.teamMembers.map((member) => (
-                <div className="flex flex-1 items-start gap-3" key={member.id}>
+                <div className="flex items-start gap-3" key={member.id}>
                   <Avatar className="rounded-lg *:rounded-lg" size="lg">
                     <AvatarImage src={member?.image as string} />
                     <AvatarFallback>
@@ -306,6 +319,9 @@ export const TeamDetailClient = ({
                       value={member.email}
                     />
                   </div>
+                  <Button size="xs" variant="destructive" disabled>
+                    Remove
+                  </Button>
                 </div>
               ))}
             </CardContent>

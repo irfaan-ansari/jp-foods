@@ -30,14 +30,10 @@ export const OrganizationForm = ({
   defaultValues,
   organizationId,
   onSuccess,
-  onError,
-  onCancel,
 }: {
   defaultValues?: OrganizationFormSchema
   organizationId?: string
   onSuccess?: () => void
-  onError?: () => void
-  onCancel?: () => void
 }) => {
   const [file, setFile] = useState<null | File>(null)
 

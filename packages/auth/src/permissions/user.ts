@@ -68,7 +68,7 @@ const user = ac.newRole({
 const reviewer = ac.newRole({
   ...adminAc.statements,
   portal: ["crm"],
-  user: ["create", "list", "update", "set-email"],
+  user: ["list", "set-email"],
   "customer-invite": ["create", "read"],
   "customer-application": ["create", "read", "update"],
   "candidate-invite": ["create", "read"],

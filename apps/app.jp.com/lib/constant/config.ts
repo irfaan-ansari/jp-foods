@@ -21,6 +21,10 @@ import {
   LetterUnread,
   ClipboardCheck,
   UserPlus,
+  Buildings2,
+  Buildings,
+  ClipboardAdd,
+  UserId,
 } from "@solar-icons/react"
 
 export const ORG_NAV = [
@@ -168,50 +172,62 @@ export const CRM_NAV = [
     ],
   },
   {
-    label: "Customers",
+    label: "Applications",
     items: [
       {
-        label: "Invites",
-        href: "/crm/invite/customers",
-        icon: LetterUnread,
+        label: "Customers",
+        href: "/crm/application/customers",
+        icon: Buildings2,
         items: [],
       },
       {
-        label: "Applications",
-        href: "/crm/application/customers",
-        icon: Clipboard,
+        label: "Candidates",
+        href: "/crm/application/candidates",
+        icon: UsersGroupRounded,
+        items: [],
+      },
+      {
+        label: "Catalog",
+        href: "/crm/application/catalog",
+        icon: Tag,
         items: [],
       },
     ],
   },
   {
-    label: "Candidates",
+    label: "Invites",
     items: [
       {
-        label: "Invites",
+        label: "Invite customer",
+        href: "/crm/invite/customers",
+        icon: ClipboardAdd,
+        items: [],
+      },
+      {
+        label: "Invite candidate",
         href: "/crm/invite/candidates",
         icon: UserPlus,
         items: [],
       },
+    ],
+  },
+
+  {
+    label: "Employees",
+    items: [
       {
-        label: "Applications",
-        href: "/crm/application/candidates",
-        icon: ClipboardCheck,
+        label: "Employees",
+        href: "/crm/employees?status=hired",
+        icon: UserId,
         items: [],
       },
     ],
   },
   {
-    label: "Inquiries",
+    label: "Support",
     items: [
       {
-        label: "Catalog",
-        href: "/crm/catalog-inquiries",
-        icon: Tag,
-        items: [],
-      },
-      {
-        label: "Contact",
+        label: "Contact inquiries",
         href: "/crm/contact",
         icon: ChatLine,
         items: [],

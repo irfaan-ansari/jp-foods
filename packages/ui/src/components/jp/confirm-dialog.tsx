@@ -160,11 +160,11 @@ export function ConfirmDialogProvider({ children }: React.PropsWithChildren) {
                 config.iconClass
               )}
             >
-              <Icon className="size-5" />
+              <Icon className="size-4" />
             </div>
 
             <div className="space-y-1.5">
-              <AlertDialogTitle className="text-lg leading-tight font-bold">
+              <AlertDialogTitle className="text-base leading-tight font-bold">
                 {options.title ?? config.title}
               </AlertDialogTitle>
 

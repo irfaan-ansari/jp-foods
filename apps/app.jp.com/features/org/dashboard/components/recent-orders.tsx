@@ -1,35 +1,69 @@
-"use client"
-import { StatusBadge } from "@/components/status-badge"
-import { useOrders } from "@/features/org/order/order.data"
-import { CardDescription, CardTitle } from "@jp/ui/components/card"
-import { formatDate, formatUSD } from "@jp/utils"
-import React from "react"
-import { DashboardCard } from "./dashboard-card"
+import Link from "next/link"
+import { formatUSD } from "@jp/utils"
+import { Skeleton } from "@jp/ui/components/skeleton"
+import { OrderStatusBadge } from "@/features/org/order/components/order-card"
+import type { Order } from "../../order/order.type"
 
-export const RecentOrders = () => {
-  const { data } = useOrders({ limit: 5 })
-  return (
-    <DashboardCard title="Recent Orders">
-      <div className="divide-y divide-dashed">
-        {data?.data?.map((order) => (
-          <div className="py-2">
-            <div className="flex gap-4">
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center gap-2">
-                  <CardTitle>#{order.id}</CardTitle>
-                  <StatusBadge status={order.status as any} />
-                </div>
-                <CardDescription className="text-xs">
-                  {formatDate(order.createdAt)}
-                </CardDescription>
-              </div>
-              <div className="text-right text-base font-semibold">
-                {formatUSD(order.total)}
-              </div>
-            </div>
-          </div>
+export function RecentOrders({
+  orders,
+  loading,
+  error,
+}: {
+  orders: Order[]
+  loading: boolean
+  error: boolean
+}) {
+  if (loading)
+    return (
+      <div
+        role="status"
+        aria-label="Loading recent orders"
+        className="space-y-3 p-4"
+      >
+        {Array.from({ length: 3 }, (_, index) => (
+          <Skeleton key={index} className="h-12 w-full" />
         ))}
       </div>
-    </DashboardCard>
+    )
+  if (error)
+    return (
+      <p role="alert" className="p-4 text-sm text-destructive">
+        Unable to load orders. Use Refresh to retry.
+      </p>
+    )
+  if (!orders.length)
+    return (
+      <p className="p-4 text-sm text-muted-foreground">No recent orders.</p>
+    )
+  return (
+    <ul>
+      {orders.map((order) => (
+        <li key={order.id} className="not-last:border-b">
+          <Link
+            href={`/org/orders/${order.id}`}
+            className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring"
+          >
+            <div className="min-w-0 flex-1 space-y-1">
+              <p className="truncate text-sm font-medium">
+                #{order.id} · {order.team?.name ?? "Deleted customer"}
+              </p>
+              <p className="text-xs text-muted-foreground">
+                {order.createdAt
+                  ? new Date(order.createdAt).toLocaleDateString("en-US", {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric",
+                    })
+                  : "Date unavailable"}
+              </p>
+            </div>
+            <div className="shrink-0 space-y-1 text-right">
+              <p className="text-sm font-semibold">{formatUSD(order.total)}</p>
+              <OrderStatusBadge status={order.status} />
+            </div>
+          </Link>
+        </li>
+      ))}
+    </ul>
   )
 }

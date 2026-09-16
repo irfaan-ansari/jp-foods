@@ -4,6 +4,7 @@ import React, { useState } from "react"
 
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -77,6 +78,7 @@ export const UserDialog = ({
           toast.error(error.message)
           return
         }
+
         toast.success("User account update.")
 
         form.reset()
@@ -201,9 +203,9 @@ export const UserDialog = ({
           </FieldGroup>
         </div>
         <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
+          <AppDialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </AppDialogClose>
 
           <form.Subscribe
             selector={({ isSubmitting, canSubmit }) => ({

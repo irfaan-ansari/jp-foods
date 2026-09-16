@@ -17,7 +17,7 @@ const CustomerApplications = () => {
   return (
     <React.Fragment>
       <PageHeader title="Customers">
-        <Button>
+        <Button disabled>
           <Plus /> Invite Customer
         </Button>
       </PageHeader>
