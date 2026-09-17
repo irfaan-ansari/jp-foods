@@ -37,7 +37,7 @@ import { toast } from "sonner"
 import { useOrganization } from "../../organization.data"
 import { formatDate } from "@jp/utils"
 
-export const ProductPriceListDialog = ({
+export const PriceListDialog = ({
   children,
 }: {
   children: React.ReactNode

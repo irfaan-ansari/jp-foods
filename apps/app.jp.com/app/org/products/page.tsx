@@ -4,7 +4,7 @@ import { Plus, X } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
-import { DocumentText, FileDownload, Import, Sort } from "@solar-icons/react"
+import { DocumentText, Import, Sort } from "@solar-icons/react"
 import { PageContent, PageHeader } from "@/components/page-content"
 
 import { ProductsClient } from "@/features/org/product/components/products-client"
@@ -13,7 +13,8 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import { STATUS } from "@/features/org/product/product.const"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { ProductPriceListDialog } from "@/features/org/product/components/product-price-dialog"
+import { PriceListDialog } from "@/features/org/product/components/price-list-dialog"
+import { ProductPriceImportDialog } from "@/features/org/product/components/product-price-import-dialog"
 
 const ProductsPage = () => {
   const { searchParamsObj, queryParams } = useRouterStuff()
@@ -23,17 +24,17 @@ const ProductsPage = () => {
       <PageHeader title="Products">
         <OrgAccess permission={{ product: ["update"] }}>
           {(disabled) => (
-            <ProductPriceListDialog>
+            <ProductPriceImportDialog>
               <Button variant="outline" disabled={disabled}>
                 <Import />
                 Import CSV
               </Button>
-            </ProductPriceListDialog>
+            </ProductPriceImportDialog>
           )}
         </OrgAccess>
         <OrgAccess permission={{ product: ["read"] }}>
           {(disabled) => (
-            <ProductPriceListDialog>
+            <PriceListDialog>
               <Button
                 variant="outline"
                 className="text-primary"
@@ -42,7 +43,7 @@ const ProductsPage = () => {
                 <DocumentText />
                 Price List
               </Button>
-            </ProductPriceListDialog>
+            </PriceListDialog>
           )}
         </OrgAccess>
         <OrgAccess permission={{ product: ["create"] }}>
