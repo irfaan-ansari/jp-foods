@@ -25,7 +25,7 @@ export function RankingCard({
         <div
           role="status"
           aria-label={`Loading ${title}`}
-          className="space-y-3"
+          className="space-y-3 p-4"
         >
           {Array.from({ length: 3 }, (_, index) => (
             <Skeleton key={index} className="h-12 w-full" />
@@ -62,12 +62,14 @@ export function RankingCard({
                 {row.href ? (
                   <Link
                     href={row.href}
-                    className="flex items-center gap-3 rounded-md py-3 hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring"
+                    className="flex items-center gap-3 rounded-md px-4 py-3 hover:bg-muted/50 focus-visible:ring-2 focus-visible:ring-ring"
                   >
                     {content}
                   </Link>
                 ) : (
-                  <div className="flex items-center gap-3 py-3">{content}</div>
+                  <div className="flex items-center gap-3 px-4 py-3">
+                    {content}
+                  </div>
                 )}
               </li>
             )

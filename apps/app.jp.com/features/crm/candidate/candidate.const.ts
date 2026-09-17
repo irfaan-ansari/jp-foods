@@ -75,13 +75,3 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
     color: "#EF4444",
   },
 }
-
-export const APPLICATION_ACTIONS = [
-  { label: "Hire Candidate", action: "hired", variant: "default" },
-  {
-    label: "Start Verification",
-    action: "verification_in_progress",
-    variant: "outline",
-  },
-  { label: "Reject", action: "rejected", variant: "destructive" },
-] as const

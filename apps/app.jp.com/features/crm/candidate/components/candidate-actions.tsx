@@ -11,7 +11,6 @@ import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
 import { PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
-import { APPLICATION_ACTIONS } from "../candidate.const"
 import { CandidateApplication } from "../candidate.type"
 import { CandidateApplicationNotesDialog } from "./candidate-notes-dialog"
 import { CandidateApplicationStatusDialog } from "./candidate-status-dialog"
@@ -27,7 +26,6 @@ export const CandidateApplicationActions = ({
   const [showActionDialog, setShowActionDialog] = React.useState(false)
 
   const updateData = {
-    ...data,
     statusReason: "",
     statusDetails: "",
     internalNotes: data.internalNotes ?? "",
@@ -112,11 +110,29 @@ export const CandidateApplicationActions = ({
       </CardContent>
       <CardContent className="border-t border-dashed">
         <div className="mt-4 grid gap-2">
-          {APPLICATION_ACTIONS.map(({ variant, label, action }) => (
-            <Button variant={variant} onClick={() => handleAction(action)}>
-              {label}
-            </Button>
-          ))}
+          <Button
+            disabled={data.status === "hired"}
+            onClick={() => handleAction("hired")}
+          >
+            Hire Candidate
+          </Button>
+          <Button
+            variant="outline"
+            disabled={
+              data.status === "hired" ||
+              data.status === "verification_in_progress"
+            }
+            onClick={() => handleAction("verification_in_progress")}
+          >
+            Start Verification
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={data.status === "rejected"}
+            onClick={() => handleAction("rejected")}
+          >
+            Reject Candidate
+          </Button>
         </div>
       </CardContent>
       <CandidateApplicationStatusDialog

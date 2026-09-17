@@ -15,6 +15,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { APPLICATION_REJECTION_REASONS } from "../customer.const"
 import { CustomerApplication } from "../customer.type"
 import { updateCustomerApplication } from "../customer.action"
+import { customerApplicationSchema } from "../customer.schema"
 
 export function CustomerApplicationStatusDialog({
   id,
@@ -30,26 +31,31 @@ export function CustomerApplicationStatusDialog({
   const queryClient = useQueryClient()
 
   const form = useAppForm({
+    validators: {
+      onBlur: customerApplicationSchema,
+    },
     defaultValues: {
       status: data.status,
       statusReason: "",
       statusDetails: "",
+      internalNotes: data.internalNotes ?? "",
     },
     onSubmit: async ({ value }) => {
       const { serverError } = await updateCustomerApplication({
         id,
-        data: { ...data, ...value, internalNotes: data.internalNotes ?? "" },
+        data: { ...value },
       })
       if (serverError) {
         toast.error(serverError.message)
       } else {
         onOpenChange(false)
         queryClient.invalidateQueries({
-          queryKey: ["customer-application", id],
+          queryKey: ["customer-application"],
         })
         queryClient.invalidateQueries({
           queryKey: ["/crm/customers/count"],
         })
+        form.reset()
       }
     },
   })

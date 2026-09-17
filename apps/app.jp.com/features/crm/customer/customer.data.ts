@@ -6,7 +6,7 @@ import { apiClient } from "@/lib/api-client"
 
 export const useCustomerApplications = (kv?: Record<string, any>) => {
   return useQuery<PaginatedResponse<CustomerApplication>, AppError>({
-    queryKey: ["customer-application", kv],
+    queryKey: ["customer-applications", kv],
     queryFn: () =>
       apiClient.get(`/crm/customers`, {
         params: kv,

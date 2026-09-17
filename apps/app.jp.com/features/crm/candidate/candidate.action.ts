@@ -29,9 +29,15 @@ export const updateCandidateApplication = authActionClient({
       .update(jobApplication)
       .set({
         ...rest,
+        status,
         reviewedBy: user.id,
+        reviewedAt: new Date(),
       })
       .where(eq(jobApplication.id, id))
+
+    // start onboarding if status is hired
+    // start verification if status is verification_in_progress
+    // trigger emails
 
     return { id: 1 }
   })

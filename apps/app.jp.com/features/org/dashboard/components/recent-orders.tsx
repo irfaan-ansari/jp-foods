@@ -41,7 +41,7 @@ export function RecentOrders({
         <li key={order.id} className="not-last:border-b">
           <Link
             href={`/org/orders/${order.id}`}
-            className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-secondary focus-visible:ring-2 focus-visible:ring-ring"
+            className="flex items-center justify-between gap-3 px-4 py-2.5 hover:bg-secondary/50 focus-visible:ring-2 focus-visible:ring-ring"
           >
             <div className="min-w-0 flex-1 space-y-1">
               <p className="truncate text-sm font-medium">

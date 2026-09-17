@@ -266,7 +266,7 @@ const ApplicationStatusInfo = ({ data }: { data: CustomerApplication }) => {
   }
 
   return (
-    <Alert variant={data.status === "rejected" ? "destructive" : "default"}>
+    <Alert variant={data.status === "rejected" ? "destructive" : "warning"}>
       <AlertTriangleIcon />
       <AlertTitle>{data.statusReason}</AlertTitle>
 

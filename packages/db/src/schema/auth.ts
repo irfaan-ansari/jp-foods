@@ -28,8 +28,8 @@ export const user = pgTable("user", {
   phoneNumber: text("phone_number").unique().notNull(),
   countryCode: text("country_code").default("+1").notNull(),
   phoneNumberVerified: boolean("phone_number_verified"),
-  defaultOrganizationId:text('default_organization_id'),
-  defaultTeamId:text('default_team_id')
+  defaultOrganizationId: text("default_organization_id"),
+  defaultTeamId: text("default_team_id"),
 })
 
 export const session = pgTable(
@@ -106,6 +106,12 @@ export const organization = pgTable(
     metadata: text("metadata"),
     phoneNumber: text("phone_number").notNull(),
     email: text("email").notNull(),
+    priceList: jsonb("price_list").$type<{
+      url: string
+      effectiveFrom: string
+      effectiveTo: string
+      updatedAt: string
+    }>(),
   },
   (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)]
 )

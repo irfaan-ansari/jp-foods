@@ -1,6 +1,10 @@
 import { Hono } from "hono"
 
-import { AppContext, teamMiddleware } from "@/lib/hono/middlewares"
+import {
+  AppContext,
+  authMiddleware,
+  teamMiddleware,
+} from "@/lib/hono/middlewares"
 import { teams } from "./teams"
 import { orders } from "./orders"
 import { guides } from "./guides"
@@ -9,10 +13,9 @@ import { products } from "./products"
 import { promotions } from "./promotions"
 import { analytics } from "./analytics"
 
-const app = new Hono<AppContext>()
+export const teamRoutes = new Hono<AppContext>()
 
-// create a customer specify route to list the teams even if the team is not selected
-export const teamRoutes = app
+  .use("*", authMiddleware({ portal: ["customer"] }))
   .route("/", teams)
   .use("*", teamMiddleware)
   .route("/analytics", analytics)

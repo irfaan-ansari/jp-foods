@@ -15,6 +15,7 @@ import {
   AppDialogTitle,
 } from "@jp/ui/components/jp/app-dialog"
 import { CandidateApplication } from "../candidate.type"
+import { candidateApplicationSchema } from "../candidate.schema"
 
 export function CandidateApplicationStatusDialog({
   id,
@@ -29,26 +30,32 @@ export function CandidateApplicationStatusDialog({
 }) {
   const queryClient = useQueryClient()
   const form = useAppForm({
+    validators: {
+      onBlur: candidateApplicationSchema,
+    },
     defaultValues: {
       status: data.status,
       statusReason: "",
       statusDetails: "",
+      internalNotes: data?.internalNotes ?? "",
     },
     onSubmit: async ({ value }) => {
       const { serverError } = await updateCandidateApplication({
         id,
-        data: { ...data, ...value, internalNotes: data?.internalNotes ?? "" },
+        data: value,
       })
+
       if (serverError) {
         toast.error(serverError.message)
       } else {
-        onOpenChange(false)
         queryClient.invalidateQueries({
           queryKey: ["candidate-application"],
         })
         queryClient.invalidateQueries({
           queryKey: ["/crm/candidates/count"],
         })
+        onOpenChange(false)
+        form.reset()
       }
     },
   })

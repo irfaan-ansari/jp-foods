@@ -28,7 +28,25 @@ export function DashboardClient() {
         </Button>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="grid grid-cols-1 gap-4 lg:grid-cols-4 lg:gap-6">
+        <div className="grid grid-cols-1 gap-4 @2xl/page-content:grid-cols-2 @4xl/page-content:grid-cols-4 @4xl/page-content:gap-6">
+          <StatCard
+            title="Awaiting action"
+            loading={dashboard.countsPending}
+            className="bg-amber-50 ring-2 ring-amber-100"
+            value={
+              dashboard.countsError ? "—" : dashboard.pending.toLocaleString()
+            }
+            icon={
+              <IconTile variant="elevated">
+                <ClockCircle className="size-5 text-amber-400" />
+              </IconTile>
+            }
+            description={
+              dashboard.countsError
+                ? "Unable to load · Refresh to retry"
+                : "New applications awaiting action"
+            }
+          />
           {dashboard.sections.map(({ key, config, counts }) => (
             <StatCard
               key={key}
@@ -51,27 +69,9 @@ export function DashboardClient() {
               }
             />
           ))}
-          <StatCard
-            title="Awaiting action"
-            loading={dashboard.countsPending}
-            className="bg-amber-50"
-            value={
-              dashboard.countsError ? "—" : dashboard.pending.toLocaleString()
-            }
-            icon={
-              <IconTile variant="elevated">
-                <ClockCircle className="size-5 text-amber-500" />
-              </IconTile>
-            }
-            description={
-              dashboard.countsError
-                ? "Unable to load · Refresh to retry"
-                : "New applications, all-time"
-            }
-          />
         </div>
 
-        <div className="grid items-start gap-4 lg:grid-cols-3 lg:gap-6">
+        <div className="grid items-start gap-4 @4xl/page-content:grid-cols-3 @4xl/page-content:gap-6">
           {dashboard.sections.map(({ key, config, counts, query, items }) => (
             <DashboardCard
               key={key}

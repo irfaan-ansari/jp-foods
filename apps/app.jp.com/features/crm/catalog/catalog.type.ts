@@ -1,3 +1,5 @@
 import { CustomerInviteSelectType } from "@jp/db"
 
-export type CatalogInquiry = CustomerInviteSelectType
+export type CatalogInquiry = Omit<CustomerInviteSelectType, "token"> & {
+  url: string | null
+}

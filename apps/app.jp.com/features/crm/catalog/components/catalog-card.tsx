@@ -1,5 +1,5 @@
 import React from "react"
-import { Buildings, Letter, Smartphone, User } from "@solar-icons/react"
+import { Buildings, Global, Letter, Smartphone, User } from "@solar-icons/react"
 
 import {
   Card,
@@ -23,20 +23,24 @@ export const CatalogInquiryCard = ({ data }: { data: CatalogInquiry }) => {
   return (
     <Card
       size="sm"
-      className="relative h-full shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
+      className="relative h-full gap-2 shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
       style={{ "--icon-color": map.color } as React.CSSProperties}
     >
-      <CardHeader className="gap-3">
+      <CardHeader>
         <div className="flex items-start gap-2">
           <IconTile variant="elevated">
             <Buildings className="size-4 text-(--icon-color)" />
           </IconTile>
           <div className="grid gap-1">
             <CardTitle>{data.companyName}</CardTitle>
-
             <CatalogInquiryBadge status={data.status} />
           </div>
         </div>
+        <CardAction>
+          <CatalogDropdown data={data} />
+        </CardAction>
+      </CardHeader>
+      <CardContent className="space-y-4">
         <div className="grid">
           <div className="flex items-center gap-1">
             <User className="size-3.5 shrink-0" />
@@ -52,13 +56,14 @@ export const CatalogInquiryCard = ({ data }: { data: CatalogInquiry }) => {
             prefix={<Letter className="size-3.5 shrink-0" />}
             value={data.email}
           />
-        </div>
 
-        <CardAction>
-          <CatalogDropdown data={data} />
-        </CardAction>
-      </CardHeader>
-      <CardContent className="space-y-4">
+          {data.status === "approved" && data.url && (
+            <CopyButton
+              prefix={<Global className="size-3.5 shrink-0" />}
+              value={data.url}
+            />
+          )}
+        </div>
         <div className="border-t border-dashed" />
         <div className="flex gap-3 text-muted-foreground">
           <span className="text-xs">

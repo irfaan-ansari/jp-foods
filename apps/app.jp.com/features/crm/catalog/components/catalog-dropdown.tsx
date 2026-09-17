@@ -17,6 +17,7 @@ import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { CatalogInquiry } from "../catalog.type"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { deleteCatalogInquiry, updateCatalogInquiry } from "../catalog.action"
+import { MailPlus } from "lucide-react"
 
 export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
   const { open } = useConfirm()
@@ -51,9 +52,13 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
     })
   }
 
-  const handleAction = (action: "approve" | "reject") => {
-    const isApprove = action === "approve"
+  const handleAction = (action: string) => {
+    const isApprove = action === "approved"
 
+    if (action === "send-link") {
+      // send link logic here
+      return
+    }
     open({
       variant: isApprove ? "default" : "destructive",
       title: isApprove
@@ -66,7 +71,7 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
         action: async () => {
           const { serverError } = await updateCatalogInquiry({
             id,
-            data: { status: isApprove ? "approved" : "rejected" },
+            data: { status: action },
           })
 
           if (serverError) {
@@ -76,10 +81,6 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
 
           queryClient.invalidateQueries({
             queryKey: ["catalog-inquiry"],
-          })
-
-          queryClient.invalidateQueries({
-            queryKey: ["/crm/catalog-inquiries/count"],
           })
         },
       },
@@ -102,7 +103,7 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleAction("approve")}
+            onClick={() => handleAction("approved")}
             disabled={disabled || data.status === "approved"}
           >
             <CheckCircle /> Approve
@@ -115,13 +116,22 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => handleAction("reject")}
+            onClick={() => handleAction("rejected")}
             disabled={disabled || data.status === "rejected"}
           >
             <CloseCircle /> Reject
           </Button>
         )}
       </UserAccess>
+
+      <Button
+        variant="ghost"
+        size="sm"
+        onClick={() => handleAction("send-link")}
+        disabled={data.status !== "approved"}
+      >
+        <MailPlus /> Send Link
+      </Button>
 
       <UserAccess permission={{ "catalog-inquiry": ["delete"] }}>
         {(disabled) => (

@@ -54,33 +54,6 @@ export const jobApplicationRoutes = app
       } = res
       return {
         ...application,
-        documents: [
-          { label: "CV", field: "cvUrl", url: cvUrl },
-          { label: "DOT Back", field: "dotBackUrl", url: dotBackUrl },
-          { label: "DOT Front", field: "dotFrontUrl", url: dotFrontUrl },
-          { label: "Agreement", field: "agreementUrl", url: agreementUrl },
-          { label: "Signature", field: "signatureUrl", url: signatureUrl },
-          {
-            label: "Driving License Back",
-            field: "drivingLicenseBackUrl",
-            url: drivingLicenseBackUrl,
-          },
-          {
-            label: "Driving License Front",
-            field: "drivingLicenseFrontUrl",
-            url: drivingLicenseFrontUrl,
-          },
-          {
-            label: "Social Security Back",
-            field: "socialSecurityBackUrl",
-            url: socialSecurityBackUrl,
-          },
-          {
-            label: "Social Security Front",
-            field: "socialSecurityFrontUrl",
-            url: socialSecurityFrontUrl,
-          },
-        ].filter((doc) => doc.url),
       }
     })
 

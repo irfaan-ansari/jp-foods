@@ -23,29 +23,7 @@ import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import Link from "next/link"
 
 export const ProductCard = ({ data }: { data: Product }) => {
-  const { open } = useConfirm()
-  const queryClient = useQueryClient()
   const { searchParams } = useRouterStuff()
-
-  const handleDelete = async () => {
-    open({
-      variant: "destructive",
-      action: {
-        label: "Delete",
-        action: async () => {
-          const { serverError } = await deleteProduct({ id: data.id })
-          if (serverError) toast.error(serverError.message)
-          else {
-            toast.success("Product deleted...")
-            queryClient.invalidateQueries({ queryKey: ["products"] })
-            queryClient.invalidateQueries({
-              queryKey: ["count", "/org/products/count"],
-            })
-          }
-        },
-      },
-    })
-  }
 
   return (
     <Card
@@ -103,26 +81,6 @@ export const ProductCard = ({ data }: { data: Product }) => {
             trackInventory={!!data.trackInventory}
           />
         </div>
-
-        <div className="mt-2 flex gap-2 border-t border-dashed pt-3 *:flex-1">
-          <OrgAccess permission={{ product: ["delete"] }}>
-            {(disabled) => (
-              <Button
-                size="sm"
-                className="relative z-2"
-                variant="destructive"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleDelete()
-                }}
-                disabled={disabled}
-              >
-                <TrashBinMinimalistic />
-                Delete
-              </Button>
-            )}
-          </OrgAccess>
-        </div>
       </CardContent>
     </Card>
   )
@@ -137,10 +95,6 @@ export const ProductCardSkeleton = () => {
         <Skeleton className="h-4 w-3/4" />
         <Skeleton className="h-4 w-full" />
         <Skeleton className="h-4 w-20" />
-        <div className="my-2 w-full animate-pulse border-b border-dashed"></div>
-        <div className="flex h-8 gap-2 *:flex-1">
-          <Skeleton />
-        </div>
       </CardContent>
     </Card>
   )

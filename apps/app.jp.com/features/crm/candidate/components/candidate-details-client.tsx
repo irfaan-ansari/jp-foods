@@ -408,7 +408,7 @@ const ApplicationStatusInfo = ({ data }: { data: CandidateApplication }) => {
   }
 
   return (
-    <Alert variant={data.status === "rejected" ? "destructive" : "default"}>
+    <Alert variant={data.status === "rejected" ? "destructive" : "warning"}>
       <AlertTriangleIcon />
       <AlertTitle>{data.statusReason}</AlertTitle>
 

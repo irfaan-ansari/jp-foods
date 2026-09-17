@@ -218,38 +218,37 @@ export const TeamDetailClient = ({
           {/* price & tax */}
           <Card size="sm" className="@8xl/page-content:col-span-2">
             <CardHeader>
-              <CardTitle className="text-base font-bold">Price & Tax</CardTitle>
+              <CardTitle className="text-base font-bold">Price Level</CardTitle>
             </CardHeader>
-            <CardContent className="grid gap-4 lg:grid-cols-2">
-              <div className="grid gap-1.5 rounded-2xl border bg-secondary/20 p-4">
-                <span className="text-xs text-muted-foreground">
-                  Price Level
-                </span>
-                {priceLevel.name ? (
-                  <div className="flex items-center gap-3">
-                    {priceLevel.name}
-                    <PriceLevelBadge
-                      adjustmentType={team.priceLevel.adjustmentType}
-                      adjustmentValue={team.priceLevel.adjustmentValue!}
-                      appliesTo={team.priceLevel.appliesTo}
-                      productCount={team.priceLevel.productCount}
-                    />
-                  </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">None</span>
-                )}
-              </div>
-              <div className="grid gap-1.5 rounded-2xl border bg-secondary/20 p-4">
-                <span className="text-xs text-muted-foreground">Tax Rule</span>
-                {taxRule.name ? (
-                  <div className="flex items-center gap-3">
-                    {taxRule.name}
-                    <Badge variant="warning-light">{taxRule.rate}%</Badge>
-                  </div>
-                ) : (
-                  <span className="text-xs text-muted-foreground">None</span>
-                )}
-              </div>
+            <CardContent>
+              {priceLevel.name ? (
+                <div className="flex items-center gap-3">
+                  {priceLevel.name}
+                  <PriceLevelBadge
+                    adjustmentType={team.priceLevel.adjustmentType}
+                    adjustmentValue={team.priceLevel.adjustmentValue!}
+                    appliesTo={team.priceLevel.appliesTo}
+                    productCount={team.priceLevel.productCount}
+                  />
+                </div>
+              ) : (
+                <span className="text-xs text-muted-foreground">None</span>
+              )}
+            </CardContent>
+          </Card>
+          <Card size="sm" className="@8xl/page-content:col-span-2">
+            <CardHeader>
+              <CardTitle className="text-base font-bold">Tax Rule</CardTitle>
+            </CardHeader>
+            <CardContent>
+              {taxRule.name ? (
+                <div className="flex items-center gap-3">
+                  {taxRule.name}
+                  <Badge variant="warning-light">{taxRule.rate}%</Badge>
+                </div>
+              ) : (
+                <span className="text-xs text-muted-foreground">None</span>
+              )}
             </CardContent>
           </Card>
 
@@ -264,7 +263,7 @@ export const TeamDetailClient = ({
               {team.products.length > 0 ? (
                 team.products.map((product) => (
                   <div className="flex items-start gap-3">
-                    <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                    <Avatar size="lg">
                       <AvatarImage src={product?.image as string} />
                       <AvatarFallback>
                         <ImageOff className="size-4" />
@@ -299,7 +298,7 @@ export const TeamDetailClient = ({
             <CardContent className="space-y-2.5">
               {team.teamMembers.map((member) => (
                 <div className="flex items-start gap-3" key={member.id}>
-                  <Avatar className="rounded-lg *:rounded-lg" size="lg">
+                  <Avatar size="lg">
                     <AvatarImage src={member?.image as string} />
                     <AvatarFallback>
                       <ImageOff className="size-4" />

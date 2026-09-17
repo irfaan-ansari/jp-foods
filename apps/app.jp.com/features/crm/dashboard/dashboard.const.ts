@@ -10,7 +10,7 @@ export const RECENT_APPLICATION_LIMIT = 8
 
 export const DASHBOARD_SECTIONS = {
   customers: {
-    title: "Customer applications",
+    title: "Customer Applications",
     href: "/crm/application/customers",
     countPath: "/crm/customers/count",
     icon: Buildings2,
@@ -23,7 +23,7 @@ export const DASHBOARD_SECTIONS = {
     ],
   },
   candidates: {
-    title: "Candidate applications",
+    title: "Candidate Applications",
     href: "/crm/application/candidates",
     countPath: "/crm/candidates/count",
     icon: UsersGroupRounded,
@@ -36,7 +36,7 @@ export const DASHBOARD_SECTIONS = {
     ],
   },
   catalog: {
-    title: "Catalog inquiries",
+    title: "Catalog Inquiries",
     href: "/crm/application/catalog",
     countPath: "/crm/catalog-inquiries/count",
     icon: Tag,

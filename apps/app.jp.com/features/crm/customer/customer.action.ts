@@ -29,6 +29,7 @@ export const updateCustomerApplication = authActionClient({
       .set({
         ...data,
         reviewedBy: user.id,
+        reviewedAt: new Date(),
       })
       .where(eq(customer.id, id))
 

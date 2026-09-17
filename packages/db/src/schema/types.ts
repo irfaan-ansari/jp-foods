@@ -15,7 +15,6 @@ import {
   user,
 } from "./auth"
 import {
-  catalog,
   lineItem,
   order,
   orderGuide,
@@ -94,6 +93,3 @@ export type PromotionInsertType = InferInsertModel<typeof promotion>
 
 export type PromotionTargetSelectType = InferSelectModel<typeof promotionTarget>
 export type PromotionTargetInsertType = InferInsertModel<typeof promotionTarget>
-
-export type CatalogSelectType = InferSelectModel<typeof catalog>
-export type CatalogInsertType = InferInsertModel<typeof catalog>

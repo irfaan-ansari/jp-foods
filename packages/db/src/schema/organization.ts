@@ -429,28 +429,3 @@ export const promotionTarget = pgTable(
     ),
   ]
 )
-
-export const catalog = pgTable(
-  "catalog",
-  {
-    id: serial("id").primaryKey(),
-    name: text("name").notNull(),
-    organizationId: text("organization_id")
-      .notNull()
-      .references(() => organization.id, {
-        onDelete: "cascade",
-      }),
-    featuredProductIds: jsonb("featured_product_ids")
-      .$type<number[]>()
-      .default([]),
-    pdfUrl: text("pdf_url").notNull().default(""),
-    effectiveFrom: timestamp("effective_from").notNull(),
-    effectiveTo: timestamp("effective_to").notNull(),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
-  },
-  (table) => [index("catalog_organizationId_idx").on(table.organizationId)]
-)

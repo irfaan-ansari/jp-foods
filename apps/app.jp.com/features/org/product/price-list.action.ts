@@ -11,11 +11,10 @@ import {
   format,
 } from "date-fns"
 import z from "zod"
-import { db } from "@jp/db"
 import { eq } from "drizzle-orm"
-import { catalog } from "@jp/db"
 import { put } from "@vercel/blob"
 import { CatalogPDF } from "@jp/pdf"
+import { db, organization } from "@jp/db"
 import { waitUntil } from "@vercel/functions"
 import { sendEmail } from "@jp/notifications"
 import { groupProducts } from "./price-list.utils"
@@ -23,53 +22,44 @@ import { orgActionClient } from "@/lib/safe-action"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { WeeklyPriceListEmail } from "@jp/notifications/templates/weekly-price-list-email"
 
-export const updateCatalog = orgActionClient({ product: ["update"] })
+export const createPriceList = orgActionClient({ product: ["update"] })
   .inputSchema(
     z.object({
-      timeZone: z.string(),
+      timeZone: z.string().optional(),
     })
   )
   .action(async ({ ctx, parsedInput }) => {
-    const { timeZone } = parsedInput
+    const { timeZone = "America/Chicago" } = parsedInput
     const organizationId = ctx.organizationId
 
     const now = toZonedTime(new Date(), timeZone)
 
-    const validFrom = isSaturday(now)
+    const effectiveFrom = isSaturday(now)
       ? startOfDay(now)
       : startOfDay(previousSaturday(now))
 
-    const validUntil = isFriday(now) ? endOfDay(now) : endOfDay(nextFriday(now))
-
-    let cat = await db.query.catalog.findFirst({
-      where: (c, { eq }) => eq(c.organizationId, organizationId),
-    })
-
-    if (!cat) {
-      ;[cat] = await db
-        .insert(catalog)
-        .values({
-          name: "catalog",
-          organizationId: organizationId,
-          effectiveFrom: validFrom,
-          effectiveTo: validUntil,
-          pdfUrl: "",
-        })
-        .returning()
-    }
+    const effectiveTo = isFriday(now)
+      ? endOfDay(now)
+      : endOfDay(nextFriday(now))
 
     waitUntil(
       Promise.all([
         generatePDF({
-          productIds: [],
-          effectiveFrom: validFrom,
-          effectiveTo: validUntil,
+          effectiveFrom,
+          effectiveTo,
           organizationId,
         }).then((pdfUrl) =>
           db
-            .update(catalog)
-            .set({ pdfUrl, effectiveFrom: validFrom, effectiveTo: validUntil })
-            .where(eq(catalog.id, cat?.id!))
+            .update(organization)
+            .set({
+              priceList: {
+                url: pdfUrl,
+                effectiveFrom: effectiveFrom.toISOString(),
+                effectiveTo: effectiveTo.toISOString(),
+                updatedAt: new Date().toISOString(),
+              },
+            })
+            .where(eq(organization.id, organizationId))
         ),
       ])
     )
@@ -82,27 +72,26 @@ export const updateCatalog = orgActionClient({ product: ["update"] })
 export const emailPriceList = orgActionClient({ product: ["update"] })
   .inputSchema(
     z.object({
-      id: z.number(),
-      viewType: z.enum(["web", "pdf"]),
       email: z.string(),
     })
   )
   .action(async ({ ctx, parsedInput }) => {
-    const { id, viewType, email } = parsedInput
+    const { email } = parsedInput
 
-    const response = await db.query.catalog.findFirst({
-      where: (catalog, { eq }) => eq(catalog.id, id),
+    const organizationId = ctx.organizationId
+
+    const org = await db.query.organization.findFirst({
+      where: (organization, { eq }) => eq(organization.id, organizationId),
     })
-
-    if (!response) throw new Error("Resource not found.")
-
-    const pdfUrl = `https://jimenezproduce.com/api/products/catalog/${response.id}?view=${viewType}&source=email&email=${email}&share=true`
 
     waitUntil(
       sendEmail({
         to: [email],
         subject: "Weekly Product Catalog – Jimenez Produce Food Distribution",
-        template: WeeklyPriceListEmail({ name: "", pdfUrl: pdfUrl }),
+        template: WeeklyPriceListEmail({
+          name: "",
+          pdfUrl: org?.priceList?.url || "",
+        }),
       })
     )
 
@@ -115,12 +104,10 @@ export const emailPriceList = orgActionClient({ product: ["update"] })
  * @returns
  */
 const generatePDF = async ({
-  productIds,
   effectiveFrom,
   effectiveTo,
   organizationId,
 }: {
-  productIds: number[]
   effectiveFrom: string | Date
   effectiveTo: string | Date
   organizationId: string
@@ -141,10 +128,6 @@ const generatePDF = async ({
     }),
   ])
 
-  const productIdSet = new Set(productIds)
-
-  const featured = allProducts.filter((product) => productIdSet.has(product.id))
-
   const groupedProducts = groupProducts(allProducts)
 
   const buffer = await renderToBuffer(
@@ -152,7 +135,7 @@ const generatePDF = async ({
       org: org!,
       effectiveFrom: effectiveFrom,
       effectiveTo: effectiveTo,
-      featured: featured,
+      featured: [],
       products: groupedProducts,
     })
   )

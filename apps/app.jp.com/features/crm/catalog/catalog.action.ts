@@ -22,9 +22,16 @@ export const updateCatalogInquiry = authActionClient({
     })
     if (!exist) throw new AppError("NOT_FOUND")
 
+    const token = data.status === "approved" ? crypto.randomUUID() : null
+
     await db
       .update(customerInvite)
-      .set({ status: data.status, reviewedBy: user.id, reviewedAt: new Date() })
+      .set({
+        status: data.status,
+        reviewedBy: user.id,
+        reviewedAt: new Date(),
+        token,
+      })
       .where(eq(customerInvite.id, id))
 
     // enquee email

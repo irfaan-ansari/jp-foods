@@ -31,6 +31,7 @@ import {
 import { Loader2 } from "lucide-react"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import ProductDeleteAlert from "../components/product-delete-alert"
 
 interface FormProps {
   data?: ProductFormSchema
@@ -41,6 +42,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
   const [file, setFile] = useState<File | null>(null)
 
   const { router } = useRouterStuff()
+
   const form = useAppForm({
     defaultValues: data ?? productFormValues,
     validators: {
@@ -98,6 +100,9 @@ export const ProductForm = ({ data, id }: FormProps) => {
           <ProductInventory form={form} />
           {/* pricing */}
           <ProductSellingOptions form={form} />
+
+          {/* delete alert */}
+          {id && <ProductDeleteAlert id={id} />}
         </div>
         <div className="col-span-1">
           <div className="sticky top-20 space-y-6">

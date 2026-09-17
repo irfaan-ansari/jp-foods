@@ -4,7 +4,6 @@ import {
   InboxLine,
   Tag,
   User,
-  Clipboard,
   SettingsMinimalistic,
   UsersGroupRounded,
   ShieldKeyhole,
@@ -18,13 +17,12 @@ import {
   UserCheck,
   CardTransfer,
   ChatLine,
-  LetterUnread,
-  ClipboardCheck,
   UserPlus,
   Buildings2,
-  Buildings,
   ClipboardAdd,
   UserId,
+  ChatRoundDots,
+  LetterUnread,
 } from "@solar-icons/react"
 
 export const ORG_NAV = [
@@ -45,6 +43,12 @@ export const ORG_NAV = [
         href: "/org/transactions",
         items: [],
       },
+      {
+        label: "Customers",
+        icon: UsersGroupTwoRounded,
+        href: "/org/customers",
+        items: [],
+      },
     ],
   },
   {
@@ -60,27 +64,19 @@ export const ORG_NAV = [
     ],
   },
   {
-    label: "Management",
+    label: "Marketing",
     items: [
       {
-        label: "Marketing",
-        icon: Rocket,
-        href: "#",
-        items: [
-          {
-            label: "Promotions",
-            href: "/org/promotions",
-          },
-          {
-            label: "Messaging",
-            href: "/org/messaging",
-          },
-        ],
+        label: "Messaging",
+        icon: ChatRoundDots,
+        href: "/org/messaging",
+        items: [],
       },
+
       {
-        label: "Customers",
-        icon: UsersGroupTwoRounded,
-        href: "/org/customers",
+        label: "Promotions",
+        icon: Rocket,
+        href: "/org/promotions",
         items: [],
       },
     ],

@@ -28,7 +28,6 @@ const CustomerApplicationActions = ({
   >(null)
 
   const updateData = {
-    ...data,
     statusReason: "",
     statusDetails: "",
     internalNotes: data.internalNotes ?? "",
@@ -55,7 +54,7 @@ const CustomerApplicationActions = ({
               if (serverError) toast.message(serverError.message)
               else {
                 queryClient.invalidateQueries({
-                  queryKey: ["customer-application", data.id],
+                  queryKey: ["customer-application"],
                 })
                 queryClient.invalidateQueries({
                   queryKey: ["/crm/customers/count"],
@@ -73,17 +72,19 @@ const CustomerApplicationActions = ({
             "Move this application to the review queue. The applicant may be notified that additional assessment is in progress.",
           action: {
             action: async () => {
-              const { serverError } = await updateCustomerApplication({
-                id: data.id,
-                data: {
-                  ...updateData,
-                  status: action,
-                },
-              })
+              const { serverError, validationErrors } =
+                await updateCustomerApplication({
+                  id: data.id,
+                  data: {
+                    ...updateData,
+                    status: "under_review",
+                  },
+                })
+
               if (serverError) toast.message(serverError.message)
               else {
                 queryClient.invalidateQueries({
-                  queryKey: ["customer-application", data.id],
+                  queryKey: ["customer-application"],
                 })
                 queryClient.invalidateQueries({
                   queryKey: ["/crm/customers/count"],
