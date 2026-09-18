@@ -4,6 +4,8 @@ import { cn } from "@jp/ui/lib/utils"
 import { SITE_CONFIG } from "@/lib/config"
 import { Manrope, Bricolage_Grotesque } from "next/font/google"
 import { SiteProvider } from "@/components/site-provider"
+import { Suspense } from "react"
+import { Spinner } from "@jp/ui/components/jp/empty-state"
 
 const loraHeading = Bricolage_Grotesque({
   subsets: ["latin"],
@@ -67,7 +69,9 @@ export default function RootLayout({
       )}
     >
       <body>
-        <SiteProvider>{children}</SiteProvider>
+        <Suspense fallback={<Spinner />}>
+          <SiteProvider>{children}</SiteProvider>
+        </Suspense>
       </body>
     </html>
   )
