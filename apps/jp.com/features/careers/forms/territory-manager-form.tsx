@@ -28,6 +28,7 @@ import {
 import { createJobApplication } from "@/features/careers/careers.action"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { useAppForm } from "@/hooks/use-app-form"
+import { uploadFile } from "@/lib/upload"
 
 const defaultValues: CareersFormType = {
   ...applicantAddress,
@@ -84,13 +85,13 @@ export const TerritoryManagerForm = ({
           // upload files
           const [dlFront, dlBack, dtFront, dtBack, ssFront, ssBack, sign] =
             await Promise.all([
-              uploadFile(files.dlFront),
-              uploadFile(files.dlBack),
-              uploadFile(files.dtFront),
-              uploadFile(files.dtBack),
-              uploadFile(files.ssFront),
-              uploadFile(files.ssBack),
-              uploadFile(files.sign),
+              uploadFile({ file: files.dlFront, path: "documents/" }),
+              uploadFile({ file: files.dlBack, path: "documents/" }),
+              uploadFile({ file: files.dtFront, path: "documents/" }),
+              uploadFile({ file: files.dtBack, path: "documents/" }),
+              uploadFile({ file: files.ssFront, path: "documents/" }),
+              uploadFile({ file: files.ssBack, path: "documents/" }),
+              uploadFile({ file: files.sign, path: "documents/" }),
             ])
 
           const {

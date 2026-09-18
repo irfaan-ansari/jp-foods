@@ -72,7 +72,9 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold">Sign in with password</h2>
+          <h2 className="font-heading text-xl font-bold">
+            Sign in with password
+          </h2>
           <p className="text-sm text-muted-foreground">
             Use your email address or phone number to access your account.
           </p>

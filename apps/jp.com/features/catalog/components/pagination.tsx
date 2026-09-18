@@ -1,4 +1,5 @@
 import { Button } from "@jp/ui/components/button"
+import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
 interface PaginationProps {
   page: number
@@ -13,8 +14,8 @@ export const Pagination = ({
   totalPages,
   total,
   limit,
-  onPageChange,
 }: PaginationProps) => {
+  const { queryParams } = useRouterStuff()
   const start = total === 0 ? 0 : (page - 1) * limit + 1
   const end = Math.min(page * limit, total)
 
@@ -28,7 +29,7 @@ export const Pagination = ({
           size="sm"
           variant="outline"
           className="rounded-xl"
-          onClick={() => onPageChange(page - 1)}
+          onClick={() => queryParams({ set: { page: (page - 1).toString() } })}
           disabled={page === 1}
         >
           Previous
@@ -37,7 +38,9 @@ export const Pagination = ({
           variant="outline"
           size="sm"
           className="rounded-xl"
-          onClick={() => onPageChange(Number(page) + 1)}
+          onClick={() =>
+            queryParams({ set: { page: (Number(page) + 1).toString() } })
+          }
           disabled={page === totalPages || totalPages === 0}
         >
           Next

@@ -13,16 +13,13 @@ export const Footer = () => {
         <div className="grid grid-cols-9 gap-8">
           {/* branding */}
           <div className="col-span-9 space-y-8 md:col-span-3">
-            <Link
-              href="/"
-              className="inline-block rounded-full ring-2 ring-primary/20 ring-offset-background"
-            >
+            <Link href="/" className="inline-block">
               <Image
                 width={100}
                 height={100}
                 alt="Logo"
                 src={SITE_CONFIG.logo}
-                className="aspect-square w-full max-w-24 object-contain"
+                className="aspect-square w-full max-w-20 object-contain"
               />
             </Link>
             <div className="flex flex-col gap-6">

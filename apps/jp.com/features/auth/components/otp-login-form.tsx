@@ -153,7 +153,9 @@ export function OTPLoginForm({
       {step === "send" && (
         <FieldGroup>
           <div className="space-y-2">
-            <h2 className="text-xl font-bold">Sign in with phone number</h2>
+            <h2 className="font-heading text-xl font-bold">
+              Sign in with phone number
+            </h2>
             <p className="text-sm text-muted-foreground">
               Enter your phone number and we’ll send you a secure one-time
               passcode.

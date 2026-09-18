@@ -174,7 +174,7 @@ export const auth = betterAuth({
       if (!newSession) return
       const returned = ctx.context.returned as Record<string, unknown>
 
-      const role = newSession.user.role as UserRole
+      const role = newSession.user.role ?? ("user" as UserRole)
       const redirectUrl = PORTAL_URLS[role as keyof typeof PORTAL_URLS].url
 
       return {

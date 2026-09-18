@@ -22,29 +22,20 @@ export const Documents = withForm({
         <form.AppField
           name="certificate"
           children={(field) => (
-            <field.FileFieldNew
-              label={t[field.name]}
-              className="lg:col-span-2"
-            />
+            <field.FileField label={t[field.name]} className="lg:col-span-2" />
           )}
         />
 
         <form.AppField
           name="dlFront"
           children={(field) => (
-            <field.FileFieldNew
-              label={t[field.name]}
-              className="lg:col-span-2"
-            />
+            <field.FileField label={t[field.name]} className="lg:col-span-2" />
           )}
         />
         <form.AppField
           name="dlBack"
           children={(field) => (
-            <field.FileFieldNew
-              label={t[field.name]}
-              className="lg:col-span-2"
-            />
+            <field.FileField label={t[field.name]} className="lg:col-span-2" />
           )}
         />
       </FieldGroup>
