@@ -60,3 +60,10 @@ export const getActiveAccount = async (userId: string) => {
     teamId,
   }
 }
+
+/** cross domain cookie */
+export const getRootDomain = (url: string): string => {
+  const hostname = new URL(url).hostname
+  const parts = hostname.split(".")
+  return parts.slice(-2).join(".")
+}

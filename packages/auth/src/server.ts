@@ -13,7 +13,7 @@ import {
 import { userAc, UserRole, userRoles } from "./permissions/user"
 import { orgAc, orgRoles } from "./permissions/organization"
 import { createAuthMiddleware } from "better-auth/api"
-import { getActiveAccount } from "./utils"
+import { getActiveAccount, getRootDomain } from "./utils"
 import { PORTAL_URLS } from "./permissions"
 
 const AVATAR = `https://api.dicebear.com/10.x`
@@ -190,6 +190,15 @@ export const auth = betterAuth({
     .filter(Boolean),
   advanced: {
     cookiePrefix: "JP",
+    crossSubDomainCookies: {
+      enabled: true,
+      domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
+    },
+    defaultCookieAttributes: {
+      secure: true,
+      sameSite: "none",
+      httpOnly: true,
+    },
   },
 })
 
