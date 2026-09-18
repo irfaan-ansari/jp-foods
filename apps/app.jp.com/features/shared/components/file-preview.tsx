@@ -1,65 +1,67 @@
 import React from "react"
-import { useVercelBlob } from "../shared.data"
-import { QueryBoundary } from "@/components/query-boundry"
-import { Skeleton } from "@jp/ui/components/skeleton"
-import { HeadBlobResult } from "@vercel/blob"
-import { FileText, PenNewRound } from "@solar-icons/react"
-import { ArrowUpRight, ExternalLink } from "lucide-react"
-import { cn } from "@jp/ui/lib/utils"
-import { Button } from "@jp/ui/components/button"
-import { Card, CardAction, CardHeader } from "@jp/ui/components/card"
-import Link from "next/link"
 
-type FileItem = {
-  label: string | undefined
-  url: string
-  onSave?: () => void
-}
+import { ExternalLink } from "lucide-react"
+import { HeadBlobResult } from "@vercel/blob"
+import { Button } from "@jp/ui/components/button"
+import { FileText, PenNewRound } from "@solar-icons/react"
+import { Document } from "@/features/crm/candidate/candidate.type"
+import { cn } from "@jp/ui/lib/utils"
 
 export const FilePreview = ({
   data,
   className,
 }: {
-  data: FileItem
+  data: Document
   className?: string
 }) => {
-  const query = useVercelBlob(data.url)
-
   return (
-    <QueryBoundary
-      loading={
-        <div className={cn("grid gap-2 border shadow-xs", className)}>
-          <Skeleton className="aspect-video" />
-          <Skeleton className="h-5 w-full" />
-        </div>
-      }
-      query={query}
-    >
-      {(result) => (
-        <div className="relative flex rounded-2xl bg-secondary/40 p-2 shadow-xs ring-1 ring-border">
-          <div className="flex gap-2">
-            <div className="inline-flex size-12 shrink-0 items-center justify-center rounded-xl border bg-secondary lg:size-16">
-              <FileText className="size-4 text-muted-foreground" />
-            </div>
-            <div className="grid flex-1 items-start gap-1 self-start py-1">
-              <span className="font-medium">
-                {data.label || result.pathname}
-              </span>
-              <span className="text-xs text-muted-foreground">
-                {data.label || result.pathname}
-              </span>
-            </div>
-          </div>
-          <div className="absolute top-1/2 right-2 -translate-y-1/2">
-            {result.contentType?.startsWith("image/") && (
-              <Button size="icon-sm" variant="secondary">
-                <PenNewRound />
-              </Button>
-            )}
-          </div>
-        </div>
+    <div
+      className={cn(
+        "group relative flex items-center gap-3 rounded-2xl border bg-card p-2.5 shadow-xs transition-colors hover:bg-secondary/50",
+        className
       )}
-    </QueryBoundary>
+    >
+      <div className="inline-flex size-12 shrink-0 items-center justify-center rounded-xl border bg-secondary/50 lg:size-14">
+        <FileText className="size-5 text-muted-foreground" />
+      </div>
+
+      <div className="min-w-0 flex-1">
+        <div className="truncate text-sm font-medium">{data.label}</div>
+
+        <div className="mt-0.5 flex items-center gap-1.5">
+          <span className="truncate text-xs text-muted-foreground">
+            {data.url}
+          </span>
+
+          <ExternalLink className="size-3 shrink-0 text-muted-foreground/70" />
+        </div>
+      </div>
+
+      {data.url?.startsWith("image/") && (
+        <Button
+          type="button"
+          size="icon-sm"
+          variant="ghost"
+          className="relative z-10 shrink-0"
+          onClick={(e) => {
+            e.preventDefault()
+            e.stopPropagation()
+            // edit
+          }}
+        >
+          <PenNewRound className="size-4" />
+          <span className="sr-only">Edit</span>
+        </Button>
+      )}
+
+      <a
+        href={data.url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="absolute inset-0 rounded-2xl"
+        aria-label={`Open ${data.label}`}
+      />
+    </div>
   )
 }
 

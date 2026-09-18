@@ -19,7 +19,12 @@ export const GuideDropdown = () => {
       open={open}
       setOpen={setOpen}
       trigger={
-        <Button size="icon-sm" variant="outline" className="relative z-1">
+        <Button
+          size="icon-sm"
+          disabled
+          variant="outline"
+          className="relative z-1"
+        >
           <MenuDots />
         </Button>
       }

@@ -133,7 +133,7 @@ export const TeamAccount = withForm({
                     Sales Representative
                   </FieldLabel>
                   <UserSelector
-                    role="admin"
+                    role="sales"
                     selected={field.state.value?.id as string}
                     setSelectedChange={(value) => {
                       field.handleChange({ id: value.id, name: value.name })

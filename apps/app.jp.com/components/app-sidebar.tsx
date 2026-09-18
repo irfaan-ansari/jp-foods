@@ -419,7 +419,7 @@ const MenuLink = ({
   const { pathname } = useRouterStuff()
 
   const isActive =
-    href !== "#" && (pathname === href || pathname.startsWith(href))
+    href !== "#" && (pathname === href || href.startsWith(pathname))
 
   return (
     <SidebarMenuItem>

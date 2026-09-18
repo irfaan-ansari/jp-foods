@@ -59,7 +59,7 @@ const OrderPage = () => {
               <div className="grid grid-cols-1 gap-3 @sm:grid-cols-3">
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
                   <Badge
-                    className="ring-offset-backgrround size-9 ring-1 ring-border ring-offset-2"
+                    className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
                     variant="secondary"
                   >
                     <Truck className="size-5 text-amber-500" />
@@ -77,16 +77,17 @@ const OrderPage = () => {
                   </div>
                 </Card>
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
-                  <Badge
-                    className="ring-offset-backgrround size-9 ring-1 ring-border ring-offset-2"
-                    variant="secondary"
-                  >
-                    <BadgeCheck className="size-5 text-green-500" />
-                  </Badge>
+                  <div className="flex items-center gap-3">
+                    <Badge
+                      className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
+                      variant="secondary"
+                    >
+                      <BadgeCheck className="size-5 text-green-500" />
+                    </Badge>
+                    <CardTitle>Customer</CardTitle>
+                  </div>
+
                   <div className="min-w-0 flex-1 truncate">
-                    <CardTitle className="mb-2 text-xs font-semibold text-muted-foreground uppercase">
-                      Customer
-                    </CardTitle>
                     <span className="line-clamp-1 text-sm font-medium">
                       {data.team?.name}
                     </span>
@@ -96,7 +97,7 @@ const OrderPage = () => {
                 </Card>
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
                   <Badge
-                    className="ring-offset-backgrround size-9 ring-1 ring-border ring-offset-2"
+                    className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
                     variant="secondary"
                   >
                     <User className="size-5 text-blue-500" />
@@ -210,29 +211,24 @@ const OrderPage = () => {
                     </span>
                   </div>
 
-                  <div className="grid gap-3 px-6">
+                  <div className="grid gap-2 px-6">
                     {data.status !== "completed" && (
                       <Button className="w-full">
                         <CheckCircle />
-                        Complete Order
+                        Mark as Completed
                       </Button>
                     )}
 
-                    <Button
-                      className="w-full"
-
-                      asChild
-                    >
+                    <Button className="w-full" variant="outline" asChild>
                       <a
                         href={`/api/v1/org/orders/${data.id}/estimate`}
                         target="_blank"
                       >
                         <Download />
-                        Estimate
+                        Download Estimate
                       </a>
                     </Button>
-
-                    <Button className="w-full" asChild>
+                    <Button className="w-full" variant="outline" asChild>
                       <a
                         href={`/api/v1/org/orders//${data.id}/slip`}
                         target="_blank"

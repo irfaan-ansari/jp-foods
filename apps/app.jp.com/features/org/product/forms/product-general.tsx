@@ -29,6 +29,8 @@ import { Switch } from "@jp/ui/components/switch"
 import { CategorySelector } from "@/features/org/product/components/category-selector"
 
 import { type ProductFormSchema } from "../product.schema"
+import { PRODUCT_UNITS } from "../product.const"
+import { getUnit } from "../product.utils"
 
 export const ProductGeneral = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -72,10 +74,35 @@ export const ProductGeneral = withForm({
                 <field.SelectField
                   label="Status"
                   options={[
-                    { label: "Active", value: "acive" },
+                    { label: "Active", value: "active" },
                     { label: "Private", value: "private" },
                     { label: "Archived", value: "archived" },
                   ]}
+                />
+              )}
+            />
+
+            <form.AppField
+              name="unit"
+              children={(field) => (
+                <field.SelectField label="Price Unit" options={PRODUCT_UNITS} />
+              )}
+            />
+
+            <form.Subscribe
+              selector={(state) => state.values.unit}
+              children={(unit) => (
+                <form.AppField
+                  name="price"
+                  children={(field) => (
+                    <field.TextField
+                      label="Price"
+                      placeholder="2.00"
+                      inputMode="decimal"
+                      prefix={"$"}
+                      suffix={`/${getUnit(unit)?.value}`}
+                    />
+                  )}
                 />
               )}
             />
@@ -95,7 +122,8 @@ export const ProductGeneral = withForm({
                       canCreate
                       selected={field.state.value}
                       onSelect={(value) => {
-                        field.pushValue(value)
+                        if (!field.state.value.includes(value))
+                          field.pushValue(value)
                       }}
                     >
                       <Button
@@ -112,7 +140,12 @@ export const ProductGeneral = withForm({
                                 className="rounded-md"
                               >
                                 {v}
-                                <span onClick={() => field.removeValue(i)}>
+                                <span
+                                  onClick={(event) => {
+                                    event.stopPropagation()
+                                    field.removeValue(i)
+                                  }}
+                                >
                                   <X />
                                 </span>
                               </Badge>

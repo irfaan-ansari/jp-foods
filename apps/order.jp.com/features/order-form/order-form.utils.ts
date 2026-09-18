@@ -1,3 +1,4 @@
+import { getSellingUnits, type PricedSellingUnit } from "@jp/utils"
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
@@ -19,32 +20,26 @@ export const toOrderItemInputs = (product: Partial<Product>[]) => {
   return product.map((p) => toOrderItemInput(p))
 }
 
-export const toOrderItemInput = (product: Partial<Product>) => {
-  const {
-    id,
-    title,
-    price,
-    pack,
-    unitSize,
-    isTaxable,
-    itemCode,
-    image,
-    categories,
-    unit,
-    ...rest
-  } = product
+export const toOrderItemInput = (
+  product: Partial<Product>,
+  selectedUnit?: PricedSellingUnit
+) => {
+  const sellUnit = selectedUnit ?? getSellingUnits(product)[0]
+  if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
+  const { id, title, isTaxable, itemCode, image, categories } = product
   return {
     id: id!,
     title: title!,
-    price: Number(price),
-    pack: Number(pack ?? 1),
+    price: Number(sellUnit.price),
     itemCode: itemCode!,
-    unit: unit ?? "",
-    unitSize: Number(unitSize ?? 1),
+    unit: sellUnit.name,
+    inventoryPerUnit: Number(sellUnit.unitConversion),
+    minQuantity: Number(sellUnit.minQuantity),
+    orderIncrement: Number(sellUnit.orderIncreament),
     isTaxable: !!isTaxable,
     image: image ?? "",
     categories: categories ?? [],
-    quantity: 1,
+    quantity: Number(sellUnit.minQuantity),
   }
 }
 
@@ -127,31 +122,23 @@ export const toInsertLineItems = ({
   teamId: string
   taxRate: string | undefined
 }) =>
-  items.map(
-    ({
-      id,
-      subtotal,
-      price,
-      pack,
-      unitSize,
-      total,
-      taxAmount,
-      quantity,
-      ...item
-    }) => ({
-      ...item,
-      productId: id,
-      price: price.toFixed(2),
-      quantity: String(quantity),
-      subtotal: subtotal.toFixed(2),
-      taxAmount: taxAmount.toFixed(2),
-      total: total.toFixed(2),
-      taxRate: taxRate ?? "0",
-      pack: String(pack),
-      unitSize: String(unitSize),
+  items.map((item) => ({
+    productId: item.id,
+    title: item.title,
+    image: item.image,
+    itemCode: item.itemCode,
+    categories: item.categories,
+    isTaxable: item.isTaxable,
+    inventoryQuantity: String(item.quantity * item.inventoryPerUnit),
+    unitName: item.unit,
+    price: item.price.toFixed(2),
+    quantity: String(item.quantity),
+    subtotal: item.subtotal.toFixed(2),
+    taxAmount: item.taxAmount.toFixed(2),
+    total: item.total.toFixed(2),
+    taxRate: taxRate ?? "0",
 
-      orderId,
-      organizationId,
-      teamId,
-    })
-  )
+    orderId,
+    organizationId,
+    teamId,
+  }))

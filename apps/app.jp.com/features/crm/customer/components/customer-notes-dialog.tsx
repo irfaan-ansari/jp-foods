@@ -3,6 +3,7 @@
 import React from "react"
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -15,29 +16,33 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { Button } from "@jp/ui/components/button"
 import { useQueryClient } from "@tanstack/react-query"
 import { updateCustomerApplication } from "../customer.action"
+import { CustomerApplication } from "../customer.type"
 
 export const CustomerApplicationNotesDialog = ({
   id,
-  values,
+  data,
   children,
 }: {
   children: React.ReactNode
   id: number
-  values: {
-    internalNotes: string
-  }
+  data: CustomerApplication
 }) => {
   const queryClient = useQueryClient()
   const [open, setOpen] = React.useState(false)
 
   const form = useAppForm({
     defaultValues: {
-      internalNotes: values.internalNotes ?? "",
+      internalNotes: data.internalNotes ?? "",
     },
     onSubmit: async ({ value }) => {
       const { serverError } = await updateCustomerApplication({
         id,
-        data: { internalNotes: value.internalNotes },
+        data: {
+          status: data.status,
+          statusDetails: data.statusDetails ?? "",
+          statusReason: data.statusReason ?? "",
+          internalNotes: value.internalNotes,
+        },
       })
       if (serverError) {
         toast.error(serverError.message)
@@ -59,7 +64,7 @@ export const CustomerApplicationNotesDialog = ({
       <AppDialogContent className="md:max-w-xl">
         <AppDialogHeader className="data-[slot=drawer-header]:sr-only">
           <AppDialogTitle className="text-base font-bold">
-            {values.internalNotes ? "Edit" : "Add"} Notes
+            {data.internalNotes ? "Edit" : "Add"} Notes
           </AppDialogTitle>
         </AppDialogHeader>
         <form
@@ -72,14 +77,16 @@ export const CustomerApplicationNotesDialog = ({
           <form.AppField
             name="internalNotes"
             children={(field) => (
-              <field.TextAreaField label="Notes" placeholder="Notes..." />
+              <field.TextAreaField label="" placeholder="Type here..." />
             )}
           />
 
           <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
-            <Button variant="outline" onClick={() => setOpen(false)}>
-              Cancel
-            </Button>
+            <AppDialogClose>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
+            </AppDialogClose>
 
             <form.Subscribe
               selector={({ isSubmitting, canSubmit }) => ({

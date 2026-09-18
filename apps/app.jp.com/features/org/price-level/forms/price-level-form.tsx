@@ -3,13 +3,14 @@
 import React from "react"
 import { toast } from "sonner"
 
+import { getAdjustedPrice } from "../price-level.utils"
 import { Badge } from "@jp/ui/components/badge"
 import { formatUSD, pluralize } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { TrashBinMinimalistic } from "@solar-icons/react"
 import { Field, FieldGroup } from "@jp/ui/components/field"
-import { ChevronDown, ImageOff, Loader2, Plus } from "lucide-react"
+import { ArrowRight, ChevronDown, ImageOff, Loader2, Plus } from "lucide-react"
 import { createPriceLevel, updatePriceLevel } from "../price-level.action"
 import { PriceLevelFormSchema, priceLevelSchema } from "../price-level.schema"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
@@ -51,23 +52,18 @@ export const PriceLevelForm = ({
       onSubmit: priceLevelSchema,
     },
     onSubmit: async ({ value }) => {
-      const products = value.products.flatMap((product) =>
-        product.sellUnits.map((sellUnit) => ({
-          id: product.id,
-
-          sellUnitId: sellUnit.id,
-          name: sellUnit.name,
-          price: sellUnit.price,
-        }))
-      )
+      const products = value.products.map((product) => ({
+        id: product.id,
+        price: product.price,
+      }))
 
       if (id) {
-        const { serverError } = await updatePriceLevel({
+        const { serverError, validationErrors, data } = await updatePriceLevel({
           id,
           data: { ...value, products },
         })
-        if (serverError) {
-          toast.error(serverError.message)
+        if (serverError || validationErrors || !data) {
+          toast.error(serverError?.message ?? "Check the price-level values.")
           onError?.()
         } else {
           onSuccess?.()
@@ -77,8 +73,8 @@ export const PriceLevelForm = ({
         const { serverError, data, validationErrors } = await createPriceLevel({
           data: { ...value, products },
         })
-        if (serverError) {
-          toast.error(serverError.message)
+        if (serverError || validationErrors || !data) {
+          toast.error(serverError?.message ?? "Check the price-level values.")
           onError?.()
         } else {
           onSuccess?.()
@@ -162,9 +158,9 @@ export const PriceLevelForm = ({
           <form.Subscribe
             selector={(state) => ({
               appliesTo: state.values.appliesTo,
-              adjustmentType: state.values.adjustmentType,
+              type: state.values.adjustmentType,
             })}
-            children={({ appliesTo, adjustmentType }) => (
+            children={({ appliesTo, type }) => (
               <React.Fragment>
                 <form.AppField
                   name="adjustmentValue"
@@ -174,7 +170,7 @@ export const PriceLevelForm = ({
                       inputMode="decimal"
                       description=" Use positive for markup and negative for discount."
                       className={appliesTo !== "all" ? "hidden" : ""}
-                      prefix={adjustmentType === "percentage" ? "%" : "$"}
+                      prefix={type === "percentage" ? "%" : "$"}
                     />
                   )}
                 />
@@ -207,15 +203,15 @@ export const PriceLevelForm = ({
                                 title,
                                 itemCode,
                                 image,
-                                sellUnits: value.sellUnits.map((su) => ({
-                                  ...su,
-                                  basePrice: su.price,
-                                })),
+                                unit: value.unit,
+                                basePrice: value.price,
+                                price: type === "percentage" ? "" : value.price,
                               })
                             }
                           }}
                         >
                           <Button
+                            type="button"
                             variant="outline"
                             aria-invalid={isInvalid}
                             className="justify-start"
@@ -234,103 +230,65 @@ export const PriceLevelForm = ({
                           {field.state.value?.map((item, itemIndex) => {
                             return (
                               <div
-                                className="grid gap-3 rounded-xl border p-2"
+                                className="flex items-start gap-3 rounded-xl border p-2"
                                 key={item.id}
                               >
-                                <div className="flex items-start gap-3">
-                                  <Avatar
-                                    className="rounded-xl *:rounded-xl"
-                                    size="lg"
-                                  >
-                                    <AvatarImage src={item?.image as string} />
-                                    <AvatarFallback>
-                                      <ImageOff className="size-4" />
-                                    </AvatarFallback>
-                                  </Avatar>
+                                <Avatar
+                                  className="rounded-xl *:rounded-xl"
+                                  size="lg"
+                                >
+                                  <AvatarImage src={item?.image as string} />
+                                  <AvatarFallback>
+                                    <ImageOff className="size-4" />
+                                  </AvatarFallback>
+                                </Avatar>
 
-                                  <div className="grid flex-1 gap-2">
-                                    <h4 className="leading-tight font-medium whitespace-normal">
-                                      {item.title}
-                                    </h4>
-                                    <span className="text-xs text-muted-foreground">
-                                      {item.itemCode}
-                                    </span>
-                                  </div>
-                                  <Button
-                                    size="icon-sm"
-                                    variant="destructive"
-                                    onClick={() => field.removeValue(itemIndex)}
-                                  >
-                                    <TrashBinMinimalistic />
-                                  </Button>
+                                <div className="grid flex-1 gap-1">
+                                  <h4 className="leading-tight font-medium whitespace-normal">
+                                    {item.title}
+                                  </h4>
+                                  <span className="text-xs text-muted-foreground">
+                                    {item.itemCode}
+                                  </span>
                                 </div>
-                                <div className="border border-dashed" />
-                                {/* sell units */}
-                                <div className="space-y-1">
-                                  {/* Header */}
-                                  <div className="grid grid-cols-[1fr_96px_1fr] gap-4 px-1">
-                                    <span className="text-[11px] font-medium text-muted-foreground">
-                                      Current Price
-                                    </span>
-                                    <span className="text-center text-[11px] font-medium text-muted-foreground">
-                                      Adjustment
-                                    </span>
-                                    <span className="text-right text-[11px] font-medium text-muted-foreground">
-                                      New Price
-                                    </span>
-                                  </div>
 
-                                  {/* Prices */}
-                                  {item.sellUnits.map((unit, unitIndex) => {
-                                    const newPrice =
-                                      adjustmentType === "percentage"
-                                        ? Number(unit.basePrice) +
-                                          (Number(unit.basePrice) *
-                                            Number(unit.price)) /
-                                            100
-                                        : Number(unit.basePrice) +
-                                          Number(unit.price)
-                                    const suffix =
-                                      adjustmentType === "percentage"
-                                        ? "%"
-                                        : "$"
-
-                                    return (
-                                      <div
-                                        key={unit.id}
-                                        className="grid grid-cols-[1fr_96px_1fr] items-center gap-4 px-1"
-                                      >
-                                        <div className="inline-flex items-baseline gap-px">
-                                          <span className="text-xs font-medium">
-                                            {formatUSD(unit.basePrice ?? "")}
-                                          </span>
-                                          <span className="text-xs text-muted-foreground">
-                                            / {unit.name}
-                                          </span>
-                                        </div>
-
-                                        <form.AppField
-                                          name={`products[${itemIndex}].sellUnits[${unitIndex}].price`}
-                                          children={(field) => (
-                                            <field.TextField
-                                              className="*:data-[slot=field-error]:hidden! *:data-[slot=input-group]:h-8"
-                                              inputMode="decimal"
-                                              suffix={suffix}
-                                            />
-                                          )}
+                                <div className="flex w-44 items-center gap-2 self-center">
+                                  <div className="inline-flex items-center justify-between">
+                                    <form.AppField
+                                      name={`products[${itemIndex}].price`}
+                                      children={(field) => (
+                                        <field.TextField
+                                          className="w-24 *:data-[slot=input-group]:h-8"
+                                          inputMode="decimal"
+                                          suffix={
+                                            type === "percentage" ? "%" : "$"
+                                          }
                                         />
-                                        <div className="inline-flex items-baseline justify-end gap-px">
-                                          <span className="text-xs font-medium text-primary">
-                                            {formatUSD(newPrice)}
-                                          </span>
-                                          <span className="text-xs text-muted-foreground">
-                                            / {unit.name}
-                                          </span>
-                                        </div>
-                                      </div>
-                                    )
-                                  })}
+                                      )}
+                                    />
+                                  </div>
+                                  <div className="inline-flex items-center justify-between gap-2">
+                                    <ArrowRight className="size-3" />
+                                    <span className="text-xs text-primary">
+                                      {formatUSD(
+                                        getAdjustedPrice(
+                                          type,
+                                          item.basePrice,
+                                          item.price
+                                        )
+                                      )}
+                                    </span>
+                                  </div>
                                 </div>
+                                <Button
+                                  type="button"
+                                  size="icon-xs"
+                                  variant="destructive"
+                                  className="self-center"
+                                  onClick={() => field.removeValue(itemIndex)}
+                                >
+                                  <TrashBinMinimalistic />
+                                </Button>
                               </div>
                             )
                           })}

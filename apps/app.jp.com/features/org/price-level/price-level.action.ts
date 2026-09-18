@@ -7,7 +7,7 @@ import {
 } from "./price-level.schema"
 import { db, priceLevel, priceLevelItem } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { eq, inArray, sql } from "drizzle-orm"
+import { and, eq, inArray, sql } from "drizzle-orm"
 
 /**
  * create
@@ -27,7 +27,7 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
 
     if (!result) throw new AppError("VALIDATION_ERROR")
 
-    if (appliesTo === "per_item") {
+    if (appliesTo === "per_item" && products.length > 0) {
       const priceLevelItemValues = products.map((p) => ({
         productId: p.id,
         price: p.price,
@@ -42,11 +42,12 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
 /**
  * update
  */
-export const updatePriceLevel = orgActionClient({ priceLevel: ["update"] })
+export const updatePriceLevel = orgActionClient({
+  priceLevel: ["update"],
+})
   .inputSchema(updatePriceLevelSchema)
   .action(async ({ clientInput, ctx }) => {
     const organizationId = ctx.organizationId
-
     const { id, data } = clientInput
 
     const { products, appliesTo, ...rest } = data
@@ -56,34 +57,55 @@ export const updatePriceLevel = orgActionClient({ priceLevel: ["update"] })
         where: (pl, { and, eq }) =>
           and(eq(pl.organizationId, organizationId), eq(pl.id, id)),
       }),
+
       db.query.priceLevelItem.findMany({
-        where: (pl, { eq }) => eq(pl.priceLevelId, id),
+        where: (item, { eq }) => eq(item.priceLevelId, id),
       }),
     ])
 
-    if (!existing) throw new AppError("NOT_FOUND")
+    if (!existing) {
+      throw new AppError("NOT_FOUND")
+    }
 
     const [result] = await db
       .update(priceLevel)
-      .set({ ...rest, appliesTo })
-      .where(eq(priceLevel.id, id))
-      .returning({ id: priceLevel.id })
+      .set({
+        ...rest,
+        appliesTo,
+      })
+      .where(
+        and(
+          eq(priceLevel.id, id),
+          eq(priceLevel.organizationId, organizationId)
+        )
+      )
+      .returning({
+        id: priceLevel.id,
+      })
 
-    if (!result) throw new AppError("VALIDATION_ERROR")
+    if (!result) {
+      throw new AppError("VALIDATION_ERROR")
+    }
 
-    const promises = []
-
-    const priceLevelItems = products.map((p) => ({
-      productId: p.id,
-      price: p.price,
-      priceLevelId: result.id,
-    }))
+    const priceLevelItems =
+      appliesTo === "per_item"
+        ? products.map((product) => ({
+            priceLevelId: result.id,
+            productId: product.id,
+            price: product.price,
+          }))
+        : []
 
     const toDelete = existingItems
       .filter(
-        (item) => !priceLevelItems.some((f) => f.productId === item.productId)
+        (existingItem) =>
+          !priceLevelItems.some(
+            (item) => item.productId === existingItem.productId
+          )
       )
       .map((item) => item.id)
+
+    const promises: Promise<unknown>[] = []
 
     if (toDelete.length > 0) {
       promises.push(

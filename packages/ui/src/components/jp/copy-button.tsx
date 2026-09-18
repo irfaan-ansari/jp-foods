@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { Button } from "@jp/ui/components/button"
 import { Check, Copy } from "lucide-react"
+import { cn } from "cn"
 
 type CopyRenderProps = {
   value: string
@@ -36,12 +37,15 @@ export function CopyButton({ value, prefix, className }: CopyProps) {
 
   return (
     <div
-      className={`inline-flex min-w-0 shrink-0 items-center gap-1 hover:*:data-[slot=button]:opacity-100 ${className}`}
+      className={cn(
+        "inline-flex min-w-0 shrink-0 items-center gap-0.5 hover:*:data-[slot=button]:opacity-100",
+        className
+      )}
     >
       {prefix}
       <span
         data-slot="copy-value"
-        className="min-w-0 text-sm text-nowrap text-muted-foreground"
+        className={`min-w-0 truncate text-sm text-nowrap text-muted-foreground ${prefix ? "ml-1" : ""}`}
       >
         {value}
       </span>

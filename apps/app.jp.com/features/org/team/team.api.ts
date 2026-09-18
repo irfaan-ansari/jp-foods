@@ -28,7 +28,8 @@ export const teamRoutes = app
         or(
           ilike(team.name, `%${q}%`),
           ilike(team.managerName, `%${q}%`),
-          ilike(team.email, `%${q}%`)
+          ilike(team.email, `%${q}%`),
+          ilike(team.phoneNumber, `%${q}%`)
         )
       )
     }
@@ -146,7 +147,11 @@ export const teamRoutes = app
         },
         priceLevel: {
           with: {
-            priceLevelItem: true,
+            priceLevelItem: {
+              columns: {
+                id: true,
+              },
+            },
           },
         },
         products: {
@@ -161,15 +166,6 @@ export const teamRoutes = app
                 image: true,
                 itemCode: true,
               },
-              with: {
-                sellUnits: {
-                  columns: {
-                    id: true,
-                    unit: true,
-                    price: true,
-                  },
-                },
-              },
             },
           },
         },
@@ -180,6 +176,10 @@ export const teamRoutes = app
 
     const teamWithMembers = {
       ...result,
+      priceLevel: {
+        ...result.priceLevel,
+        productCount: result.priceLevel?.priceLevelItem?.length,
+      },
       products: result.products.map(({ product }) => product),
       teamMembers: result.teamMembers.map((m) => {
         return {
@@ -308,7 +308,6 @@ export const teamRoutes = app
           ),
         columns: {
           id: true,
-          orderNumber: true,
           status: true,
           total: true,
           createdAt: true,

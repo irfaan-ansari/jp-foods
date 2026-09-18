@@ -31,6 +31,7 @@ import {
 import { Loader2 } from "lucide-react"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import ProductDeleteAlert from "../components/product-delete-alert"
 
 interface FormProps {
   data?: ProductFormSchema
@@ -41,6 +42,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
   const [file, setFile] = useState<File | null>(null)
 
   const { router } = useRouterStuff()
+
   const form = useAppForm({
     defaultValues: data ?? productFormValues,
     validators: {
@@ -49,41 +51,68 @@ export const ProductForm = ({ data, id }: FormProps) => {
 
     onSubmit: async ({ value }) => {
       const toastId = toast.loading("Please wait...")
+      const values = { ...value }
 
-      // upload image
-      if (file && file instanceof File) {
-        toast.loading("Uploading image...", { id: toastId })
-        const blob = await upload(`products/${file.name}`, file, {
-          access: "public",
-          handleUploadUrl: "/api/upload",
-        })
+      try {
+        // upload image
+        if (file && file instanceof File) {
+          toast.loading("Uploading image...", { id: toastId })
+          const blob = await upload(`products/${file.name}`, file, {
+            access: "public",
+            handleUploadUrl: "/api/v1/upload",
+          })
 
-        if (blob.url) value.image = blob.url
-      }
-
-      toast.loading("Saving product...", { id: toastId })
-
-      if (id) {
-        const { serverError } = await updateProduct({
-          id,
-          data: value,
-        })
-        if (serverError) {
-          toast.error(serverError.message, { id: toastId })
-        } else {
-          toast.success("Product saved...", { id: toastId })
-          form.reset()
+          if (blob.url) values.image = blob.url
         }
-      } else {
-        const { serverError, data: response } = await createProduct({
-          data: value,
-        })
-        if (serverError) {
-          toast.error(serverError.message, { id: toastId })
+
+        toast.loading("Saving product...", { id: toastId })
+
+        if (id) {
+          const result = await updateProduct({
+            id,
+            data: values,
+          })
+          if (
+            result?.serverError ||
+            result?.validationErrors ||
+            !result?.data
+          ) {
+            toast.error(
+              result?.serverError?.message ??
+                "Unable to save product. Check the form values.",
+              { id: toastId }
+            )
+          } else {
+            toast.success("Product saved...", { id: toastId })
+            form.reset(values)
+            setFile(null)
+          }
         } else {
-          toast.success("Product saved...", { id: toastId })
-          router.push(`/products/${response?.id}`)
+          const result = await createProduct({
+            data: values,
+          })
+          if (
+            result?.serverError ||
+            result?.validationErrors ||
+            !result?.data
+          ) {
+            toast.error(
+              result?.serverError?.message ??
+                "Unable to save product. Check the form values.",
+              { id: toastId }
+            )
+          } else {
+            toast.success("Product saved...", { id: toastId })
+            form.reset(values)
+            setFile(null)
+            router.push(`/org/products/${result.data.id}`)
+          }
         }
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : "Unable to save product",
+          { id: toastId }
+        )
       }
     },
   })
@@ -98,6 +127,9 @@ export const ProductForm = ({ data, id }: FormProps) => {
           <ProductInventory form={form} />
           {/* pricing */}
           <ProductSellingOptions form={form} />
+
+          {/* delete alert */}
+          {id && <ProductDeleteAlert id={id} />}
         </div>
         <div className="col-span-1">
           <div className="sticky top-20 space-y-6">
@@ -136,7 +168,10 @@ export const ProductForm = ({ data, id }: FormProps) => {
             <Button
               variant="link"
               disabled={isSubmitting}
-              onClick={() => form.reset()}
+              onClick={() => {
+                form.reset()
+                setFile(null)
+              }}
             >
               Reset
             </Button>

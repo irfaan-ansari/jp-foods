@@ -19,7 +19,6 @@ import {
   orderGuide,
   promotion,
   promotionTarget,
-  productSellUnit,
 } from "./organization"
 
 import {
@@ -138,18 +137,7 @@ export const customerInviteRelations = relations(customerInvite, ({ one }) => ({
 export const productRelations = relations(product, ({ many }) => ({
   lineItems: many(lineItem),
   orderGuideItems: many(orderGuideItem),
-  sellUnits: many(productSellUnit),
 }))
-
-export const productSellUnitRelation = relations(
-  productSellUnit,
-  ({ one }) => ({
-    product: one(product, {
-      fields: [productSellUnit.productId],
-      references: [product.id],
-    }),
-  })
-)
 
 export const priceLevelRelation = relations(priceLevel, ({ one, many }) => ({
   priceLevelItem: many(priceLevelItem),
@@ -170,10 +158,6 @@ export const priceLevelItemsRelations = relations(
     product: one(product, {
       fields: [priceLevelItem.productId],
       references: [product.id],
-    }),
-    sellUnit: one(productSellUnit, {
-      fields: [priceLevelItem.sellUnitId],
-      references: [productSellUnit.id],
     }),
   })
 )

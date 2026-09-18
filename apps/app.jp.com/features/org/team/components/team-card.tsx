@@ -1,5 +1,12 @@
 import React from "react"
-import { Letter, MenuDots, Phone, Smartphone, User } from "@solar-icons/react"
+import {
+  Letter,
+  MenuDots,
+  PenNewRound,
+  Phone,
+  Smartphone,
+  User,
+} from "@solar-icons/react"
 import {
   Card,
   CardAction,
@@ -24,9 +31,9 @@ import Link from "next/link"
 import { STATUS } from "../team.const"
 import type { Team } from "../team.type"
 import { Tooltip } from "@jp/ui/components/jp"
-import { TeamDropdown } from "./team-dropdown"
 import { StatusBadge } from "@/components/status-badge"
 import { Button } from "@jp/ui/components/button"
+import { TeamDropdown } from "./team-dropdown"
 
 export const TeamCard = ({ data }: { data: Team }) => {
   const progress = Math.floor(Math.random() * 100) + 1
@@ -39,7 +46,7 @@ export const TeamCard = ({ data }: { data: Team }) => {
       <Link href={`/org/customers/${data.id}`} className="absolute inset-0" />
       <CardHeader>
         <CardAction className="flex items-center gap-2">
-          <TeamBadge status={data.status ?? "active"} />
+          <TeamBadge status={data.status ?? "suspended"} />
           <TeamDropdown data={data}>
             <Button size="icon-sm" variant="outline" className="relative z-1">
               <MenuDots />

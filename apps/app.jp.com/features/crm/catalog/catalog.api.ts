@@ -39,9 +39,15 @@ export const catalogInquiryRoutes = app
       db.$count(customerInvite, and(...conditions)),
     ])
 
+    const withLink = response.map((item) => ({
+      ...item,
+      url: item.token
+        ? `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${item.token}&redirect=${process.env.JP_APP_URL}/products`
+        : "",
+    }))
     return c.json({
       success: true,
-      data: response,
+      data: withLink,
       pagination: {
         page: page,
         limit: limit,

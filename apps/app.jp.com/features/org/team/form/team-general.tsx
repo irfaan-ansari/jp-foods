@@ -86,7 +86,7 @@ export const TeamGeneral = withForm({
             />
 
             <form.AppField
-              name="zip"
+              name="zipcode"
               children={(field) => (
                 <field.TextField label="ZIP Code" placeholder="78701" />
               )}

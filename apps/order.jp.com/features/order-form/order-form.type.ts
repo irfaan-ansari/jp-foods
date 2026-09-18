@@ -6,9 +6,10 @@ export type OrderItemInput = {
   itemCode: string
   title: string
   price: number
-  pack: number
   unit: string
-  unitSize: number
+  inventoryPerUnit: number
+  minQuantity: number
+  orderIncrement: number
   isTaxable: boolean
   image: string
   categories: string[]

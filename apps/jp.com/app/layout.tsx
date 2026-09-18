@@ -1,12 +1,14 @@
-import "@jp/ui/globals.css"
+import "./styles.css"
 import { type Metadata } from "next"
 import { cn } from "@jp/ui/lib/utils"
 import { SITE_CONFIG } from "@/lib/config"
-import { Manrope, Lora } from "next/font/google"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Manrope, Bricolage_Grotesque } from "next/font/google"
+import { SiteProvider } from "@/components/site-provider"
 
-const loraHeading = Lora({ subsets: ["latin"], variable: "--font-heading" })
+const loraHeading = Bricolage_Grotesque({
+  subsets: ["latin"],
+  variable: "--font-heading",
+})
 
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
 
@@ -64,7 +66,9 @@ export default function RootLayout({
         loraHeading.variable
       )}
     >
-      <body>{children}</body>
+      <body>
+        <SiteProvider>{children}</SiteProvider>
+      </body>
     </html>
   )
 }

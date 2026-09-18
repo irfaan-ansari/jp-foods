@@ -1,7 +1,7 @@
 import { format } from "date-fns"
 import { CheckIcon, CircleIcon, PlayIcon, XIcon } from "lucide-react"
 
-import { Badge } from "@jp/ui/components/reui/badge"
+import { Badge } from "@jp/ui/components/badge"
 import {
   Timeline,
   TimelineContent,
@@ -11,7 +11,7 @@ import {
   TimelineItem,
   TimelineSeparator,
   TimelineTitle,
-} from "@jp/ui/components/reui/timeline"
+} from "@jp/ui/components/timeline"
 import { cn } from "@jp/ui/lib/utils"
 
 type OrderStatus = "in_progress" | "delivered" | "cancelled"

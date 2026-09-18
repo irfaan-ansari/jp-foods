@@ -4,7 +4,7 @@ import { defineConfig } from "drizzle-kit"
 export default defineConfig({
   out: "./src/migrations",
   schema: [
-    "./src/schema/applications.ts",
+    "./src/schema/application.ts",
     "./src/schema/auth.ts",
     "./src/schema/relations.ts",
     "./src/schema/organization.ts",
@@ -14,4 +14,3 @@ export default defineConfig({
     url: process.env.DATABASE_URL!,
   },
 })
-console.log(process.env.DATABASE_URL)

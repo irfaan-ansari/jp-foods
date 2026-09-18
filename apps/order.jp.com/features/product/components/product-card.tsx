@@ -7,15 +7,25 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
-import { formatUSD } from "@jp/utils"
+import { formatUSD, getSellingUnits, type PricedSellingUnit } from "@jp/utils"
 import { cn } from "@jp/ui/lib/utils"
 import { format } from "date-fns/format"
+import { getUnit } from "../product.utils"
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"
+import { PopDrawer } from "@jp/ui/components/jp"
+import { Button } from "@jp/ui/components/button"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { SortableItemHandle } from "@jp/ui/components/sortable"
-import { GripVertical, ImageOff, Minus, Plus } from "lucide-react"
+import {
+  Check,
+  ChevronDown,
+  GripVertical,
+  ImageOff,
+  Minus,
+  Plus,
+} from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
@@ -27,7 +37,10 @@ export const ProductCard = React.memo(function ProductCard({
   data: Product
   sortable?: boolean
 }) {
-  const { value, setQuantity } = useOrderItemQuantity(data)
+  const sellUnits = getSellingUnits(data)
+  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
+  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
   const layout = useOrderFormUI((state) => state.layout)
 
   if (layout === "list") return <ProductRow data={data} sortable={sortable} />
@@ -37,7 +50,14 @@ export const ProductCard = React.memo(function ProductCard({
       size="sm"
       data-sortable={sortable}
       className={`relative h-full gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() => setQuantity(value + 1)}
+      onClick={() =>
+        selectedUnit &&
+        setQuantity(
+          value
+            ? value + Number(selectedUnit.orderIncreament)
+            : Number(selectedUnit.minQuantity)
+        )
+      }
     >
       {sortable && (
         <SortableItemHandle className="absolute top-2 right-2 z-1 inline-flex size-7 items-center justify-center rounded-lg bg-background/50 shadow-sm backdrop-blur-sm">
@@ -53,7 +73,7 @@ export const ProductCard = React.memo(function ProductCard({
       />
       {data?.lastOrder?.id && (
         <Badge className="absolute top-2 left-2 h-4.5 text-xs uppercase">
-          {data.lastOrder?.quantity} cs •
+          {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •
           {format(data?.lastOrder?.createdAt, "dd/MM")}
         </Badge>
       )}
@@ -67,13 +87,14 @@ export const ProductCard = React.memo(function ProductCard({
           {data.title}
         </CardTitle>
 
-        <div className="mt-3 flex items-center gap-2">
-          <div className="flex-1 text-base font-semibold text-primary">
-            {formatUSD(data.price)}
-          </div>
-
-          <QuantityStepper value={value} onChange={setQuantity} />
-        </div>
+        <QuantityStepper
+          value={value}
+          onChange={setQuantity}
+          sellUnits={sellUnits}
+          selectedUnit={selectedUnit}
+          onSelectUnit={setUnitName}
+          className="mt-2"
+        />
       </CardContent>
     </Card>
   )
@@ -86,13 +107,23 @@ const ProductRow = React.memo(function ProductRow({
   data: Product
   sortable?: boolean
 }) {
-  const { value, setQuantity } = useOrderItemQuantity(data)
+  const sellUnits = getSellingUnits(data)
+  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
+  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
 
   return (
     <Card
       size="sm"
       className={`relative h-full gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() => setQuantity(value + 1)}
+      onClick={() =>
+        selectedUnit &&
+        setQuantity(
+          value
+            ? value + Number(selectedUnit.orderIncreament)
+            : Number(selectedUnit.minQuantity)
+        )
+      }
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
@@ -103,6 +134,7 @@ const ProductRow = React.memo(function ProductRow({
 
       <CardContent className="flex flex-row items-stretch gap-3 px-3">
         <ProductMedia data={data} />
+
         <div className="flex min-w-0 flex-1 flex-col gap-1">
           <CardTitle>{data.title}</CardTitle>
           <div className="truncate text-xs font-medium text-muted-foreground uppercase">
@@ -110,18 +142,24 @@ const ProductRow = React.memo(function ProductRow({
           </div>
           {data?.lastOrder?.id && (
             <Badge className="text-xs uppercase">
-              {data.lastOrder?.quantity} cs •{" "}
+              {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •{" "}
               {format(data?.lastOrder?.createdAt, "dd/MM")}
             </Badge>
           )}
-          <div className="mt-auto text-base font-semibold text-primary">
-            {formatUSD(data.price)}
+          <div className="mt-auto text-sm font-semibold text-primary">
+            {selectedUnit
+              ? `${formatUSD(selectedUnit.price)} / ${getUnit(selectedUnit.name)?.label ?? selectedUnit.name}`
+              : "Unavailable"}
           </div>
         </div>
+
         <QuantityStepper
           value={value}
           onChange={setQuantity}
-          className="self-center"
+          sellUnits={sellUnits}
+          selectedUnit={selectedUnit}
+          onSelectUnit={setUnitName}
+          className="grid self-center"
         />
       </CardContent>
     </Card>
@@ -130,54 +168,145 @@ const ProductRow = React.memo(function ProductRow({
 
 const QuantityStepper = ({
   value = 0,
+  sellUnits,
+  selectedUnit,
+  onSelectUnit,
   onChange,
   className,
 }: {
   value: number | undefined
+  sellUnits: PricedSellingUnit[]
+  selectedUnit?: PricedSellingUnit
+  onSelectUnit: (name: string) => void
   className?: string
-  onChange?: (newValue: string | number) => void
+  onChange?: (newValue: number) => void
 }) => {
+  const [open, setOpen] = React.useState(false)
+  const rawIncrement = Number(selectedUnit?.orderIncreament ?? 1)
+  const rawMinimum = Number(selectedUnit?.minQuantity ?? 1)
+  const increment =
+    Number.isFinite(rawIncrement) && rawIncrement > 0 ? rawIncrement : 1
+  const minQty = Number.isFinite(rawMinimum) && rawMinimum > 0 ? rawMinimum : 1
+
+  const handleIncrement = () => {
+    if (value < minQty) {
+      onChange?.(minQty)
+      return
+    }
+
+    onChange?.(value + increment)
+  }
+
+  const handleDecrement = () => {
+    if (value <= minQty) {
+      onChange?.(0)
+      return
+    }
+    const newValue = value - increment
+    onChange?.(newValue < minQty ? minQty : newValue)
+  }
+
   return (
-    <InputGroup
-      className={cn("h-8 w-24", className)}
-      onClick={(e) => e.stopPropagation()}
+    <div
+      className={cn(
+        "flex flex-wrap items-center justify-between gap-2",
+        className
+      )}
     >
-      <InputGroupAddon className="pl-2">
-        <InputGroupButton
-          type="button"
-          variant="ghost"
-          className="size-6 hover:bg-primary/20!"
-          onClick={(e) => {
+      <PopDrawer
+        open={open}
+        setOpen={setOpen}
+        trigger={
+          <div
+            className="grid min-w-0"
+            onClick={(e) => {
+              e.stopPropagation()
+            }}
+          >
+            <span className="text-xs font-semibold text-primary">
+              {formatUSD(selectedUnit?.price ?? 0)}
+            </span>
+            <span className="flex items-center justify-between gap-0 text-xs text-muted-foreground">
+              {selectedUnit?.name} <ChevronDown className="size-3.5" />
+            </span>
+          </div>
+        }
+      >
+        {sellUnits.map((unit) => (
+          <Button
+            variant="ghost"
+            key={unit.name}
+            className="justify-start"
+            onClick={(e) => {
+              e.stopPropagation()
+              onSelectUnit(unit.name)
+              setOpen(false)
+            }}
+          >
+            {formatUSD(unit?.price ?? 0)}
+            <span className="text-xs text-muted-foreground">| {unit.name}</span>
+            {selectedUnit?.name === unit.name && (
+              <Check className="ml-auto size-3.5 text-muted-foreground" />
+            )}
+          </Button>
+        ))}
+      </PopDrawer>
+
+      <InputGroup
+        className={cn("h-8 w-22")}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <InputGroupAddon className="pl-1">
+          <InputGroupButton
+            type="button"
+            disabled={!selectedUnit}
+            variant="ghost"
+            className="size-6 hover:bg-primary/20!"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleDecrement()
+            }}
+          >
+            <Minus />
+          </InputGroupButton>
+        </InputGroupAddon>
+        <InputGroupInput
+          placeholder="0"
+          className="px-px! text-center"
+          value={value}
+          disabled={!selectedUnit || increment > 1}
+          onChange={(e) => {
             e.stopPropagation()
-            onChange?.(value - 1)
+
+            const newValue = Number(e.target.value)
+
+            if (Number.isFinite(newValue)) {
+              onChange?.(
+                newValue <= 0
+                  ? 0
+                  : minQty +
+                      Math.ceil(Math.max(0, newValue - minQty) / increment) *
+                        increment
+              )
+            }
           }}
-        >
-          <Minus />
-        </InputGroupButton>
-      </InputGroupAddon>
-      <InputGroupInput
-        placeholder="0"
-        className="text-center"
-        value={value}
-        onChange={(e) => {
-          e.stopPropagation()
-          onChange?.(e.target.value)
-        }}
-      />
-      <InputGroupAddon align="inline-end" className="pr-2">
-        <InputGroupButton
-          type="button"
-          variant="ghost"
-          className="size-6 hover:bg-primary/20!"
-          onClick={(e) => {
-            e.stopPropagation()
-            onChange?.(value + 1)
-          }}
-        >
-          <Plus />
-        </InputGroupButton>
-      </InputGroupAddon>
-    </InputGroup>
+        />
+        <InputGroupAddon align="inline-end" className="pr-1">
+          <InputGroupButton
+            type="button"
+            disabled={!selectedUnit}
+            variant="ghost"
+            className="size-6 hover:bg-primary/20!"
+            onClick={(e) => {
+              e.stopPropagation()
+              handleIncrement()
+            }}
+          >
+            <Plus />
+          </InputGroupButton>
+        </InputGroupAddon>
+      </InputGroup>
+    </div>
   )
 }
 
@@ -198,7 +327,7 @@ const ProductCheckbox = ({
     <Label
       htmlFor={`checkbox-${id}`}
       className={cn(
-        "absolute inset-0 z-2 flex flex-col items-end p-3 group-data-[sortable=true]/card:hidden",
+        "absolute inset-0 z-2 flex flex-col items-end bg-linear-to-bl from-black/10 p-3 group-data-[sortable=true]/card:hidden has-data-checked:bg-primary/20",
         className
       )}
       onClick={(e) => e.stopPropagation()}

@@ -13,7 +13,7 @@ import {
 } from "drizzle-orm"
 import { parsePagination } from "@/lib/hono/lib"
 import { TeamAppContext } from "@/lib/hono/middlewares"
-import { resolveTeamPrices } from "@/features/org/price-level/price-level.resolver"
+import { resolveTeamPrices } from "@/features/org/price-level/price-level-resolver"
 
 const app = new Hono<TeamAppContext>()
 
@@ -56,12 +56,13 @@ export const products = app
               id: true,
               orderId: true,
               quantity: true,
+              unitName: true,
               createdAt: true,
             },
             limit: 1,
+            where: (li, { eq }) => eq(li.teamId, teamId),
             orderBy: (li, { desc }) => [desc(li.createdAt)],
           },
-          sellUnits: true,
         },
         limit,
         offset,

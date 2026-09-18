@@ -41,8 +41,12 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
       })
     }
 
-    if (result.serverError) {
-      toast.error(result.serverError.message)
+    if (result.serverError || result.validationErrors || !result.data) {
+      toast.error(
+        result.serverError?.message ??
+          "Check the products and quantities in your order."
+      )
+      loader.hide()
       return
     }
 

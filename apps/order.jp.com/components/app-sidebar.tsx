@@ -86,11 +86,6 @@ export function AppSidebar({ session }: { session: AuthType }) {
             </SidebarGroup>
           )
         })}
-        <div className="mt-auto p-2">
-          <div className="h-52 rounded-2xl bg-red-100">
-            <Promotion placement="sidebar" />
-          </div>
-        </div>
       </SidebarContent>
 
       <SidebarFooter className="p-0">
@@ -101,6 +96,7 @@ export function AppSidebar({ session }: { session: AuthType }) {
               icon={QuestionCircle}
               label="Help & Support"
               href="/help"
+              disabled={true}
             />
           </SidebarMenu>
         </SidebarGroup>
@@ -199,7 +195,7 @@ const MenuLink = ({
         asChild
         isActive={isActive}
         tooltip={label}
-        className="px-2.5 transition duration-200"
+        className={`px-2.5 transition duration-200`}
         disabled={disabled}
       >
         {disabled ? (

@@ -1,21 +1,16 @@
-import { cn } from "@jp/ui/lib/utils"
-import { Container } from "./container"
-import { Button } from "@jp/ui/components/button"
-import { Particles } from "@jp/ui/components/particles"
-
 import Link from "next/link"
-import { CircleArrowRight } from "lucide-react"
+import { Button } from "@jp/ui/components/button"
+import { Container } from "@/components/container"
+import { cn } from "@jp/ui/lib/utils"
 
 export const CTA = ({ className }: { className?: string }) => {
   return (
-    <section className={cn("relative mt-16 bg-accent py-16", className)}>
-      <Particles
-        className="absolute inset-0 z-0"
-        quantity={100}
-        ease={80}
-        color="#FFF"
-        refresh
-      />
+    <section
+      className={cn(
+        "mt-16 bg-linear-to-b from-lime-800 via-primary to-secondary py-16",
+        className
+      )}
+    >
       <Container>
         <div className="space-y-8">
           <div className="mx-auto max-w-3xl space-y-4 text-center">
@@ -24,7 +19,7 @@ export const CTA = ({ className }: { className?: string }) => {
             </h2>
             <p className="text-xl text-primary-foreground">
               If you operate a restaurant, food truck, or commercial kitchen,
-              apply for a Jimenez Produce account to get started with a reliable
+              apply for a Jiménez Produce account to get started with a reliable
               foodservice distributor.
             </p>
           </div>
@@ -32,13 +27,9 @@ export const CTA = ({ className }: { className?: string }) => {
             <Button
               asChild
               size="xl"
-              variant="secondary"
-              className="bg-[#ddeab4] hover:bg-[#ddeab4]/90"
+              className="bg-foreground hover:bg-foreground/80"
             >
-              <Link href="/apply">
-                Apply For Account
-                <CircleArrowRight />
-              </Link>
+              <Link href="/apply">Apply for an Account</Link>
             </Button>
           </div>
         </div>

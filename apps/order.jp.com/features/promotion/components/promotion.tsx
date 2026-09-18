@@ -8,7 +8,7 @@ import type { Promotion as PromotionType } from "../promotion.type"
 import { QueryBoundary } from "@/components/query-boundry"
 import { usePromotions } from "@/features/promotion/promotion.data"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
-import { formatUSD } from "@jp/utils"
+import { getSellingUnits, formatUSD } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import { ImageOff, Plus, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
@@ -29,7 +29,11 @@ export function Promotion({ placement }: PromotionProps) {
   const Component = variants[placement]
 
   return (
-    <QueryBoundary query={promotions} loading={null}>
+    <QueryBoundary
+      query={promotions}
+      error={(err) => <span className="hidden" />}
+      loading={null}
+    >
       {({ data }) => (
         <>
           {data
@@ -120,12 +124,21 @@ function PromotionToast({
   id: number | string
   product: PromotionType["products"][number]
 }) {
-  const { setQuantity, value } = useOrderItemQuantity(product)
+  const sellUnit = getSellingUnits(product)[0]
+  const { setQuantity, value } = useOrderItemQuantity(
+    product,
+    sellUnit?.name ?? ""
+  )
   return (
     <div
       className="relative flex w-sm items-center gap-2 overflow-hidden rounded-2xl border bg-background p-3 shadow-lg"
       onClick={() => {
-        setQuantity(value + 1)
+        if (sellUnit)
+          setQuantity(
+            value
+              ? value + Number(sellUnit.orderIncreament)
+              : Number(sellUnit.minQuantity)
+          )
         toast.dismiss(id)
       }}
     >
@@ -160,7 +173,9 @@ function PromotionToast({
         </p>
         <div className="flex items-center justify-between">
           <span className="font-semibold text-primary">
-            {formatUSD(product.price)}
+            {sellUnit
+              ? `${formatUSD(sellUnit.price)} / ${sellUnit.name}`
+              : "Unavailable"}
           </span>
         </div>
       </div>

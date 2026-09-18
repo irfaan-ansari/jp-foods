@@ -11,14 +11,10 @@ import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
 import { PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
-import { APPLICATION_ACTIONS } from "../candidate.const"
 import { CandidateApplication } from "../candidate.type"
 import { CandidateApplicationNotesDialog } from "./candidate-notes-dialog"
 import { CandidateApplicationStatusDialog } from "./candidate-status-dialog"
-import { processCandidateApplication } from "../candidate.action"
-
-type Action =
-  (typeof APPLICATION_ACTIONS)[keyof typeof APPLICATION_ACTIONS][number]["action"]
+import { updateCandidateApplication } from "../candidate.action"
 
 export const CandidateApplicationActions = ({
   data,
@@ -27,25 +23,27 @@ export const CandidateApplicationActions = ({
 }) => {
   const { open } = useConfirm()
   const queryClient = useQueryClient()
-  const [actionDialog, setActionDialog] = React.useState<
-    "hold" | "reject" | null
-  >(null)
-  const actions =
-    APPLICATION_ACTIONS[data.status as keyof typeof APPLICATION_ACTIONS] ?? []
+  const [showActionDialog, setShowActionDialog] = React.useState(false)
 
-  const handleAction = (action: Action) => {
+  const updateData = {
+    statusReason: "",
+    statusDetails: "",
+    internalNotes: data.internalNotes ?? "",
+  }
+
+  const handleAction = (action: string) => {
     switch (action) {
-      case "accept":
+      case "hired":
         open({
           variant: "default",
-          title: "Accept Application",
+          title: "Hire Candidate",
           description:
-            "Accepting this application will start the Gusto and Connecteam onboarding process.",
+            "Hiring this candidate will start their onboarding in Gusto and Connecteam.",
           action: {
             action: async () => {
-              const { serverError } = await processCandidateApplication({
+              const { serverError } = await updateCandidateApplication({
                 id: data.id,
-                data: { status: "accepted" },
+                data: { ...updateData, status: "hired" },
               })
               if (serverError) toast.message(serverError.message)
               else {
@@ -61,7 +59,7 @@ export const CandidateApplicationActions = ({
         })
         return
 
-      case "start_verification":
+      case "verification_in_progress":
         open({
           variant: "warning",
           title: "Start Verification",
@@ -69,9 +67,9 @@ export const CandidateApplicationActions = ({
             "This will start the applicant verification process through Verified First.",
           action: {
             action: async () => {
-              const { serverError } = await processCandidateApplication({
+              const { serverError } = await updateCandidateApplication({
                 id: data.id,
-                data: { status: "verification_in_progress" },
+                data: { ...updateData, status: "verification_in_progress" },
               })
               if (serverError) toast.message(serverError.message)
               else {
@@ -86,8 +84,8 @@ export const CandidateApplicationActions = ({
           },
         })
         return
-      case "reject":
-        setActionDialog("reject")
+      case "rejected":
+        setShowActionDialog(true)
         return
     }
   }
@@ -103,10 +101,7 @@ export const CandidateApplicationActions = ({
           <p className="flex-1 text-muted-foreground">
             {data?.internalNotes ?? "No notes"}
           </p>
-          <CandidateApplicationNotesDialog
-            id={data.id}
-            values={{ internalNotes: data.internalNotes ?? "" }}
-          >
+          <CandidateApplicationNotesDialog id={data.id} data={data}>
             <Button size="icon-sm" variant="outline" className="shrink-0">
               <PenNewSquare />
             </Button>
@@ -114,24 +109,38 @@ export const CandidateApplicationActions = ({
         </div>
       </CardContent>
       <CardContent className="border-t border-dashed">
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {actions.map(({ variant, label, className, action }) => (
-            <Button
-              variant={variant}
-              className={className}
-              onClick={() => handleAction(action)}
-            >
-              {label}
-            </Button>
-          ))}
+        <div className="mt-4 grid gap-2">
+          <Button
+            disabled={data.status === "hired"}
+            onClick={() => handleAction("hired")}
+          >
+            Hire Candidate
+          </Button>
+          <Button
+            variant="outline"
+            disabled={
+              data.status === "hired" ||
+              data.status === "verification_in_progress"
+            }
+            onClick={() => handleAction("verification_in_progress")}
+          >
+            Start Verification
+          </Button>
+          <Button
+            variant="destructive"
+            disabled={data.status === "rejected"}
+            onClick={() => handleAction("rejected")}
+          >
+            Reject Candidate
+          </Button>
         </div>
       </CardContent>
       <CandidateApplicationStatusDialog
         id={data.id}
-        action={actionDialog ?? "reject"}
-        open={actionDialog !== null}
+        data={{ ...data, status: "rejected" }}
+        open={showActionDialog}
         onOpenChange={(open) => {
-          if (!open) setActionDialog(null)
+          setShowActionDialog(open)
         }}
       />
     </Card>

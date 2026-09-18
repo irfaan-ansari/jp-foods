@@ -1,4 +1,4 @@
-import {
+import type {
   PriceLevelItemSelectType,
   PriceLevelSelectType,
   ProductSelectType,
@@ -6,8 +6,12 @@ import {
 
 type PriceLeveItem = Pick<
   ProductSelectType,
-  "id" | "title" | "image" | "itemCode" | "basePrice"
-> & { price: string }
+  "id" | "title" | "image" | "itemCode"
+> & {
+  unit: string
+  basePrice: string
+  price: string
+}
 
 export type PriceLevel = PriceLevelSelectType & {
   customerCount: number
@@ -23,3 +27,10 @@ export type PriceLevelBadge = {
 }
 
 export type PriceLevelItem = PriceLevelItemSelectType
+
+export type PriceLevelConfig = Pick<
+  PriceLevelSelectType,
+  "status" | "appliesTo" | "adjustmentType" | "adjustmentValue"
+> & {
+  priceLevelItem: Pick<PriceLevelItemSelectType, "productId" | "price">[]
+}

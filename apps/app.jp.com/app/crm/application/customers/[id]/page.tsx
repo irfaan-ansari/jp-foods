@@ -23,7 +23,7 @@ const ApplicationPageDetail = () => {
       <PageHeader
         loading={isPending}
         title={`#${data?.id}`}
-        backUrl={`/crm/customers?${searchParams}`}
+        backUrl={`/crm/application/customers?${searchParams}`}
       ></PageHeader>
       <PageContent loading={isPending}>
         {isError ? (

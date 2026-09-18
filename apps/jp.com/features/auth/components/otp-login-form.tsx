@@ -153,7 +153,9 @@ export function OTPLoginForm({
       {step === "send" && (
         <FieldGroup>
           <div className="space-y-2">
-            <h2 className="text-xl font-bold">Sign in with phone number</h2>
+            <h2 className="font-heading text-xl font-bold">
+              Sign in with phone number
+            </h2>
             <p className="text-sm text-muted-foreground">
               Enter your phone number and we’ll send you a secure one-time
               passcode.
@@ -298,8 +300,8 @@ export function OTPLoginForm({
         <Button
           type="button"
           size="xl"
-          variant="secondary"
-          className="border border-primary/50 bg-primary/10 hover:bg-primary/30"
+          variant="outline"
+          className="border-primary/30 text-primary"
           asChild
         >
           <Link href="/auth/signin-password">Sign in with password</Link>

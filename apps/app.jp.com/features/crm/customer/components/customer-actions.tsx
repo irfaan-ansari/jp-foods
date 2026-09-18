@@ -1,6 +1,5 @@
 import React from "react"
 import { toast } from "sonner"
-import { APPLICATION_ACTIONS } from "../customer.const"
 import { CustomerApplication } from "../customer.type"
 import {
   Card,
@@ -12,12 +11,10 @@ import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
 import { PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
-import { processCustomerApplication } from "../customer.action"
 import { CustomerApplicationNotesDialog } from "./customer-notes-dialog"
 import { CustomerApplicationStatusDialog } from "./customer-status-dialog"
-
-type Action =
-  (typeof APPLICATION_ACTIONS)[keyof typeof APPLICATION_ACTIONS][number]["action"]
+import { updateCustomerApplication } from "../customer.action"
+import { APPLICATION_ACTIONS } from "../customer.const"
 
 const CustomerApplicationActions = ({
   data,
@@ -27,14 +24,18 @@ const CustomerApplicationActions = ({
   const { open } = useConfirm()
   const queryClient = useQueryClient()
   const [actionDialog, setActionDialog] = React.useState<
-    "hold" | "reject" | null
+    "on_hold" | "rejected" | null
   >(null)
-  const actions =
-    APPLICATION_ACTIONS[data.status as keyof typeof APPLICATION_ACTIONS] ?? []
 
-  const handleAction = (action: Action) => {
+  const updateData = {
+    statusReason: "",
+    statusDetails: "",
+    internalNotes: data.internalNotes ?? "",
+  }
+
+  const handleAction = (action: string) => {
     switch (action) {
-      case "approve":
+      case "approved":
         open({
           variant: "default",
           title: "Approve Application",
@@ -43,14 +44,17 @@ const CustomerApplicationActions = ({
           action: {
             label: "Approve",
             action: async () => {
-              const { serverError } = await processCustomerApplication({
+              const { serverError } = await updateCustomerApplication({
                 id: data.id,
-                data: { status: "active" },
+                data: {
+                  ...updateData,
+                  status: "active",
+                },
               })
               if (serverError) toast.message(serverError.message)
               else {
                 queryClient.invalidateQueries({
-                  queryKey: ["customer-application", data.id],
+                  queryKey: ["customer-application"],
                 })
                 queryClient.invalidateQueries({
                   queryKey: ["/crm/customers/count"],
@@ -60,7 +64,7 @@ const CustomerApplicationActions = ({
           },
         })
         return
-      case "review":
+      case "under_review":
         open({
           variant: "info",
           title: "Mark as Under Review",
@@ -68,14 +72,19 @@ const CustomerApplicationActions = ({
             "Move this application to the review queue. The applicant may be notified that additional assessment is in progress.",
           action: {
             action: async () => {
-              const { serverError } = await processCustomerApplication({
-                id: data.id,
-                data: { status: "under_review" },
-              })
+              const { serverError, validationErrors } =
+                await updateCustomerApplication({
+                  id: data.id,
+                  data: {
+                    ...updateData,
+                    status: "under_review",
+                  },
+                })
+
               if (serverError) toast.message(serverError.message)
               else {
                 queryClient.invalidateQueries({
-                  queryKey: ["customer-application", data.id],
+                  queryKey: ["customer-application"],
                 })
                 queryClient.invalidateQueries({
                   queryKey: ["/crm/customers/count"],
@@ -85,11 +94,11 @@ const CustomerApplicationActions = ({
           },
         })
         return
-      case "hold":
-        setActionDialog("hold")
+      case "on_hold":
+        setActionDialog("on_hold")
         return
-      case "reject":
-        setActionDialog("reject")
+      case "rejected":
+        setActionDialog("rejected")
         return
     }
   }
@@ -105,10 +114,7 @@ const CustomerApplicationActions = ({
           <p className="flex-1 text-muted-foreground">
             {data?.internalNotes ?? "No notes"}
           </p>
-          <CustomerApplicationNotesDialog
-            id={data.id}
-            values={{ internalNotes: data.internalNotes ?? "" }}
-          >
+          <CustomerApplicationNotesDialog id={data.id} data={{ ...data }}>
             <Button size="icon-sm" variant="outline" className="shrink-0">
               <PenNewSquare />
             </Button>
@@ -116,22 +122,21 @@ const CustomerApplicationActions = ({
         </div>
       </CardContent>
       <CardContent className="border-t border-dashed">
-        <div className="mt-4 grid grid-cols-2 gap-3">
-          {actions.map(({ variant, label, className, action }) => (
+        <div className="mt-4 grid gap-2">
+          {APPLICATION_ACTIONS.map((action) => (
             <Button
-              key={action}
-              variant={variant}
-              className={className}
-              onClick={() => handleAction(action)}
+              variant={action.variant}
+              disabled={data.status === action.status}
+              onClick={() => handleAction(action.status)}
             >
-              {label}
+              {action.label}
             </Button>
           ))}
         </div>
       </CardContent>
       <CustomerApplicationStatusDialog
         id={data.id}
-        action={actionDialog ?? "hold"}
+        data={{ ...data, status: actionDialog ?? "on_hold" }}
         open={actionDialog !== null}
         onOpenChange={(open) => {
           if (!open) setActionDialog(null)

@@ -1,9 +1,10 @@
 import Link from "next/link"
-import { COVERAGE_LOCATIONS, HOME_SECTIONS, CONTACT_SECTIONS } from "@/data/web"
+import Image from "next/image"
+
+import { Container } from "@/components/container"
 import { SITE_CONFIG } from "@/lib/config"
 import { AtSign, MapPinned, Phone } from "lucide-react"
-import { Container } from "./container"
-const { categories } = HOME_SECTIONS
+import { CONTACT_SECTIONS, COVERAGE_LOCATIONS, HOME_SECTIONS } from "@/data/web"
 
 export const Footer = () => {
   return (
@@ -12,16 +13,23 @@ export const Footer = () => {
         <div className="grid grid-cols-9 gap-8">
           {/* branding */}
           <div className="col-span-9 space-y-8 md:col-span-3">
+            <Link href="/" className="inline-block">
+              <Image
+                width={100}
+                height={100}
+                alt="Logo"
+                src={SITE_CONFIG.logo}
+                className="aspect-square w-full max-w-20 object-contain"
+              />
+            </Link>
             <div className="flex flex-col gap-6">
               {CONTACT_SECTIONS.locations.map((loc) => (
                 <div className="space-y-2" key={loc.name}>
-                  <h5 className="font-heading font-medium uppercase">
-                    {loc.name}
-                  </h5>
+                  <h5 className="text-lg font-semibold">{loc.name}</h5>
                   <div className="space-y-1">
                     {loc.phone && (
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
                           <Phone className="size-4" />
                         </span>
                         <a
@@ -34,7 +42,7 @@ export const Footer = () => {
                     )}
                     {loc.email && (
                       <div className="flex items-center gap-2">
-                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
                           <AtSign className="size-4" />
                         </span>
                         <a
@@ -46,7 +54,7 @@ export const Footer = () => {
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <span className="inline-flex size-8 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-sm">
+                      <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
                         <MapPinned className="size-4" />
                       </span>
                       <p className="text-muted-foreground">{loc.street}</p>
@@ -62,10 +70,10 @@ export const Footer = () => {
             <div className="space-y-6">
               <h5 className="font-heading font-medium uppercase">Categories</h5>
               <div className="flex flex-col gap-2">
-                {categories.map((cat) => (
+                {HOME_SECTIONS.categories.map((cat) => (
                   <Link
                     key={cat.title}
-                    href={`/products?cat=${cat.title}`}
+                    href={`/products?cat=${encodeURIComponent(cat.title)}`}
                     className="py-1 transition ease-out hover:text-primary hover:underline"
                   >
                     {cat.title}
@@ -124,14 +132,14 @@ export const Footer = () => {
           </div>
           <div className="flex items-center gap-2">
             <Link
-              href="/"
+              href="/terms-and-conditions"
               className="transition ease-out hover:text-primary hover:underline"
             >
               Terms and Condtions
             </Link>
             <span>•</span>
             <Link
-              href="/"
+              href="/privacy-policy"
               className="transition ease-out hover:text-primary hover:underline"
             >
               Privacy Policy

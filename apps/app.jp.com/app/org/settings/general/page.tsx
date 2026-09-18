@@ -10,6 +10,7 @@ import { Field, FieldDescription, FieldLabel } from "@jp/ui/components/field"
 import { useOrganization } from "@/features/org/organization.data"
 import { ErrorState, useConfirm } from "@jp/ui/components/jp"
 import { Logout, TrashBinTrash } from "@solar-icons/react"
+import { OrgAccess } from "@/features/auth/components/org-permission"
 
 const GeneralPage = () => {
   const { open } = useConfirm()
@@ -124,13 +125,18 @@ const GeneralPage = () => {
                 </Field>
               </div>
               <div className="border-t border-destructive/50 bg-destructive/10 px-6 py-4 text-right">
-                <Button
-                  className="bg-destructive text-primary-foreground hover:bg-destructive/80"
-                  variant="destructive"
-                  onClick={handleDelete}
-                >
-                  <TrashBinTrash /> Delete Organization
-                </Button>
+                <OrgAccess permission={{ organization: ["update"] }}>
+                  {(disabled) => (
+                    <Button
+                      className="bg-destructive text-primary-foreground hover:bg-destructive/80"
+                      variant="destructive"
+                      onClick={handleDelete}
+                      disabled={disabled}
+                    >
+                      <TrashBinTrash /> Delete Organization
+                    </Button>
+                  )}
+                </OrgAccess>
               </div>
             </div>
           </>

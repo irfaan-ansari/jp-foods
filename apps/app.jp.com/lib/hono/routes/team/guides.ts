@@ -4,7 +4,7 @@ import { db, orderGuide } from "@jp/db"
 import { eq } from "drizzle-orm"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
-import { getTeamPriceResolver } from "@/features/org/price-level/price-level.resolver"
+import { getTeamPriceResolver } from "@/features/org/price-level/price-level-resolver"
 
 const app = new Hono<TeamAppContext>()
 
@@ -26,12 +26,13 @@ export const guides = app.get("/", async (c) => {
                     id: true,
                     orderId: true,
                     quantity: true,
+                    unitName: true,
                     createdAt: true,
                   },
                   limit: 1,
+                  where: (lineItem, { eq }) => eq(lineItem.teamId, teamId),
                   orderBy: (li, { desc }) => [desc(li.createdAt)],
                 },
-                sellUnits: true,
               },
             },
           },

@@ -3,7 +3,7 @@ import React from "react"
 import { PageContent, PageHeader } from "@/components/page-content"
 import { TeamDetailClient } from "@/features/org/team/components/team-detail-client"
 import { ErrorState, PopDrawer } from "@jp/ui/components/jp"
-import { Calendar, MenuDots } from "@solar-icons/react"
+import { Calendar, MenuDots, PenNewRound } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { useParams } from "next/navigation"
@@ -11,6 +11,7 @@ import { TeamDropdown } from "@/features/org/team/components/team-dropdown"
 import { useTeam, useTeamAnalytics } from "@/features/org/team/team.data"
 import { RANGE_DAYS } from "@/features/org/team/team.const"
 import { ChevronDown } from "lucide-react"
+import Link from "next/link"
 
 const CustomerPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -56,7 +57,7 @@ const CustomerPage = () => {
           </PopDrawer>
 
           <TeamDropdown data={team?.data!}>
-            <Button size="icon" variant="outline" className="relative z-1">
+            <Button size="icon" variant="outline">
               <MenuDots />
             </Button>
           </TeamDropdown>

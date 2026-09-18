@@ -4,6 +4,7 @@ import React, { useState } from "react"
 
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -31,6 +32,7 @@ import { ChevronDown, Loader2, Plus } from "lucide-react"
 import { type UserFormSchema, userSchema } from "../user.schema"
 import { UserRoleSelector } from "../components/user-role-selector"
 import { UserRoleBadge } from "../components/user-card"
+import { UserAccess } from "@/features/auth/components/user-permission"
 
 export const UserDialog = ({
   id,
@@ -40,13 +42,18 @@ export const UserDialog = ({
 }: {
   values?: UserFormSchema
   id?: string
-  callback?: (user: User) => void
+  callback?: (user: Partial<User>) => void
   children: React.ReactNode
 }) => {
   const [open, setOpen] = useState(false)
   const queryClient = useQueryClient()
 
-  const { name = "", phoneNumber = "", email = "", role = "" } = values || {}
+  const {
+    name = "",
+    phoneNumber = "",
+    email = "",
+    role = "user",
+  } = values || {}
 
   const form = useAppForm({
     defaultValues: {
@@ -71,9 +78,12 @@ export const UserDialog = ({
           toast.error(error.message)
           return
         }
+
         toast.success("User account update.")
 
-        callback?.(data?.user!)
+        form.reset()
+        setOpen(false)
+        callback?.(data!)
         queryClient.invalidateQueries({ queryKey: ["users"] })
         queryClient.invalidateQueries({
           queryKey: ["count", "/users/count"],
@@ -92,6 +102,9 @@ export const UserDialog = ({
         }
 
         toast.success("User account created.")
+
+        form.reset()
+        setOpen(false)
         callback?.(data?.user!)
         queryClient.invalidateQueries({ queryKey: ["users"] })
         queryClient.invalidateQueries({
@@ -150,20 +163,25 @@ export const UserDialog = ({
                         field.handleChange(value.value)
                       }}
                     >
-                      <Button
-                        variant="outline"
-                        type="button"
-                        id={field.name}
-                        className="w-full justify-start text-muted-foreground"
-                      >
-                        <Plus />
-                        {field.state.value ? (
-                          <UserRoleBadge status={field.state.value} />
-                        ) : (
-                          "Select role..."
+                      <UserAccess permission={{ user: ["set-role"] }}>
+                        {(disabled) => (
+                          <Button
+                            variant="outline"
+                            type="button"
+                            id={field.name}
+                            disabled={disabled}
+                            className="w-full justify-start text-muted-foreground"
+                          >
+                            <Plus />
+                            {field.state.value ? (
+                              <UserRoleBadge status={field.state.value} />
+                            ) : (
+                              "Select role..."
+                            )}
+                            <ChevronDown className="ml-auto" />
+                          </Button>
                         )}
-                        <ChevronDown className="ml-auto" />
-                      </Button>
+                      </UserAccess>
                     </UserRoleSelector>
                     <FieldDescription className="text-sm">
                       Not sure which role to assign? View role permissions{" "}
@@ -185,9 +203,9 @@ export const UserDialog = ({
           </FieldGroup>
         </div>
         <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
-          <Button variant="outline" onClick={() => setOpen(false)}>
-            Cancel
-          </Button>
+          <AppDialogClose asChild>
+            <Button variant="outline">Cancel</Button>
+          </AppDialogClose>
 
           <form.Subscribe
             selector={({ isSubmitting, canSubmit }) => ({

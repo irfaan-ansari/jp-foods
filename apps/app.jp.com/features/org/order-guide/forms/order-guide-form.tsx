@@ -111,7 +111,8 @@ const OrderGuideForm = ({
                 <div className="grid min-w-0 flex-1 text-sm">
                   <span>{name || "Order guide"}</span>
                   <span className="text-xs text-muted-foreground">
-                    {pluralize(products.length, `10 item`)} in this order guide
+                    {products.length} {pluralize(products.length, `item`)} in
+                    this order guide
                   </span>
                 </div>
               )}
@@ -259,13 +260,11 @@ const OrderGuideForm = ({
                             {subField.itemCode}
                           </span>
                         </div>
-                        <div className="self-center text-right font-semibold text-primary">
-                          {subField?.sellUnits?.map((unit) => (
-                            <span key={unit.unit}>{unit.price}</span>
-                          ))}
+                        <div className="self-center text-right text-xs font-medium text-primary">
+                          {formatUSD(subField.price)}
                         </div>
                         <Button
-                          size="icon-sm"
+                          size="icon-xs"
                           variant="destructive"
 
                           onClick={() => field.removeValue(idx)}

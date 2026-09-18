@@ -80,7 +80,7 @@ export function ForgotPasswordForm({
       className="flex w-full flex-1 flex-col items-start justify-center gap-4 px-6 py-20 lg:max-w-xl lg:px-16"
     >
       <div className="space-y-2">
-        <h2 className="text-xl font-bold">Forgot Password</h2>
+        <h2 className="font-heading text-xl font-bold">Forgot Password</h2>
         <p className="text-sm text-muted-foreground">
           Enter your email or phone number to reset your password.
         </p>

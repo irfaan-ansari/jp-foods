@@ -1,16 +1,10 @@
-import { numberSchema } from "@jp/utils"
 import z from "zod"
-
-const sellUnitSchema = z.object({
-  id: z.number(),
-  name: z.string(),
-  basePrice: z.string().nullable(),
-  price: z.string().min(1, "Adjustment price is required"),
-})
 
 const productSchema = z.object({
   id: z.number(),
-  sellUnits: sellUnitSchema.array(),
+  unit: z.string(),
+  basePrice: z.string(),
+  price: z.string(),
   title: z.string(),
   itemCode: z.string(),
   image: z.string().nullable(),
@@ -20,47 +14,70 @@ const baseSchema = z.object({
   name: z.string().min(1, "Name is required"),
   appliesTo: z.string(),
   adjustmentType: z.string(),
-  adjustmentValue: numberSchema,
+  adjustmentValue: z.string(),
   status: z.string(),
 })
-export const priceLevelSchema = baseSchema
-  .extend({
-    products: productSchema.array(),
-  })
-  .superRefine((data, ctx) => {
-    const { appliesTo, products, adjustmentValue } = data
+const validateAdjustments = (
+  data: {
+    appliesTo: string
+    products: { id: number; price: string }[]
+    adjustmentValue: string
+  },
+  ctx: z.RefinementCtx
+) => {
+  const { appliesTo, products, adjustmentValue } = data
 
-    if (appliesTo === "per_item") {
-      if (!products || products.length === 0) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Select at least one item for this price level",
-          path: ["products"],
-        })
-      }
-      data.adjustmentValue = ""
-    } else if (appliesTo === "all") {
-      if (adjustmentValue === undefined || adjustmentValue === null) {
-        ctx.addIssue({
-          code: "custom",
-          message: "Adjustment value is required",
-          path: ["adjustmentValue"],
-        })
-      }
+  if (appliesTo === "per_item") {
+    if (!products || products.length === 0) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Select at least one item for this price level",
+        path: ["products"],
+      })
     }
-  })
+    const ids = new Set<number>()
+    products.forEach((product, index) => {
+      if (ids.has(product.id))
+        ctx.addIssue({
+          code: "custom",
+          path: ["products", index, "id"],
+          message: "Select each product only once",
+        })
+      ids.add(product.id)
+      if (!product.price.trim() || !Number.isFinite(Number(product.price)))
+        ctx.addIssue({
+          code: "custom",
+          path: ["products", index, "price"],
+          message: "Enter a valid adjustment",
+        })
+    })
+  } else if (appliesTo === "all") {
+    if (!adjustmentValue.trim() || !Number.isFinite(Number(adjustmentValue))) {
+      ctx.addIssue({
+        code: "custom",
+        message: "Adjustment value is required",
+        path: ["adjustmentValue"],
+      })
+    }
+  }
+}
+
+export const priceLevelSchema = baseSchema
+  .extend({ products: productSchema.array() })
+  .superRefine(validateAdjustments)
 
 export type PriceLevelFormSchema = z.infer<typeof priceLevelSchema>
 
-const levelCreateSchema = baseSchema.extend({
-  products: z
-    .object({
-      id: z.number(),
-      sellUnitId: z.number(),
-      price: z.string(),
-    })
-    .array(),
-})
+const levelCreateSchema = baseSchema
+  .extend({
+    products: z
+      .object({
+        id: z.number(),
+        price: z.string(),
+      })
+      .array(),
+  })
+  .superRefine(validateAdjustments)
 export const createPriceLevelSchema = z.object({
   data: levelCreateSchema,
 })

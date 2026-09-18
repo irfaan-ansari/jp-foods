@@ -3,7 +3,7 @@ import { Hono } from "hono"
 import { db, promotionTarget } from "@jp/db"
 
 import { TeamAppContext } from "@/lib/hono/middlewares"
-import { resolveTeamPrices } from "@/features/org/price-level/price-level.resolver"
+import { resolveTeamPrices } from "@/features/org/price-level/price-level-resolver"
 
 const app = new Hono<TeamAppContext>()
 

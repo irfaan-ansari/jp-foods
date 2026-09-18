@@ -7,13 +7,13 @@ import { FilterTab } from "@/components/filter-tabs"
 import { TeamClient } from "@/features/org/team/components/team-client"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import Link from "next/link"
+import { STATUS } from "@/features/org/team/team.const"
 
-const OPTIONS = [
-  { label: "All", value: "", color: "#71717A" },
-  { label: "Active", value: "active", color: "#22C55E" },
-  { label: "Inactive", value: "inactive", color: "#71717A" },
-  { label: "Suspended", value: "suspended", color: "#71717A" },
-]
+const OPTIONS = Object.entries(STATUS).map(([_, { label, value, color }]) => ({
+  label,
+  value,
+  color,
+}))
 
 const CustomersPage = () => {
   return (

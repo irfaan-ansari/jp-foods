@@ -1,19 +1,19 @@
 import { Hono } from "hono"
 
+import { AppError } from "@jp/utils"
 import { db, order, team } from "@jp/db"
-
-import { and, count, eq, exists, ilike, or, sql } from "drizzle-orm"
-import { HTTPException } from "hono/http-exception"
-import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
-
-import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { sortLineItems } from "./order.utils"
+import { OrderInvoice, PackingSlip } from "@jp/pdf"
+import { renderToStream } from "@react-pdf/renderer"
+import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
+import { and, count, eq, exists, ilike, or, sql } from "drizzle-orm"
+import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
 const app = new Hono<OrgAppContext>()
 
 app.use("*", orgPermission({ order: ["read"] }))
 
-export const orders = app
+const orderApp = app
   .get("/", async (c) => {
     const organizationId = c.get("organizationId")!
 
@@ -112,10 +112,7 @@ export const orders = app
       },
     })
 
-    if (!response)
-      throw new HTTPException(400, {
-        message: "Order not found",
-      })
+    if (!response) throw new AppError("NOT_FOUND")
 
     const lineItems = sortLineItems(response.lineItems)
 
@@ -124,17 +121,30 @@ export const orders = app
       data: { ...response, lineItems },
     })
   })
+
   .get("/:id/slip", async (c) => {
     const id = c.req.param("id")
     const organizationId = c.get("organizationId")!
 
     const data = await db.query.order.findFirst({
-      where: eq(order.id, Number(id)),
+      where: (o, { and, eq }) =>
+        and(eq(o.organizationId, organizationId), eq(order.id, Number(id))),
       with: {
         lineItems: true,
         organization: true,
         team: true,
       },
+    })
+
+    if (!data) throw new AppError("NOT_FOUND")
+
+    // @ts-expect-error - Type assertion for PDF props
+    const stream = await renderToStream(PackingSlip({ data }))
+
+    // @ts-expect-error - Type assertion for Response body
+    return c.body(stream, 200, {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": `inline; filename="order-${id}.pdf"`,
     })
   })
   .get("/:id/estimate", async (c) => {
@@ -150,14 +160,17 @@ export const orders = app
         team: true,
       },
     })
-    if (!order)
-      throw new HTTPException(404, {
-        message: "Order not found",
-      })
 
-    const stream = ""
-    return c.body(stream as ReadableStream, 400, {
+    if (!data) throw new AppError("NOT_FOUND")
+
+    // @ts-expect-error - Type assertion for PDF props
+    const stream = await renderToStream(OrderInvoice({ data }))
+
+    // @ts-expect-error - Type assertion for Response body
+    return c.body(stream, 200, {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="order-${id}.pdf"`,
     })
   })
+
+export const orders: Hono<OrgAppContext> = orderApp

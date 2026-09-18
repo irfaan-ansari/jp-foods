@@ -1,9 +1,9 @@
-import "./styles.css"
+import "@jp/ui/globals.css"
 
 import { type Metadata } from "next"
 import { cn } from "@jp/ui/lib/utils"
 
-import { Manrope, Plus_Jakarta_Sans } from "next/font/google"
+import { Plus_Jakarta_Sans } from "next/font/google"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Provider } from "@/components/provider"
 
@@ -14,6 +14,7 @@ const loraHeading = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-heading",
 })
+
 const manrope = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",
@@ -55,7 +56,7 @@ export default async function RootLayout({
               } as React.CSSProperties
             }
           >
-            <AppSidebar session={{ ...session }} />
+            <AppSidebar session={{ ...session! }} />
             <SidebarInset className="@container/page-content no-scrollbar md:h-[calc(100svh-16px)] md:overflow-auto">
               {/* render status */}
               {/* <NetworkStatus /> */}

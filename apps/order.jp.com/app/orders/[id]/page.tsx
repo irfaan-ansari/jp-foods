@@ -11,7 +11,6 @@ import { OrderDetail } from "@/features/order/components/order-detail"
 
 const OrderPage = () => {
   const { id } = useParams<{ id: string }>()
-
   const { getQueryString } = useRouterStuff()
   const queryString = getQueryString()
 

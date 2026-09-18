@@ -72,7 +72,9 @@ export function LoginForm({
     >
       <FieldGroup>
         <div className="space-y-2">
-          <h2 className="text-xl font-bold">Sign in with password</h2>
+          <h2 className="font-heading text-xl font-bold">
+            Sign in with password
+          </h2>
           <p className="text-sm text-muted-foreground">
             Use your email address or phone number to access your account.
           </p>
@@ -170,8 +172,8 @@ export function LoginForm({
           <Button
             type="button"
             size="xl"
-            variant="secondary"
-            className="bg-primary/20 hover:bg-primary/30"
+            variant="outline"
+            className="border-primary/30 text-primary"
             asChild
           >
             <Link href="/auth/signin">Sign in with OTP</Link>

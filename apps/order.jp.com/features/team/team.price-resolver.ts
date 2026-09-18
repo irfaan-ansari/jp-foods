@@ -1,104 +1,37 @@
 import { db } from "@jp/db"
-
-import { PriceLevelItem, PriceResolverProduct } from "./team.type"
-
-type ResolvedProduct<T extends PriceResolverProduct> = Omit<T, "basePrice"> & {
-  price: number
-}
-
-const toNumber = (value: unknown) => Number(value)
-
-const applyAdjustment = (basePrice: number, type: string, value: number) => {
-  const delta = type === "fixed" ? value : (basePrice * value) / 100
-
-  return Math.max(0, Math.round((basePrice + delta) * 100) / 100)
-}
-
-const getPriceLevelConfig = async (teamId: string) => {
-  const team = await db.query.team.findFirst({
-    where: (t, { eq }) => eq(t.id, teamId),
-    with: {
-      priceLevel: {
-        with: {
-          priceLevelItem: true,
-        },
-      },
-    },
-  })
-
-  return team?.priceLevel
-}
+import { createProductPriceResolver, getSellingUnits } from "@jp/utils"
+import type { Product } from "../product/product.type"
 
 export const getTeamPriceResolver = async (teamId: string) => {
-  const config = await getPriceLevelConfig(teamId)
-
-  if (!config) {
-    return <T extends PriceResolverProduct>(
-      product: T
-    ): ResolvedProduct<T> => ({
-      ...product,
-      price: toNumber(product.basePrice),
-    })
-  }
-
-  const itemsByProductId =
-    config.appliesTo === "selected"
-      ? new Map<number, PriceLevelItem>(
-          config.priceLevelItem.map((item) => [item.productId, item])
-        )
-      : undefined
-
-  return <T extends PriceResolverProduct>(product: T): ResolvedProduct<T> => {
-    const { basePrice, ...rest } = product
-    const base = toNumber(product.basePrice)
-
-    let price = base
-
-    if (config.appliesTo === "all") {
-      price = applyAdjustment(
-        base,
-        config.adjustmentType,
-        toNumber(config.adjustmentValue)
-      )
-    } else {
-      const item = itemsByProductId?.get(product.id)
-
-      if (item) {
-        price = applyAdjustment(
-          base,
-          config.adjustmentType,
-          toNumber(item.price)
-        )
-      }
-    }
-
-    return {
-      ...rest,
-      price,
-    }
-  }
+  const team = await db.query.team.findFirst({
+    where: (team, { eq }) => eq(team.id, teamId),
+    with: { priceLevel: { with: { priceLevelItem: true } } },
+  })
+  return createProductPriceResolver(team?.priceLevel)
 }
 
-export const resolveTeamPrices = async <T extends PriceResolverProduct>({
+export const resolveTeamPrices = async <T extends Product>({
   products,
   teamId,
 }: {
   products: T[]
   teamId: string
 }) => {
-  const resolvePrice = await getTeamPriceResolver(teamId)
-
-  return products.map(resolvePrice)
+  const resolve = await getTeamPriceResolver(teamId)
+  return products.map(resolve)
 }
 
 export const resolveTeamPrice = async ({
   product,
+  unitName,
   teamId,
 }: {
-  product: PriceResolverProduct
+  product: Product
+  unitName: string
   teamId: string
 }) => {
-  const resolvePrice = await getTeamPriceResolver(teamId)
-
-  return resolvePrice(product).price
+  const resolve = await getTeamPriceResolver(teamId)
+  return getSellingUnits(resolve(product)).find(
+    (unit) => unit.name === unitName
+  )?.price
 }

@@ -26,7 +26,9 @@ export const priceLevelRoutes = app
     const [response, total] = await Promise.all([
       db.query.priceLevel.findMany({
         where: filters,
-        with: { priceLevelItem: { with: { product: true } } },
+        with: {
+          priceLevelItem: { with: { product: true } },
+        },
         limit: Number(limit),
         offset,
         orderBy: (order, { desc }) => [desc(order.createdAt)],
@@ -52,25 +54,22 @@ export const priceLevelRoutes = app
 
     const transformed = response.map((item) => {
       const { priceLevelItem, ...rest } = item
-      const uniqueProductCount = new Set(
-        priceLevelItem.map((item) => item.productId)
-      ).size
+
+      const products = priceLevelItem.map(({ product, price }) => ({
+        id: product.id,
+        title: product.title,
+        itemCode: product.itemCode,
+        image: product.image,
+        unit: product.unit,
+        basePrice: product.price,
+        price,
+      }))
 
       return {
         ...rest,
-        productCount: uniqueProductCount,
+        productCount: products.length,
         customerCount: counts.get(item.id) ?? 0,
-        products: priceLevelItem.map((priceItem) => {
-          const { id, title, itemCode, image } = priceItem.product
-          return {
-            id,
-            sellUnitId: priceItem.sellUnitId,
-            title,
-            itemCode,
-            image,
-            price: priceItem.price,
-          }
-        }),
+        products,
       }
     })
 

@@ -1,7 +1,7 @@
 import { create } from "zustand"
+import { calculateOrder } from "./order-form.calculate"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { OrderForm, OrderItem, OrderItemInput } from "./order-form.type"
-import { calculateOrder } from "./order-form.calculate"
 
 const CART_KEY = "CART"
 
@@ -29,9 +29,9 @@ interface OrderStore {
 
   addItem: (item: OrderItemInput & { quantity: number }) => void
   updateItem: (item: OrderItemInput & { quantity: number }) => void
-  removeItem: (id: number) => void
+  removeItem: (id: number, unitName: string) => void
 
-  getItem: (id: number) => OrderItem | undefined
+  getItem: (id: number, unitName: string) => OrderItem | undefined
 
   clear: () => void
 }
@@ -40,7 +40,20 @@ interface OrderStore {
 // plain input, so calculateOrder always recomputes from source data rather
 // than compounding stale derived values.
 function stripDerived(items: OrderItem[]): OrderItemInput[] {
-  return items.map(({ subtotal, taxAmount, total, ...item }) => item)
+  return items.map((item) => ({
+    id: item.id,
+    itemCode: item.itemCode,
+    title: item.title,
+    price: item.price,
+    unit: item.unit,
+    inventoryPerUnit: item.inventoryPerUnit,
+    minQuantity: item.minQuantity,
+    orderIncrement: item.orderIncrement,
+    isTaxable: item.isTaxable,
+    image: item.image,
+    categories: item.categories,
+    quantity: item.quantity,
+  }))
 }
 
 // Single place where items are recalculated — used by add/update/remove so
@@ -75,12 +88,24 @@ export const useOrderFormStore = create<OrderStore>()(
       addItem: (product) =>
         set((state) => {
           const items = stripDerived(state.order.items)
-          const index = items.findIndex((item) => item.id === product.id)
+          const index = items.findIndex(
+            (item) => item.id === product.id && item.unit === product.unit
+          )
 
           if (index === -1) {
             items.push(product)
           } else {
-            items[index] = { ...items[index]!, quantity: product.quantity }
+            const minimum = product.minQuantity > 0 ? product.minQuantity : 1
+            const increment =
+              product.orderIncrement > 0 ? product.orderIncrement : 1
+            const requested = items[index]!.quantity + product.quantity
+            items[index] = {
+              ...product,
+              quantity:
+                minimum +
+                Math.ceil(Math.max(0, requested - minimum) / increment) *
+                  increment,
+            }
           }
 
           return { order: recalculate(state.order, items) }
@@ -90,7 +115,10 @@ export const useOrderFormStore = create<OrderStore>()(
         set((state) => {
           const { quantity: newQuantity, ...productInput } = product
           const items = stripDerived(state.order.items)
-          const index = items.findIndex((item) => item.id === productInput.id)
+          const index = items.findIndex(
+            (item) =>
+              item.id === productInput.id && item.unit === productInput.unit
+          )
 
           if (newQuantity <= 0) {
             if (index !== -1) {
@@ -99,25 +127,60 @@ export const useOrderFormStore = create<OrderStore>()(
           } else if (index === -1) {
             items.push({ ...productInput, quantity: newQuantity })
           } else {
-            items[index] = { ...items[index]!, quantity: newQuantity }
+            items[index] = { ...productInput, quantity: newQuantity }
           }
 
           return { order: recalculate(state.order, items) }
         }),
 
-      removeItem: (id) =>
+      removeItem: (id, unitName) =>
         set((state) => {
           const items = stripDerived(state.order.items).filter(
-            (item) => item.id !== id
+            (item) => item.id !== id || item.unit !== unitName
           )
           return { order: recalculate(state.order, items) }
         }),
 
-      getItem: (id) => get().order.items.find((item) => item.id === id),
+      getItem: (id, unitName) =>
+        get().order.items.find(
+          (item) => item.id === id && item.unit === unitName
+        ),
       clear: () => set({ order: initialState }),
     }),
     {
       name: CART_KEY,
+      version: 3,
+      migrate: (persisted) => {
+        const previous = persisted as { order?: Partial<OrderForm> }
+        const previousItems = previous.order?.items ?? []
+        const items = previousItems.filter(
+          (item) =>
+            typeof item.unit === "string" &&
+            item.unit.length > 0 &&
+            Number.isFinite(item.inventoryPerUnit) &&
+            item.inventoryPerUnit > 0 &&
+            Number.isFinite(item.price) &&
+            item.price >= 0 &&
+            Number.isFinite(item.quantity) &&
+            item.quantity > 0
+        )
+        return {
+          order: recalculate(
+            {
+              ...initialState,
+              taxRule: previous.order?.taxRule ?? initialState.taxRule,
+              charges: previous.order?.charges ?? initialState.charges,
+              po: previous.order?.po ?? "",
+              deliveryDate:
+                previous.order?.deliveryDate ?? initialState.deliveryDate,
+              deliveryWindow:
+                previous.order?.deliveryWindow ?? initialState.deliveryWindow,
+              deliveryInstruction: previous.order?.deliveryInstruction ?? "",
+            },
+            stripDerived(items)
+          ),
+        }
+      },
       storage: createJSONStorage(() => localStorage),
     }
   )

@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="relative">
+    <div className="site relative">
       <Header />
       <main>{children}</main>
       <Footer />

@@ -1,4 +1,6 @@
 import { toast } from "sonner"
+import { useEffect, useRef } from "react"
+import { formatUSD } from "@jp/utils"
 import {
   Card,
   CardContent,
@@ -14,22 +16,36 @@ import { FieldLabel, FieldLegend } from "@jp/ui/components/field"
 import { ProductPrice } from "../components/product-price"
 import { ProductBadge } from "../components/product-card"
 import { Badge } from "@jp/ui/components/badge"
+import { getUnit } from "../product.utils"
+import { Skeleton } from "@jp/ui/components/skeleton"
 
 export const ProductPreview = withForm({
   defaultValues: {} as ProductFormSchema,
   props: {} as {
     setFile: (file: File | null) => void
   },
-  render: function ({ form, setFile }) {
+  render: function Render({ form, setFile }) {
+    const previewUrl = useRef<string | null>(null)
+    useEffect(
+      () => () => {
+        if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
+      },
+      []
+    )
+
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
-      if (!file) {
+      if (!file) return
+      if (!file.type.startsWith("image/")) {
         toast.error("Upload a valid image.")
         return
       }
       setFile(file)
+      if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
       const url = URL.createObjectURL(file)
+      previewUrl.current = url
       form.setFieldValue("image", url)
+      e.target.value = ""
     }
 
     return (
@@ -38,9 +54,10 @@ export const ProductPreview = withForm({
         children={({
           title,
           image,
+          price,
+          unit,
           categories,
           sellUnits,
-          stock,
           status,
           isTaxable,
         }) => (
@@ -109,10 +126,56 @@ export const ProductPreview = withForm({
               )}
 
               <div className="mt-4">
-                <ProductPrice sellUnits={sellUnits} stock={stock} />
+                {price.trim() !== "" &&
+                Number.isFinite(Number(price)) &&
+                Number(price) >= 0 ? (
+                  <ProductPrice price={price} unit={unit} />
+                ) : (
+                  <Skeleton className="h-5 w-20" />
+                )}
               </div>
-              <div className="mt-4 flex gap-3 border-t border-dashed pt-4">
-                <span className="h-8 flex-1 rounded-lg bg-secondary" />
+              <div className="mt-4 space-y-3 border-t border-dashed pt-4">
+                <p className="text-xs font-medium text-muted-foreground">
+                  Selling options
+                </p>
+                {sellUnits.length === 0 && (
+                  <p className="text-sm text-muted-foreground">
+                    Add a selling option to preview it.
+                  </p>
+                )}
+                {sellUnits.map((sellUnit, index) => {
+                  const amount = Number(price) * Number(sellUnit.unitConversion)
+                  const validPrice =
+                    price.trim() !== "" &&
+                    Number(price) >= 0 &&
+                    Number(sellUnit.unitConversion) > 0 &&
+                    Number.isFinite(amount)
+
+                  return (
+                    <div
+                      key={index}
+                      className="space-y-1 rounded-xl border p-3"
+                    >
+                      <div className="flex items-start justify-between gap-2 text-sm font-medium">
+                        <span>
+                          {getUnit(sellUnit.name)?.label ??
+                            (sellUnit.name || "Selling unit")}
+                        </span>
+                        <span className="text-primary">
+                          {validPrice ? formatUSD(amount) : "—"}
+                        </span>
+                      </div>
+                      <p className="text-xs text-muted-foreground">
+                        {sellUnit.unitConversion || "—"} {unit} per{" "}
+                        {sellUnit.name || "unit"}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Minimum: {sellUnit.minQuantity || "—"} · Increment:{" "}
+                        {sellUnit.orderIncreament || "—"}
+                      </p>
+                    </div>
+                  )
+                })}
               </div>
             </CardContent>
           </Card>

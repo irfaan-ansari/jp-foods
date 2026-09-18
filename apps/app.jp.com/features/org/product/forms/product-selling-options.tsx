@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { pluralize } from "@jp/utils"
+import { formatUSD } from "@jp/utils"
 
 import { Plus, Anchor } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
@@ -15,25 +15,14 @@ import {
 } from "@jp/ui/components/card"
 
 import { Button } from "@jp/ui/components/button"
-import { FieldGroup } from "@jp/ui/components/field"
+import { FieldError, FieldGroup } from "@jp/ui/components/field"
 
 import { ProductFormSchema } from "../product.schema"
-import { getAvailableUnits, getBaseUnit, getUnit } from "../product.utils"
+import { getAvailableUnits, getUnit } from "../product.utils"
 
 export const ProductSellingOptions = withForm({
   defaultValues: {} as ProductFormSchema,
   render: function Render({ form }) {
-    // handle make submit
-    const handleMakeBaseUnit = (index: number) => {
-      const sellUnits = form.getFieldValue("sellUnits")
-
-      sellUnits.forEach((_, i) => {
-        form.setFieldValue(`sellUnits[${i}].isBaseUnit`, i === index)
-      })
-
-      form.setFieldValue(`sellUnits[${index}].inventoryPerUnit`, "1")
-    }
-
     // handle add option
     const handleAddOption = () => {
       const sellUnits = form.getFieldValue("sellUnits")
@@ -42,14 +31,14 @@ export const ProductSellingOptions = withForm({
         sellUnits.map((item) => item.name),
         sellUnits.length
       )
-      const hasBaseUnit = sellUnits.some((i) => i.isBaseUnit)
+
+      if (!units.length) return
+
       form.pushFieldValue("sellUnits", {
         name: units?.[0]?.value ?? "",
-        orderIncreament: "",
-        minQuantity: "",
-        inventoryPerUnit: "",
-        price: "",
-        isBaseUnit: !hasBaseUnit,
+        unitConversion: "",
+        orderIncreament: "1",
+        minQuantity: "1",
       })
     }
 
@@ -61,12 +50,11 @@ export const ProductSellingOptions = withForm({
         <CardContent>
           <form.Subscribe
             selector={(state) => ({
+              unit: state.values.unit,
+              price: state.values.price,
               sellUnits: state.values.sellUnits,
-              trackInventory: state.values.trackInventory,
             })}
-            children={({ sellUnits, trackInventory }) => {
-              const baseUnit = getBaseUnit(sellUnits)
-
+            children={({ unit, sellUnits, price }) => {
               return (
                 <form.Field
                   name="sellUnits"
@@ -74,53 +62,46 @@ export const ProductSellingOptions = withForm({
                   children={(field) => (
                     <div className="space-y-6">
                       {sellUnits.map((subField, i) => {
-                        // get current unit and check if base unit
                         const currentUnit = getUnit(subField.name)
-                        const isBaseUnit = subField.name && subField.isBaseUnit
 
                         return (
                           <div key={i} className="relative">
-                            <div
-                              className={`grid gap-4 rounded-2xl border p-4 shadow-xs ${isBaseUnit ? "border-primary" : ""}`}
-                            >
-                              <div className="flex justify-start gap-3">
+                            <div className="grid gap-4 rounded-2xl border p-4 shadow-xs">
+                              <div className="flex flex-wrap justify-start gap-3">
                                 <div className="flex flex-1 items-center gap-2 font-medium">
                                   <Box className="size-4" />
                                   {currentUnit?.label}
                                 </div>
+                                <div className="flex h-7 items-center gap-2 rounded-xl bg-primary/20 px-3 text-xs">
+                                  <Anchor className="size-3" />
+                                  <span>
+                                    {subField.unitConversion || "—"} {unit} /{" "}
+                                    {subField.name}
+                                  </span>
+                                  •
+                                  <span>
+                                    {price.trim() !== "" &&
+                                    Number(price) >= 0 &&
+                                    Number(subField.unitConversion) > 0 &&
+                                    Number.isFinite(
+                                      Number(price) *
+                                        Number(subField.unitConversion)
+                                    )
+                                      ? formatUSD(
+                                          Number(price) *
+                                            Number(subField.unitConversion)
+                                        )
+                                      : "—"}
+                                  </span>
+                                </div>
 
-                                {isBaseUnit ? (
-                                  <div className="flex h-7 items-center gap-2 rounded-xl bg-primary/20 px-3 text-xs">
-                                    <Anchor className="size-3" />
-                                    <span>Base unit</span>
-                                    {trackInventory && (
-                                      <span>
-                                        • Inventory is tracked in{" "}
-                                        {pluralize(
-                                          2,
-                                          currentUnit?.label ?? "",
-                                          {
-                                            case: "lowercase",
-                                          }
-                                        )}
-                                      </span>
-                                    )}
-                                  </div>
-                                ) : (
-                                  <Button
-                                    size="sm"
-                                    variant="outline"
-                                    className="h-7 text-xs"
-                                    onClick={() => handleMakeBaseUnit(i)}
-                                  >
-                                    Make base unit
-                                  </Button>
-                                )}
                                 <Button
                                   type="button"
                                   size="icon-sm"
                                   variant="destructive"
                                   className="size-7 shrink-0"
+                                  aria-label={`Remove ${currentUnit?.label ?? "selling unit"}`}
+                                  disabled={sellUnits.length === 1}
                                   onClick={() => field.removeValue(i)}
                                 >
                                   <TrashBinMinimalistic />
@@ -134,7 +115,6 @@ export const ProductSellingOptions = withForm({
                                     <unitField.SelectField
                                       label="Sell As"
                                       placeholder="Select unit..."
-                                      className="lg:col-span-2"
                                       options={getAvailableUnits(
                                         sellUnits.map((item) => item.name),
                                         i
@@ -144,33 +124,13 @@ export const ProductSellingOptions = withForm({
                                 />
 
                                 <form.AppField
-                                  name={`sellUnits[${i}].price`}
+                                  name={`sellUnits[${i}].unitConversion`}
                                   children={(field) => (
                                     <field.TextField
-                                      label="Selling Price"
-                                      placeholder="Enter selling price"
-                                      className={
-                                        isBaseUnit ? "lg:col-span-2" : ""
-                                      }
-                                      prefix="$"
-                                      inputMode="decimal"
-                                      suffix={`/${getUnit(subField.name)?.value}`}
-                                    />
-                                  )}
-                                />
-                                <form.AppField
-                                  name={`sellUnits[${i}].inventoryPerUnit`}
-                                  children={(field) => (
-                                    <field.TextField
-                                      className={
-                                        isBaseUnit
-                                          ? "hidden"
-                                          : "**:data-[slot=field-label]:capitalize"
-                                      }
-                                      label={`${baseUnit?.label} per ${currentUnit?.label}`}
-                                      placeholder={`Number of ${baseUnit?.value} in each ${currentUnit?.value}.`}
+                                      label="Unit Conversion"
+                                      placeholder="Enter unit conversion"
                                       inputMode="number"
-                                      suffix={`${baseUnit?.value} per ${currentUnit?.value}`}
+                                      suffix={getUnit(unit)?.value ?? ""}
                                     />
                                   )}
                                 />
@@ -209,9 +169,16 @@ export const ProductSellingOptions = withForm({
                         variant="outline"
                         className="w-full border-dashed"
                         onClick={handleAddOption}
+                        disabled={
+                          getAvailableUnits(
+                            sellUnits.map((item) => item.name),
+                            sellUnits.length
+                          ).length === 0
+                        }
                       >
                         <Plus /> Add sell option
                       </Button>
+                      <FieldError errors={field.state.meta.errors} />
                     </div>
                   )}
                 />

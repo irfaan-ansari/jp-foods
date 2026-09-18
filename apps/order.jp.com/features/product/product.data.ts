@@ -1,8 +1,8 @@
 import { AppError } from "@jp/utils"
+import { apiClient } from "@/lib/api-client"
 import { Category, Product } from "./product.type"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 import { ApiResponse, PaginatedResponse } from "../shared/shared.type"
-import { apiClient } from "@/lib/api-client"
 
 export const useInfiniteProducts = (kv?: Record<string, any>) => {
   return useInfiniteQuery({

@@ -1,16 +1,10 @@
 import z from "zod"
 
-const sellUnitSchema = z.object({
-  id: z.number(),
-  unit: z.string(),
-  price: z.string(),
-})
 const privateItemSchema = z.object({
   id: z.number(),
   title: z.string(),
   itemCode: z.string(),
   image: z.string(),
-  sellUnits: z.array(sellUnitSchema),
 })
 
 const userSchema = z.object({
@@ -93,4 +87,14 @@ export const teamCreateSchema = z.object({
 export const teamUpdateSchema = z.object({
   id: z.string(),
   data: teamDataSchema,
+})
+
+export const addTeamMemberSchema = z.object({
+  userId: z.string(),
+  teamId: z.string(),
+})
+
+export const addTeamPrivateItemSchem = z.object({
+  teamId: z.string(),
+  productId: z.number(),
 })

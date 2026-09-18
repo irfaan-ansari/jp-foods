@@ -21,7 +21,7 @@ export function PageHeader({
   title,
   description,
   backUrl,
-  backLabel = "Back",
+  backLabel,
   className,
   loading = false,
   children,
@@ -38,8 +38,7 @@ export function PageHeader({
       ) : (
         <div className="flex min-h-16 items-center justify-between gap-4 py-3">
           <div className="flex min-w-0 flex-1 items-center gap-3">
-            <SidebarTrigger />
-            {backUrl && (
+            {backUrl ? (
               <Link
                 href={backUrl}
                 className="group/link inline-flex items-center gap-2.5 text-sm font-semibold"
@@ -49,10 +48,12 @@ export function PageHeader({
                 </span>
                 {backLabel}
               </Link>
+            ) : (
+              <SidebarTrigger />
             )}
 
-            <div>
-              <h1 className="truncate text-lg font-bold">{title}</h1>
+            <div className="truncate">
+              <h1 className="truncate text-base font-bold">{title}</h1>
               {description && (
                 <p className="mt-1 text-sm text-muted-foreground">
                   {description}

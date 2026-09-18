@@ -1,11 +1,10 @@
-import { OrderGuideSelectType, ProductSelectType, TeamSelectType } from "@jp/db"
+import { OrderGuideSelectType, TeamSelectType } from "@jp/db"
+import { Product } from "../product/product.type"
 
-type Product = Pick<
-  ProductSelectType,
-  "id" | "title" | "basePrice" | "itemCode" | "image"
->
-
-type OrderGuideProduct = Product & {
+type OrderGuideProduct = Pick<
+  Product,
+  "id" | "title" | "itemCode" | "image" | "price" | "unit"
+> & {
   position: number
 }
 

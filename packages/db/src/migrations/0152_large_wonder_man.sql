@@ -1,0 +1,1 @@
+ALTER TABLE "organization" RENAME COLUMN "price_list_url" TO "price_list";

@@ -30,14 +30,10 @@ export const OrganizationForm = ({
   defaultValues,
   organizationId,
   onSuccess,
-  onError,
-  onCancel,
 }: {
   defaultValues?: OrganizationFormSchema
   organizationId?: string
   onSuccess?: () => void
-  onError?: () => void
-  onCancel?: () => void
 }) => {
   const [file, setFile] = useState<null | File>(null)
 
@@ -69,7 +65,7 @@ export const OrganizationForm = ({
         toast.loading("Uploading logo...", { id: toastId })
         const blob = await upload(`organization/${file.name}`, file, {
           access: "public",
-          handleUploadUrl: "/api/upload",
+          handleUploadUrl: "/api/v1/upload",
         })
 
         if (blob.url) value.logo = blob.url

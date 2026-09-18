@@ -6,7 +6,7 @@ import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { Field, FieldGroup } from "@jp/ui/components/field"
 import { useQueryClient } from "@tanstack/react-query"
-import { updateCandidateApplicationStatus } from "../candidate.action"
+import { updateCandidateApplication } from "../candidate.action"
 import { APPLICATION_REJECTION_REASONS } from "../candidate.const"
 import {
   AppDialog,
@@ -14,54 +14,67 @@ import {
   AppDialogHeader,
   AppDialogTitle,
 } from "@jp/ui/components/jp/app-dialog"
+import { CandidateApplication } from "../candidate.type"
+import { candidateApplicationSchema } from "../candidate.schema"
 
 export function CandidateApplicationStatusDialog({
   id,
-  action,
+  data,
   open,
   onOpenChange,
 }: {
   id: number
-  action: string
+  data: CandidateApplication
   open: boolean
   onOpenChange: (open: boolean) => void
 }) {
   const queryClient = useQueryClient()
   const form = useAppForm({
+    validators: {
+      onBlur: candidateApplicationSchema,
+    },
     defaultValues: {
-      status: action,
+      status: data.status,
       statusReason: "",
       statusDetails: "",
+      internalNotes: data?.internalNotes ?? "",
     },
     onSubmit: async ({ value }) => {
-      const { serverError } = await updateCandidateApplicationStatus({
-        id: 1,
+      const { serverError } = await updateCandidateApplication({
+        id,
         data: value,
       })
+
       if (serverError) {
         toast.error(serverError.message)
       } else {
-        onOpenChange(false)
         queryClient.invalidateQueries({
           queryKey: ["candidate-application"],
         })
         queryClient.invalidateQueries({
           queryKey: ["/crm/candidates/count"],
         })
+        onOpenChange(false)
+        form.reset()
       }
     },
   })
-  const title = action === "reject" ? "Reject Application" : "Hold Application"
 
   return (
     <AppDialog open={open} onOpenChange={onOpenChange}>
       <AppDialogContent className="sm:max-w-xl">
         <AppDialogHeader>
           <AppDialogTitle className="text-base font-bold">
-            {title}
+            Reject Application
           </AppDialogTitle>
         </AppDialogHeader>
-        <form className="space-y-6">
+        <form
+          className="space-y-6"
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
           <FieldGroup>
             <form.AppField
               name="statusReason"

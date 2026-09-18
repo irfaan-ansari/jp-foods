@@ -2,22 +2,21 @@ import React from "react"
 import { Order } from "../order.type"
 import { Button } from "@jp/ui/components/button"
 import { formatUSD } from "@jp/utils"
-import { CheckCircle, Download, QuestionCircle } from "@solar-icons/react"
+import { QuestionCircle } from "@solar-icons/react"
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@jp/ui/components/card"
-import { Badge } from "@jp/ui/components/badge"
-import { ImageOff, Loader2, Truck } from "lucide-react"
-import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import { Download, ImageOff } from "lucide-react"
 import { OrderTimeline } from "./order-timeline"
+import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 export const OrderDetail = ({ data }: { data: Order }) => {
   return (
-    <div className="grid grid-cols-3 gap-6">
-      <div className="col-span-2 min-w-0 space-y-6 break-all">
+    <div className="grid gap-6 @5xl/page-content:grid-cols-3">
+      <div className="min-w-0 space-y-6 break-all @5xl/page-content:col-span-2">
         {/* stats */}
         <Card className="shadow-none">
           <CardContent className="">
@@ -34,40 +33,18 @@ export const OrderDetail = ({ data }: { data: Order }) => {
             />
           </CardContent>
         </Card>
-        <Card className="gap-4 overflow-visible p-4 shadow-xs">
-          <Badge
-            className="ring-offset-backgrround size-9 ring-1 ring-border ring-offset-2"
-            variant="secondary"
-          >
-            <Truck className="size-5 text-amber-500" />
-          </Badge>
-          <div className="min-w-0 flex-1">
-            <CardTitle className="mb-2 text-xs font-semibold text-muted-foreground uppercase">
-              Delivery
-            </CardTitle>
-            <div className="text-sm font-medium text-muted-foreground">
-              {data.deliveryDate + " " + data.deliveryWindow}
-            </div>
-            <div className="text-sm font-medium text-muted-foreground">
-              {data.deliveryInstruction}
-            </div>
-          </div>
-        </Card>
 
         <Card className="shadow-xs" size="sm">
           <CardHeader>
             <CardTitle className="text-lg font-bold">Order Items</CardTitle>
           </CardHeader>
           <CardContent className="divide-y divide-dashed">
-            {data.lineItems.map((item, i) => (
+            {data.lineItems.map((item) => (
               <div
                 className="flex gap-3 not-first:pt-2 not-last:pb-2"
                 key={item.id}
               >
-                <Avatar
-                  className="rounded-lg *:rounded-lg! data-[size=lg]:size-12"
-                  size="lg"
-                >
+                <Avatar size="lg">
                   <AvatarImage src={item.image!} />
                   <AvatarFallback>
                     <ImageOff className="size-4" />
@@ -77,8 +54,8 @@ export const OrderDetail = ({ data }: { data: Order }) => {
                   <p className="truncate text-sm font-semibold">{item.title}</p>
                   <div className="flex items-center gap-4 text-muted-foreground">
                     <p className="truncate font-medium">
-                      {formatUSD(item.price!)} x {item.quantity}
-                      {item.unit && "/" + item.unit}
+                      {item.quantity} {item.unitName ?? "unit"} ×{" "}
+                      {formatUSD(item.price!)} / {item.unitName ?? "unit"}
                     </p>
                     |
                     <p className="font-medium">
@@ -105,9 +82,6 @@ export const OrderDetail = ({ data }: { data: Order }) => {
             <div className="space-y-2 px-6">
               <div className="flex items-center justify-between text-muted-foreground">
                 <span>Line Items</span> <span>{data.lineItemCount}</span>
-              </div>
-              <div className="flex items-center justify-between text-muted-foreground">
-                <span>Quantity</span> <span>{data.lineItemQuantity}</span>
               </div>
             </div>
             <div className="border-t-2" />
@@ -144,8 +118,14 @@ export const OrderDetail = ({ data }: { data: Order }) => {
               <span className="text-primary">{formatUSD(data.total)}</span>
             </div>
 
-            <div className="grid gap-3 px-6">
-              <Button className="w-full">
+            <div className="grid gap-2 px-6">
+              <Button className="w-full" asChild>
+                <a href={data.estimateUrl} target="_blank">
+                  <Download /> Download Estimate
+                </a>
+              </Button>
+
+              <Button className="w-full" variant="outline">
                 <QuestionCircle />
                 Need Help
               </Button>

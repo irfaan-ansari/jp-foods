@@ -1,8 +1,6 @@
 "use client"
-import React from "react"
-import { withForm } from "@/hooks/use-app-form"
-import { ProductFormSchema } from "../product.schema"
 
+import React from "react"
 import {
   Field,
   FieldContent,
@@ -12,9 +10,11 @@ import {
   FieldLabel,
   FieldTitle,
 } from "@jp/ui/components/field"
-import { Switch } from "@jp/ui/components/switch"
-import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
 import { getUnit } from "../product.utils"
+import { withForm } from "@/hooks/use-app-form"
+import { Switch } from "@jp/ui/components/switch"
+import { ProductFormSchema } from "../product.schema"
+import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
 
 export const ProductInventory = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -63,11 +63,9 @@ export const ProductInventory = withForm({
         <form.Subscribe
           selector={(state) => ({
             trackInventory: state.values.trackInventory,
-            inventoryUnit: state.values.sellUnits.filter(
-              (unit) => unit.isBaseUnit
-            )?.[0]?.unit,
+            unit: state.values.unit,
           })}
-          children={({ trackInventory, inventoryUnit }) => {
+          children={({ trackInventory, unit }) => {
             return (
               <CardContent>
                 <FieldGroup
@@ -79,8 +77,7 @@ export const ProductInventory = withForm({
                       <field.TextField
                         label="Current Stock"
                         inputMode="number"
-                        placeholder={`Available stock in ${getUnit(inventoryUnit)?.label}`}
-                        suffix={getUnit(inventoryUnit)?.label}
+                        suffix={getUnit(unit)?.value}
                       />
                     )}
                   />
@@ -122,12 +119,9 @@ export const ProductInventory = withForm({
                 </FieldGroup>
                 <FieldGroup>
                   <form.AppField
-                    name="allowBackorder"
+                    name="location"
                     children={(field) => (
-                      <field.TextField
-                        label="Inventory Location"
-                        placeholder="6D"
-                      />
+                      <field.TextField label="Location" placeholder="6D" />
                     )}
                   />
                 </FieldGroup>

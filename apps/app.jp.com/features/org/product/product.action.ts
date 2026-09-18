@@ -1,7 +1,7 @@
 "use server"
 
-import { and, eq, inArray } from "drizzle-orm"
-import { db, product, productSellUnit } from "@jp/db"
+import { eq } from "drizzle-orm"
+import { db, product } from "@jp/db"
 import { AppError } from "@jp/utils"
 
 import { orgActionClient } from "@/lib/safe-action"
@@ -42,13 +42,6 @@ export const createProduct = orgActionClient({ product: ["create"] })
 
     if (!createdProduct) throw new AppError("INVALID_REQUEST")
 
-    const sellUnits = data.sellUnits.map((unit) => {
-      const { id, ...rest } = unit
-      return { ...rest, productId: createdProduct.id }
-    })
-
-    await db.insert(productSellUnit).values(sellUnits)
-
     return createdProduct
   })
 
@@ -60,15 +53,10 @@ export const updateProduct = orgActionClient({ product: ["update"] })
   .action(async ({ clientInput, ctx }) => {
     const { id, data } = clientInput
 
-    const [exist, existingSellUnits] = await Promise.all([
-      db.query.product.findFirst({
-        where: (p, { and, eq }) =>
-          and(eq(p.organizationId, ctx.organizationId), eq(p.id, id)),
-      }),
-      db.query.productSellUnit.findMany({
-        where: (unit, { eq }) => eq(unit.productId, id),
-      }),
-    ])
+    const exist = await db.query.product.findFirst({
+      where: (p, { and, eq }) =>
+        and(eq(p.organizationId, ctx.organizationId), eq(p.id, id)),
+    })
 
     if (!exist)
       throw new AppError("NOT_FOUND", {
@@ -76,58 +64,12 @@ export const updateProduct = orgActionClient({ product: ["update"] })
       })
 
     const searchText = Object.values(data).join(" ")
-    const promises = [
-      db
-        .update(product)
-        .set({ ...data, searchText })
-        .where(eq(product.id, id))
-        .returning({ id: product.id }),
-    ] as Promise<unknown>[]
 
-    // handle sell units
-    const existingIds = new Set(existingSellUnits.map((unit) => unit.id))
-
-    const incomingIds = new Set(
-      data.sellUnits.filter((unit) => unit.id).map((unit) => unit.id)
-    )
-
-    const deleteIds = existingSellUnits
-      .filter((unit) => !incomingIds.has(unit.id))
-      .map((unit) => unit.id)
-    if (deleteIds.length) {
-      promises.push(
-        db.delete(productSellUnit).where(inArray(productSellUnit.id, deleteIds))
-      )
-    }
-
-    const newSellUnits = data.sellUnits
-      .filter((unit) => !unit.id)
-      .map(({ id: _, ...unit }) => ({
-        ...unit,
-        productId: id,
-      }))
-    if (newSellUnits.length) {
-      promises.push(db.insert(productSellUnit).values(newSellUnits))
-    }
-
-    const updateSellUnits = data.sellUnits.filter(
-      (unit) => unit.id && existingIds.has(unit.id)
-    )
-
-    updateSellUnits.map(({ id: sellUnitId, ...unit }) => {
-      promises.push(
-        db
-          .update(productSellUnit)
-          .set(unit)
-          .where(
-            and(
-              eq(productSellUnit.id, Number(sellUnitId)),
-              eq(productSellUnit.productId, id)
-            )
-          )
-      )
-    })
-    await Promise.all(promises)
+    await db
+      .update(product)
+      .set({ ...data, searchText })
+      .where(eq(product.id, id))
+      .returning({ id: product.id })
 
     return { id }
   })

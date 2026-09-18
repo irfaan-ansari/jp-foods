@@ -13,23 +13,7 @@ export type CustomerApplicationFormSchema = z.infer<
 
 export const updateCustomerApplicationSchema = z.object({
   id: z.number(),
-  data: customerApplicationSchema.partial(),
-})
-
-export const processCustomerApplicationSchema = z.object({
-  id: z.number(),
-  data: z.object({
-    status: z.enum(["active", "under_review"]),
-  }),
-})
-
-export const updateCustomerApplicationStatusSchema = z.object({
-  id: z.number(),
-  data: z.object({
-    status: z.string(),
-    statusReason: customerApplicationSchema.shape.statusReason,
-    statusDetails: customerApplicationSchema.shape.statusDetails,
-  }),
+  data: customerApplicationSchema,
 })
 
 export const deleteCustomerApplicationSchema = z.object({

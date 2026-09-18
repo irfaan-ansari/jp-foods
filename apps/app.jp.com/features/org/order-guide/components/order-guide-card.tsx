@@ -50,7 +50,7 @@ export const OrderGuideCard = ({ data }: { data: OrderGuide }) => {
       <CardContent className="space-y-4">
         <div className="flex items-center gap-px">
           {visibleProducts.map((product, i) => (
-            <Tooltip content={product.title}>
+            <Tooltip content={product.title} key={product.id}>
               <Avatar key={i} className="overflow-hidden">
                 <AvatarImage asChild src={product.image as string}>
                   <Image

@@ -25,11 +25,11 @@ export const CategorySelector = ({
   const [open, setOpen] = React.useState(false)
   const [search, setSearch] = React.useState("")
   const { data, isPending } = useCategories()
-
+  console.log(selected)
   const categories = data?.data ?? []
+
   const multiple = Array.isArray(selected)
   const selectedValues = multiple ? selected : [selected].filter(Boolean)
-  const isSelected = (value: string) => selectedValues.includes(value)
 
   // filtered cat
   const filteredCategories = React.useMemo(() => {
@@ -55,7 +55,9 @@ export const CategorySelector = ({
   // handle create
   const handleSelect = (value: string) => {
     onSelect?.(value)
-    setOpen(false)
+    if (!multiple) {
+      setOpen(false)
+    }
   }
 
   // handle create
@@ -63,7 +65,6 @@ export const CategorySelector = ({
     const value = search.trim()
     onSelect?.(value)
     setOpen(false)
-
     setSearch("")
   }
 
@@ -85,17 +86,12 @@ export const CategorySelector = ({
               <Button
                 key={category}
                 size="sm"
-                variant="ghost"
+                variant={
+                  selectedValues.includes(category) ? "secondary" : "ghost"
+                }
                 onClick={() => handleSelect(category)}
               >
                 {category}
-
-                <Check
-                  className={cn(
-                    "ml-auto text-muted-foreground",
-                    isSelected(category) ? "opacity-100" : "opacity-0"
-                  )}
-                />
               </Button>
             ))
           ) : canCreateCategory ? (

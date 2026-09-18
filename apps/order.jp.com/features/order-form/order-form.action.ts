@@ -1,59 +1,146 @@
 "use server"
 
 import { db, lineItem, order } from "@jp/db"
-import { AppError } from "@jp/utils"
+import { AppError, getSellingUnits } from "@jp/utils"
+import { and, eq, inArray } from "drizzle-orm"
+import type { BatchItem } from "drizzle-orm/batch"
 
 import { orgActionClient } from "@/lib/safe-action"
-import { toOrderItemInput } from "./order-form.utils"
+import { getTeamPriceResolver } from "../team/team.price-resolver"
 import { calculateOrder } from "./order-form.calculate"
-import { resolveTeamPrices } from "../team/team.price-resolver"
-import { toInsertLineItems, toInsertOrder } from "./order-form.utils"
 import { createOrderSchema, updateOrderSchema } from "./order-form.schema"
-import { eq, inArray } from "drizzle-orm"
-import type { BatchItem } from "drizzle-orm/batch"
+import {
+  toInsertLineItems,
+  toInsertOrder,
+  toOrderItemInput,
+} from "./order-form.utils"
+
+type RequestedItem = { id: number; unit: string; quantity: number }
+
+const lineKey = (productId: number, unitName: string) =>
+  `${productId}:${unitName}`
+
+async function resolveOrderItems(
+  requestedItems: RequestedItem[],
+  organizationId: string,
+  teamId: string
+) {
+  const ids = [...new Set(requestedItems.map((item) => item.id))]
+  const [products, privateProducts] = await Promise.all([
+    db.query.product.findMany({
+      where: (product) =>
+        and(
+          eq(product.organizationId, organizationId),
+          inArray(product.id, ids)
+        ),
+    }),
+    db.query.teamProduct.findMany({
+      where: (teamProduct) => eq(teamProduct.teamId, teamId),
+      columns: { productId: true },
+    }),
+  ])
+  const privateIds = new Set(privateProducts.map((item) => item.productId))
+  const byId = new Map(products.map((product) => [product.id, product]))
+  const resolvePrice = await getTeamPriceResolver(teamId)
+  const seen = new Set<string>()
+  const inventoryByProduct = new Map<number, number>()
+
+  const items = requestedItems.map((request) => {
+    const key = lineKey(request.id, request.unit)
+    if (seen.has(key))
+      throw new AppError("INVALID_REQUEST", {
+        message: "The same product and sell unit was added twice.",
+      })
+    seen.add(key)
+
+    const product = byId.get(request.id)
+    if (
+      !product ||
+      product.status === "archived" ||
+      (product.status !== "active" && !privateIds.has(product.id))
+    )
+      throw new AppError("INVALID_REQUEST", {
+        message: "A selected product is no longer available to this team.",
+      })
+
+    const pricedProduct = resolvePrice(product)
+
+    const unit = getSellingUnits(pricedProduct).find(
+      (sellUnit) => sellUnit.name === request.unit
+    )
+    if (!unit)
+      throw new AppError("INVALID_REQUEST", {
+        message: "A selected sell unit is no longer available.",
+      })
+
+    const minimum = Number(unit.minQuantity)
+    const increment = Number(unit.orderIncreament)
+    const conversion = Number(unit.unitConversion)
+    const price = Number(unit.price)
+    if (
+      !Number.isFinite(minimum) ||
+      minimum <= 0 ||
+      !Number.isFinite(increment) ||
+      increment <= 0 ||
+      !Number.isFinite(conversion) ||
+      conversion <= 0 ||
+      !Number.isFinite(price) ||
+      price < 0 ||
+      request.quantity < minimum ||
+      Math.abs(
+        (request.quantity - minimum) / increment -
+          Math.round((request.quantity - minimum) / increment)
+      ) > 1e-8
+    )
+      throw new AppError("INVALID_REQUEST", {
+        message: `Quantity for ${product.title} must meet the ${unit.name} minimum and increment.`,
+      })
+
+    inventoryByProduct.set(
+      request.id,
+      (inventoryByProduct.get(request.id) ?? 0) + request.quantity * conversion
+    )
+    return {
+      ...toOrderItemInput(pricedProduct, unit),
+      quantity: request.quantity,
+    }
+  })
+
+  for (const product of products) {
+    if (product.trackInventory && !product.allowBackorder) {
+      const stock = Number(product.stock)
+      if (
+        !Number.isFinite(stock) ||
+        (inventoryByProduct.get(product.id) ?? 0) > stock
+      ) {
+        throw new AppError("INVALID_REQUEST", {
+          message: `${product.title} does not have enough stock for the selected sell units.`,
+        })
+      }
+    }
+  }
+
+  return items
+}
 
 export const createOrder = orgActionClient({ order: ["create"] })
   .inputSchema(createOrderSchema)
   .action(async ({ clientInput, ctx }) => {
     const { data } = clientInput
     const { organizationId, teamId, session } = ctx
-
-    const itemsByProductId = new Map(data.items.map((item) => [item.id, item]))
-
-    const [products, team] = await Promise.all([
-      db.query.product.findMany({
-        where: (p, { inArray, and, eq }) =>
-          and(
-            eq(p.organizationId, organizationId),
-            inArray(p.id, [...itemsByProductId.keys()])
-          ),
-      }),
-
+    const [orderItems, team] = await Promise.all([
+      resolveOrderItems(data.items, organizationId, teamId),
       db.query.team.findFirst({
-        where: (t, { eq }) => eq(t.id, teamId),
-        with: {
-          taxRule: true,
-        },
+        where: (team) => eq(team.id, teamId),
+        with: { taxRule: true },
       }),
     ])
-
-    const resolvedProducts = await resolveTeamPrices({
-      products,
-      teamId,
-    })
-
-    const orderItems = resolvedProducts.map((product) => ({
-      ...toOrderItemInput({ ...product, price: String(product.price) }),
-      quantity: itemsByProductId.get(product.id)?.quantity ?? 0,
-    }))
-
     const { items, totals } = calculateOrder({
       items: orderItems,
       taxRate: Number(team?.taxRule?.rate ?? 0),
       charges: 15,
     })
-
-    const insertOrderValues = toInsertOrder({
+    const values = toInsertOrder({
       data,
       totals,
       taxRule: team?.taxRule,
@@ -61,141 +148,106 @@ export const createOrder = orgActionClient({ order: ["create"] })
       teamId,
       userId: session.userId,
     })
-
-    const [createdOrder] = await db
+    const [created] = await db
       .insert(order)
-      .values(insertOrderValues)
+      .values(values)
       .returning({ id: order.id })
-
-    if (!createdOrder) throw new AppError("INTERNAL_SERVER_ERROR")
-
-    const insertLineItemValues = toInsertLineItems({
-      items,
-      orderId: createdOrder.id,
-      organizationId,
-      teamId,
-      taxRate: team?.taxRule?.rate,
-    })
-    await db.insert(lineItem).values(insertLineItemValues)
-
-    return {
-      success: true,
-      id: createdOrder.id,
-    }
-  })
-
-/**
- * update order
- */
-export const updateOrder = orgActionClient({ order: ["update"] })
-  .inputSchema(updateOrderSchema)
-  .action(async ({ clientInput, ctx }) => {
-    const { id, data } = clientInput
-    const { teamId, organizationId, session } = ctx
-
-    const itemsByProductId = new Map(data.items.map((item) => [item.id, item]))
-
-    const [existingOrder, products, team] = await Promise.all([
-      db.query.order.findFirst({
-        where: (o, { and, eq }) =>
-          and(
-            eq(o.id, id),
-            eq(o.teamId, teamId),
-            eq(o.organizationId, organizationId)
-          ),
-        with: {
-          lineItems: {
-            columns: {
-              id: true,
-              productId: true,
-            },
-          },
-        },
-      }),
-      db.query.product.findMany({
-        where: (p, { inArray, and, eq }) =>
-          and(
-            eq(p.organizationId, organizationId),
-            inArray(p.id, [...itemsByProductId.keys()])
-          ),
-      }),
-      db.query.team.findFirst({
-        where: (t, { eq }) => eq(t.id, teamId),
-        with: {
-          taxRule: true,
-        },
-      }),
-    ])
-
-    if (!existingOrder) throw new AppError("NOT_FOUND")
-
-    const resolvedProducts = await resolveTeamPrices({
-      products,
-      teamId,
-    })
-
-    const orderItems = resolvedProducts.map((product) => ({
-      ...toOrderItemInput({ ...product, price: String(product.price) }),
-      quantity: itemsByProductId.get(product.id)?.quantity ?? 0,
-    }))
-
-    const { items, totals } = calculateOrder({
-      items: orderItems,
-      taxRate: Number(team?.taxRule?.rate ?? 0),
-      charges: 15,
-    })
-
-    const insertOrderValues = toInsertOrder({
-      data,
-      totals,
-      taxRule: team?.taxRule,
-      organizationId,
-      teamId,
-      userId: session.userId,
-    })
-
-    // update lineItems
-    const existingByProductId = new Map(
-      existingOrder.lineItems.map((item) => [item.productId, item])
-    )
-
-    const calculatedByProductId = new Map(items.map((item) => [item.id, item]))
-
-    const productIds = new Set(calculatedByProductId.keys())
-
-    const idsToDelete = existingOrder.lineItems
-      .filter((item) => !productIds.has(item.productId!))
-      .map((item) => item.id)
-
-    const queries: BatchItem<"pg">[] = [
-      db.update(order).set(insertOrderValues).where(eq(order.id, id)),
-    ]
-
-    for (const [productId, calculated] of calculatedByProductId) {
-      const [values] = toInsertLineItems({
-        items: [calculated],
-        orderId: existingOrder.id,
+    if (!created) throw new AppError("INTERNAL_SERVER_ERROR")
+    await db.insert(lineItem).values(
+      toInsertLineItems({
+        items,
+        orderId: created.id,
         organizationId,
         teamId,
         taxRate: team?.taxRule?.rate,
       })
+    )
+    return { success: true, id: created.id }
+  })
 
-      const existing = existingByProductId.get(productId)
+export const updateOrder = orgActionClient({ order: ["update"] })
+  .inputSchema(updateOrderSchema)
+  .action(async ({ clientInput, ctx }) => {
+    const { id, data } = clientInput
+    const { organizationId, teamId, session } = ctx
+    const [existing, orderItems, team] = await Promise.all([
+      db.query.order.findFirst({
+        where: (order) =>
+          and(
+            eq(order.id, id),
+            eq(order.organizationId, organizationId),
+            eq(order.teamId, teamId)
+          ),
+        with: {
+          lineItems: {
+            columns: { id: true, productId: true, unitName: true },
+          },
+        },
+      }),
+      resolveOrderItems(data.items, organizationId, teamId),
+      db.query.team.findFirst({
+        where: (team) => eq(team.id, teamId),
+        with: { taxRule: true },
+      }),
+    ])
+    if (!existing) throw new AppError("NOT_FOUND")
+    if (existing.status !== "in_progress") throw new AppError("INVALID_REQUEST")
+    const { items, totals } = calculateOrder({
+      items: orderItems,
+      taxRate: Number(team?.taxRule?.rate ?? 0),
+      charges: 15,
+    })
+    const values = toInsertOrder({
+      data,
+      totals,
+      taxRule: team?.taxRule,
+      organizationId,
+      teamId,
+      userId: session.userId,
+    })
+    const existingByKey = new Map(
+      existing.lineItems.map((item) => [
+        lineKey(item.productId!, item.unitName!),
+        item,
+      ])
+    )
+    const requestedKeys = new Set(
+      items.map((item) => lineKey(item.id, item.unit))
+    )
+    const toDelete = existing.lineItems
+      .filter(
+        (item) => !requestedKeys.has(lineKey(item.productId!, item.unitName!))
+      )
+      .map((item) => item.id)
+    const queries: BatchItem<"pg">[] = [
+      db.update(order).set(values).where(eq(order.id, id)),
+    ]
 
-      if (existing) {
+    for (const item of items) {
+      const [lineValues] = toInsertLineItems({
+        items: [item],
+        orderId: id,
+        organizationId,
+        teamId,
+        taxRate: team?.taxRule?.rate,
+      })
+      const previous = existingByKey.get(lineKey(item.id, item.unit))
+      if (previous)
         queries.push(
-          db.update(lineItem).set(values!).where(eq(lineItem.id, existing.id))
+          db
+            .update(lineItem)
+            .set(lineValues!)
+            .where(eq(lineItem.id, previous.id)) as BatchItem<"pg">
         )
-      } else {
-        queries.push(db.insert(lineItem).values(values!))
-      }
+      else
+        queries.push(db.insert(lineItem).values(lineValues!) as BatchItem<"pg">)
     }
-
-    if (idsToDelete.length > 0) {
-      queries.push(db.delete(lineItem).where(inArray(lineItem.id, idsToDelete)))
-    }
-
+    if (toDelete.length)
+      queries.push(
+        db
+          .delete(lineItem)
+          .where(inArray(lineItem.id, toDelete)) as BatchItem<"pg">
+      )
     await db.batch(queries as [BatchItem<"pg">, ...BatchItem<"pg">[]])
-
-    return { success: true, id: id }
+    return { success: true, id }
   })

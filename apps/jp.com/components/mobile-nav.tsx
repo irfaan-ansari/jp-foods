@@ -9,26 +9,33 @@ import {
   PopoverTrigger,
 } from "@jp/ui/components/popover"
 import { SITE_CONFIG } from "@/lib/config"
-import { Menu, X } from "lucide-react"
+import { ArrowRight, Menu, X } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
 
 export const MobileNav = ({
   isActive,
 }: {
-  isActive: (href: string) => void
+  isActive: (href: string) => boolean
 }) => {
   const [open, setOpen] = React.useState(false)
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
-      <PopoverTrigger className="lg:hidden">
-        {open ? <X /> : <Menu />}
+      <PopoverTrigger asChild>
+        <Button
+          aria-label={open ? "Close menu" : "Open menu"}
+          className="lg:hidden"
+          variant="secondary"
+          size="icon-xl"
+        >
+          {open ? <X className="size-6" /> : <Menu className="size-6" />}
+        </Button>
       </PopoverTrigger>
       <PopoverContent
         side="bottom"
         align="center"
-        sideOffset={20}
-        className="h-(--radix-popper-available-height) w-svw! ring-0"
+        sideOffset={0}
+        className="h-(--radix-popper-available-height) w-svw! rounded-none ring-0"
       >
         <PopoverTitle className="sr-only">Menu</PopoverTitle>
 
@@ -50,19 +57,25 @@ export const MobileNav = ({
           <Button
             asChild
             size="xl"
-            className="w-full"
+            className="w-full justify-start border-primary text-primary"
             onClick={() => setOpen(false)}
-            variant="secondary"
+            variant="outline"
           >
-            <Link href="/contact">Request Catalog</Link>
+            <Link href="/contact">
+              Request Catalog
+              <ArrowRight className="ml-auto" />
+            </Link>
           </Button>
           <Button
             asChild
             size="xl"
-            className="w-full"
+            className="w-full justify-start"
             onClick={() => setOpen(false)}
           >
-            <Link href="/apply">Apply for an Account</Link>
+            <Link href="/apply">
+              Apply for an Account
+              <ArrowRight className="ml-auto" />
+            </Link>
           </Button>
         </div>
       </PopoverContent>

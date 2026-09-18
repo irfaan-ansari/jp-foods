@@ -35,7 +35,7 @@ export const UserSelector = ({
 }: UserSelectorProps) => {
   const [open, setOpen] = React.useState(false)
   const [filters, setFilters] = React.useState({
-    q: "",
+    q: "" as string | undefined,
     page: "1",
     ...(role ? { role } : {}),
   })
@@ -70,7 +70,10 @@ export const UserSelector = ({
             onSearch={(value) => setFilters({ ...filters, q: value })}
           />
           <UserDialog
-            callback={(user) => setFilters({ ...filters, q: user.email })}
+            callback={(user) => {
+              setOpen(false)
+              setSelectedChange(user as User)
+            }}
             values={{ name: "", phoneNumber: "", email: "", role: role ?? "" }}
           >
             <Button

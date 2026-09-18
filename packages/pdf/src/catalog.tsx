@@ -135,7 +135,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                 lineHeight: 1.2,
               }}
             >
-              Phone: {formatPhone(org.phone)}
+              Phone: {formatPhone(org.phoneNumber)}
             </Text>
             <Text
               style={{
@@ -191,7 +191,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                     { color: colors.background, fontWeight: "bold" },
                   ]}
                 >
-                  {formatUSD(product.basePrice)}
+                  {formatUSD(product.price)} / {product.unit}
                 </Text>
               </View>
             ))}
@@ -272,7 +272,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                             },
                           ]}
                         >
-                          {formatUSD(product.basePrice)}
+                          {formatUSD(product.price)}
                         </Text>
                       </View>
                     ))}

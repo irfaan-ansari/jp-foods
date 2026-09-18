@@ -22,7 +22,6 @@ import {
   priceLevel,
   priceLevelItem,
   product,
-  productSellUnit,
   promotion,
   promotionTarget,
   taxRule,
@@ -65,8 +64,6 @@ export type InvitationInsertType = InferInsertModel<typeof invitation>
 /** main portal */
 export type ProductInsertType = InferInsertModel<typeof product>
 export type ProductSelectType = InferSelectModel<typeof product>
-export type ProductSellUnitInsertType = InferInsertModel<typeof productSellUnit>
-export type ProductSellUnitSelectType = InferSelectModel<typeof productSellUnit>
 
 export type PriceLevelInsertType = InferInsertModel<typeof priceLevel>
 export type PriceLevelSelectType = InferSelectModel<typeof priceLevel>

@@ -6,11 +6,6 @@ export const STATUS: Record<string, BadgeStatus> = {
     value: "",
     color: "#71717A",
   },
-  suspended: {
-    label: "Archived",
-    value: "archived",
-    color: "#71717A",
-  },
   active: {
     label: "Active",
     value: "active",
@@ -21,12 +16,12 @@ export const STATUS: Record<string, BadgeStatus> = {
     value: "inactive",
     color: "#71717A",
   },
+  suspended: {
+    label: "Suspended",
+    value: "suspended",
+    color: "#DC2626",
+  },
 }
-
-export const TEAM_STATUS = [
-  { label: "Active", value: "active" },
-  { label: "Inactive", value: "inactive" },
-]
 
 export const RANGE_DAYS: Record<string, { label: string; days: number }> = {
   "7d": {
