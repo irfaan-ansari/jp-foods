@@ -262,9 +262,15 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       size="icon-lg"
                       asChild
                     >
-                      <Link href="/org/dashboard">
-                        <CompassSquare className="size-5" />
-                      </Link>
+                      {disabled ? (
+                        <span>
+                          <CompassSquare className="size-5" />
+                        </span>
+                      ) : (
+                        <Link href="/org/dashboard">
+                          <CompassSquare className="size-5" />
+                        </Link>
+                      )}
                     </Button>
                   </SidebarMenuItem>
                 </Tooltip>
@@ -288,9 +294,15 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
                       className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
                       asChild
                     >
-                      <Link href="/crm/dashboard">
-                        <Widget className="size-5" />
-                      </Link>
+                      {disabled ? (
+                        <span>
+                          <Widget className="size-5" />
+                        </span>
+                      ) : (
+                        <Link href="/crm/dashboard">
+                          <Widget className="size-5" />
+                        </Link>
+                      )}
                     </Button>
                   </SidebarMenuItem>
                 </Tooltip>

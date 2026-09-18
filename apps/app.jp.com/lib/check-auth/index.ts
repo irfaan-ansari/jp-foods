@@ -3,7 +3,7 @@
 import { headers } from "next/headers"
 import { auth, UserPermission } from "@jp/auth"
 
-export const checkAuth = async (permissions?: UserPermission[]) => {
+export const checkAuth = async (permissions?: UserPermission) => {
   const session = await auth.api.getSession({
     headers: await headers(),
   })
@@ -16,7 +16,7 @@ export const checkAuth = async (permissions?: UserPermission[]) => {
     }
   }
 
-  if (!permissions?.length) {
+  if (!permissions) {
     return {
       session,
       authenticated: true,
@@ -24,16 +24,20 @@ export const checkAuth = async (permissions?: UserPermission[]) => {
     }
   }
 
-  const results = await Promise.all(
-    permissions.map((permission) =>
+  const checks = Object.entries(permissions).flatMap(([resource, actions]) =>
+    actions.map((action) =>
       auth.api.userHasPermission({
         body: {
           userId: session.user.id,
-          permissions: permission,
+          permissions: {
+            [resource]: [action],
+          } as UserPermission,
         },
       })
     )
   )
+
+  const results = await Promise.all(checks)
 
   const authorized = results.some((result) => result.success)
 
