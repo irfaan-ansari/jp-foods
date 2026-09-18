@@ -11,6 +11,7 @@ import { OPEN_POSITIONS } from "@/features/careers/careers.positions"
 import { Badge } from "@jp/ui/components/badge"
 import { Button } from "@jp/ui/components/button"
 import { Container } from "@/components/container"
+import { ArrowRight } from "lucide-react"
 
 export const metadata: Metadata = {
   title: "Careers",
@@ -22,11 +23,11 @@ const CareersPage = () => {
   return (
     <React.Fragment>
       {/* page title*/}
-      <section className="bg-highlight py-16 text-primary-foreground">
+      <section className="bg-lime-100 py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 Careers
               </h2>
               <p className="text-lg">
@@ -41,7 +42,7 @@ const CareersPage = () => {
 
       {/* open positions */}
       <section className="my-16">
-        <Container className="max-w-4xl">
+        <Container className="max-w-6xl">
           <div className="flex flex-col gap-8">
             {OPEN_POSITIONS.map((position) => (
               <Link
@@ -52,7 +53,7 @@ const CareersPage = () => {
                 <Card>
                   <CardContent className="flex flex-col gap-8 md:flex-row">
                     <div className="flex-1">
-                      <CardTitle className="mb-4 font-heading text-3xl font-semibold uppercase">
+                      <CardTitle className="mb-4 font-heading text-3xl font-semibold">
                         {position.title}
                       </CardTitle>
                       <div className="mb-6 flex items-center gap-4">
@@ -76,9 +77,13 @@ const CareersPage = () => {
                         {position.description}
                       </CardDescription>
                     </div>
-                    <div className="shrink-0">
-                      <Button size="xl" className="w-full min-w-40 md:w-auto">
+                    <div className="shrink-0 self-end">
+                      <Button
+                        size="xl"
+                        className="w-full min-w-40 justify-between md:w-auto"
+                      >
                         Apply
+                        <ArrowRight />
                       </Button>
                     </div>
                   </CardContent>

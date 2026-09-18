@@ -50,18 +50,17 @@ export const Header = () => {
             </a>
           </Button>
           <div className="hidden flex-[1_1_0] justify-end gap-4 lg:flex">
-            <Button
-              asChild
-              size="xl"
-              variant="outline"
-              className="border-primary text-primary"
-            >
+            <Button asChild size="xl">
               <a href="/auth/signin" target="_blank">
                 Place Order
                 <ArrowRight />
               </a>
             </Button>
-            <Button asChild size="xl">
+            <Button
+              asChild
+              size="xl"
+              className="bg-sidebar-accent hover:bg-sidebar-accent/90"
+            >
               <Link href="/apply">
                 Apply for an Account <ArrowRight />
               </Link>

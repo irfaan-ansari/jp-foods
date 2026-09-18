@@ -1,15 +1,16 @@
 import { FieldGroup } from "@jp/ui/components/field"
 
 import translations from "@/features/apply/customer.translations.json"
-import { businessDocuments } from "@/features/apply/customer.const"
+
 import {
   type Translations,
   useTranslation,
 } from "@/components/language-selector"
 import { withForm } from "@/hooks/use-app-form"
+import { CustomerFormType } from "../customer.schema"
 
 export const Documents = withForm({
-  defaultValues: businessDocuments,
+  defaultValues: {} as CustomerFormType,
   render: function Render({ form }) {
     const { t } = useTranslation(translations as Translations, "en")
     return (

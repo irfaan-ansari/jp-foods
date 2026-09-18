@@ -3,12 +3,12 @@ import Image from "next/image"
 
 import { Container } from "@/components/container"
 import { SITE_CONFIG } from "@/lib/config"
-import { AtSign, MapPinned, Phone } from "lucide-react"
+import { AtSign, MapPinned, Phone, Smartphone } from "lucide-react"
 import { CONTACT_SECTIONS, COVERAGE_LOCATIONS, HOME_SECTIONS } from "@/data/web"
 
 export const Footer = () => {
   return (
-    <footer className="bg-secondary py-16">
+    <footer className="py-16">
       <Container>
         <div className="grid grid-cols-9 gap-8">
           {/* branding */}
@@ -25,12 +25,14 @@ export const Footer = () => {
             <div className="flex flex-col gap-6">
               {CONTACT_SECTIONS.locations.map((loc) => (
                 <div className="space-y-2" key={loc.name}>
-                  <h5 className="text-lg font-semibold">{loc.name}</h5>
+                  <h5 className="font-heading text-xl font-semibold">
+                    {loc.name}
+                  </h5>
                   <div className="space-y-1">
                     {loc.phone && (
                       <div className="flex items-center gap-2">
-                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
-                          <Phone className="size-4" />
+                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
+                          <Smartphone className="size-4" />
                         </span>
                         <a
                           href={`tel:${loc.phone}`}
@@ -42,7 +44,7 @@ export const Footer = () => {
                     )}
                     {loc.email && (
                       <div className="flex items-center gap-2">
-                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                           <AtSign className="size-4" />
                         </span>
                         <a
@@ -54,7 +56,7 @@ export const Footer = () => {
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                      <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                         <MapPinned className="size-4" />
                       </span>
                       <p className="text-muted-foreground">{loc.street}</p>
@@ -68,7 +70,7 @@ export const Footer = () => {
           {/* categories */}
           <div className="col-span-9 md:col-span-2">
             <div className="space-y-6">
-              <h5 className="font-heading font-medium uppercase">Categories</h5>
+              <h5 className="font-heading text-xl font-semibold">Categories</h5>
               <div className="flex flex-col gap-2">
                 {HOME_SECTIONS.categories.map((cat) => (
                   <Link
@@ -86,7 +88,7 @@ export const Footer = () => {
           {/* coverage area */}
           <div className="col-span-9 md:col-span-2">
             <div className="space-y-6">
-              <h5 className="font-heading font-medium uppercase">
+              <h5 className="font-heading text-xl font-semibold">
                 Coverage Area
               </h5>
               <div className="flex flex-col gap-2">
@@ -111,7 +113,7 @@ export const Footer = () => {
           {/* menu */}
           <div className="col-span-9 md:col-span-2">
             <div className="space-y-6">
-              <h5 className="font-heading font-medium uppercase">Menu</h5>
+              <h5 className="font-heading text-xl font-semibold">Menu</h5>
               <div className="flex flex-col gap-2">
                 {SITE_CONFIG.pages.map((page) => (
                   <Link

@@ -178,19 +178,5 @@ export {
   authorizationSchema,
 }
 
-export type ApplicantDetailsType = z.infer<typeof applicantSchema>
-export type ApplicantAddressType = z.infer<typeof applicantAddressSchema>
-export type ApplicantLicenseType = z.infer<typeof licenseSchema>
-export type ApplicantDrivingExperienceType = z.infer<
-  typeof drivingExperienceSchema
->
-export type ApplicantAccidentHistoryType = z.infer<typeof accidentHistorySchema>
-export type ApplicantTrafficConvictionsType = z.infer<
-  typeof trafficConvictionsSchema
->
-export type ApplicantEmployementType = z.infer<typeof employementSchema>
-export type ApplicantEducationType = z.infer<typeof educationSchema>
-export type ApplicantAuthorizationType = z.infer<typeof authorizationSchema>
-
-export type CareersFormType = z.infer<typeof jobFormSchema>
-export type DriverFormType = z.infer<typeof driverFormSchema>
+export type CareersFormValues = z.infer<typeof jobFormSchema>
+export type DriverFormValues = z.infer<typeof driverFormSchema>

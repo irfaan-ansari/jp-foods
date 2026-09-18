@@ -9,11 +9,12 @@ import {
 } from "@jp/ui/components/field"
 
 import { Textarea } from "@jp/ui/components/textarea"
-import { applicantEducation } from "@/features/careers/careers.const"
+
 import { withForm } from "@/hooks/use-app-form"
+import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantEducation = withForm({
-  defaultValues: applicantEducation,
+  defaultValues: {} as DriverFormValues,
   render: function Render({ form }) {
     return (
       <FieldGroup className="grid grid-cols-1 @2xl:grid-cols-2">

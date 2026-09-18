@@ -32,16 +32,16 @@ const HomePage = () => {
               src={hero.image}
               alt="Hero banner"
               priority
-              className="h-full max-h-192 w-full object-cover object-center"
+              className="h-svh w-full object-cover object-center"
             />
           </div>
           {/* content */}
-          <div className="col-start-1 row-start-1 size-full">
+          <div className="col-start-1 row-start-1 size-full bg-linear-to-tr from-black">
             <Container className="h-full">
-              <div className="relative max-w-2xl py-20">
-                <span className="absolute -inset-40 bg-primary/10 mask-y-from-90% mask-x-from-70% backdrop-blur-xs"></span>
-                <div className="relative flex flex-col items-start gap-8">
-                  <h1 className="font-heading text-5xl/tight font-bold md:text-7xl/tight">
+              <div className="relative max-w-3xl py-20">
+                {/* <span className="absolute -inset-40 bg-black/40 mask-y-from-90% mask-x-from-90% backdrop-blur-xs"></span> */}
+                <div className="relative flex flex-col items-start gap-8 text-primary-foreground">
+                  <h1 className="font-heading text-5xl/tight font-bold md:text-8xl/tight">
                     {hero.title}
                   </h1>
                   <h2 className="max-w-lg text-xl font-medium">
@@ -49,16 +49,20 @@ const HomePage = () => {
                   </h2>
                   <p className="text-base italic">{hero.badge}</p>
                   <div className="flex flex-wrap gap-4">
-                    <Button asChild size="xl" className="">
-                      <Link href="/apply">Apply for an Account</Link>
-                    </Button>
                     <Button
                       asChild
-                      size="xl"
                       variant="outline"
+                      size="xl"
                       className="text-foreground"
                     >
-                      <Link href="/products">View Products</Link>
+                      <Link href="/products">
+                        View Products <ArrowRight />{" "}
+                      </Link>
+                    </Button>
+                    <Button asChild size="xl">
+                      <Link href="/apply">
+                        Apply for an Account <ArrowRight />
+                      </Link>
                     </Button>
                   </div>
                 </div>
@@ -77,10 +81,10 @@ const HomePage = () => {
             </h2>
             <div className="relative grid grid-cols-1 gap-8 sm:grid-cols-2 md:grid-cols-4">
               {serve.map((item, i) => (
-                <Card className="shadow-sm ring-0" key={item.title}>
+                <Card key={item.title}>
                   <CardHeader>
-                    <span className="bg-highlight inline-flex size-12 items-center justify-center rounded-lg text-primary-foreground">
-                      <item.icon className="size-6" />
+                    <span className="inline-flex items-center justify-start rounded-lg">
+                      <item.icon className="size-16 text-primary" />
                     </span>
                   </CardHeader>
                   <CardContent className="space-y-3 pt-10">
@@ -99,19 +103,16 @@ const HomePage = () => {
       {/* suppliers marquee */}
       <section className="mt-16">
         <Container className="relative overflow-hidden">
-          <Marquee className="gap-16">
-            <div className="flex items-center gap-16">
+          <Marquee className="gap-8">
+            <div className="flex items-center gap-8">
               {marquee.map((img, i) => (
-                <div
-                  className="bg-linear-to-br from-foreground/5 to-foreground/20"
-                  key={img + i}
-                >
+                <div className="rounded-xl bg-secondary p-4" key={img + i}>
                   <Image
                     src={img}
                     alt={img}
                     width={200}
                     height={200}
-                    className="size-20"
+                    className="size-24 mix-blend-multiply"
                   />
                 </div>
               ))}
@@ -167,16 +168,18 @@ const HomePage = () => {
               <CarouselPrevious className="-left-3" />
               <CarouselNext className="-right-3" />
             </Carousel>
-            <Button
-              asChild
-              size="xl"
-              className="w-full justify-start sm:ml-auto sm:w-auto"
-            >
-              <Link href="/products">
-                View catalog
-                <ArrowRight className="ml-auto" />
-              </Link>
-            </Button>
+            <div className="sm:text-right">
+              <Button
+                asChild
+                size="xl"
+                className="w-full justify-start sm:w-auto"
+              >
+                <Link href="/products">
+                  View Catalog
+                  <ArrowRight className="ml-auto" />
+                </Link>
+              </Button>
+            </div>
           </div>
         </Container>
       </section>
@@ -185,12 +188,12 @@ const HomePage = () => {
       <section className="mt-16 bg-secondary py-16">
         <Container>
           <div className="space-y-8">
-            <div className="flex flex-col gap-4 md:flex-row">
+            <div className="space-y-3">
               <h2 className="flex-1 font-heading text-4xl/tight font-bold sm:text-5xl/tight md:text-7xl/tight">
                 Getting Started with <br />
                 <span className="text-primary">Jimenez Produce</span>
               </h2>
-              <p className="ml-auto max-w-sm text-base/normal opacity-80">
+              <p className="max-w-3xl text-base/normal opacity-80">
                 We make it easy for foodservice operations to start working with
                 Jimenez Produce. Our onboarding process is designed to be clear,
                 efficient, and focused on getting your account set up quickly.
@@ -234,7 +237,7 @@ const HomePage = () => {
                 height={600}
                 src="/why-choose-us.jpeg"
                 alt="Event cover"
-                className="aspect-[1/0.8] object-cover"
+                className="aspect-[1/0.8] h-auto w-full rounded-2xl object-cover"
               />
             </div>
           </div>
@@ -298,7 +301,7 @@ const HomePage = () => {
               {HOME_SECTIONS.quality.map((item, i) => (
                 <Card
                   key={i}
-                  className="shrink-0 basis-3/4 snap-start bg-secondary py-10 shadow-none ring-0 lg:basis-auto"
+                  className="shrink-0 basis-3/4 snap-start bg-secondary/60 py-10 shadow-sm ring-0 lg:basis-auto"
                 >
                   <CardHeader className="px-10">
                     <h4 className="font-heading text-3xl font-semibold">

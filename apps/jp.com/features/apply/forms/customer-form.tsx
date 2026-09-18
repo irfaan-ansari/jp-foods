@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation"
 import { upload } from "@vercel/blob/client"
 
 import { createCustomer } from "@/features/apply/customer.action"
-import { defaultValues } from "@/features/apply/customer.const"
+import { DEFAULT_VALUES } from "@/features/apply/customer.const"
 import { steps } from "@/features/apply/customer.steps"
 import { ArrowLeft, ArrowRight, Loader } from "lucide-react"
 import translations from "@/features/apply/customer.translations.json"
@@ -29,7 +29,7 @@ import { useAppForm } from "@/hooks/use-app-form"
 import { Tabs, TabsContent } from "@jp/ui/components/tabs"
 
 export const formOpts = formOptions({
-  defaultValues,
+  defaultValues: DEFAULT_VALUES,
   validators: {
     onSubmit: ({ value, formApi }) => {
       return formApi.parseValuesWithSchema(
@@ -65,7 +65,7 @@ export const CustomerForm = () => {
           value.signature,
           {
             access: "public",
-            handleUploadUrl: "/api/upload",
+            handleUploadUrl: "/api/v1/upload",
           }
         )
 

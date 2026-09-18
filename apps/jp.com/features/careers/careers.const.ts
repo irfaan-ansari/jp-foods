@@ -1,16 +1,4 @@
-import {
-  ApplicantAccidentHistoryType,
-  ApplicantAddressType,
-  ApplicantAuthorizationType,
-  ApplicantDetailsType,
-  ApplicantDrivingExperienceType,
-  ApplicantEducationType,
-  ApplicantEmployementType,
-  ApplicantLicenseType,
-  ApplicantTrafficConvictionsType,
-} from "@/features/careers/careers.schema"
-
-export const applicantDetail: ApplicantDetailsType = {
+export const DEFAULT_VALUES = {
   firstName: "",
   lastName: "",
   phone: "",
@@ -20,8 +8,7 @@ export const applicantDetail: ApplicantDetailsType = {
   availableStartDate: "",
   hasLegalRights: "yes",
   location: "",
-}
-export const applicantAddress: ApplicantAddressType = {
+
   currentAddress: {
     street: "",
     city: "",
@@ -37,8 +24,7 @@ export const applicantAddress: ApplicantAddressType = {
     yearsAtAddress: "",
   },
   addresses: [],
-}
-export const applicantLicence: ApplicantLicenseType = {
+
   currentLicense: {
     state: "",
     licenseType: "",
@@ -47,9 +33,7 @@ export const applicantLicence: ApplicantLicenseType = {
     expiryDate: "",
   },
   licenses: [],
-}
 
-export const applicantExperience: ApplicantEmployementType = {
   experience: [
     {
       employerName: "",
@@ -65,8 +49,7 @@ export const applicantExperience: ApplicantEmployementType = {
       salary: "",
     },
   ],
-}
-export const applicantEducation: ApplicantEducationType = {
+
   highSchool: {
     institutionName: "",
     fieldOfStudy: "",
@@ -90,9 +73,7 @@ export const applicantEducation: ApplicantEducationType = {
       details: "",
     },
   ],
-}
 
-export const applicantConfirmation: ApplicantAuthorizationType = {
   applicantName: "",
   declaration: false,
   drivingLicenseBack: undefined as any,
@@ -102,9 +83,7 @@ export const applicantConfirmation: ApplicantAuthorizationType = {
   dotFront: undefined as any,
   dotBack: undefined as any,
   signature: undefined as any,
-}
 
-export const applicantDrivingExperience: ApplicantDrivingExperienceType = {
   drivingExperiences: [
     {
       category: "",
@@ -114,13 +93,9 @@ export const applicantDrivingExperience: ApplicantDrivingExperienceType = {
       approxMilesTotal: "",
     },
   ],
-}
 
-export const applicantAccidentHistory: ApplicantAccidentHistoryType = {
   accidentHistory: [],
-}
 
-export const applicantTrafficConvictions: ApplicantTrafficConvictionsType = {
   trafficConvictions: [],
 }
 

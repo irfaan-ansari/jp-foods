@@ -1,20 +1,9 @@
 "use client"
 
 import { toast } from "sonner"
-import {
-  applicantAccidentHistory,
-  applicantAddress,
-  applicantConfirmation,
-  applicantDetail,
-  applicantDrivingExperience,
-  applicantEducation,
-  applicantExperience,
-  applicantLicence,
-  applicantTrafficConvictions,
-} from "@/features/careers/careers.const"
+
 import { Button } from "@jp/ui/components/button"
 import { useRouter } from "next/navigation"
-import { upload } from "@vercel/blob/client"
 import { useStore } from "@tanstack/react-form"
 
 import { createJobApplication } from "@/features/careers/careers.action"
@@ -28,24 +17,17 @@ import {
 } from "@jp/ui/components/tabs"
 import {
   driverFormSchema,
-  DriverFormType,
+  DriverFormValues,
 } from "@/features/careers/careers.schema"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { useAppForm } from "@/hooks/use-app-form"
 import { uploadFile } from "@/lib/upload"
+import { DEFAULT_VALUES } from "../careers.const"
 
-const defaultValues: DriverFormType = {
-  ...applicantAccidentHistory,
-  ...applicantAddress,
-  ...applicantConfirmation,
-  ...applicantDetail,
-  ...applicantDrivingExperience,
-  ...applicantEducation,
-  ...applicantExperience,
-  ...applicantLicence,
-  ...applicantTrafficConvictions,
-  step: 0,
+const defaultValues: DriverFormValues = {
+  ...DEFAULT_VALUES,
   position: "Route Driver",
+  step: 0,
 }
 
 export const DriverForm = ({
@@ -56,8 +38,8 @@ export const DriverForm = ({
   location: string
 }) => {
   const router = useRouter()
-
   const { open } = useConfirm()
+
   const form = useAppForm({
     defaultValues: {
       ...defaultValues,
@@ -74,6 +56,7 @@ export const DriverForm = ({
         )
       },
     },
+
     onSubmit: async ({ value, formApi }) => {
       try {
         if (value.step < steps.length - 1)

@@ -43,12 +43,12 @@ export function GettingStartedList({
         >
           <GettingStartedProgress key={index} index={index} started={started} />
           <CardHeader className="px-0">
-            <span className="text-highlight inline-flex size-12 items-center justify-center bg-background text-lg font-semibold">
+            <span className="inline-flex size-12 items-center justify-center rounded-xl border bg-background text-lg font-semibold text-primary shadow-xs">
               {`${index + 1}`.padStart(2, "0")}
             </span>
           </CardHeader>
           <CardContent className="space-y-3 px-0">
-            <h3 className="font-heading text-3xl font-semibold uppercase">
+            <h3 className="font-heading text-3xl font-semibold">
               {step.title}
             </h3>
             <p className="text-base opacity-80">{step.description}</p>

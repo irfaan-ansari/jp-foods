@@ -90,9 +90,9 @@ export function ForgotPasswordForm({
           name="username"
           children={(field) => (
             <field.TextField
-              label="Email"
+              label="Email or Phone"
               placeholder="email or phone number"
-              className="*:data-[slot=input]:rounded-lg"
+              className="*:data-[slot=input]:h-12"
             />
           )}
         />
@@ -101,10 +101,7 @@ export function ForgotPasswordForm({
         <form.Subscribe
           selector={(state) => state.values.success}
           children={(success) => (
-            <Alert
-              variant="default"
-              className={`border-green-500/10 bg-green-500/5 text-green-700 ${!success ? "hidden" : ""}`}
-            >
+            <Alert variant="success" className={!success ? "hidden" : ""}>
               <CircleCheck />
               <AlertTitle>Check your email or phone</AlertTitle>
               <AlertDescription>

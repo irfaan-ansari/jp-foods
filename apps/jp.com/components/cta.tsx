@@ -7,17 +7,17 @@ export const CTA = ({ className }: { className?: string }) => {
   return (
     <section
       className={cn(
-        "mt-16 bg-linear-to-b from-lime-800 via-primary to-secondary py-16",
+        "mt-16 bg-linear-to-b from-lime-200 via-lime-100 to-background py-16",
         className
       )}
     >
       <Container>
         <div className="space-y-8">
           <div className="mx-auto max-w-3xl space-y-4 text-center">
-            <h2 className="flex-1 font-heading text-4xl/tight font-semibold text-primary-foreground sm:text-5xl/tight md:text-6xl/tight">
+            <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-6xl/tight">
               Ready to Get Started?
             </h2>
-            <p className="text-xl text-primary-foreground">
+            <p className="text-xl">
               If you operate a restaurant, food truck, or commercial kitchen,
               apply for a Jiménez Produce account to get started with a reliable
               foodservice distributor.

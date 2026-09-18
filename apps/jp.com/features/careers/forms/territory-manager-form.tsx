@@ -1,14 +1,7 @@
 "use client"
 
 import { toast } from "sonner"
-import {
-  applicantAddress,
-  applicantConfirmation,
-  applicantDetail,
-  applicantEducation,
-  applicantExperience,
-  applicantLicence,
-} from "@/features/careers/careers.const"
+
 import { Button } from "@jp/ui/components/button"
 import { useRouter } from "next/navigation"
 import { useStore } from "@tanstack/react-form"
@@ -22,21 +15,17 @@ import {
   TabsContent,
 } from "@jp/ui/components/tabs"
 import {
-  CareersFormType,
+  CareersFormValues,
   jobFormSchema,
 } from "@/features/careers/careers.schema"
 import { createJobApplication } from "@/features/careers/careers.action"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { useAppForm } from "@/hooks/use-app-form"
 import { uploadFile } from "@/lib/upload"
+import { DEFAULT_VALUES } from "../careers.const"
 
-const defaultValues: CareersFormType = {
-  ...applicantAddress,
-  ...applicantDetail,
-  ...applicantEducation,
-  ...applicantExperience,
-  ...applicantLicence,
-  ...applicantConfirmation,
+const defaultValues: CareersFormValues = {
+  ...DEFAULT_VALUES,
   step: 0,
   position: "",
 }
