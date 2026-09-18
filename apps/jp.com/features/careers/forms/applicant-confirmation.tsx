@@ -9,11 +9,12 @@ import {
 } from "@jp/ui/components/field"
 
 import { Checkbox } from "@jp/ui/components/checkbox"
-import { applicantConfirmation } from "@/features/careers/careers.const"
+
 import { withForm } from "@/hooks/use-app-form"
+import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantConfirmation = withForm({
-  defaultValues: applicantConfirmation,
+  defaultValues: {} as DriverFormValues,
   render: function Render({ form }) {
     return (
       <FieldGroup className="grid grid-cols-1 @2xl:grid-cols-2">

@@ -35,11 +35,11 @@ const ApplicationPage = async ({
   return (
     <>
       {/* page title */}
-      <section className="bg-highlight py-16 text-primary-foreground">
+      <section className="bg-lime-100 py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
-            <div className="mx-auto max-w-2xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+            <div className="mx-auto max-w-4xl space-y-6 text-center">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 {content.title}
               </h2>
               <p className="text-lg">{content.description}</p>
@@ -51,20 +51,19 @@ const ApplicationPage = async ({
       {/* page content */}
       <section className="mt-16">
         <Container>
-          <div className="@container grid grid-cols-8 gap-16">
+          <div className="mx-auto max-w-4xl rounded-3xl border p-6 lg:p-10">
             {/* requirments/additional details - desktop */}
-            <div className="col-span-8 lg:order-2 lg:col-span-3">
-              <div className="sticky top-24 bg-secondary p-6">
+            {/* <div className="col-span-8 lg:order-2 lg:col-span-3">
+              <div className="sticky p-6 top-24 bg-secondary">
                 <Markdown content={content.details} />
               </div>
-            </div>
-            <div className="col-span-8 lg:col-span-5">
-              {/* form */}
-              <content.form
-                position={content.title}
-                location={content.location}
-              />
-            </div>
+            </div> */}
+
+            {/* form */}
+            <content.form
+              position={content.title}
+              location={content.location}
+            />
           </div>
         </Container>
       </section>

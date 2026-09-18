@@ -5,9 +5,9 @@ import { Avatar, AvatarImage } from "@jp/ui/components/avatar"
 
 const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="to background flex overflow-hidden bg-linear-to-br from-primary to-lime-900">
-      <div className="relative hidden flex-1 flex-col px-6 md:flex">
-        <div className="w-full px-16">
+    <div className="grid min-h-svh grid-cols-1 bg-linear-to-br from-primary to-lime-900 lg:grid-cols-[1fr_600px]">
+      <div className="relative hidden flex-col pb-64 md:flex">
+        <div className="w-full px-6 lg:px-16">
           <header className="flex gap-4 py-6">
             <Avatar className="size-16 rounded-xl bg-secondary p-1">
               <AvatarImage
@@ -41,7 +41,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
           </div>
         </div>
       </div>
-      <div className="h-svh overflow-auto p-2 lg:w-[600px]">
+      <div className="overflow-auto p-2 lg:col-start-2">
         <div className="h-full rounded-2xl border bg-background shadow-lg backdrop-blur-xl">
           {children}
         </div>

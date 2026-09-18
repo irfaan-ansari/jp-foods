@@ -1,9 +1,9 @@
 import { withForm } from "@/hooks/use-app-form"
 import { FieldGroup } from "@jp/ui/components/field"
-import { applicantDetail } from "@/features/careers/careers.const"
+import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantDetails = withForm({
-  defaultValues: applicantDetail,
+  defaultValues: {} as DriverFormValues,
   render: function Render({ form }) {
     return (
       <FieldGroup className="grid grid-cols-1 @2xl:grid-cols-2">

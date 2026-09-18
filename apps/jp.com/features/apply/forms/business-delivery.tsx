@@ -3,7 +3,6 @@ import { Button } from "@jp/ui/components/button"
 import { Textarea } from "@jp/ui/components/textarea"
 import { Plus, Trash2 } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
-import { businessDelivery } from "@/features/apply/customer.const"
 import translations from "@/features/apply/customer.translations.json"
 import { DELIVERY_DAYS, DELIVERY_TIME } from "@/features/apply/customer.const"
 import {
@@ -17,9 +16,10 @@ import {
   useTranslation,
 } from "@/components/language-selector"
 import { CardDescription, CardTitle } from "@jp/ui/components/card"
+import { CustomerFormType } from "../customer.schema"
 
 export const BusinessDelivery = withForm({
-  defaultValues: businessDelivery,
+  defaultValues: {} as CustomerFormType,
   render: function Render({ form }) {
     const { t } = useTranslation(translations as Translations, "en")
 

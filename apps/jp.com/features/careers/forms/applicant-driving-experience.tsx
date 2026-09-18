@@ -7,11 +7,12 @@ import {
   EQUEPMENT_CATGORIES,
   EQUIPMENT_TYPES,
 } from "@/features/careers/careers.const"
-import { applicantDrivingExperience } from "@/features/careers/careers.const"
+
 import { withForm } from "@/hooks/use-app-form"
+import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantDrivingExperience = withForm({
-  defaultValues: applicantDrivingExperience,
+  defaultValues: {} as DriverFormValues,
   render: function Render({ form }) {
     return (
       <FieldGroup className="grid grid-cols-1 @2xl:grid-cols-2">

@@ -16,16 +16,17 @@ const ContactPage = () => {
   return (
     <React.Fragment>
       {/* page title*/}
-      <section className="bg-highlight py-16 text-primary-foreground">
+      <section className="bg-lime-100 py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 Contact us
               </h2>
               <p className="text-lg">
-                Looking for a reliable distribution partner? Get in touch with
-                our team to learn how we can support your business.
+                Looking for a reliable distribution partner? <br />
+                Get in touch with our team to learn how we can support your
+                business.
               </p>
             </div>
           </div>
@@ -37,14 +38,14 @@ const ContactPage = () => {
         <Container>
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {CONTACT_SECTIONS.contacts.map((contact, i) => (
-              <Card key={i} className="shadow-sm ring-0">
+              <Card key={i} className="shadow-sm">
                 <CardHeader className="flex items-center gap-2">
-                  <span className="text-highlight inline-flex size-12 items-center justify-center border">
-                    <contact.icon className="size-5" />
+                  <span className="inline-flex items-center justify-start text-neutral-200">
+                    <contact.icon className="size-12" />
                   </span>
                 </CardHeader>
                 <CardContent className="flex flex-col pt-6 text-base md:pt-10">
-                  <h5 className="mb-4 font-heading text-3xl font-semibold uppercase">
+                  <h5 className="mb-4 font-heading text-3xl font-semibold">
                     {contact.label}
                   </h5>
                   <a
@@ -73,7 +74,7 @@ const ContactPage = () => {
           <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-16">
             <div className="space-y-8">
               <div className="space-y-4">
-                <h2 className="flex-1 font-heading text-4xl/tight font-bold uppercase sm:text-5xl/tight md:text-7xl/tight">
+                <h2 className="flex-1 font-heading text-4xl/tight font-bold sm:text-5xl/tight md:text-7xl/tight">
                   Frequently Asked Questions
                 </h2>
                 <p className="text-muted-foreground">
@@ -118,11 +119,11 @@ const ContactPage = () => {
               </Accordion>
             </div>
             <div
-              className="space-y-8 bg-secondary p-6 lg:p-8"
+              className="space-y-8 rounded-2xl bg-secondary p-6 lg:p-8"
               id="contact-form"
             >
               <div className="space-y-4">
-                <h2 className="font-heading text-4xl font-semibold">
+                <h2 className="font-heading text-4xl font-semibold lg:text-5xl">
                   Request catalog
                 </h2>
                 <p className="text-muted-foreground">
@@ -142,7 +143,7 @@ const ContactPage = () => {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 md:gap-16">
             <div className="max-w-lg">
               <div className="sticky top-28 space-y-6">
-                <h2 className="flex-1 font-heading text-4xl/tight font-bold uppercase sm:text-5xl/tight md:text-7xl/tight">
+                <h2 className="flex-1 font-heading text-4xl/tight font-bold sm:text-5xl/tight md:text-7xl/tight">
                   Warehouses
                 </h2>
                 <p className="text-base/normal opacity-80">
@@ -154,12 +155,17 @@ const ContactPage = () => {
             </div>
             <div className="flex flex-1 flex-col gap-8">
               {CONTACT_SECTIONS.locations.map((loc) => (
-                <div className="space-y-4 bg-card p-6 shadow-sm" key={loc.name}>
-                  <h5 className="text-lg font-semibold">{loc.name}</h5>
+                <div
+                  className="space-y-4 rounded-2xl border bg-card p-6 shadow-sm"
+                  key={loc.name}
+                >
+                  <h5 className="font-heading text-2xl font-semibold">
+                    {loc.name}
+                  </h5>
                   <div className="space-y-2">
                     {loc.phone && (
                       <div className="flex items-center gap-2">
-                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                           <Phone className="size-4" />
                         </span>
                         <a
@@ -172,7 +178,7 @@ const ContactPage = () => {
                     )}
                     {loc.email && (
                       <div className="flex items-center gap-2">
-                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                           <AtSign className="size-4" />
                         </span>
                         <a
@@ -184,7 +190,7 @@ const ContactPage = () => {
                       </div>
                     )}
                     <div className="flex items-center gap-2">
-                      <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                      <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                         <MapPinned className="size-4" />
                       </span>
                       <p className="text-muted-foreground">{loc.street}</p>
@@ -192,7 +198,9 @@ const ContactPage = () => {
                   </div>
                   <div className="mt-10 space-y-8">
                     <div className="space-y-2">
-                      <h4 className="text-lg font-semibold">Office Hours</h4>
+                      <h4 className="font-heading text-lg font-semibold">
+                        Office Hours
+                      </h4>
                       <p className="opacity-80">
                         Monday to Saturday,
                         <span className="ml-2 font-medium opacity-100">
@@ -201,7 +209,9 @@ const ContactPage = () => {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      <h4 className="text-lg font-semibold">Receiving Hours</h4>
+                      <h4 className="font-heading text-lg font-semibold">
+                        Receiving Hours
+                      </h4>
                       <p className="opacity-80">
                         <span className="mr-2 font-medium opacity-100">
                           8:00 AM – 4:00 PM,

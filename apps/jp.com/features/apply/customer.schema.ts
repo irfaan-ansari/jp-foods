@@ -115,12 +115,4 @@ export const customerSchema = z.object({
   ...step6Schema.shape,
 })
 
-export type BusinessDetailsType = z.infer<typeof step1Schema>
-export type BusinessContactType = z.infer<typeof step2Schema>
-export type BusinessAdditionalContactType = z.infer<typeof step3Schema>
-export type BusinessDeliveryType = z.infer<typeof step4Schema>
-
-export type BusinessDocumentsType = z.infer<typeof step5Schema>
-export type BusinessAuthorizationType = z.infer<typeof step6Schema>
-
 export type CustomerFormType = z.infer<typeof customerSchema>

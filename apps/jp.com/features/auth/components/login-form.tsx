@@ -148,6 +148,7 @@ export function LoginForm({
               <Button
                 type="submit"
                 size="xl"
+                className="bg-sidebar-accent hover:bg-sidebar-accent/80"
                 disabled={isSubmitting || !canSubmit}
               >
                 {isSubmitting ? (
@@ -169,13 +170,7 @@ export function LoginForm({
         </div>
 
         <Field className="text-center">
-          <Button
-            type="button"
-            size="xl"
-            variant="outline"
-            className="border-primary/30 text-primary"
-            asChild
-          >
+          <Button type="button" size="xl" asChild>
             <Link href="/auth/signin">Sign in with OTP</Link>
           </Button>
         </Field>

@@ -9,17 +9,17 @@ import { CTA } from "@/components/cta"
 import Markdown from "@/components/markdown"
 import { Container } from "@/components/container"
 import { Marquee } from "@jp/ui/components/marquee"
-import { AtSign, MapPinned, Phone } from "lucide-react"
+import { AtSign, MapPin, MapPinned, Phone, Smartphone } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 
 const AboutPage = () => {
   return (
     <React.Fragment>
-      <section className="bg-highlight py-16 text-primary-foreground">
+      <section className="bg-lime-100 py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 About us
               </h2>
               <p className="text-lg">
@@ -38,7 +38,7 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
             <div className="space-y-8">
               <div className="max-w-lg space-y-4">
-                <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+                <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                   Who Are We
                 </h2>
                 <p className="text-muted-foregorund">
@@ -64,7 +64,7 @@ const AboutPage = () => {
                 alt="What we do"
                 width={900}
                 height={900}
-                className="aspect-[1/0.8] object-cover"
+                className="aspect-[1/0.8] h-auto w-full rounded-2xl object-cover"
               />
             </div>
           </div>
@@ -81,12 +81,12 @@ const AboutPage = () => {
                 alt="What we do"
                 width={900}
                 height={900}
-                className="aspect-[1/0.8] object-cover"
+                className="aspect-[1/0.8] h-auto w-full rounded-2xl object-cover"
               />
             </div>
             <div className="space-y-8">
               <div className="max-w-lg space-y-4">
-                <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+                <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                   What We Do
                 </h2>
                 <p className="text-muted-foregorund">
@@ -100,12 +100,12 @@ const AboutPage = () => {
                 </p>
               </div>
               <div className="grid grid-cols-2 gap-8">
-                <Card className="shadow-sm ring-0">
+                <Card className="shadow-sm">
                   <div className="space-y-6 px-6">
-                    <CardTitle className="font-heading text-3xl font-semibold uppercase">
+                    <CardTitle className="font-heading text-3xl font-semibold">
                       Active Customers
                     </CardTitle>
-                    {/* <div className="aspect-aquare flex h-56 items-center justify-center">
+                    {/* <div className="flex items-center justify-center h-56 aspect-aquare">
                       <AnimatedCircularProgressBar
                         min={0}
                         max={200}
@@ -116,9 +116,9 @@ const AboutPage = () => {
                     </div> */}
                   </div>
                 </Card>
-                <Card className="shadow-sm ring-0">
+                <Card className="shadow-sm">
                   <div className="space-y-6 px-6">
-                    <CardTitle className="font-heading text-3xl font-semibold uppercase">
+                    <CardTitle className="font-heading text-3xl font-semibold">
                       Coverage Areas
                     </CardTitle>
                     <CardContent className="relative mt-auto flex h-56 w-full flex-col items-center justify-center overflow-hidden text-primary-foreground"></CardContent>
@@ -134,7 +134,7 @@ const AboutPage = () => {
       <section className="mt-16 overflow-hidden">
         <Container>
           <div className="space-y-4">
-            <h2 className="min-w-xs shrink-0 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+            <h2 className="min-w-xs shrink-0 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
               coverage area
             </h2>
             <div className="flex-wrap space-y-0 overflow-hidden">
@@ -142,8 +142,9 @@ const AboutPage = () => {
                 {COVERAGE_LOCATIONS.map((area, i) => (
                   <span
                     key={i}
-                    className="inline-flex h-8 items-center justify-center border px-3"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border bg-secondary px-3"
                   >
+                    <MapPin className="size-4" />
                     {area.label}
                   </span>
                 ))}
@@ -152,7 +153,7 @@ const AboutPage = () => {
                 {COVERAGE_LOCATIONS.map((area, i) => (
                   <span
                     key={i}
-                    className="inline-flex h-8 items-center justify-center border px-3"
+                    className="inline-flex h-12 items-center justify-center gap-2 rounded-xl border bg-secondary px-3"
                   >
                     {area.label}
                   </span>
@@ -169,7 +170,7 @@ const AboutPage = () => {
                     latitude={area.lat}
                   >
                     <MarkerContent>
-                      <div className="relative inline-flex size-7 items-center justify-center rounded-full bg-primary">
+                      <div className="relative inline-flex items-center justify-center rounded-full size-7 bg-primary">
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           width="24"
@@ -199,7 +200,7 @@ const AboutPage = () => {
         <Container>
           <div className="space-y-8">
             <div className="max-w-xl space-y-4">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 How We Work
               </h2>
               <p className="text-base/normal opacity-80">
@@ -212,8 +213,11 @@ const AboutPage = () => {
 
             <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
               {ABOUT_SECTIONS.howWeWork.map((item, i) => (
-                <div key={i} className="flex flex-col gap-4 p-6 shadow-sm">
-                  <h4 className="font-heading text-3xl font-semibold uppercase">
+                <div
+                  key={i}
+                  className="flex flex-col gap-4 rounded-2xl border p-6 shadow-sm"
+                >
+                  <h4 className="font-heading text-3xl font-semibold">
                     {item.title}
                   </h4>
                   <p className="text-muted-foreground">{item.description}</p>
@@ -230,7 +234,7 @@ const AboutPage = () => {
           <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
             <div className="space-y-8">
               <div className="max-w-xl space-y-4">
-                <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+                <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                   Warehouses
                 </h2>
                 <p className="text-muted-foregorund">
@@ -246,8 +250,8 @@ const AboutPage = () => {
                     <div className="space-y-1">
                       {loc.phone && (
                         <div className="flex items-center gap-2">
-                          <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
-                            <Phone className="size-4" />
+                          <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
+                            <Smartphone className="size-4" />
                           </span>
                           <a
                             href={`tel:${loc.phone}`}
@@ -259,7 +263,7 @@ const AboutPage = () => {
                       )}
                       {loc.email && (
                         <div className="flex items-center gap-2">
-                          <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                          <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                             <AtSign className="size-4" />
                           </span>
                           <a
@@ -271,7 +275,7 @@ const AboutPage = () => {
                         </div>
                       )}
                       <div className="flex items-center gap-2">
-                        <span className="bg-highlight inline-flex size-8 items-center justify-center rounded-full text-primary-foreground shadow-sm">
+                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
                           <MapPinned className="size-4" />
                         </span>
                         <p className="text-muted-foreground">{loc.street}</p>
@@ -281,9 +285,9 @@ const AboutPage = () => {
                 ))}
               </div>
             </div>
-            <div className="space-y-8 bg-primary/20 p-8">
+            <div className="space-y-8 rounded-2xl border bg-linear-to-br from-secondary via-lime-50 to-background p-8">
               <div className="space-y-4">
-                <h2 className="font-heading text-4xl font-semibold">
+                <h2 className="font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-6xl/tight">
                   Built to grow
                 </h2>
               </div>

@@ -1,23 +1,8 @@
-import {
-  Ban,
-  CheckCircle,
-  Circle,
-  CircleOff,
-  FileText,
-  Send,
-} from "lucide-react"
+import { CustomerFormType } from "@/features/apply/customer.schema"
 
-import {
-  BusinessAdditionalContactType,
-  BusinessAuthorizationType,
-  BusinessContactType,
-  BusinessDeliveryType,
-  BusinessDetailsType,
-  BusinessDocumentsType,
-  CustomerFormType,
-} from "@/features/apply/customer.schema"
+export const DEFAULT_VALUES: CustomerFormType = {
+  step: 0,
 
-export const businessDetails: BusinessDetailsType = {
   companyName: "",
   companyType: "",
   companyDBA: "",
@@ -28,9 +13,7 @@ export const businessDetails: BusinessDetailsType = {
   companyZip: "",
   companyPhone: "",
   companyEmail: "",
-}
 
-export const businessContacts: BusinessContactType = {
   officerFirst: "",
   officerLast: "",
   officerRole: "",
@@ -40,18 +23,14 @@ export const businessContacts: BusinessContactType = {
   officerCity: "",
   officerState: "",
   officerZip: "",
-}
 
-export const businessAdditionalContact: BusinessAdditionalContactType = {
   orderingName: "",
   orderingPhone: "",
   accountPayableEmail: "",
   guarantorName: "",
   guarantorRole: "",
   salesRepresentative: "",
-}
 
-export const businessDelivery: BusinessDeliveryType = {
   lockboxPermission: "",
   deliverySchedule: [
     {
@@ -62,29 +41,15 @@ export const businessDelivery: BusinessDeliveryType = {
       instructions: "",
     },
   ],
-}
 
-export const businessDocuments: BusinessDocumentsType = {
   certificate: null as any,
   dlFront: null as any,
   dlBack: null as any,
-}
-export const businessAuthorization: BusinessAuthorizationType = {
+
   signature: null as any,
   signatureName: "",
   acknowledge: false,
   consent: false,
-}
-
-export const defaultValues: CustomerFormType = {
-  step: 0,
-  ...businessDetails,
-  ...businessContacts,
-  ...businessAdditionalContact,
-  ...businessContacts,
-  ...businessDelivery,
-  ...businessDocuments,
-  ...businessAuthorization,
 }
 
 /**
@@ -117,7 +82,7 @@ export const SALES_REPRESENTATIVE = [
   "Other",
 ]
 
-export const repsMap = {
+export const SALES_REPS = {
   Elizabeth: "elizabeth@jimenezproduce.com",
   Jorge: "jorge@jimenezproduce.com",
   Yhessenia: "yhessenia@jimenezproduce.com",
@@ -141,83 +106,3 @@ export const DELIVERY_TIME = [
   "6:00 PM – 9:00 PM",
   "Anytime",
 ]
-
-export const inviteStatusMap = {
-  invited: {
-    label: "Invited",
-    color: "#F59E0B",
-    icon: Send,
-    actions: [
-      {
-        label: "Mark as Approved",
-        action: "approved",
-        icon: CheckCircle,
-      },
-    ],
-  },
-  applied: {
-    label: "Applied",
-    color: "#3B82F6",
-    icon: FileText,
-    actions: [
-      {
-        label: "Mark as Approved",
-        action: "approved",
-        icon: CheckCircle,
-      },
-    ],
-  },
-  approved: {
-    label: "Approved",
-    color: "#22C55E",
-    icon: CheckCircle,
-    actions: [
-      {
-        label: "Revoke",
-        action: "revoked",
-        icon: Ban,
-      },
-    ],
-  },
-  new: {
-    label: "New",
-    color: "#F59E0B",
-    icon: Circle,
-    actions: [
-      {
-        label: "Approve",
-        action: "approved",
-        icon: CheckCircle,
-      },
-      {
-        label: "Reject",
-        action: "rejected",
-        icon: CircleOff,
-      },
-    ],
-  },
-  rejected: {
-    label: "Rejected",
-    color: "#EF4444",
-    icon: CircleOff,
-    actions: [
-      {
-        label: "Move to New",
-        action: "new",
-        icon: Circle,
-      },
-    ],
-  },
-  revoked: {
-    label: "Revoked",
-    color: "#71717A",
-    icon: Ban,
-    actions: [
-      {
-        label: "Move to New",
-        action: "new",
-        icon: Circle,
-      },
-    ],
-  },
-} as const

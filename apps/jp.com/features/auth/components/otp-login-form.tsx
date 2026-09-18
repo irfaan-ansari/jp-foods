@@ -274,7 +274,8 @@ export function OTPLoginForm({
             <Button
               type="submit"
               size="xl"
-              disabled={isSubmitting || !canSubmit}
+              className="bg-sidebar-accent hover:bg-sidebar-accent/80"
+              disabled={isSubmitting}
             >
               {isSubmitting ? (
                 <Loader2 className="animate-spin" />
@@ -300,8 +301,7 @@ export function OTPLoginForm({
         <Button
           type="button"
           size="xl"
-          variant="outline"
-          className="border-primary/30 text-primary"
+
           asChild
         >
           <Link href="/auth/signin-password">Sign in with password</Link>
