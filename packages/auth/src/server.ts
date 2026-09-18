@@ -192,13 +192,12 @@ export const auth = betterAuth({
     cookiePrefix: "JP",
     crossSubDomainCookies: {
       enabled: true,
-      // domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
+      domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
     },
     defaultCookieAttributes: {
       secure: true,
       sameSite: "none",
       httpOnly: true,
-      path: "/",
     },
   },
 })
