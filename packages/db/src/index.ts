@@ -1,5 +1,3 @@
-import "dotenv/config"
-
 import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http"
 
 import * as authSchema from "./schema/auth"
