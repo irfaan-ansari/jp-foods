@@ -1,9 +1,9 @@
-import "./styles.css"
+import "@jp/ui/globals.css"
 
 import { type Metadata } from "next"
 import { cn } from "@jp/ui/lib/utils"
 
-import { Manrope, Plus_Jakarta_Sans } from "next/font/google"
+import { Plus_Jakarta_Sans } from "next/font/google"
 import { AppSidebar } from "@/components/app-sidebar"
 import { Provider } from "@/components/provider"
 
@@ -14,6 +14,7 @@ const loraHeading = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-heading",
 })
+
 const manrope = Plus_Jakarta_Sans({
   subsets: ["latin"],
   variable: "--font-sans",

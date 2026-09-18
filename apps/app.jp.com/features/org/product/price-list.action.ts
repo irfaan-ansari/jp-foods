@@ -122,9 +122,6 @@ const generatePDF = async ({
           eq(product.organizationId, organizationId),
           eq(product.status, "active")
         ),
-      with: {
-        sellUnits: true,
-      },
     }),
   ])
 

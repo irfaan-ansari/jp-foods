@@ -1,7 +1,10 @@
 import { OrderGuideSelectType, TeamSelectType } from "@jp/db"
 import { Product } from "../product/product.type"
 
-type OrderGuideProduct = Product & {
+type OrderGuideProduct = Pick<
+  Product,
+  "id" | "title" | "itemCode" | "image" | "price" | "unit"
+> & {
   position: number
 }
 

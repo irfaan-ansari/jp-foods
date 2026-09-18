@@ -27,12 +27,11 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
 
     if (!result) throw new AppError("VALIDATION_ERROR")
 
-    if (appliesTo === "per_item") {
+    if (appliesTo === "per_item" && products.length > 0) {
       const priceLevelItemValues = products.map((p) => ({
         productId: p.id,
         price: p.price,
         priceLevelId: result.id,
-        sellUnitId: p.sellUnitId,
       }))
       await db.insert(priceLevelItem).values(priceLevelItemValues)
     }
@@ -52,7 +51,6 @@ export const updatePriceLevel = orgActionClient({
     const { id, data } = clientInput
 
     const { products, appliesTo, ...rest } = data
-    console.log("products", products)
 
     const [existing, existingItems] = await Promise.all([
       db.query.priceLevel.findFirst({
@@ -94,7 +92,6 @@ export const updatePriceLevel = orgActionClient({
         ? products.map((product) => ({
             priceLevelId: result.id,
             productId: product.id,
-            sellUnitId: product.sellUnitId,
             price: product.price,
           }))
         : []
@@ -103,9 +100,7 @@ export const updatePriceLevel = orgActionClient({
       .filter(
         (existingItem) =>
           !priceLevelItems.some(
-            (item) =>
-              item.productId === existingItem.productId &&
-              item.sellUnitId === existingItem.sellUnitId
+            (item) => item.productId === existingItem.productId
           )
       )
       .map((item) => item.id)
@@ -124,11 +119,7 @@ export const updatePriceLevel = orgActionClient({
           .insert(priceLevelItem)
           .values(priceLevelItems)
           .onConflictDoUpdate({
-            target: [
-              priceLevelItem.priceLevelId,
-              priceLevelItem.productId,
-              priceLevelItem.sellUnitId,
-            ],
+            target: [priceLevelItem.priceLevelId, priceLevelItem.productId],
             set: {
               price: sql`excluded.price`,
             },

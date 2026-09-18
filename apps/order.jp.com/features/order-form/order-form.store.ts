@@ -29,9 +29,9 @@ interface OrderStore {
 
   addItem: (item: OrderItemInput & { quantity: number }) => void
   updateItem: (item: OrderItemInput & { quantity: number }) => void
-  removeItem: (id: number, sellUnitId: number) => void
+  removeItem: (id: number, unitName: string) => void
 
-  getItem: (id: number, sellUnitId: number) => OrderItem | undefined
+  getItem: (id: number, unitName: string) => OrderItem | undefined
 
   clear: () => void
 }
@@ -42,7 +42,6 @@ interface OrderStore {
 function stripDerived(items: OrderItem[]): OrderItemInput[] {
   return items.map((item) => ({
     id: item.id,
-    sellUnitId: item.sellUnitId,
     itemCode: item.itemCode,
     title: item.title,
     price: item.price,
@@ -90,8 +89,7 @@ export const useOrderFormStore = create<OrderStore>()(
         set((state) => {
           const items = stripDerived(state.order.items)
           const index = items.findIndex(
-            (item) =>
-              item.id === product.id && item.sellUnitId === product.sellUnitId
+            (item) => item.id === product.id && item.unit === product.unit
           )
 
           if (index === -1) {
@@ -119,8 +117,7 @@ export const useOrderFormStore = create<OrderStore>()(
           const items = stripDerived(state.order.items)
           const index = items.findIndex(
             (item) =>
-              item.id === productInput.id &&
-              item.sellUnitId === productInput.sellUnitId
+              item.id === productInput.id && item.unit === productInput.unit
           )
 
           if (newQuantity <= 0) {
@@ -136,35 +133,52 @@ export const useOrderFormStore = create<OrderStore>()(
           return { order: recalculate(state.order, items) }
         }),
 
-      removeItem: (id, sellUnitId) =>
+      removeItem: (id, unitName) =>
         set((state) => {
           const items = stripDerived(state.order.items).filter(
-            (item) => item.id !== id || item.sellUnitId !== sellUnitId
+            (item) => item.id !== id || item.unit !== unitName
           )
           return { order: recalculate(state.order, items) }
         }),
 
-      getItem: (id, sellUnitId) =>
+      getItem: (id, unitName) =>
         get().order.items.find(
-          (item) => item.id === id && item.sellUnitId === sellUnitId
+          (item) => item.id === id && item.unit === unitName
         ),
       clear: () => set({ order: initialState }),
     }),
     {
       name: CART_KEY,
-      version: 2,
+      version: 3,
       migrate: (persisted) => {
         const previous = persisted as { order?: Partial<OrderForm> }
+        const previousItems = previous.order?.items ?? []
+        const items = previousItems.filter(
+          (item) =>
+            typeof item.unit === "string" &&
+            item.unit.length > 0 &&
+            Number.isFinite(item.inventoryPerUnit) &&
+            item.inventoryPerUnit > 0 &&
+            Number.isFinite(item.price) &&
+            item.price >= 0 &&
+            Number.isFinite(item.quantity) &&
+            item.quantity > 0
+        )
         return {
-          order: {
-            ...initialState,
-            po: previous.order?.po ?? "",
-            deliveryDate:
-              previous.order?.deliveryDate ?? initialState.deliveryDate,
-            deliveryWindow:
-              previous.order?.deliveryWindow ?? initialState.deliveryWindow,
-            deliveryInstruction: previous.order?.deliveryInstruction ?? "",
-          },
+          order: recalculate(
+            {
+              ...initialState,
+              taxRule: previous.order?.taxRule ?? initialState.taxRule,
+              charges: previous.order?.charges ?? initialState.charges,
+              po: previous.order?.po ?? "",
+              deliveryDate:
+                previous.order?.deliveryDate ?? initialState.deliveryDate,
+              deliveryWindow:
+                previous.order?.deliveryWindow ?? initialState.deliveryWindow,
+              deliveryInstruction: previous.order?.deliveryInstruction ?? "",
+            },
+            stripDerived(items)
+          ),
         }
       },
       storage: createJSONStorage(() => localStorage),

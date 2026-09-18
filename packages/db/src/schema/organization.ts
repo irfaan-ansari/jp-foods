@@ -24,6 +24,8 @@ export const product = pgTable(
       onDelete: "cascade",
     }),
     itemCode: text("item_code").notNull(),
+    unit: text("unit").notNull().default(""),
+    price: text("price").notNull().default("0"),
     type: text("type").default(""),
     description: text("description").default(""),
     categories: jsonb("categories")
@@ -33,8 +35,18 @@ export const product = pgTable(
     image: text("image").default(""),
     location: text("location"),
     trackInventory: boolean("track_inventory").default(false),
-    stock: text("stock").default(""),
+    stock: text("stock").default("0"),
     allowBackorder: boolean("allow_backorder").default(true),
+    sellUnits: jsonb("sell_units")
+      .$type<
+        {
+          name: string
+          unitConversion: string
+          minQuantity: string
+          orderIncreament: string
+        }[]
+      >()
+      .default(sql`'[]'::jsonb`),
     images: jsonb("images")
       .$type<string[]>()
       .default(sql`'[]'::jsonb`),
@@ -58,31 +70,6 @@ export const product = pgTable(
       "gin",
       table.searchText.op("gin_trgm_ops")
     ),
-  ]
-)
-
-export const productSellUnit = pgTable(
-  "product_sell_unit",
-  {
-    id: serial("id").primaryKey(),
-    productId: integer("product_id").references(() => product.id, {
-      onDelete: "cascade",
-    }),
-    name: text("name").notNull().default(""),
-    inventoryPerUnit: text("inventory_per_unit").notNull().default("1"),
-    price: text("price").notNull().default(""),
-    minQuantity: text("min_quantity").notNull().default("1"),
-    orderIncreament: text("order_increment").notNull().default("1"),
-    isBaseUnit: boolean("is_base_unit").notNull().default(false),
-    createdAt: timestamp("created_at").defaultNow(),
-    updatedAt: timestamp("updated_at")
-      .defaultNow()
-      .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
-  },
-  (table) => [
-    index("product_sell_option_productId_idx").on(table.productId),
-    unique("product_sell_option_unique").on(table.name, table.productId),
   ]
 )
 
@@ -116,9 +103,6 @@ export const priceLevelItem = pgTable(
       .references(() => product.id, {
         onDelete: "cascade",
       }),
-    sellUnitId: integer("sell_unit_id").references(() => productSellUnit.id, {
-      onDelete: "cascade",
-    }),
     price:
       text(
         "price"
@@ -134,8 +118,7 @@ export const priceLevelItem = pgTable(
     index("price_level_item_productId_idx").on(table.productId),
     unique("price_level_product_unique").on(
       table.priceLevelId,
-      table.productId,
-      table.sellUnitId
+      table.productId
     ),
   ]
 )
@@ -333,9 +316,6 @@ export const lineItem = pgTable(
       onDelete: "set null",
     }),
     productId: integer("product_id").references(() => product.id, {
-      onDelete: "set null",
-    }),
-    sellUnitId: integer("sell_unit_id").references(() => productSellUnit.id, {
       onDelete: "set null",
     }),
     title: text("title"),

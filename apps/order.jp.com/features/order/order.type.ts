@@ -1,19 +1,11 @@
-import { LineItemSelectType, OrderSelectType } from "@jp/db"
+import { LineItemSelectType, OrderSelectType, ProductSelectType } from "@jp/db"
 
 type LineItem = LineItemSelectType & {
   productId: number
   title: string
   price: string
   itemCode: string
-  product: {
-    sellUnits: {
-      id: number
-      name: string
-      minQuantity: string
-      orderIncreament: string
-      inventoryPerUnit: string
-    }[]
-  } | null
+  product: ProductSelectType | null
 }
 
 export type Orders = OrderSelectType & {

@@ -16,7 +16,6 @@ export function useDashboardInsights() {
     queryKey: ["org-dashboard-insights", organizationId],
     queryFn: () => apiClient.get("/org/dashboard/insights"),
     enabled: !!organizationId,
-    staleTime: 0,
     refetchOnWindowFocus: false,
   })
 }

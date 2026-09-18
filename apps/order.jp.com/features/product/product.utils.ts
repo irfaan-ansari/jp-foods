@@ -1,13 +1,13 @@
 import { PRODUCT_UNITS } from "./product.const"
-import { Product } from "./product.type"
+import type { PricedSellingUnit } from "@jp/utils"
 
-export function getLowestPriceUnit(sellUnits: Product["sellUnits"]) {
-  return sellUnits.reduce<Product["sellUnits"][number]>((cheapest, unit) => {
+export function getLowestPriceUnit(sellUnits: PricedSellingUnit[]) {
+  return sellUnits.reduce<PricedSellingUnit>((cheapest, unit) => {
     const pricePerBaseUnit =
-      parseFloat(unit.price) / parseFloat(unit.inventoryPerUnit)
+      parseFloat(unit.price) / parseFloat(unit.unitConversion)
 
     const cheapestPricePerBaseUnit = cheapest
-      ? parseFloat(cheapest.price) / parseFloat(cheapest.inventoryPerUnit)
+      ? parseFloat(cheapest.price) / parseFloat(cheapest.unitConversion)
       : Infinity
 
     return pricePerBaseUnit < cheapestPricePerBaseUnit ? unit : cheapest

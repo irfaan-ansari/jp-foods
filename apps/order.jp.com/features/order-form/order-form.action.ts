@@ -1,7 +1,7 @@
 "use server"
 
 import { db, lineItem, order } from "@jp/db"
-import { AppError } from "@jp/utils"
+import { AppError, getSellingUnits } from "@jp/utils"
 import { and, eq, inArray } from "drizzle-orm"
 import type { BatchItem } from "drizzle-orm/batch"
 
@@ -15,10 +15,10 @@ import {
   toOrderItemInput,
 } from "./order-form.utils"
 
-type RequestedItem = { id: number; sellUnitId: number; quantity: number }
+type RequestedItem = { id: number; unit: string; quantity: number }
 
-const lineKey = (productId: number, sellUnitId: number) =>
-  `${productId}:${sellUnitId}`
+const lineKey = (productId: number, unitName: string) =>
+  `${productId}:${unitName}`
 
 async function resolveOrderItems(
   requestedItems: RequestedItem[],
@@ -33,7 +33,6 @@ async function resolveOrderItems(
           eq(product.organizationId, organizationId),
           inArray(product.id, ids)
         ),
-      with: { sellUnits: true },
     }),
     db.query.teamProduct.findMany({
       where: (teamProduct) => eq(teamProduct.teamId, teamId),
@@ -47,7 +46,7 @@ async function resolveOrderItems(
   const inventoryByProduct = new Map<number, number>()
 
   const items = requestedItems.map((request) => {
-    const key = lineKey(request.id, request.sellUnitId)
+    const key = lineKey(request.id, request.unit)
     if (seen.has(key))
       throw new AppError("INVALID_REQUEST", {
         message: "The same product and sell unit was added twice.",
@@ -66,8 +65,8 @@ async function resolveOrderItems(
 
     const pricedProduct = resolvePrice(product)
 
-    const unit = pricedProduct.sellUnits.find(
-      (sellUnit) => sellUnit.id === request.sellUnitId
+    const unit = getSellingUnits(pricedProduct).find(
+      (sellUnit) => sellUnit.name === request.unit
     )
     if (!unit)
       throw new AppError("INVALID_REQUEST", {
@@ -76,7 +75,7 @@ async function resolveOrderItems(
 
     const minimum = Number(unit.minQuantity)
     const increment = Number(unit.orderIncreament)
-    const conversion = Number(unit.inventoryPerUnit)
+    const conversion = Number(unit.unitConversion)
     const price = Number(unit.price)
     if (
       !Number.isFinite(minimum) ||
@@ -181,7 +180,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
           ),
         with: {
           lineItems: {
-            columns: { id: true, productId: true, sellUnitId: true },
+            columns: { id: true, productId: true, unitName: true },
           },
         },
       }),
@@ -208,16 +207,16 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     })
     const existingByKey = new Map(
       existing.lineItems.map((item) => [
-        lineKey(item.productId!, item.sellUnitId!),
+        lineKey(item.productId!, item.unitName!),
         item,
       ])
     )
     const requestedKeys = new Set(
-      items.map((item) => lineKey(item.id, item.sellUnitId))
+      items.map((item) => lineKey(item.id, item.unit))
     )
     const toDelete = existing.lineItems
       .filter(
-        (item) => !requestedKeys.has(lineKey(item.productId!, item.sellUnitId!))
+        (item) => !requestedKeys.has(lineKey(item.productId!, item.unitName!))
       )
       .map((item) => item.id)
     const queries: BatchItem<"pg">[] = [
@@ -232,7 +231,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
         teamId,
         taxRate: team?.taxRule?.rate,
       })
-      const previous = existingByKey.get(lineKey(item.id, item.sellUnitId))
+      const previous = existingByKey.get(lineKey(item.id, item.unit))
       if (previous)
         queries.push(
           db

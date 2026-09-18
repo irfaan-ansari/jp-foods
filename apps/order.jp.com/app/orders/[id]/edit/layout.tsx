@@ -1,6 +1,7 @@
 "use client"
 
 import React from "react"
+import { getSellingUnits } from "@jp/utils"
 import { useParams } from "next/navigation"
 
 import {
@@ -49,20 +50,20 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
       subtotal: Number(data.subtotal),
       total: Number(data.total),
       items: data.lineItems.map((item) => {
-        const unit =
-          item.product?.sellUnits.find((unit) => unit.id === item.sellUnitId) ??
-          item.product?.sellUnits.find((unit) => unit.name === item.unitName) ??
-          item.product?.sellUnits[0]
+        const unit = item.product
+          ? getSellingUnits(item.product).find(
+              (unit) => unit.name === item.unitName
+            )
+          : undefined
         const quantity = Number(item.quantity)
         const inputOrder = {
           id: item.productId,
-          sellUnitId: unit?.id ?? item.sellUnitId ?? 0,
           title: item.title,
           itemCode: item.itemCode,
           price: Number(item.price),
           unit: item.unitName ?? unit?.name ?? "",
           inventoryPerUnit:
-            Number(unit?.inventoryPerUnit ?? item.inventoryQuantity ?? 1) /
+            Number(unit?.unitConversion ?? item.inventoryQuantity ?? 1) /
             (unit ? 1 : Math.max(quantity, 1)),
           minQuantity: Number(unit?.minQuantity ?? 1),
           orderIncrement: Number(unit?.orderIncreament ?? 1),

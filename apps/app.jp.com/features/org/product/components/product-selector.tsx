@@ -15,18 +15,10 @@ import { useInfiniteProducts } from "@/features/org/product/product.data"
 import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
-type SellUnit = {
-  id: number
-  name: string
-  price: string
-}
-type ProductType = {
-  id: number
-  title: string
-  itemCode: string
-  image: string
-  sellUnits: SellUnit[]
-}
+type ProductType = Pick<
+  import("@jp/db").ProductSelectType,
+  "id" | "title" | "itemCode" | "price" | "unit" | "sellUnits"
+> & { image: string }
 
 type ProductSelectorProps = {
   selected: number | number[] | undefined
@@ -68,8 +60,10 @@ export const ProductSelector = ({
         title: t.title!,
         itemCode: t.itemCode!,
         status: t.status!,
-        image: t.image!,
+        image: t.image ?? "",
         sellUnits: t.sellUnits,
+        price: t.price,
+        unit: t.unit,
       })) ?? []
     )
   }, [data])
@@ -117,21 +111,8 @@ export const ProductSelector = ({
                         </span>
                       </div>
 
-                      <div
-                        className={`hidden shrink-0 space-y-0 ${item.sellUnits?.length <= 1 ? "self-center" : ""}`}
-                      >
-                        {item.sellUnits?.slice(0, 2)?.map((unit) => (
-                          <div key={unit.id} className="text-right">
-                            <FieldTitle className="line-clamp-1 w-full text-right">
-                              <span className="text-xs font-medium">
-                                {formatUSD(unit.price)}
-                              </span>
-                              <span className="pl-0.5 text-[10px] text-muted-foreground">
-                                • {unit.name}
-                              </span>
-                            </FieldTitle>
-                          </div>
-                        ))}
+                      <div className="shrink-0 text-xs text-muted-foreground">
+                        {formatUSD(item.price)} / {item.unit}
                       </div>
                     </div>
                   </FieldContent>

@@ -7,7 +7,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
-import { formatUSD } from "@jp/utils"
+import { formatUSD, getSellingUnits, type PricedSellingUnit } from "@jp/utils"
 import { cn } from "@jp/ui/lib/utils"
 import { format } from "date-fns/format"
 import { getUnit } from "../product.utils"
@@ -37,13 +37,10 @@ export const ProductCard = React.memo(function ProductCard({
   data: Product
   sortable?: boolean
 }) {
-  const [sellUnitId, setSellUnitId] = React.useState(
-    () =>
-      (data.sellUnits.find((unit) => unit.isBaseUnit) ?? data.sellUnits[0])
-        ?.id ?? 0
-  )
-  const selectedUnit = data.sellUnits.find((unit) => unit.id === sellUnitId)
-  const { value, setQuantity } = useOrderItemQuantity(data, sellUnitId)
+  const sellUnits = getSellingUnits(data)
+  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
+  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
   const layout = useOrderFormUI((state) => state.layout)
 
   if (layout === "list") return <ProductRow data={data} sortable={sortable} />
@@ -93,9 +90,9 @@ export const ProductCard = React.memo(function ProductCard({
         <QuantityStepper
           value={value}
           onChange={setQuantity}
-          sellUnits={data.sellUnits}
+          sellUnits={sellUnits}
           selectedUnit={selectedUnit}
-          onSelectUnit={setSellUnitId}
+          onSelectUnit={setUnitName}
           className="mt-2"
         />
       </CardContent>
@@ -110,13 +107,10 @@ const ProductRow = React.memo(function ProductRow({
   data: Product
   sortable?: boolean
 }) {
-  const [sellUnitId, setSellUnitId] = React.useState(
-    () =>
-      (data.sellUnits.find((unit) => unit.isBaseUnit) ?? data.sellUnits[0])
-        ?.id ?? 0
-  )
-  const selectedUnit = data.sellUnits.find((unit) => unit.id === sellUnitId)
-  const { value, setQuantity } = useOrderItemQuantity(data, sellUnitId)
+  const sellUnits = getSellingUnits(data)
+  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
+  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
 
   return (
     <Card
@@ -162,9 +156,9 @@ const ProductRow = React.memo(function ProductRow({
         <QuantityStepper
           value={value}
           onChange={setQuantity}
-          sellUnits={data.sellUnits}
+          sellUnits={sellUnits}
           selectedUnit={selectedUnit}
-          onSelectUnit={setSellUnitId}
+          onSelectUnit={setUnitName}
           className="grid self-center"
         />
       </CardContent>
@@ -181,9 +175,9 @@ const QuantityStepper = ({
   className,
 }: {
   value: number | undefined
-  sellUnits: Product["sellUnits"]
-  selectedUnit?: Product["sellUnits"][number]
-  onSelectUnit: (id: number) => void
+  sellUnits: PricedSellingUnit[]
+  selectedUnit?: PricedSellingUnit
+  onSelectUnit: (name: string) => void
   className?: string
   onChange?: (newValue: number) => void
 }) => {
@@ -241,17 +235,17 @@ const QuantityStepper = ({
         {sellUnits.map((unit) => (
           <Button
             variant="ghost"
-            key={unit.id}
+            key={unit.name}
             className="justify-start"
             onClick={(e) => {
               e.stopPropagation()
-              onSelectUnit(unit.id)
+              onSelectUnit(unit.name)
               setOpen(false)
             }}
           >
             {formatUSD(unit?.price ?? 0)}
             <span className="text-xs text-muted-foreground">| {unit.name}</span>
-            {selectedUnit?.id === unit.id && (
+            {selectedUnit?.name === unit.name && (
               <Check className="ml-auto size-3.5 text-muted-foreground" />
             )}
           </Button>

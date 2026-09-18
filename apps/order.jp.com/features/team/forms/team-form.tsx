@@ -51,7 +51,7 @@ export const TeamForm = ({
       if (file && file instanceof File) {
         const blob = await upload(`team/${file.name}`, file, {
           access: "public",
-          handleUploadUrl: "/api/upload",
+          handleUploadUrl: "/api/v1/upload",
         })
 
         if (blob.url) value.logo = blob.url

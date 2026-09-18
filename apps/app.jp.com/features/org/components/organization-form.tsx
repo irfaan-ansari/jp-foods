@@ -65,7 +65,7 @@ export const OrganizationForm = ({
         toast.loading("Uploading logo...", { id: toastId })
         const blob = await upload(`organization/${file.name}`, file, {
           access: "public",
-          handleUploadUrl: "/api/upload",
+          handleUploadUrl: "/api/v1/upload",
         })
 
         if (blob.url) value.logo = blob.url

@@ -3,7 +3,6 @@ type Charges = { type: string; amount: number }
 
 export type OrderItemInput = {
   id: number
-  sellUnitId: number
   itemCode: string
   title: string
   price: number

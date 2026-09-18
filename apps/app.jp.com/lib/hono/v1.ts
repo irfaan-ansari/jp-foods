@@ -5,9 +5,11 @@ import { crmRoutes } from "./routes/crm"
 import { orgRoutes } from "./routes/org"
 import { teamRoutes } from "./routes/team"
 import { driverRoutes } from "./routes/driver"
+import { uploadRoutes } from "./routes/uploads"
 
 export const v1 = new Hono()
   // public routes
+  .route("/upload", uploadRoutes)
   .route("/products", productRoutes)
 
   // admin routes

@@ -37,7 +37,6 @@ export const productRoute = app
 
     const response = await db.query.product.findMany({
       where: filters,
-      with: { sellUnits: true },
       limit,
       offset,
       orderBy: [desc(product.createdAt), asc(product.id)],
@@ -91,7 +90,6 @@ export const productRoute = app
 
     const response = await db.query.product.findMany({
       where: filters,
-      with: { sellUnits: true },
       limit,
       offset,
       orderBy: [desc(product.createdAt), asc(product.id)],
@@ -150,9 +148,6 @@ export const productRoute = app
     const response = await db.query.product.findFirst({
       where: (p, { and, eq }) =>
         and(eq(p.id, Number(id)), eq(p.organizationId, organizationId)),
-      with: {
-        sellUnits: true,
-      },
     })
 
     if (!response) throw new AppError("NOT_FOUND")

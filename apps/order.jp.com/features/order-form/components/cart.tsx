@@ -50,7 +50,7 @@ export const Cart = () => {
           {items.map((item) => (
             <div
               className="flex items-center gap-2 not-first:pt-2 not-last:pb-2"
-              key={`${item.id}:${item.sellUnitId}`}
+              key={`${item.id}:${item.unit}`}
             >
               <Avatar
                 className="size-12! rounded-xl bg-neutral-100 **:rounded-xl"
@@ -86,7 +86,7 @@ export const Cart = () => {
                   variant="destructive"
                   className="ml-auto"
                   onClick={() => {
-                    removecartItem(item.id, item.sellUnitId)
+                    removecartItem(item.id, item.unit)
                   }}
                 >
                   <TrashBinMinimalistic />

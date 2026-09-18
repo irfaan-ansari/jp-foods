@@ -6,7 +6,6 @@ const HomePage = async () => {
   return (
     <React.Fragment>
       <PageHeader title="Dashboard" />
-
       <PageContent loading={true} />
     </React.Fragment>
   )

@@ -1,20 +1,16 @@
-import {
+import type {
   PriceLevelItemSelectType,
   PriceLevelSelectType,
   ProductSelectType,
 } from "@jp/db"
 
-type SellUnit = {
-  id: number
-  name: string
-  basePrice: string
-  price: string
-}
 type PriceLeveItem = Pick<
   ProductSelectType,
   "id" | "title" | "image" | "itemCode"
 > & {
-  sellUnits: SellUnit[]
+  unit: string
+  basePrice: string
+  price: string
 }
 
 export type PriceLevel = PriceLevelSelectType & {
@@ -31,3 +27,10 @@ export type PriceLevelBadge = {
 }
 
 export type PriceLevelItem = PriceLevelItemSelectType
+
+export type PriceLevelConfig = Pick<
+  PriceLevelSelectType,
+  "status" | "appliesTo" | "adjustmentType" | "adjustmentValue"
+> & {
+  priceLevelItem: Pick<PriceLevelItemSelectType, "productId" | "price">[]
+}

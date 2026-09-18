@@ -63,7 +63,6 @@ export const products = app
             where: (li, { eq }) => eq(li.teamId, teamId),
             orderBy: (li, { desc }) => [desc(li.createdAt)],
           },
-          sellUnits: true,
         },
         limit,
         offset,

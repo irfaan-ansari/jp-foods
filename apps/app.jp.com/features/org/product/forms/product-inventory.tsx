@@ -63,11 +63,9 @@ export const ProductInventory = withForm({
         <form.Subscribe
           selector={(state) => ({
             trackInventory: state.values.trackInventory,
-            inventoryUnit: state.values.sellUnits.filter(
-              (unit) => unit.isBaseUnit
-            )?.[0]?.name,
+            unit: state.values.unit,
           })}
-          children={({ trackInventory, inventoryUnit }) => {
+          children={({ trackInventory, unit }) => {
             return (
               <CardContent>
                 <FieldGroup
@@ -79,8 +77,7 @@ export const ProductInventory = withForm({
                       <field.TextField
                         label="Current Stock"
                         inputMode="number"
-                        placeholder={`Available stock in ${getUnit(inventoryUnit)?.label}`}
-                        suffix={getUnit(inventoryUnit)?.label}
+                        suffix={getUnit(unit)?.value}
                       />
                     )}
                   />

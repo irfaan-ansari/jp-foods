@@ -1,4 +1,5 @@
 import React from "react"
+import { getSellingUnits } from "@jp/utils"
 import { Plus } from "lucide-react"
 import { Guide } from "../guide.type"
 import { Tooltip } from "@jp/ui/components/jp"
@@ -58,7 +59,7 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
 
   const handleAddToCart = () => {
     for (const item of data.items) {
-      if (item.sellUnits.length === 0) continue
+      if (getSellingUnits(item).length === 0) continue
       const orderItem = toOrderItemInput(item)
       addItem({
         ...orderItem,

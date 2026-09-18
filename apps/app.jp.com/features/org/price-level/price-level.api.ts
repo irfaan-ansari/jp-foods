@@ -27,7 +27,7 @@ export const priceLevelRoutes = app
       db.query.priceLevel.findMany({
         where: filters,
         with: {
-          priceLevelItem: { with: { product: { with: { sellUnits: true } } } },
+          priceLevelItem: { with: { product: true } },
         },
         limit: Number(limit),
         offset,
@@ -55,51 +55,15 @@ export const priceLevelRoutes = app
     const transformed = response.map((item) => {
       const { priceLevelItem, ...rest } = item
 
-      const productsMap = new Map<
-        number,
-        {
-          id: number
-          title: string
-          itemCode: string
-          image: string | null
-          sellUnits: {
-            id: number
-            name: string
-            basePrice: string | null
-            price: string
-          }[]
-        }
-      >()
-
-      for (const priceItem of priceLevelItem) {
-        const product = priceItem.product
-
-        const sellUnit = product.sellUnits.find(
-          (unit) => unit.id === priceItem.sellUnitId
-        )
-
-        if (!sellUnit) continue
-
-        const existing = productsMap.get(product.id)
-
-        productsMap.set(product.id, {
-          id: product.id,
-          title: product.title,
-          itemCode: product.itemCode,
-          image: product.image,
-          sellUnits: [
-            ...(existing?.sellUnits ?? []),
-            {
-              id: sellUnit.id,
-              name: sellUnit.name,
-              basePrice: sellUnit.price,
-              price: priceItem.price,
-            },
-          ],
-        })
-      }
-
-      const products = [...productsMap.values()]
+      const products = priceLevelItem.map(({ product, price }) => ({
+        id: product.id,
+        title: product.title,
+        itemCode: product.itemCode,
+        image: product.image,
+        unit: product.unit,
+        basePrice: product.price,
+        price,
+      }))
 
       return {
         ...rest,

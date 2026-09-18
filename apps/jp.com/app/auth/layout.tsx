@@ -30,7 +30,7 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
           <span className="absolute right-44 bottom-44 size-40 animate-pulse rounded-full border-2 border-lime-100"></span>
           <div className="mt-16 flex h-full max-w-xl flex-col items-start gap-6">
             <div className="space-y-8">
-              <h2 className="text-7xl font-bold">
+              <h2 className="font-heading text-7xl font-bold">
                 Fresh ordering <br /> made simple
               </h2>
               <p className="max-w-xl text-lg text-pretty text-foreground">

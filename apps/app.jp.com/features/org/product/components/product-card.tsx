@@ -1,21 +1,16 @@
 import React from "react"
 import Image from "next/image"
-import { toast } from "sonner"
-import { ImageOff } from "lucide-react"
-import { useQueryClient } from "@tanstack/react-query"
-import { TrashBinMinimalistic } from "@solar-icons/react"
 
-import { Button } from "@jp/ui/components/button"
+import { ImageOff } from "lucide-react"
+
 import { Badge } from "@jp/ui/components/badge"
 import { Skeleton } from "@jp/ui/components/skeleton"
-import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
+
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 
 import type { Product } from "@/features/org/product/product.type"
 import { ProductPrice } from "@/features/org/product/components/product-price"
 
-import { deleteProduct } from "../product.action"
-import { OrgAccess } from "@/features/auth/components/org-permission"
 import { StatusBadge } from "@/components/status-badge"
 import { STATUS } from "../product.const"
 import { CopyButton } from "@jp/ui/components/jp"
@@ -75,11 +70,7 @@ export const ProductCard = ({ data }: { data: Product }) => {
         </CardTitle>
 
         <div className="font-semibold">
-          <ProductPrice
-            sellUnits={data.sellUnits}
-            stock={data.stock ?? ""}
-            trackInventory={!!data.trackInventory}
-          />
+          <ProductPrice unit={data.unit ?? ""} price={data.price ?? ""} />
         </div>
       </CardContent>
     </Card>

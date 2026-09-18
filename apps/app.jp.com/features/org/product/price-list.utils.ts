@@ -62,6 +62,7 @@ export const groupProducts = (
 
   for (const key of GROUP_ORDER) {
     const groupName = GROUP_MAP[key]
+    if (!groupName) continue
     const products = groupedProducts[groupName]
 
     if (products) {

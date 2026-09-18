@@ -8,7 +8,7 @@ import type { Promotion as PromotionType } from "../promotion.type"
 import { QueryBoundary } from "@/components/query-boundry"
 import { usePromotions } from "@/features/promotion/promotion.data"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
-import { formatUSD } from "@jp/utils"
+import { getSellingUnits, formatUSD } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import { ImageOff, Plus, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
@@ -124,11 +124,10 @@ function PromotionToast({
   id: number | string
   product: PromotionType["products"][number]
 }) {
-  const sellUnit =
-    product.sellUnits.find((unit) => unit.isBaseUnit) ?? product.sellUnits[0]
+  const sellUnit = getSellingUnits(product)[0]
   const { setQuantity, value } = useOrderItemQuantity(
     product,
-    sellUnit?.id ?? 0
+    sellUnit?.name ?? ""
   )
   return (
     <div

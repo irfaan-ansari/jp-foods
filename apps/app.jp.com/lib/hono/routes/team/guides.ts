@@ -33,7 +33,6 @@ export const guides = app.get("/", async (c) => {
                   where: (lineItem, { eq }) => eq(lineItem.teamId, teamId),
                   orderBy: (li, { desc }) => [desc(li.createdAt)],
                 },
-                sellUnits: true,
               },
             },
           },

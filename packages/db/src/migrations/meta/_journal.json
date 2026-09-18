@@ -1072,6 +1072,34 @@
       "when": 1789658932838,
       "tag": "0152_large_wonder_man",
       "breakpoints": true
+    },
+    {
+      "idx": 153,
+      "version": "7",
+      "when": 1789714377760,
+      "tag": "0153_cultured_whistler",
+      "breakpoints": true
+    },
+    {
+      "idx": 154,
+      "version": "7",
+      "when": 1789714937710,
+      "tag": "0154_fearless_grandmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 155,
+      "version": "7",
+      "when": 1789715917762,
+      "tag": "0155_sturdy_carnage",
+      "breakpoints": true
+    },
+    {
+      "idx": 156,
+      "version": "7",
+      "when": 1789726153605,
+      "tag": "0156_dapper_master_chief",
+      "breakpoints": true
     }
   ]
 }

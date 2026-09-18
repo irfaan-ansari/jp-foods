@@ -86,7 +86,7 @@ const orderApp = new Hono<TeamAppContext>()
           eq(o.organizationId, organizationId)
         ),
       with: {
-        lineItems: { with: { product: { with: { sellUnits: true } } } },
+        lineItems: { with: { product: true } },
       },
     })
 

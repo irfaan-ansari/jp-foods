@@ -6,7 +6,7 @@ export { CustomerApplicationAdminEmail } from "./customer-application-admin-emai
 export { CustomerApplicationApprovedEmail } from "./customer-application-approved-email"
 export { CustomerApplicationDeclinedEmail } from "./customer-application-declined-email"
 export { CustomerApplicationOnHoldEmail } from "./customer-application-on-hold-email"
-export { CustomerApplicationInvitationEmail } from "./customer-application-invitation-email"
+
 export { CustomerApplicationReceivedEmail } from "./customer-application-received-email"
 export { JobApplicationAdminEmail } from "./job-application-admin-email"
 export { JobApplicationReceivedEmail } from "./job-application-received-email"

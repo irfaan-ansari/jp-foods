@@ -1,4 +1,30 @@
 import { PRODUCT_UNITS } from "./product.const"
+import type { PricedSellingUnit, Product } from "./product.type"
+
+export const getSellingUnits = (
+  product: Pick<Product, "price" | "unit" | "sellUnits">
+): PricedSellingUnit[] => {
+  const units = product.sellUnits?.length
+    ? product.sellUnits
+    : product.unit
+      ? [
+          {
+            name: product.unit,
+            unitConversion: "1",
+            minQuantity: "1",
+            orderIncreament: "1",
+          },
+        ]
+      : []
+
+  return units.map((unit) => ({
+    ...unit,
+    price: String(
+      Math.round(Number(product.price) * Number(unit.unitConversion) * 100) /
+        100
+    ),
+  }))
+}
 
 export const getAvailableUnits = (units: string[], index: number) => {
   const currentUnit = units[index]
@@ -13,16 +39,7 @@ export const getAvailableUnits = (units: string[], index: number) => {
   )
 }
 
-export const getInventoryUnits = (units: string[]) => {
-  return PRODUCT_UNITS.filter((unit) => units.includes(unit.value))
-}
-
 export const getUnit = (value: string | undefined) => {
   if (!value) return null
   return PRODUCT_UNITS.find((u) => u.value === value)
-}
-
-export function getBaseUnit(units: { isBaseUnit?: boolean; name: string }[]) {
-  const unit = units.find((unit) => unit.isBaseUnit === true)
-  return getUnit(unit?.name ?? "")
 }

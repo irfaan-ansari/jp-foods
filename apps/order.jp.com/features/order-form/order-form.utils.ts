@@ -1,3 +1,4 @@
+import { getSellingUnits, type PricedSellingUnit } from "@jp/utils"
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
@@ -21,22 +22,18 @@ export const toOrderItemInputs = (product: Partial<Product>[]) => {
 
 export const toOrderItemInput = (
   product: Partial<Product>,
-  selectedUnit?: Product["sellUnits"][number]
+  selectedUnit?: PricedSellingUnit
 ) => {
-  const sellUnit =
-    selectedUnit ??
-    product.sellUnits?.find((unit) => unit.isBaseUnit) ??
-    product.sellUnits?.[0]
+  const sellUnit = selectedUnit ?? getSellingUnits(product)[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
   const { id, title, isTaxable, itemCode, image, categories } = product
   return {
     id: id!,
-    sellUnitId: sellUnit.id,
     title: title!,
     price: Number(sellUnit.price),
     itemCode: itemCode!,
     unit: sellUnit.name,
-    inventoryPerUnit: Number(sellUnit.inventoryPerUnit),
+    inventoryPerUnit: Number(sellUnit.unitConversion),
     minQuantity: Number(sellUnit.minQuantity),
     orderIncrement: Number(sellUnit.orderIncreament),
     isTaxable: !!isTaxable,
@@ -127,7 +124,6 @@ export const toInsertLineItems = ({
 }) =>
   items.map((item) => ({
     productId: item.id,
-    sellUnitId: item.sellUnitId,
     title: item.title,
     image: item.image,
     itemCode: item.itemCode,

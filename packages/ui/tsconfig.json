@@ -1,6 +1,7 @@
 {
   "extends": "@jp/typescript-config/react-library.json",
   "compilerOptions": {
+    "noUncheckedIndexedAccess": true,
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {
