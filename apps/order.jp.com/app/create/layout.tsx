@@ -40,7 +40,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
             New Guide
           </Link>
         </Button>
-        <Button onClick={() => setCartOpen(true)}>
+        <Button onClick={() => setCartOpen(true)} className="tabular-nums">
           {items.length > 0 ? <BagCheck /> : <BagCross />}
           View Cart ({items.length})
         </Button>

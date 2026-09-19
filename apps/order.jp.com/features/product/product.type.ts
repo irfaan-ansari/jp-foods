@@ -8,11 +8,19 @@ type LastOrder = {
   createdAt: Date
 }
 
-export type Product = ProductSelectType & {
-  lastOrder?: LastOrder | undefined
+export type SellUnit = NonNullable<ProductSelectType["sellUnits"]>[number] & {
+  price?: string
 }
 
-export type SellingUnit = NonNullable<Product["sellUnits"]>[number]
-export type PricedSellingUnit = SellingUnit & { price: string }
+export type PricedSellingUnit = NonNullable<
+  ProductSelectType["sellUnits"]
+>[number] & {
+  price: string
+}
+
+export type Product = Omit<ProductSelectType, "sellUnits"> & {
+  sellUnits: SellUnit[]
+  lastOrder?: LastOrder | undefined
+}
 
 export type Category = string

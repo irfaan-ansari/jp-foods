@@ -25,128 +25,111 @@ import { OverviewChart } from "./overview"
 import { StatCard } from "./stat-card"
 
 export function DashboardClient() {
-  const dashboard = useOrderDashboard()
+  const { data: dashboard, isPending, isError } = useOrderDashboard()
 
-  return (
-    <QueryBoundary query={dashboard} loading={<DashboardSkeleton />}>
-      {({ data }) => (
-        <div className="space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-            <StatCard
-              title="Open orders"
-              value={String(data.stats.openOrderCount)}
-              description="Currently being fulfilled"
-              icon={
-                <IconTile variant="elevated">
-                  <Clock3 className="text-amber-500" />
-                </IconTile>
-              }
-            />
-            <StatCard
-              title="Orders this month"
-              value={String(data.stats.monthOrderCount)}
-              description={`${data.stats.totalOrderCount} orders in total`}
-              icon={
-                <IconTile variant="elevated">
-                  <PackageCheck className="text-lime-500" />
-                </IconTile>
-              }
-            />
-            <StatCard
-              title="Spend this month"
-              value={formatUSD(data.stats.monthSpend)}
-              description="Including tax and order charges"
-              icon={
-                <IconTile variant="elevated">
-                  <Wallet className="text-purple-500" />
-                </IconTile>
-              }
-            />
-            <StatCard
-              title="Average order"
-              value={formatUSD(
-                data.stats.monthOrderCount
-                  ? data.stats.monthSpend / data.stats.monthOrderCount
-                  : 0
-              )}
-              description="For orders placed this month"
-              icon={
-                <IconTile variant="elevated">
-                  <ReceiptText className="text-sky-500" />
-                </IconTile>
-              }
-            />
-          </div>
-
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
-            <OverviewChart data={data.spend} />
-            <OrderGuides />
-          </div>
-
-          <DashboardCard
-            title="Recent orders"
-            description="Track your latest orders and delivery dates"
-            action={
-              <Button asChild size="sm" variant="ghost">
-                <Link href="/orders">
-                  View all <ArrowRight className="size-3.5" />
-                </Link>
-              </Button>
-            }
-          >
-            {data.recentOrders.length ? (
-              <div className="divide-y divide-dashed">
-                {data.recentOrders.map((order) => (
-                  <Link
-                    href={`/orders/${order.id}`}
-                    key={order.id}
-                    className="flex items-center gap-4 px-4 py-3 hover:bg-secondary/50"
-                  >
-                    <div className="min-w-0 flex-1 space-y-1">
-                      <div className="flex items-center gap-2">
-                        <CardTitle>Order #{order.id}</CardTitle>
-                        <StatusBadge status={order.status} />
-                      </div>
-                      <CardDescription className="text-xs">
-                        Placed {formatDate(order.createdAt)} ·{" "}
-                        {order.lineItemCount ?? 0} items
-                      </CardDescription>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-semibold">{formatUSD(order.total)}</p>
-                      <p className="text-xs text-muted-foreground">
-                        Delivery {formatDate(order.deliveryDate)}
-                      </p>
-                    </div>
-                    <ArrowRight className="size-4 text-muted-foreground" />
-                  </Link>
-                ))}
-              </div>
-            ) : (
-              <div className="py-8 text-center text-sm text-muted-foreground">
-                Your recent orders will appear here.
-              </div>
-            )}
-          </DashboardCard>
-        </div>
-      )}
-    </QueryBoundary>
-  )
-}
-
-function DashboardSkeleton() {
+  const data = dashboard?.data
   return (
     <div className="space-y-6">
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {Array.from({ length: 4 }).map((_, index) => (
-          <Skeleton key={index} className="h-40 rounded-xl" />
-        ))}
+        <StatCard
+          title="Open orders"
+          value={String(data?.stats?.openOrderCount)}
+          loading={isPending}
+          icon={
+            <IconTile variant="elevated">
+              <Clock3 className="text-amber-500" />
+            </IconTile>
+          }
+        />
+        <StatCard
+          title="Orders this month"
+          value={String(data?.stats?.monthOrderCount)}
+          loading={isPending}
+          description={`${data?.stats?.totalOrderCount} orders in total`}
+          icon={
+            <IconTile variant="elevated">
+              <PackageCheck className="text-lime-500" />
+            </IconTile>
+          }
+        />
+        <StatCard
+          title="Spend this month"
+          value={formatUSD(data?.stats?.monthSpend!)}
+          loading={isPending}
+          description="Including tax and order charges"
+          icon={
+            <IconTile variant="elevated">
+              <Wallet className="text-purple-500" />
+            </IconTile>
+          }
+        />
+        <StatCard
+          title="Average order"
+          loading={isPending}
+          value={formatUSD(
+            data?.stats?.monthOrderCount
+              ? data?.stats?.monthSpend / data?.stats?.monthOrderCount
+              : 0
+          )}
+          description="For orders placed this month"
+          icon={
+            <IconTile variant="elevated">
+              <ReceiptText className="text-sky-500" />
+            </IconTile>
+          }
+        />
       </div>
-      <div className="grid gap-6 xl:grid-cols-3">
-        <Skeleton className="h-96 rounded-xl xl:col-span-2" />
-        <Skeleton className="h-96 rounded-xl" />
+
+      <div className="grid gap-6 xl:grid-cols-[minmax(0,2fr)_minmax(18rem,1fr)]">
+        <OverviewChart data={data?.spend!} loading={isPending} />
+        <OrderGuides />
       </div>
-      <Skeleton className="h-72 rounded-xl" />
+
+      <DashboardCard
+        title="Recent orders"
+        description="Track your latest orders and delivery dates"
+        action={
+          <Button asChild size="sm" variant="ghost">
+            <Link href="/orders">
+              View all <ArrowRight className="size-3.5" />
+            </Link>
+          </Button>
+        }
+      >
+        {data?.recentOrders?.length ? (
+          <div className="divide-y divide-dashed">
+            {data.recentOrders.map((order) => (
+              <Link
+                href={`/orders/${order.id}`}
+                key={order.id}
+                className="flex items-center gap-4 px-4 py-3 hover:bg-secondary/50"
+              >
+                <div className="flex-1 min-w-0 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CardTitle>Order #{order.id}</CardTitle>
+                    <StatusBadge status={order.status} />
+                  </div>
+                  <CardDescription className="text-xs">
+                    Placed {formatDate(order.createdAt)} ·{" "}
+                    {order.lineItemCount ?? 0} items
+                  </CardDescription>
+                </div>
+                <div className="text-right">
+                  <p className="font-semibold">{formatUSD(order.total)}</p>
+                  <p className="text-xs text-muted-foreground">
+                    Delivery {formatDate(order.deliveryDate)}
+                  </p>
+                </div>
+                <ArrowRight className="size-4 text-muted-foreground" />
+              </Link>
+            ))}
+          </div>
+        ) : (
+          <div className="py-8 text-sm text-center text-muted-foreground">
+            Your recent orders will appear here.
+          </div>
+        )}
+      </DashboardCard>
     </div>
   )
 }

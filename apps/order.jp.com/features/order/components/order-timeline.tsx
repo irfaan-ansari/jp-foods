@@ -114,7 +114,7 @@ export function OrderTimeline({ data }: Props) {
                 <TimelineIndicator
                   className={cn(
                     "flex size-6 items-center justify-center border-none",
-                    state === "completed" && "bg-emerald-500 text-white",
+                    state === "completed" && "bg-primary text-white",
                     state === "current" && "bg-primary text-primary-foreground",
                     state === "upcoming" && "bg-muted text-muted-foreground",
                     state === "cancelled" && "bg-destructive text-white"
