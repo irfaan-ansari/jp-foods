@@ -14,7 +14,7 @@ export const twilioSendOTP = async ({
   return await twilioClient.verify.v2
     .services(serviceId!)
     .verifications.create({
-      to: `+1${phoneNumber}`,
+      to: `${phoneNumber}`,
       channel: "sms",
     })
 }
@@ -29,7 +29,7 @@ export const twilioVerifyOTP = async ({
   return await twilioClient.verify.v2
     .services(serviceId!)
     .verificationChecks.create({
-      to: `+1${phoneNumber}`,
+      to: `${phoneNumber}`,
       code,
     })
 }
