@@ -7,7 +7,7 @@ export const CTA = ({ className }: { className?: string }) => {
   return (
     <section
       className={cn(
-        "mt-16 bg-linear-to-b from-lime-200 via-lime-100 to-background py-16",
+        "mt-16 bg-linear-to-b from-primary via-lime-100 to-background py-16",
         className
       )}
     >

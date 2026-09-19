@@ -9,17 +9,36 @@ import { CTA } from "@/components/cta"
 import Markdown from "@/components/markdown"
 import { Container } from "@/components/container"
 import { Marquee } from "@jp/ui/components/marquee"
-import { AtSign, MapPin, MapPinned, Phone, Smartphone } from "lucide-react"
+import { AtSign, MapPin, MapPinned, Smartphone } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
+import { OrbitingCircles } from "@jp/ui/components/orbiting-circles"
+import {
+  Map,
+  MapMarker,
+  MarkerContent,
+  MarkerTooltip,
+} from "@jp/ui/components/map"
+import { AnimatedCircularProgressBar } from "@jp/ui/components/animated-circular-progress-bar"
+import { Metadata } from "next"
+
+export const metadata: Metadata = {
+  title: "About",
+  description:
+    "Learn about our commitment to reliable foodservice distribution, fresh produce sourcing, and dependable delivery for Gulf Coast restaurants.",
+}
+
+const uniqueCodes = [
+  ...new Set(COVERAGE_LOCATIONS.map((item) => item.label.slice(-2))),
+]
 
 const AboutPage = () => {
   return (
     <React.Fragment>
-      <section className="bg-lime-100 py-16">
+      <section className="bg-secondary py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold text-primary sm:text-5xl/tight md:text-7xl/tight">
                 About us
               </h2>
               <p className="text-lg">
@@ -105,7 +124,7 @@ const AboutPage = () => {
                     <CardTitle className="font-heading text-3xl font-semibold">
                       Active Customers
                     </CardTitle>
-                    {/* <div className="flex items-center justify-center h-56 aspect-aquare">
+                    <div className="aspect-aquare flex h-56 items-center justify-center">
                       <AnimatedCircularProgressBar
                         min={0}
                         max={200}
@@ -113,7 +132,7 @@ const AboutPage = () => {
                         gaugePrimaryColor="#80b83a"
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                       />
-                    </div> */}
+                    </div>
                   </div>
                 </Card>
                 <Card className="shadow-sm">
@@ -121,7 +140,28 @@ const AboutPage = () => {
                     <CardTitle className="font-heading text-3xl font-semibold">
                       Coverage Areas
                     </CardTitle>
-                    <CardContent className="relative mt-auto flex h-56 w-full flex-col items-center justify-center overflow-hidden text-primary-foreground"></CardContent>
+                    <CardContent className="relative mt-auto flex h-56 w-full flex-col items-center justify-center overflow-hidden text-primary-foreground">
+                      <OrbitingCircles radius={80} path={true} iconSize={20}>
+                        {uniqueCodes.map((code) => (
+                          <span
+                            key={code}
+                            className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-heading font-medium"
+                          >
+                            {code}
+                          </span>
+                        ))}
+                      </OrbitingCircles>
+                      <OrbitingCircles radius={40} reverse speed={2}>
+                        {uniqueCodes.map((code) => (
+                          <span
+                            key={code}
+                            className="inline-flex size-8 shrink-0 items-center justify-center rounded-full bg-primary font-heading font-medium"
+                          >
+                            {code}
+                          </span>
+                        ))}
+                      </OrbitingCircles>
+                    </CardContent>
                   </div>
                 </Card>
               </div>
@@ -161,40 +201,41 @@ const AboutPage = () => {
               </Marquee>
             </div>
           </div>
-          <div className="mt-8 h-100">
-            {/* <Map zoom={5} center={[-89.0174859, 31.282803]}>
-                {COVERAGE_LOCATIONS.map((area) => (
-                  <MapMarker
-                    key={area.label}
-                    longitude={area.lng}
-                    latitude={area.lat}
-                  >
-                    <MarkerContent>
-                      <div className="relative inline-flex items-center justify-center rounded-full size-7 bg-primary">
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="currentColor"
-                          className="size-4 text-primary-foreground opacity-80"
-                        >
-                          <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                          <path d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6" />
-                        </svg>
-                      </div>
-                    </MarkerContent>
-
-                    <MarkerTooltip className="rounded-[1rem] bg-background text-foreground">
-                      <div className="p-1">{area.label}</div>
-                    </MarkerTooltip>
-                  </MapMarker>
-                ))}
-              </Map> */}
-          </div>
         </Container>
       </section>
+      <section>
+        <div className="mt-8 h-100">
+          <Map zoom={5} center={[-89.0174859, 31.282803]} theme="light">
+            {COVERAGE_LOCATIONS.map((area) => (
+              <MapMarker
+                key={area.label}
+                longitude={area.lng}
+                latitude={area.lat}
+              >
+                <MarkerContent>
+                  <div className="relative inline-flex size-7 items-center justify-center rounded-full bg-primary">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="24"
+                      height="24"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                      className="size-4 text-primary-foreground opacity-80"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6" />
+                    </svg>
+                  </div>
+                </MarkerContent>
 
+                <MarkerTooltip className="rounded-[1rem] bg-background text-foreground">
+                  <div className="p-1">{area.label}</div>
+                </MarkerTooltip>
+              </MapMarker>
+            ))}
+          </Map>
+        </div>
+      </section>
       {/* how we work */}
       <section className="mt-16">
         <Container>

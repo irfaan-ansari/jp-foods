@@ -1,13 +1,6 @@
-import {
-  Document,
-  Page,
-  Text,
-  View,
-  StyleSheet,
-  Image,
-} from "@react-pdf/renderer";
-import { format } from "date-fns";
-import { COLORS, styles } from "./styles";
+import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
+import { format } from "date-fns"
+import { COLORS, styles } from "./styles"
 
 export const JobAgreementPDF = ({ data }: { data: any }) => {
   return (
@@ -16,10 +9,7 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
         {/* header */}
         <View style={[styles.header]}>
           <View style={styles.headerLeft}>
-            <Image
-              src={process.env.BETTER_AUTH_URL + "/logo.png"}
-              style={styles.logo}
-            />
+            <Image src={process.env.NEXT_PUBLIC_LOGO_URL} style={styles.logo} />
             <View>
               <Text style={[styles.docTitle, { marginBottom: 16 }]}>
                 Jimenez Produce LLC
@@ -172,5 +162,5 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
         </View>
       </Page>
     </Document>
-  );
-};
+  )
+}

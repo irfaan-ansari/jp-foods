@@ -22,7 +22,7 @@ export function createApiClient({ baseURL, basePath = "" }: ApiClientOptions) {
       : await response.text()
 
     if (!response.ok) {
-      throw new AppError("INTERNAL_SERVER_ERROR")
+      throw new AppError(data?.code || "INTERNAL_SERVER_ERROR")
     }
 
     return data as T

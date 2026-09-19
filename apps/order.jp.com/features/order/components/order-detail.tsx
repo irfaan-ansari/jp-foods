@@ -12,6 +12,7 @@ import {
 import { Download, ImageOff } from "lucide-react"
 import { OrderTimeline } from "./order-timeline"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import { CopyButton } from "@jp/ui/components/jp"
 
 export const OrderDetail = ({ data }: { data: Order }) => {
   return (
@@ -35,13 +36,13 @@ export const OrderDetail = ({ data }: { data: Order }) => {
         </Card>
 
         <Card className="shadow-xs" size="sm">
-          <CardHeader>
-            <CardTitle className="text-lg font-bold">Order Items</CardTitle>
+          <CardHeader className="border-b border-dashed">
+            <CardTitle className="text-base font-bold">Order Items</CardTitle>
           </CardHeader>
-          <CardContent className="divide-y divide-dashed">
-            {data.lineItems.map((item) => (
+          <CardContent className="divide-y divide-dashed px-0">
+            {data.lineItems?.map((item, i) => (
               <div
-                className="flex gap-3 not-first:pt-2 not-last:pb-2"
+                className="flex gap-3 px-4 pb-2 not-first:pt-2"
                 key={item.id}
               >
                 <Avatar size="lg">
@@ -50,21 +51,25 @@ export const OrderDetail = ({ data }: { data: Order }) => {
                     <ImageOff className="size-4" />
                   </AvatarFallback>
                 </Avatar>
-                <div className="grid flex-1 gap-1">
-                  <p className="truncate text-sm font-semibold">{item.title}</p>
-                  <div className="flex items-center gap-4 text-muted-foreground">
-                    <p className="truncate font-medium">
-                      {item.quantity} {item.unitName ?? "unit"} ×{" "}
-                      {formatUSD(item.price!)} / {item.unitName ?? "unit"}
-                    </p>
-                    |
-                    <p className="font-medium">
-                      Tax • {formatUSD(item.taxAmount ?? 0)}
-                    </p>
-                  </div>
+                <div className="grid min-w-0 flex-1 gap-0.5">
+                  <p className="truncate font-semibold">{item.title}</p>
+                  <CopyButton
+                    value={item.itemCode ?? ""}
+                    className="**:data-[slot=copy-value]:text-xs"
+                  />
                 </div>
-                <div className="ml-auto min-w-24 text-right text-base font-bold">
-                  {formatUSD(item.total ?? 0)}
+                <div className="grid min-w-24 text-right">
+                  <div className="font-semibold">
+                    {formatUSD(item.total ?? 0)}
+                  </div>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                    <span>{formatUSD(item.price ?? 0)}</span>
+                    <span>x</span>
+                    <span>
+                      {item.quantity}
+                      {item.unitName && <span>/{item.unitName}</span>}
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}

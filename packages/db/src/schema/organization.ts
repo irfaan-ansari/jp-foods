@@ -323,15 +323,19 @@ export const lineItem = pgTable(
     type: text("type"),
     location: text("location"),
     itemCode: text("item_code"),
-    unitName: text("unit_name"),
 
-    /** */
     categories: jsonb("categories")
       .$type<string[]>()
       .default(sql`'[]'::jsonb`),
-    price: text("price"),
-    quantity: text("quantity"),
-    inventoryQuantity: text("inventory_quantity"),
+
+    price: text("price").notNull().default("0"),
+    quantity: text("quantity").notNull().default("1"),
+    unitName: text("unit_name").notNull().default(""),
+    baseQuantity: text("base_quantity")
+      .notNull()
+      .default("1") /** used for inventory tracking */,
+    unitConversion: text("unit_conversion").notNull().default("1"),
+
     subtotal: text("subtotal").default("0"),
     isTaxable: boolean("is_taxable").default(false),
     taxRate: text("tax_rate").default("0"),

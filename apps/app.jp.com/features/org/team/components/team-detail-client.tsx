@@ -24,7 +24,7 @@ import { ImageOff } from "lucide-react"
 import { OrderStatusBadge } from "@/features/org/order/components/order-card"
 import { StatCard } from "@/features/org/dashboard/components/stat-card"
 import { CopyButton } from "@jp/ui/components/jp"
-import { TeamBadge } from "./team-card"
+import { CreditProgress, TeamBadge } from "./team-card"
 import { PriceLevelBadge } from "../../price-level/components/price-level-card"
 import { Badge } from "@jp/ui/components/badge"
 import { Button } from "@jp/ui/components/button"
@@ -86,19 +86,14 @@ export const TeamDetailClient = ({
                 </div>
               )}
             </div>
-            <div className="space-y-2">
-              <div className="flex items-center">
-                <span className="flex-1">Available credit</span>
-                <div className="flex items-end gap-1">
-                  <CardTitle className="text-xl font-bold">$520</CardTitle>
-                  <span className="text-muted-foreground">/</span>
-                  <span className="text-muted-foreground">$1020</span>
-                </div>
-              </div>
-              <div className="h-2 rounded-full bg-neutral-200">
-                <div className="h-full w-1/2 rounded-full bg-lime-500"></div>
-              </div>
-            </div>
+            <CreditProgress
+              value={Number(team.creditUsed?.replaceAll(",", "") ?? 0)}
+              max={Number(team.creditLimit?.replaceAll(",", "") ?? 0)}
+              disabled={!team.creditEnabled}
+              unlimited={
+                team.creditLimit == null || team.creditLimit.trim() === ""
+              }
+            />
           </CardContent>
         </Card>
         <div className="grid grid-cols-1 gap-4 @5xl/page-content:grid-cols-2 @5xl/page-content:gap-6">

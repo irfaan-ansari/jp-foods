@@ -1,6 +1,6 @@
 import { Hono } from "hono"
 
-import { AppError } from "@jp/utils"
+import { AppError, pluralize } from "@jp/utils"
 import { db, order, team } from "@jp/db"
 import { sortLineItems } from "./order.utils"
 import { OrderInvoice, PackingSlip } from "@jp/pdf"
@@ -116,9 +116,14 @@ const orderApp = app
 
     const lineItems = sortLineItems(response.lineItems)
 
+    const transformed = lineItems.map((item) => ({
+      ...item,
+      unitName: item.unit?.name ? pluralize(item.unitName, item.quantity) : "",
+    }))
+
     return c.json({
       success: true,
-      data: { ...response, lineItems },
+      data: { ...response, lineItems: transformed },
     })
   })
 
@@ -138,8 +143,23 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
-    // @ts-expect-error - Type assertion for PDF props
-    const stream = await renderToStream(PackingSlip({ data }))
+    const lineItems = data.lineItems.map((item) => ({
+      ...item,
+      unitName: item.unitName
+        ? pluralize(Number(item.quantity), item.unitName)
+        : "",
+    }))
+
+    const stream = await renderToStream(
+      PackingSlip({
+        data: {
+          ...data,
+          organization: data.organization!,
+          team: data.team!,
+          lineItems,
+        },
+      })
+    )
 
     // @ts-expect-error - Type assertion for Response body
     return c.body(stream, 200, {
@@ -163,8 +183,23 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
-    // @ts-expect-error - Type assertion for PDF props
-    const stream = await renderToStream(OrderInvoice({ data }))
+    const lineItems = data.lineItems.map((item) => ({
+      ...item,
+      unitName: item.unitName
+        ? pluralize(Number(item.quantity), item.unitName)
+        : "",
+    }))
+
+    const stream = await renderToStream(
+      OrderInvoice({
+        data: {
+          ...data,
+          organization: data.organization!,
+          team: data.team!,
+          lineItems,
+        },
+      })
+    )
 
     // @ts-expect-error - Type assertion for Response body
     return c.body(stream, 200, {

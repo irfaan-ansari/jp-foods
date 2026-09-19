@@ -59,7 +59,7 @@ export const CatalogPDF = (data: CatalogProps) => {
               }}
             >
               <Image
-                src={process.env.BETTER_AUTH_URL + "/logo.png"}
+                src={process.env.NEXT_PUBLIC_LOGO_URL}
                 style={{ ...styles.logo, width: 50 }}
               />
             </View>
@@ -200,7 +200,6 @@ export const CatalogPDF = (data: CatalogProps) => {
         {/* DYNAMIC CATEGORY BLOCKS LOOP */}
         {Object.entries(products).map(
           ([category, categoryProducts]: [string, any], i) => {
-            // Split products into rows of 2
             const rows = []
             for (let j = 0; j < categoryProducts.length; j += 2) {
               rows.push(categoryProducts.slice(j, j + 2))
@@ -273,6 +272,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                           ]}
                         >
                           {formatUSD(product.price)}
+                          {product.unit ? ` / ${product.unit}` : ""}
                         </Text>
                       </View>
                     ))}

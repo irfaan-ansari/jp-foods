@@ -26,14 +26,14 @@ export const Pagination = ({
       <div className="flex gap-2">
         <Button
           size="sm"
-          variant="outline"
+          className="bg-invert hover:bg-invert/90"
           onClick={() => onPageChange(page - 1)}
           disabled={page === 1}
         >
           Previous
         </Button>
         <Button
-          variant="outline"
+          className="bg-invert hover:bg-invert/90"
           size="sm"
           onClick={() => onPageChange(Number(page) + 1)}
           disabled={page === totalPages || totalPages === 0}

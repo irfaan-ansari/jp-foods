@@ -1,6 +1,5 @@
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
-import Markdown from "@/components/markdown"
 import { Container } from "@/components/container"
 import { OPEN_POSITIONS } from "@/features/careers/careers.positions"
 
@@ -35,14 +34,14 @@ const ApplicationPage = async ({
   return (
     <>
       {/* page title */}
-      <section className="bg-lime-100 py-16">
+      <section className="bg-secondary py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
-            <div className="mx-auto max-w-4xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
+            <div className="mx-auto max-w-5xl space-y-6 text-center">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold wrap-break-word break-all text-primary sm:text-5xl/tight md:text-7xl/tight">
                 {content.title}
               </h2>
-              <p className="text-lg">{content.description}</p>
+              <p className="mx-auto max-w-2xl text-lg">{content.description}</p>
             </div>
           </div>
         </Container>

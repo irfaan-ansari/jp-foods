@@ -51,7 +51,6 @@ import {
   InputGroupInput,
 } from "@jp/ui/components/input-group"
 import { Textarea } from "@jp/ui/components/textarea"
-import { Badge } from "@jp/ui/components/badge"
 
 export interface FieldProps {
   label?: string
@@ -84,6 +83,7 @@ const TextField = ({
         onChange={(e) => field.handleChange(e.target.value)}
         aria-invalid={isInvalid}
         placeholder={placeholder}
+        className="h-12"
         // @ts-ignore
         type={props?.type ? props.type : "text"}
       />
@@ -234,7 +234,7 @@ const SelectField = ({
         value={field.state.value as string}
         onValueChange={field.handleChange}
       >
-        <SelectTrigger aria-invalid={isInvalid}>
+        <SelectTrigger aria-invalid={isInvalid} className="h-12!">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>

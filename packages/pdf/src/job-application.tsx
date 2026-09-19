@@ -1,14 +1,8 @@
-import { CONTACT_SECTIONS } from "@/lib/constants/web";
-import { JobApplicationSelectType } from "@/lib/db/schema";
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
-import { format } from "date-fns";
-import { COLORS, styles } from "./styles";
+import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
+import { format } from "date-fns"
+import { COLORS, styles } from "./styles"
 
-export const JobApplicationPDF = ({
-  data,
-}: {
-  data: JobApplicationSelectType;
-}) => (
+export const JobApplicationPDF = ({ data }: { data: Record<string, any> }) => (
   <Document>
     {/* PAGE 1: Personal & Driving Info */}
     <Page size="A4" style={styles.page}>
@@ -29,7 +23,7 @@ export const JobApplicationPDF = ({
           </View>
         </View>
 
-        <View style={styles.headerRight}>
+        {/* <View style={styles.headerRight}>
           {CONTACT_SECTIONS.locations.map((loc, i) => (
             <View key={i} style={styles.headerContactText}>
               <Text>{loc.street}</Text>
@@ -38,7 +32,7 @@ export const JobApplicationPDF = ({
               </Text>
             </View>
           ))}
-        </View>
+        </View> */}
       </View>
 
       {/* body */}
@@ -170,7 +164,7 @@ export const JobApplicationPDF = ({
         <>
           <Text style={styles.sectionTitle}>Education - Other</Text>
 
-          {data.otherEducations.map((edu, i) => (
+          {data.otherEducations.map((edu: Record<string, any>, i: number) => (
             <View key={i}>
               <View style={styles.row}>
                 <View style={styles.fieldGroup}>
@@ -210,7 +204,7 @@ export const JobApplicationPDF = ({
 
       {data.experience &&
         data.experience.length > 0 &&
-        data.experience.map((exp, i) => (
+        data.experience.map((exp: Record<string, any>, i: number) => (
           <View key={i}>
             <View style={styles.row}>
               <View style={styles.fieldGroup}>
@@ -307,7 +301,7 @@ export const JobApplicationPDF = ({
       {/* Driving Experience */}
       <Text style={styles.sectionTitle}>Driving Experience</Text>
       {data.drivingExperiences &&
-        data.drivingExperiences.map((exp, i) => (
+        data.drivingExperiences.map((exp: Record<string, any>, i: number) => (
           <View key={i}>
             <View style={styles.row}>
               <View style={styles.fieldGroup}>
@@ -427,4 +421,4 @@ export const JobApplicationPDF = ({
       </View>
     </Page>
   </Document>
-);
+)

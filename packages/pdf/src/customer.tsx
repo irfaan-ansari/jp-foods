@@ -1,23 +1,16 @@
-import { format } from "date-fns";
-import { COLORS, styles } from "./styles";
-import { CustomerSelectType } from "@/lib/db/schema";
-import { CONTACT_SECTIONS } from "@/lib/constants/web";
-import { STATUS_MAP } from "@/lib/constants/status-map";
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer";
+import { format } from "date-fns"
+import { COLORS, styles } from "./styles"
 
-export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
-  const map = STATUS_MAP[data.status as keyof typeof STATUS_MAP];
+import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
 
+export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
   return (
     <Document title={`Customer Application - ${data.companyName}`}>
       <Page size="A4" style={styles.page}>
         {/* 1. HEADER */}
         <View style={styles.header}>
           <View style={styles.headerLeft}>
-            <Image
-              src={process.env.BETTER_AUTH_URL + "/logo.png"}
-              style={styles.logo}
-            />
+            <Image src={process.env.NEXT_PUBLIC_LOGO_URL} style={styles.logo} />
             <View>
               <Text style={[styles.docTitle, { marginBottom: 16 }]}>
                 Jimenez Produce
@@ -26,7 +19,7 @@ export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
             </View>
           </View>
 
-          <View style={styles.headerRight}>
+          {/* <View style={styles.headerRight}>
             {CONTACT_SECTIONS.locations.map((loc, i) => (
               <View key={i} style={styles.headerContactText}>
                 <Text>{loc.street}</Text>
@@ -35,7 +28,7 @@ export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
                 </Text>
               </View>
             ))}
-          </View>
+          </View> */}
         </View>
 
         {/* 2. BUSINESS IDENTITY */}
@@ -49,10 +42,8 @@ export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
           </View>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Application Status</Text>
-            <Text
-              style={[styles.value, { color: map.color || COLORS.primary }]}
-            >
-              {map.label}
+            <Text style={[styles.value, { color: COLORS.primary }]}>
+              {data.status}
             </Text>
           </View>
         </View>
@@ -193,7 +184,7 @@ export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
           </Text>
         </View>
 
-        {data.deliverySchedule.map((sch, i) => (
+        {data.deliverySchedule.map((sch: Record<string, any>, i: number) => (
           <View key={i} style={styles.tableRow}>
             <Text style={{ width: "25%", fontSize: 8 }}>
               {sch.day} ({sch.window})
@@ -304,5 +295,5 @@ export const CustomerPDF = ({ data }: { data: CustomerSelectType }) => {
         </View>
       </Page>
     </Document>
-  );
-};
+  )
+}

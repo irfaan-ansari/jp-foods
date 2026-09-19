@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { X } from "lucide-react"
+import { ChevronsUpDown, X } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
 
 import { ListCheckMinimalistic } from "@solar-icons/react"
@@ -29,7 +29,7 @@ import { Switch } from "@jp/ui/components/switch"
 import { CategorySelector } from "@/features/org/product/components/category-selector"
 
 import { type ProductFormSchema } from "../product.schema"
-import { PRODUCT_UNITS } from "../product.const"
+import { PRODUCT_UNITS, STATUS } from "../product.const"
 import { getUnit } from "../product.utils"
 
 export const ProductGeneral = withForm({
@@ -73,11 +73,12 @@ export const ProductGeneral = withForm({
               children={(field) => (
                 <field.SelectField
                   label="Status"
-                  options={[
-                    { label: "Active", value: "active" },
-                    { label: "Private", value: "private" },
-                    { label: "Archived", value: "archived" },
-                  ]}
+                  options={Object.values(STATUS)
+                    .filter((status) => status.value)
+                    .map((status) => ({
+                      label: status.label,
+                      value: status.value,
+                    }))}
                 />
               )}
             />
@@ -122,39 +123,27 @@ export const ProductGeneral = withForm({
                       canCreate
                       selected={field.state.value}
                       onSelect={(value) => {
-                        if (!field.state.value.includes(value))
+                        const index = field.state.value.indexOf(value)
+                        if (index !== -1) {
+                          field.removeValue(index)
+                        } else {
                           field.pushValue(value)
+                        }
                       }}
                     >
                       <Button
                         variant="outline"
-                        className="flex h-auto min-h-10 items-start justify-start py-2"
+                        className="flex h-auto min-h-10 justify-start py-2"
                       >
-                        <ListCheckMinimalistic className="mt-0.5 size-5 shrink-0" />
-                        {field.state.value.length > 0 ? (
-                          <div className="flex flex-wrap gap-2">
-                            {field.state.value.map((v, i) => (
-                              <Badge
-                                key={v}
-                                variant="warning-light"
-                                className="rounded-md"
-                              >
-                                {v}
-                                <span
-                                  onClick={(event) => {
-                                    event.stopPropagation()
-                                    field.removeValue(i)
-                                  }}
-                                >
-                                  <X />
-                                </span>
-                              </Badge>
-                            ))}
-                          </div>
-                        ) : (
-                          <span className="text-muted-foreground">
-                            Select categories
-                          </span>
+                        <span className="flex-1 text-left text-muted-foreground">
+                          {field.state.value.length > 0
+                            ? field.state.value.join(" • ")
+                            : "Select..."}
+                        </span>
+                        {field.state.value.length > 0 && (
+                          <Badge variant="primary-light">
+                            {field.state.value.length}
+                          </Badge>
                         )}
                       </Button>
                     </CategorySelector>
