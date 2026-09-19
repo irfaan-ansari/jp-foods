@@ -45,8 +45,9 @@ function stripDerived(items: OrderItem[]): OrderItemInput[] {
     itemCode: item.itemCode,
     title: item.title,
     price: item.price,
-    unit: item.unit,
-    inventoryPerUnit: item.inventoryPerUnit,
+    unitName: item.unitName,
+    baseQuantity: item.baseQuantity,
+    unitConversion: item.unitConversion,
     minQuantity: item.minQuantity,
     orderIncrement: item.orderIncrement,
     isTaxable: item.isTaxable,
@@ -89,7 +90,8 @@ export const useOrderFormStore = create<OrderStore>()(
         set((state) => {
           const items = stripDerived(state.order.items)
           const index = items.findIndex(
-            (item) => item.id === product.id && item.unit === product.unit
+            (item) =>
+              item.id === product.id && item.unitName === product.unitName
           )
 
           if (index === -1) {
@@ -117,7 +119,8 @@ export const useOrderFormStore = create<OrderStore>()(
           const items = stripDerived(state.order.items)
           const index = items.findIndex(
             (item) =>
-              item.id === productInput.id && item.unit === productInput.unit
+              item.id === productInput.id &&
+              item.unitName === productInput.unitName
           )
 
           if (newQuantity <= 0) {
@@ -136,14 +139,14 @@ export const useOrderFormStore = create<OrderStore>()(
       removeItem: (id, unitName) =>
         set((state) => {
           const items = stripDerived(state.order.items).filter(
-            (item) => item.id !== id || item.unit !== unitName
+            (item) => item.id !== id || item.unitName !== unitName
           )
           return { order: recalculate(state.order, items) }
         }),
 
       getItem: (id, unitName) =>
         get().order.items.find(
-          (item) => item.id === id && item.unit === unitName
+          (item) => item.id === id && item.unitName === unitName
         ),
       clear: () => set({ order: initialState }),
     }),
@@ -155,10 +158,10 @@ export const useOrderFormStore = create<OrderStore>()(
         const previousItems = previous.order?.items ?? []
         const items = previousItems.filter(
           (item) =>
-            typeof item.unit === "string" &&
-            item.unit.length > 0 &&
-            Number.isFinite(item.inventoryPerUnit) &&
-            item.inventoryPerUnit > 0 &&
+            typeof item.unitName === "string" &&
+            item.unitName.length > 0 &&
+            Number.isFinite(item.baseQuantity) &&
+            item.baseQuantity > 0 &&
             Number.isFinite(item.price) &&
             item.price >= 0 &&
             Number.isFinite(item.quantity) &&

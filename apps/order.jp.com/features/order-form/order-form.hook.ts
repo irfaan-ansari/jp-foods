@@ -1,9 +1,8 @@
 "use client"
 
 import React from "react"
-import { getSellingUnits } from "@jp/utils"
-
 import { Product } from "../product/product.type"
+import { getSellingUnits } from "../product/product.utils"
 import { toOrderItemInput } from "./order-form.utils"
 import { initOrderForm, useOrderFormStore } from "./order-form.store"
 import { useActiveTeam } from "../team/team.data"
@@ -12,7 +11,9 @@ import { OrderForm } from "./order-form.type"
 export function useOrderItemQuantity(data: Product, unitName: string) {
   const updateItem = useOrderFormStore((state) => state.updateItem)
   const item = useOrderFormStore((state) => state.getItem(data.id, unitName))
+
   const sellUnit = getSellingUnits(data).find((unit) => unit.name === unitName)
+
   const value = item?.quantity ?? 0
 
   const setQuantity = React.useCallback(

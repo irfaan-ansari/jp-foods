@@ -80,17 +80,12 @@ const customer = ac.newRole({
   portal: ["customer"],
 })
 
-const driver = ac.newRole({
-  portal: ["driver"],
-})
-
 const userRoles = {
   superAdmin,
   admin,
   user,
   reviewer,
   customer,
-  driver,
   developer,
 } as const
 

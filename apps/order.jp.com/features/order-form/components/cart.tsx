@@ -9,7 +9,7 @@ import {
 } from "@jp/ui/components/drawer"
 import { formatUSD } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
-import { ChevronUp, ImageOff, X } from "lucide-react"
+import { ChevronUp, ImageOff, Minus, Plus, X } from "lucide-react"
 import { useOrderFormUI } from "../order-form-ui.store"
 import { useOrderFormStore } from "../order-form.store"
 import { BagCheck, TrashBinMinimalistic } from "@solar-icons/react"
@@ -29,6 +29,7 @@ export const Cart = () => {
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
   const cart = useOrderFormStore((state) => state.order)
   const removecartItem = useOrderFormStore((state) => state.removeItem)
+  const updateCartItem = useOrderFormStore((state) => state.updateItem)
   const { items } = cart
 
   return (
@@ -50,7 +51,7 @@ export const Cart = () => {
           {items.map((item) => (
             <div
               className="flex items-center gap-2 not-first:pt-2 not-last:pb-2"
-              key={`${item.id}:${item.unit}`}
+              key={`${item.id}:${item.unitName}`}
             >
               <Avatar
                 className="size-12! rounded-xl bg-neutral-100 **:rounded-xl"
@@ -73,24 +74,55 @@ export const Cart = () => {
               <div className="grid min-w-0 flex-1 gap-1">
                 <p className="truncate text-sm font-medium">{item.title}</p>
                 <p className="truncate text-xs font-medium text-muted-foreground">
-                  {item.quantity} {item.unit} × {formatUSD(item.price)} /{" "}
-                  {item.unit}
+                  {item.quantity} {item.unitName} × {formatUSD(item.price)} /{" "}
+                  {item.unitName}
                 </p>
               </div>
               <div className="grid min-w-0 gap-1 text-right">
                 <p className="font-semibold text-primary">
                   {formatUSD(item.subtotal)}
                 </p>
-                <Button
-                  size="icon-xs"
-                  variant="destructive"
-                  className="ml-auto"
-                  onClick={() => {
-                    removecartItem(item.id, item.unit)
-                  }}
-                >
-                  <TrashBinMinimalistic />
-                </Button>
+                <div className="flex items-center justify-end gap-1">
+                  <Button
+                    size="icon-xs"
+                    variant="outline"
+                    aria-label={`Decrease ${item.title}`}
+                    onClick={() => {
+                      const next = item.quantity - item.orderIncrement
+                      if (next < item.minQuantity) {
+                        removecartItem(item.id, item.unitName)
+                      } else {
+                        updateCartItem({ ...item, quantity: next })
+                      }
+                    }}
+                  >
+                    <Minus />
+                  </Button>
+                  <span className="min-w-7 text-center text-xs font-semibold">
+                    {item.quantity}
+                  </span>
+                  <Button
+                    size="icon-xs"
+                    variant="outline"
+                    aria-label={`Increase ${item.title}`}
+                    onClick={() =>
+                      updateCartItem({
+                        ...item,
+                        quantity: item.quantity + item.orderIncrement,
+                      })
+                    }
+                  >
+                    <Plus />
+                  </Button>
+                  <Button
+                    size="icon-xs"
+                    variant="destructive"
+                    aria-label={`Remove ${item.title}`}
+                    onClick={() => removecartItem(item.id, item.unitName)}
+                  >
+                    <TrashBinMinimalistic />
+                  </Button>
+                </div>
               </div>
             </div>
           ))}
@@ -102,7 +134,8 @@ export const Cart = () => {
               <span className="flex-1">Items</span>
               <span className="font-medium">
                 {cart.lineItemCount} Items
-                {/* •{cart.lineItemQuantity} Units */}
+                {" · "}
+                {cart.lineItemQuantity} Units
               </span>
             </div>
             <div className="flex justify-between text-muted-foreground">

@@ -1,5 +1,20 @@
 import { PRODUCT_UNITS } from "./product.const"
-import type { PricedSellingUnit } from "@jp/utils"
+import type { PricedSellingUnit, Product } from "./product.type"
+
+export function getSellingUnits(
+  product: Partial<Pick<Product, "price" | "sellUnits">>
+): PricedSellingUnit[] {
+  return (product.sellUnits ?? []).map((unit) => ({
+    ...unit,
+    price: String(
+      Math.max(
+        0,
+        Math.round(Number(product.price) * Number(unit.unitConversion) * 100) /
+          100
+      )
+    ),
+  }))
+}
 
 export function getLowestPriceUnit(sellUnits: PricedSellingUnit[]) {
   return sellUnits.reduce<PricedSellingUnit>((cheapest, unit) => {

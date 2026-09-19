@@ -42,6 +42,8 @@ export function calculateOrder({
 
   const taxAmount = (taxableSubtotal * taxRate) / 100
 
+  const appliedCharges = calculatedItems.length > 0 ? charges : 0
+
   return {
     items: calculatedItems,
     totals: {
@@ -52,7 +54,7 @@ export function calculateOrder({
       taxableSubtotal,
       nonTaxableSubtotal,
       taxAmount,
-      total: subtotal + taxAmount + charges,
+      total: subtotal + taxAmount + appliedCharges,
     },
   }
 }

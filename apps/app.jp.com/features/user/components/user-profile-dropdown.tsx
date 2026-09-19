@@ -34,7 +34,7 @@ export const UserProfileDropdown = ({
       toast.error(error.message)
       loader.hide()
     } else {
-      //  redirect to login url
+      window.location.href = "/"
     }
   }
 

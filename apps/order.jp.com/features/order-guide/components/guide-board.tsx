@@ -1,5 +1,5 @@
 import React from "react"
-import { getSellingUnits } from "@jp/utils"
+import { getSellingUnits } from "@/features/product/product.utils"
 import { Plus } from "lucide-react"
 import { Guide } from "../guide.type"
 import { Tooltip } from "@jp/ui/components/jp"
