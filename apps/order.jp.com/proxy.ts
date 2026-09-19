@@ -10,7 +10,7 @@ export default async function proxy(req: NextRequest) {
   }
 
   const { authenticated, authorized, session } = await checkAuth({
-    portal: ["organization", "crm"],
+    portal: ["customer"],
   })
 
   if (!authenticated) {

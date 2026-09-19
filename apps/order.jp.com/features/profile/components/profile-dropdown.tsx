@@ -28,7 +28,7 @@ export const UserProfileDropdown = ({ session }: { session: AuthType }) => {
       toast.error(error.message)
       loader.hide()
     } else {
-      window.location.href = "/signout"
+      window.location.href = "/"
     }
   }
 

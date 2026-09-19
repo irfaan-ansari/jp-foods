@@ -56,6 +56,7 @@ const orderApp = new Hono<TeamAppContext>()
   })
   .get("/count", async (c) => {
     const teamId = c.get("teamId")
+    const organizationId = c.get("organizationId")
 
     const result = await db
       .select({
@@ -63,7 +64,9 @@ const orderApp = new Hono<TeamAppContext>()
         value: count(),
       })
       .from(order)
-      .where(eq(order.teamId, teamId))
+      .where(
+        and(eq(order.teamId, teamId), eq(order.organizationId, organizationId))
+      )
       .groupBy(order.status)
 
     const counts = getStatusCounts(result)
@@ -71,6 +74,77 @@ const orderApp = new Hono<TeamAppContext>()
     return c.json({
       success: true,
       data: counts,
+    })
+  })
+  .get("/dashboard", async (c) => {
+    const teamId = c.get("teamId")
+    const organizationId = c.get("organizationId")
+    const orders = await db.query.order.findMany({
+      where: (currentOrder, { and, eq }) =>
+        and(
+          eq(currentOrder.teamId, teamId),
+          eq(currentOrder.organizationId, organizationId)
+        ),
+      columns: {
+        id: true,
+        status: true,
+        total: true,
+        lineItemCount: true,
+        deliveryDate: true,
+        createdAt: true,
+      },
+      orderBy: (currentOrder, { desc }) => [desc(currentOrder.createdAt)],
+    })
+
+    const now = new Date()
+    const monthKeys = Array.from({ length: 6 }, (_, index) => {
+      const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1)
+      return {
+        key: `${date.getFullYear()}-${date.getMonth()}`,
+        label: date.toLocaleDateString("en-US", { month: "short" }),
+      }
+    })
+    const spendByMonth = new Map(monthKeys.map(({ key }) => [key, 0]))
+    const currentMonthKey = `${now.getFullYear()}-${now.getMonth()}`
+
+    let monthOrderCount = 0
+    let monthSpend = 0
+    let openOrderCount = 0
+
+    for (const currentOrder of orders) {
+      const createdAt = currentOrder.createdAt
+      const total = Number(currentOrder.total) || 0
+      const key = createdAt
+        ? `${createdAt.getFullYear()}-${createdAt.getMonth()}`
+        : ""
+
+      if (key === currentMonthKey) {
+        monthOrderCount += 1
+        monthSpend += total
+      }
+      if (!["completed", "cancelled"].includes(currentOrder.status)) {
+        openOrderCount += 1
+      }
+      if (spendByMonth.has(key)) {
+        spendByMonth.set(key, (spendByMonth.get(key) ?? 0) + total)
+      }
+    }
+
+    return c.json({
+      success: true,
+      data: {
+        stats: {
+          openOrderCount,
+          monthOrderCount,
+          monthSpend,
+          totalOrderCount: orders.length,
+        },
+        spend: monthKeys.map(({ key, label }) => ({
+          month: label,
+          total: spendByMonth.get(key) ?? 0,
+        })),
+        recentOrders: orders.slice(0, 5),
+      },
     })
   })
   .get("/:id", async (c) => {

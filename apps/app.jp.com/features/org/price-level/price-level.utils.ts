@@ -57,9 +57,18 @@ export const createProductPriceResolver = (
 
     if (adjustment === undefined) return product
 
+    const basePrice = Number(product.price ?? 0)
+    const adjustmentValue = Number(adjustment)
+    const price =
+      config.adjustmentType === "percentage"
+        ? basePrice + (basePrice * adjustmentValue) / 100
+        : config.appliesTo === "all"
+          ? basePrice + adjustmentValue
+          : adjustmentValue
+
     return {
       ...product,
-      price: getAdjustedPrice(config.adjustmentType, product.price, adjustment),
+      price: String(Math.max(0, Math.round(price * 100) / 100)),
     }
   }
 }

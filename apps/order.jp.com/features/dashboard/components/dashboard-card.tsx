@@ -24,16 +24,16 @@ export const DashboardCard = ({
   className,
 }: DashboardCardProps) => {
   return (
-    <Card size="sm" className={cn(`h-full shadow-xs`, className)}>
-      <CardHeader className="flex flex-row gap-1">
+    <Card size="sm" className={cn(`h-full gap-0 shadow-xs`, className)}>
+      <CardHeader className="flex flex-row gap-1 border-b">
         <div className="grid min-w-0 flex-1">
           <CardTitle className="font-semibold">{title}</CardTitle>
-          {description && <CardDescription>DashboardSection</CardDescription>}
+          {description && <CardDescription>{description}</CardDescription>}
         </div>
         {action && <CardAction>{action}</CardAction>}
       </CardHeader>
 
-      <CardContent>{children}</CardContent>
+      <CardContent className="px-0">{children}</CardContent>
     </Card>
   )
 }

@@ -7,10 +7,11 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
-import { formatUSD, getSellingUnits, type PricedSellingUnit } from "@jp/utils"
+import { formatUSD } from "@jp/utils"
 import { cn } from "@jp/ui/lib/utils"
 import { format } from "date-fns/format"
-import { getUnit } from "../product.utils"
+import { getSellingUnits, getUnit } from "../product.utils"
+import type { PricedSellingUnit } from "../product.type"
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"
 import { PopDrawer } from "@jp/ui/components/jp"

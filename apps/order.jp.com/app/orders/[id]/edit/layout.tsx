@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { getSellingUnits } from "@jp/utils"
 import { useParams } from "next/navigation"
 
 import {
@@ -19,6 +18,7 @@ import { BagCheck, BagCross } from "@solar-icons/react"
 import { PageContent } from "@/components/page-content"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
+import { getSellingUnits } from "@/features/product/product.utils"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams()
@@ -62,9 +62,9 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
           itemCode: item.itemCode,
           price: Number(item.price),
           unit: item.unitName ?? unit?.name ?? "",
-          inventoryPerUnit:
-            Number(unit?.unitConversion ?? item.inventoryQuantity ?? 1) /
-            (unit ? 1 : Math.max(quantity, 1)),
+          inventoryPerUnit: Number(
+            unit?.unitConversion ?? item.unitConversion ?? 1
+          ),
           minQuantity: Number(unit?.minQuantity ?? 1),
           orderIncrement: Number(unit?.orderIncreament ?? 1),
           quantity,

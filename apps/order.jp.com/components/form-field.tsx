@@ -9,7 +9,7 @@ import {
 import { Input } from "@jp/ui/components/input"
 import { Button } from "@jp/ui/components/button"
 import { Calendar } from "@jp/ui/components/calendar"
-
+import { PhoneInput } from "@jp/ui/components/phone-input"
 import { formatPhone, formatUSD } from "@jp/utils"
 import {
   Field,
@@ -344,6 +344,7 @@ const FileField = ({ label, description, className }: FieldProps) => {
     </Field>
   )
 }
+
 const PhoneField = ({
   label,
   description,
@@ -359,31 +360,15 @@ const PhoneField = ({
     <Field className={cn("gap-2", className)} {...props}>
       {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
 
-      <InputGroup className="bg-background">
-        <InputGroupAddon>
-          <Badge
-            variant="focus-light"
-            className="h-4 rounded-none bg-transparent pl-0 text-sm text-muted-foreground"
-          >
-            <img src="https://flagsapi.com/US/flat/64.png" width={20} />
-            +1
-          </Badge>
-        </InputGroupAddon>
+      <PhoneInput
+        id={field.name}
+        name={field.name}
+        value={field.state.value}
+        aria-invalid={isInvalid}
+        placeholder="123-123-1234"
+        onChange={(value) => field.handleChange(value)}
+      />
 
-        <InputGroupInput
-          id={field.name}
-          name={field.name}
-          value={displayValue}
-          onBlur={field.handleBlur}
-          onChange={(e) => {
-            const digits = e.target.value.replace(/\D/g, "").slice(0, 10)
-            field.handleChange(digits)
-          }}
-          aria-invalid={isInvalid}
-          type="tel"
-          placeholder="123-123-1234"
-        />
-      </InputGroup>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>

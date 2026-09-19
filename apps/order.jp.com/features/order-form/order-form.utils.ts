@@ -1,6 +1,7 @@
-import { getSellingUnits, type PricedSellingUnit } from "@jp/utils"
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
+import { getSellingUnits } from "../product/product.utils"
+import type { PricedSellingUnit } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
 
@@ -129,8 +130,8 @@ export const toInsertLineItems = ({
     itemCode: item.itemCode,
     categories: item.categories,
     isTaxable: item.isTaxable,
-    inventoryQuantity: String(item.quantity * item.inventoryPerUnit),
-    unitName: item.unit,
+    baseQuantity: String(item.quantity * item.baseQuantity),
+    unitName: item.unitName,
     price: item.price.toFixed(2),
     quantity: String(item.quantity),
     subtotal: item.subtotal.toFixed(2),
