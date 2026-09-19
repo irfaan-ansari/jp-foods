@@ -21,8 +21,12 @@ export const toOrderItemInputs = (product: Partial<Product>[]) => {
   return product.map((p) => toOrderItemInput(p))
 }
 
+type OrderItemProduct = Partial<Omit<Product, "sellUnits">> & {
+  sellUnits?: Product["sellUnits"] | null
+}
+
 export const toOrderItemInput = (
-  product: Partial<Product>,
+  product: OrderItemProduct,
   selectedUnit?: PricedSellingUnit
 ) => {
   const sellUnit = selectedUnit ?? getSellingUnits(product)[0]
@@ -33,8 +37,9 @@ export const toOrderItemInput = (
     title: title!,
     price: Number(sellUnit.price),
     itemCode: itemCode!,
-    unit: sellUnit.name,
-    inventoryPerUnit: Number(sellUnit.unitConversion),
+    unitName: sellUnit.name,
+    baseQuantity: Number(sellUnit.unitConversion),
+    unitConversion: Number(sellUnit.unitConversion),
     minQuantity: Number(sellUnit.minQuantity),
     orderIncrement: Number(sellUnit.orderIncreament),
     isTaxable: !!isTaxable,

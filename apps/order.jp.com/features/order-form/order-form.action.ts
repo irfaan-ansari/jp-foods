@@ -110,7 +110,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
       ])
     )
     const requestedKeys = new Set(
-      items.map((item) => lineKey(item.id, item.unit))
+      items.map((item) => lineKey(item.id, item.unitName))
     )
     const toDelete = existing.lineItems
       .filter(
@@ -129,7 +129,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
         teamId,
         taxRate: team?.taxRule?.rate,
       })
-      const previous = existingByKey.get(lineKey(item.id, item.unit))
+      const previous = existingByKey.get(lineKey(item.id, item.unitName))
       if (previous)
         queries.push(
           db

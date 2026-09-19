@@ -61,9 +61,10 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
           title: item.title,
           itemCode: item.itemCode,
           price: Number(item.price),
-          unit: item.unitName ?? unit?.name ?? "",
-          inventoryPerUnit: Number(
-            unit?.unitConversion ?? item.unitConversion ?? 1
+          unitName: item.unitName ?? unit?.name ?? "",
+          baseQuantity: Number(unit?.unitConversion ?? item.baseQuantity ?? 1),
+          unitConversion: Number(
+            unit?.unitConversion ?? item.baseQuantity ?? 1
           ),
           minQuantity: Number(unit?.minQuantity ?? 1),
           orderIncrement: Number(unit?.orderIncreament ?? 1),

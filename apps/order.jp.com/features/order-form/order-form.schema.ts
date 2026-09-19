@@ -2,15 +2,15 @@ import z from "zod"
 
 const lineItemSchema = z.object({
   id: z.number().positive(),
-  unit: z.string().min(1),
+  unitName: z.string().min(1),
   quantity: z.number().positive(),
 })
 
 export const orderSchema = z.object({
-  po: z.string(),
-  deliveryDate: z.string(),
-  deliveryWindow: z.string(),
-  deliveryInstruction: z.string(),
+  po: z.string().optional(),
+  deliveryDate: z.iso.date(),
+  deliveryWindow: z.string().optional(),
+  deliveryInstruction: z.string().optional(),
   items: lineItemSchema.array().min(1),
 })
 

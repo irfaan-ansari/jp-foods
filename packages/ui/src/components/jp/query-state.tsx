@@ -22,7 +22,6 @@ export function QueryState({
     return (
       <div className={cn("space-y-1", className)}>
         <Skeleton className="h-10 rounded-xl" />
-        <Skeleton className="h-10 rounded-xl" />
       </div>
     )
   }

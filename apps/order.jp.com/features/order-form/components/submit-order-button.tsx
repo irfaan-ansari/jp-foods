@@ -74,7 +74,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
         order.id ? "updated" : "submitted"
       } successfully.`,
       cancel: {
-        label: "Done",
+        label: "Close",
       },
       action: {
         label: "View Order",

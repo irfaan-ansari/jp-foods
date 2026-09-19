@@ -6,15 +6,15 @@ export type OrderItemInput = {
   itemCode: string
   title: string
   price: number
+  isTaxable: boolean
+  image: string
+  categories: string[]
+  quantity: number
   unitName: string
   baseQuantity: number
   unitConversion: number
   minQuantity: number
   orderIncrement: number
-  isTaxable: boolean
-  image: string
-  categories: string[]
-  quantity: number
 }
 
 export type OrderItem = OrderItemInput & {

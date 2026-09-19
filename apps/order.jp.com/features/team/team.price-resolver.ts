@@ -18,30 +18,41 @@ function roundPrice(value: number) {
   return Math.max(0, Math.round(value * 100) / 100)
 }
 
+function toFiniteNumber(value: unknown) {
+  const numberValue = Number(value)
+  return Number.isFinite(numberValue) ? numberValue : null
+}
+
 export function createProductPriceResolver(config?: PriceLevel | null) {
-  const pricesByProduct = new Map(
-    config?.priceLevelItem.map((item) => [item.productId, item.price])
+  if (!config || config.status !== "active") return <T>(product: T) => product
+
+  const itemPrices = new Map(
+    config.priceLevelItem.map((item) => [item.productId, item.price])
   )
 
+  const getAdjustment = (productId: number) =>
+    config.appliesTo === "all"
+      ? config.adjustmentValue
+      : itemPrices.get(productId)
+
+  const resolvePrice = (basePrice: number, adjustment: number) => {
+    if (config.adjustmentType === "percentage") {
+      return basePrice + (basePrice * adjustment) / 100
+    }
+
+    return config.appliesTo === "all" ? basePrice + adjustment : adjustment
+  }
+
   return <T extends Pick<Product, "id" | "price">>(product: T): T => {
-    if (!config || config.status !== "active") return product
-
-    const selectedAdjustment = pricesByProduct.get(product.id)
-    const adjustment =
-      config.appliesTo === "all" ? config.adjustmentValue : selectedAdjustment
-
+    const adjustment = getAdjustment(product.id)
     if (adjustment === undefined) return product
 
-    const basePrice = Number(product.price)
-    const value = Number(adjustment)
-    if (!Number.isFinite(basePrice) || !Number.isFinite(value)) return product
+    const basePrice = toFiniteNumber(product.price)
+    const adjustmentValue = toFiniteNumber(adjustment)
+    if (basePrice === null || adjustmentValue === null) return product
 
     const nextPrice =
-      config.adjustmentType === "percentage"
-        ? basePrice + (basePrice * value) / 100
-        : config.appliesTo === "all"
-          ? basePrice + value
-          : value
+      resolvePrice(basePrice, adjustmentValue)
 
     return { ...product, price: String(roundPrice(nextPrice)) }
   }

@@ -7,9 +7,10 @@ import { useInfiniteGuides } from "@/features/order-guide/guide.data"
 import Link from "next/link"
 import { Button } from "@jp/ui/components/button"
 import { ArrowRight } from "lucide-react"
+import { Skeleton } from "@jp/ui/components/skeleton"
 
 export const OrderGuides = () => {
-  const { data } = useInfiniteGuides({ limit: 5 })
+  const { data, isPending } = useInfiniteGuides({ limit: 5 })
   const orders = data?.pages.flatMap((o) => o.data)
 
   return (
@@ -24,34 +25,38 @@ export const OrderGuides = () => {
         </Button>
       }
     >
-      <div className="divide-y">
-        {orders?.map((order) => (
-          <Link
-            href="/create/guides"
-            className="block px-4 py-3 hover:bg-secondary/50"
-            key={order.id}
-          >
-            <div className="flex gap-4">
-              <div className="flex-1 space-y-1">
-                <div className="flex items-center gap-2">
-                  <CardTitle>{order.name}</CardTitle>
+      {isPending ? (
+        [...Array(4)].map((_, i) => <Skeleton className="h-10 mb-2" key={i} />)
+      ) : (
+        <div className="divide-y">
+          {orders?.map((order) => (
+            <Link
+              href="/create/guides"
+              className="block px-4 py-3 hover:bg-secondary/50"
+              key={order.id}
+            >
+              <div className="flex gap-4">
+                <div className="flex-1 space-y-1">
+                  <div className="flex items-center gap-2">
+                    <CardTitle>{order.name}</CardTitle>
+                  </div>
+                  <CardDescription className="text-xs">
+                    {formatDate(order.createdAt)}
+                  </CardDescription>
                 </div>
-                <CardDescription className="text-xs">
-                  {formatDate(order.createdAt)}
-                </CardDescription>
+                <div className="text-sm font-medium text-right">
+                  {order.items.length} items
+                </div>
               </div>
-              <div className="text-right text-sm font-medium">
-                {order.items.length} items
-              </div>
-            </div>
-          </Link>
-        ))}
-        {!orders?.length && (
-          <p className="py-8 text-center text-sm text-muted-foreground">
-            No order guides have been created yet.
-          </p>
-        )}
-      </div>
+            </Link>
+          ))}
+          {!orders?.length && (
+            <p className="py-8 text-sm text-center text-muted-foreground">
+              No order guides have been created yet.
+            </p>
+          )}
+        </div>
+      )}
     </DashboardCard>
   )
 }

@@ -1,8 +1,13 @@
 import { PRODUCT_UNITS } from "./product.const"
-import type { PricedSellingUnit, Product } from "./product.type"
+import type { PricedSellingUnit, Product, SellUnit } from "./product.type"
+
+type ProductWithUnits = {
+  price?: Product["price"]
+  sellUnits?: SellUnit[] | null
+}
 
 export function getSellingUnits(
-  product: Partial<Pick<Product, "price" | "sellUnits">>
+  product: ProductWithUnits
 ): PricedSellingUnit[] {
   return (product.sellUnits ?? []).map((unit) => ({
     ...unit,
@@ -14,19 +19,6 @@ export function getSellingUnits(
       )
     ),
   }))
-}
-
-export function getLowestPriceUnit(sellUnits: PricedSellingUnit[]) {
-  return sellUnits.reduce<PricedSellingUnit>((cheapest, unit) => {
-    const pricePerBaseUnit =
-      parseFloat(unit.price) / parseFloat(unit.unitConversion)
-
-    const cheapestPricePerBaseUnit = cheapest
-      ? parseFloat(cheapest.price) / parseFloat(cheapest.unitConversion)
-      : Infinity
-
-    return pricePerBaseUnit < cheapestPricePerBaseUnit ? unit : cheapest
-  }, sellUnits[0]!)
 }
 
 export const getUnit = (value: string | undefined) => {
