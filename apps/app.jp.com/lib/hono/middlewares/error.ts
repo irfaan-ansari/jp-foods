@@ -24,7 +24,7 @@ export function errorHandler(err: Error, c: Context) {
 
   return c.json(
     {
-      code: "err.code",
+      code: "INTERNAL_SERVER_ERROR",
       success: false,
       message: "Internal server error",
       description: "An unexpected error occurred.",

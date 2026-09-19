@@ -82,7 +82,6 @@ export const UserProfileDropdown = ({
             <span className="mb-1.5 truncate text-sm leading-tight font-medium text-muted-foreground">
               {user?.email}
             </span>
-            <UserRoleBadge status={user?.role as any} />
           </div>
         </div>
 

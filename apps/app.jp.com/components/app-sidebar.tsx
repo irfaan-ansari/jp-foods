@@ -1,6 +1,6 @@
 "use client"
 
-import { ComponentType } from "react"
+import { ComponentType, useId } from "react"
 
 import {
   Sidebar,
@@ -25,7 +25,6 @@ import {
   CollapsibleTrigger,
 } from "@jp/ui/components/collapsible"
 import {
-  Home,
   Widget,
   Routing2,
   Settings,
@@ -330,18 +329,28 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
         <SidebarMenu className="*:text-center">
           {/* settings */}
           <Tooltip content="Settings">
-            <SidebarMenuItem onClick={() => setActivePanel("/settings", true)}>
-              <Button
-                variant="ghost"
-                data-active={activePanel === "/settings"}
-                className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
-                size="icon-lg"
-                asChild
-              >
-                <Link href="/settings">
-                  <Settings className="size-5" />
-                </Link>
-              </Button>
+            <SidebarMenuItem onClick={() => setActivePanel("/settings", false)}>
+              <UserAccess permission={{ portal: ["organization"] }}>
+                {(disabled) => (
+                  <Button
+                    variant="ghost"
+                    data-active={activePanel === "/settings"}
+                    className="hover:bg-background data-active:bg-background [&>svg]:transition hover:[&>svg]:scale-105 data-active:[&>svg]:scale-105"
+                    size="icon-lg"
+                    asChild
+                  >
+                    {disabled ? (
+                      <Link href="/settings/account">
+                        <Settings className="size-5" />
+                      </Link>
+                    ) : (
+                      <Link href="/org/settings/general">
+                        <Settings className="size-5" />
+                      </Link>
+                    )}
+                  </Button>
+                )}
+              </UserAccess>
             </SidebarMenuItem>
           </Tooltip>
           {/* help */}
@@ -377,6 +386,7 @@ const MenuButton = ({
   icon: MenuIcon
   subItems: { label: string; href: string }[] | []
 }) => {
+  const id = useId()
   const { pathname, getQueryString } = useRouterStuff()
 
   if (subItems.length === 0) {
@@ -403,7 +413,7 @@ const MenuButton = ({
         <CollapsibleContent>
           <SidebarMenuSub>
             {subItems.map((item) => (
-              <SidebarMenuSubItem key={item.href}>
+              <SidebarMenuSubItem key={id}>
                 <SidebarMenuSubButton
                   asChild
                   isActive={isSubItemActive(item.href)}
@@ -431,21 +441,33 @@ const MenuLink = ({
   const { pathname } = useRouterStuff()
 
   const isActive =
-    href !== "#" && (pathname === href || href.startsWith(pathname))
+    href !== "#" && (pathname === href || pathname.startsWith(href))
 
   return (
     <SidebarMenuItem>
-      <SidebarMenuButton
-        asChild
-        isActive={isActive}
-        tooltip={label}
-        className="px-2.5 transition duration-200"
-      >
-        <Link href={href}>
+      {href && href !== "#" ? (
+        <SidebarMenuButton
+          asChild
+          isActive={isActive}
+          tooltip={label}
+          className="px-2.5 transition duration-200"
+        >
+          <Link href={href}>
+            <Icon className="size-5" />
+            <span>{label}</span>
+          </Link>
+        </SidebarMenuButton>
+      ) : (
+        <SidebarMenuButton
+          isActive={isActive}
+          tooltip={label}
+          disabled
+          className="px-2.5 transition duration-200"
+        >
           <Icon className="size-5" />
           <span>{label}</span>
-        </Link>
-      </SidebarMenuButton>
+        </SidebarMenuButton>
+      )}
     </SidebarMenuItem>
   )
 }

@@ -252,7 +252,7 @@ export const PriceLevelForm = ({
                                   </span>
                                 </div>
 
-                                <div className="flex w-44 items-center gap-2 self-center">
+                                <div className="flex max-w-44 items-center gap-2 self-center">
                                   <div className="inline-flex items-center justify-between">
                                     <form.AppField
                                       name={`products[${itemIndex}].price`}
@@ -267,18 +267,20 @@ export const PriceLevelForm = ({
                                       )}
                                     />
                                   </div>
-                                  <div className="inline-flex items-center justify-between gap-2">
-                                    <ArrowRight className="size-3" />
-                                    <span className="text-xs text-primary">
-                                      {formatUSD(
-                                        getAdjustedPrice(
-                                          type,
-                                          item.basePrice,
-                                          item.price
-                                        )
-                                      )}
-                                    </span>
-                                  </div>
+                                  {type === "percentage" && (
+                                    <div className="inline-flex items-center justify-between gap-2">
+                                      <ArrowRight className="size-3" />
+                                      <span className="text-xs text-primary">
+                                        {formatUSD(
+                                          getAdjustedPrice(
+                                            type,
+                                            item.basePrice,
+                                            item.price
+                                          )
+                                        )}
+                                      </span>
+                                    </div>
+                                  )}
                                 </div>
                                 <Button
                                   type="button"

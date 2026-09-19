@@ -19,6 +19,7 @@ import {
 } from "@jp/ui/components/field"
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { Download, FileSpreadsheet, Upload } from "lucide-react"
+import { Input } from "@jp/ui/components/input"
 
 export const ProductPriceImportDialog = ({
   children,
@@ -39,12 +40,14 @@ export const ProductPriceImportDialog = ({
 
         <FieldGroup>
           <Field>
-            <FieldLabel>Upload price file</FieldLabel>
-            <div className="flex min-h-40 flex-col items-center justify-center gap-3 rounded-lg border border-dashed bg-secondary/50 px-6 py-8 text-center">
+            <FieldLabel
+              htmlFor="csv-file"
+              className="flex flex-col gap-3 rounded-2xl border border-dashed bg-secondary/40 p-4"
+            >
               <div className="flex size-12 items-center justify-center rounded-lg border bg-background">
                 <Upload className="size-5 text-muted-foreground" />
               </div>
-              <div className="space-y-1">
+              <div className="space-y-1 text-center">
                 <div className="text-sm font-medium">
                   Drop your CSV or XLSX file here
                 </div>
@@ -52,63 +55,17 @@ export const ProductPriceImportDialog = ({
                   Item codes and prices will be reviewed before import.
                 </div>
               </div>
-              <Button type="button" variant="outline" disabled>
-                <FileSpreadsheet />
-                Choose File
+              <Input type="file" className="sr-only" id="csv-file" />
+              <Button type="button" variant="outline" asChild>
+                <span>
+                  <FileSpreadsheet />
+                  Choose File
+                </span>
               </Button>
-            </div>
-            <FieldDescription>
-              Use the template format to prevent skipped rows.
-            </FieldDescription>
+            </FieldLabel>
           </Field>
 
-          <div className="grid gap-3 sm:grid-cols-2">
-            <Field className="rounded-lg border p-4">
-              <div className="flex items-center justify-between gap-3">
-                <FieldLabel>Template columns</FieldLabel>
-                <Badge variant="secondary">Required</Badge>
-              </div>
-              <div className="grid gap-2 text-sm">
-                {["item_code", "unit_name", "price"].map((column) => (
-                  <div
-                    key={column}
-                    className="flex items-center justify-between rounded-md bg-secondary px-3 py-2"
-                  >
-                    <span className="font-medium">{column}</span>
-                    <span className="text-muted-foreground">Column</span>
-                  </div>
-                ))}
-              </div>
-            </Field>
-
-            <Field className="rounded-lg border p-4">
-              <FieldLabel>Import settings</FieldLabel>
-              <div className="grid gap-3">
-                <label className="flex items-start gap-3 text-sm">
-                  <Checkbox checked disabled />
-                  <span>
-                    <span className="block font-medium">
-                      Match by item code
-                    </span>
-                    <span className="text-muted-foreground">
-                      Existing product prices will be updated.
-                    </span>
-                  </span>
-                </label>
-                <label className="flex items-start gap-3 text-sm">
-                  <Checkbox disabled />
-                  <span>
-                    <span className="block font-medium">Skip blank prices</span>
-                    <span className="text-muted-foreground">
-                      Keep current pricing when a price cell is empty.
-                    </span>
-                  </span>
-                </label>
-              </div>
-            </Field>
-          </div>
-
-          <div className="rounded-lg border bg-secondary/40 p-4">
+          <div className="rounded-2xl border bg-secondary/40 p-4">
             <div className="mb-3 flex items-center justify-between gap-3">
               <div>
                 <div className="text-sm font-medium">Import preview</div>
@@ -131,24 +88,18 @@ export const ProductPriceImportDialog = ({
               <div className="border-t px-3 py-2 text-muted-foreground">-</div>
             </div>
           </div>
-
-          <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-between">
-            <Button type="button" variant="outline" disabled>
-              <Download />
-              Download Template
-            </Button>
-            <div className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:**:w-28">
-              <AppDialogClose asChild>
-                <Button type="button" variant="secondary">
-                  Cancel
-                </Button>
-              </AppDialogClose>
-              <Button type="button" disabled>
-                Import
-              </Button>
-            </div>
-          </Field>
         </FieldGroup>
+
+        <Field className="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:gap-4 sm:[&>*]:w-28">
+          <AppDialogClose asChild>
+            <Button type="button" variant="outline">
+              Cancel
+            </Button>
+          </AppDialogClose>
+          <Button type="button" disabled>
+            Import
+          </Button>
+        </Field>
       </AppDialogContent>
     </AppDialog>
   )

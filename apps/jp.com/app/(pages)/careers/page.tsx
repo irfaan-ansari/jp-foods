@@ -23,11 +23,11 @@ const CareersPage = () => {
   return (
     <React.Fragment>
       {/* page title*/}
-      <section className="bg-lime-100 py-16">
+      <section className="bg-secondary py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold text-primary sm:text-5xl/tight md:text-7xl/tight">
                 Careers
               </h2>
               <p className="text-lg">

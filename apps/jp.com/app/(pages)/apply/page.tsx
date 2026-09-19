@@ -28,7 +28,7 @@ export default function ApplyPage() {
         <Container className="relative">
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-3xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold uppercase sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
                 Become a customer
               </h2>
               <p className="text-lg">

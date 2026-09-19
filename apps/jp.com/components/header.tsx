@@ -17,7 +17,7 @@ export const Header = () => {
   return (
     <header className="sticky top-0 z-10 bg-background shadow-md backdrop-blur-md">
       <div className="mx-auto max-w-8xl px-4 py-3 lg:px-8">
-        <div className="flex h-14 w-full items-center gap-3 lg:h-16 lg:gap-6">
+        <div className="flex h-14 w-full items-center gap-3 lg:h-20 lg:gap-6">
           <div className="inline-flex flex-[1_1_0] self-center">
             <Link href="/">
               <Image
@@ -25,7 +25,7 @@ export const Header = () => {
                 height={100}
                 alt="Logo"
                 src={SITE_CONFIG.logo}
-                className="w-14 lg:w-20"
+                className="w-14 lg:w-24"
               />
             </Link>
           </div>

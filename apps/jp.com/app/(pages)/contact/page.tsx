@@ -9,18 +9,31 @@ import {
 } from "@jp/ui/components/accordion"
 import { Button } from "@jp/ui/components/button"
 import { Card, CardContent, CardHeader } from "@jp/ui/components/card"
+import {
+  MapMarker,
+  MarkerContent,
+  MarkerTooltip,
+  Map,
+} from "@jp/ui/components/map"
 import { AtSign, MapPinned, Phone, Plus } from "lucide-react"
+import { Metadata } from "next"
 import React from "react"
+
+export const metadata: Metadata = {
+  title: "Contact",
+  description:
+    "Get in touch with our team for reliable foodservice delivery, product inquiries, or account support across the Gulf Coast.",
+}
 
 const ContactPage = () => {
   return (
     <React.Fragment>
       {/* page title*/}
-      <section className="bg-lime-100 py-16">
+      <section className="bg-secondary py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
             <div className="mx-auto max-w-xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold text-primary sm:text-5xl/tight md:text-7xl/tight">
                 Contact us
               </h2>
               <p className="text-lg">
@@ -227,7 +240,38 @@ const ContactPage = () => {
         </Container>
       </section>
       {/* map */}
-      <section className="mt-16 h-[500px] w-full"></section>
+      <section className="mt-16 h-[500px] w-full">
+        <Map zoom={4} center={[-90.0174859, 30.282803]} theme="light">
+          {CONTACT_SECTIONS.locations.map((location) => (
+            <MapMarker
+              key={location.name}
+              longitude={location.lng}
+              latitude={location.lat}
+            >
+              <MarkerContent>
+                <div className="relative inline-flex size-7 items-center justify-center rounded-full bg-primary">
+                  <span className="absolute inset-0 animate-ping rounded-full bg-primary/40 duration-1000"></span>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    className="size-4 text-primary-foreground opacity-80"
+                  >
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M18.364 4.636a9 9 0 0 1 .203 12.519l-.203 .21l-4.243 4.242a3 3 0 0 1 -4.097 .135l-.144 -.135l-4.244 -4.243a9 9 0 0 1 12.728 -12.728zm-6.364 3.364a3 3 0 1 0 0 6a3 3 0 0 0 0 -6" />
+                  </svg>
+                </div>
+              </MarkerContent>
+
+              <MarkerTooltip className="rounded-[1rem] bg-background text-foreground">
+                <div className="p-1">{location.name}</div>
+              </MarkerTooltip>
+            </MapMarker>
+          ))}
+        </Map>
+      </section>
     </React.Fragment>
   )
 }

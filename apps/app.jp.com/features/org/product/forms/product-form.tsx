@@ -136,12 +136,14 @@ export const ProductForm = ({ data, id }: FormProps) => {
             {/* preview */}
             <ProductPreview form={form} setFile={setFile} />
             {/* analytics */}
-            <Card className="shadow-xs">
-              <CardHeader>
-                <CardTitle>Performance</CardTitle>
-              </CardHeader>
-              <CardContent>Chart data here for last 2-3 moths</CardContent>
-            </Card>
+            {id && (
+              <Card className="shadow-xs" size="sm">
+                <CardHeader>
+                  <CardTitle>Performance</CardTitle>
+                </CardHeader>
+                <CardContent>NA</CardContent>
+              </Card>
+            )}
           </div>
         </div>
       </div>

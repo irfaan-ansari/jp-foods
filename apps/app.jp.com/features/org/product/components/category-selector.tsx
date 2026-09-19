@@ -1,7 +1,6 @@
 "use client"
 
 import React from "react"
-import { cn } from "@jp/ui/lib/utils"
 import { Check, Plus } from "lucide-react"
 import { SearchBar } from "@jp/ui/components/jp"
 import { Button } from "@jp/ui/components/button"
@@ -40,7 +39,7 @@ export const CategorySelector = ({
 
       if (!matches) return false
 
-      return multiple ? !selectedValues.includes(category) : true
+      return true
     })
   }, [categories, search, multiple, selectedValues])
 
@@ -76,7 +75,7 @@ export const CategorySelector = ({
           className="max-w-full"
         />
 
-        <div className="no-scrollbar flex-1 overflow-auto *:w-full *:justify-start">
+        <div className="no-scrollbar flex-1 gap-0 overflow-auto *:w-full *:justify-start">
           {isPending ? (
             Array.from({ length: 4 }).map((_, index) => (
               <Skeleton key={index} className="mt-1 h-8" />
@@ -85,19 +84,22 @@ export const CategorySelector = ({
             filteredCategories.map((category) => (
               <Button
                 key={category}
-                size="sm"
+
                 variant={
                   selectedValues.includes(category) ? "secondary" : "ghost"
                 }
                 onClick={() => handleSelect(category)}
               >
                 {category}
+                {selectedValues.includes(category) && (
+                  <Check className="ml-auto size-4 opacity-60" />
+                )}
               </Button>
             ))
           ) : canCreateCategory ? (
             <Button
               type="button"
-              size="sm"
+
               variant="ghost"
               onClick={handleCreate}
             >

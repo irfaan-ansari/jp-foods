@@ -20,7 +20,7 @@ const ProductPage = () => {
   } = useProduct(params.id as string)
 
   const data = product?.data || ({} as Product)
-
+  console.log(error)
   return (
     <React.Fragment>
       <PageHeader

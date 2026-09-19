@@ -16,7 +16,7 @@ import { CopyButton } from "@jp/ui/components/jp/copy-button"
 import { ErrorState } from "@jp/ui/components/jp/empty-state"
 
 import { formatUSD } from "@jp/utils"
-import { User } from "@solar-icons/react"
+import { Buildings, User } from "@solar-icons/react"
 import {
   BadgeCheck,
   CheckCircle,
@@ -58,16 +58,16 @@ const OrderPage = () => {
               {/* stats */}
               <div className="grid grid-cols-1 gap-3 @sm:grid-cols-3">
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
-                  <Badge
-                    className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
-                    variant="secondary"
-                  >
-                    <Truck className="size-5 text-amber-500" />
-                  </Badge>
+                  <div className="flex items-center justify-between gap-3">
+                    <CardTitle>Delivery</CardTitle>
+                    <Badge
+                      className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
+                      variant="secondary"
+                    >
+                      <Truck className="size-5 text-amber-500" />
+                    </Badge>
+                  </div>
                   <div className="min-w-0 flex-1">
-                    <CardTitle className="mb-2 text-xs font-semibold text-muted-foreground uppercase">
-                      Delivery
-                    </CardTitle>
                     <div className="text-sm font-medium text-muted-foreground">
                       {data.deliveryDate + " " + data.deliveryWindow}
                     </div>
@@ -77,14 +77,14 @@ const OrderPage = () => {
                   </div>
                 </Card>
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center justify-between gap-3">
+                    <CardTitle>Customer</CardTitle>
                     <Badge
                       className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
                       variant="secondary"
                     >
-                      <BadgeCheck className="size-5 text-green-500" />
+                      <Buildings className="size-5 text-green-500" />
                     </Badge>
-                    <CardTitle>Customer</CardTitle>
                   </div>
 
                   <div className="min-w-0 flex-1 truncate">
@@ -96,17 +96,17 @@ const OrderPage = () => {
                   </div>
                 </Card>
                 <Card className="gap-4 overflow-visible p-4 shadow-xs">
-                  <Badge
-                    className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
-                    variant="secondary"
-                  >
-                    <User className="size-5 text-blue-500" />
-                  </Badge>
+                  <div className="flex items-center justify-between gap-3">
+                    <CardTitle> Placed by</CardTitle>
+                    <Badge
+                      className="ring-offset-backgrround size-9 rounded-lg ring-1 ring-border ring-offset-2"
+                      variant="secondary"
+                    >
+                      <User className="size-5 text-blue-500" />
+                    </Badge>
+                  </div>
 
                   <div className="min-w-0 flex-1 truncate">
-                    <CardTitle className="mb-2 text-xs font-semibold text-muted-foreground uppercase">
-                      Placed by
-                    </CardTitle>
                     <span className="line-clamp-1 truncate text-sm font-medium">
                       {data.user?.name}
                     </span>
@@ -117,41 +117,42 @@ const OrderPage = () => {
               </div>
 
               <Card className="shadow-xs" size="sm">
-                <CardHeader>
+                <CardHeader className="border-b border-dashed">
                   <CardTitle className="text-base font-bold">
                     Order Items
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="divide-y divide-dashed">
+                <CardContent className="divide-y divide-dashed px-0">
                   {data.lineItems?.map((item, i) => (
                     <div
-                      className="flex gap-3 not-first:pt-2 not-last:pb-2"
+                      className="flex gap-3 px-4 pb-2 not-first:pt-2"
                       key={item.id}
                     >
-                      <Avatar
-                        className="rounded-xl *:rounded-xl data-[size=lg]:size-11"
-                        size="lg"
-                      >
+                      <Avatar size="lg">
                         <AvatarImage src={item.image!} />
                         <AvatarFallback>
                           <ImageOff className="size-4" />
                         </AvatarFallback>
                       </Avatar>
                       <div className="grid min-w-0 flex-1 gap-0.5">
-                        <p className="truncate text-sm font-semibold">
-                          {item.title}
-                        </p>
-                        <div className="flex items-center gap-2">
-                          <CopyButton value={item.itemCode ?? ""} /> |
-                          <span className="text-xs font-medium text-foreground">
-                            {formatUSD(item.price ?? 0)}/case
-                          </span>
-                          <span>*</span>
-                          <span>1 case</span>
-                        </div>
+                        <p className="truncate font-semibold">{item.title}</p>
+                        <CopyButton
+                          value={item.itemCode ?? ""}
+                          className="**:data-[slot=copy-value]:text-xs"
+                        />
                       </div>
-                      <div className="min-w-24 text-right text-base font-semibold">
-                        {formatUSD(item.total ?? 0)}
+                      <div className="grid min-w-24 text-right">
+                        <div className="font-semibold">
+                          {formatUSD(item.total ?? 0)}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span>{formatUSD(item.price ?? 0)}</span>
+                          <span>x</span>
+                          <span>
+                            {item.quantity}
+                            {item.unitName && <span>/{item.unitName}</span>}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   ))}

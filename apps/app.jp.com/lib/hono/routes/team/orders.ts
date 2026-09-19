@@ -2,7 +2,7 @@ import { Hono } from "hono"
 
 import { db, order } from "@jp/db"
 import { and, count, eq } from "drizzle-orm"
-import { AppError } from "@jp/utils"
+import { AppError, pluralize } from "@jp/utils"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { renderToStream } from "@react-pdf/renderer"
@@ -92,8 +92,16 @@ const orderApp = new Hono<TeamAppContext>()
 
     if (!result) throw new AppError("NOT_FOUND")
 
+    const lineItems = result.lineItems.map((item) => ({
+      ...item,
+      unitName: item.unitName
+        ? pluralize(Number(item.quantity), item.unitName)
+        : "",
+    }))
+
     const data = {
       ...result,
+      lineItems,
       estimateUrl:
         process.env.BETTER_AUTH_URL + `/api/v1/team/orders/${id}/estimate`,
     }
@@ -122,11 +130,26 @@ const orderApp = new Hono<TeamAppContext>()
     })
     if (!data) throw new AppError("NOT_FOUND")
 
-    // @ts-expect-error - Type assertion for PDF props
-    const pdf = await renderToStream(OrderInvoice({ data }))
+    const lineItems = data.lineItems.map((item) => ({
+      ...item,
+      unitName: item.unitName
+        ? pluralize(Number(item.quantity), item.unitName)
+        : "",
+    }))
+
+    const stream = await renderToStream(
+      OrderInvoice({
+        data: {
+          ...data,
+          organization: data.organization!,
+          team: data.team!,
+          lineItems,
+        },
+      })
+    )
 
     // @ts-expect-error - Type assertion for Response body
-    return c.body(pdf, 200, {
+    return c.body(stream, 200, {
       "Content-Type": "application/pdf",
       "Content-Disposition": `inline; filename="order-${id}.pdf"`,
     })

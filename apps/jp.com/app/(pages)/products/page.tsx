@@ -7,21 +7,33 @@ import Link from "next/link"
 import React from "react"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import { Pagination } from "@/features/catalog/components/pagination"
+import { Metadata } from "next"
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: "Catalog",
+  description:
+    "Browse our foodservice catalog featuring fresh produce and essential supplies for restaurants, food trucks, and commercial kitchens.",
+}
 
 const ProductsPages = async () => {
   const { data: products, pagination, authorized } = await getCatalogProducts()
 
   return (
     <React.Fragment>
-      <section className="bg-lime-100 py-16">
+      <section className="bg-secondary py-16">
         <Container>
           <div className="flex h-full flex-col items-center">
-            <div className="mx-auto max-w-4xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
+            <div className="mx-auto max-w-xl space-y-6 text-center">
+              <h2 className="flex-1 font-heading text-4xl/tight font-semibold text-primary sm:text-5xl/tight md:text-7xl/tight">
                 Catalog
               </h2>
+              <p className="text-lg">
+                Browse our foodservice catalog featuring fresh produce and
+                essential supplies for restaurants, food trucks, and commercial
+                kitchens.
+              </p>
             </div>
           </div>
         </Container>

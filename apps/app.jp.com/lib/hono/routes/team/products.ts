@@ -8,6 +8,7 @@ import {
   ilike,
   inArray,
   ne,
+  notInArray,
   or,
   sql,
 } from "drizzle-orm"
@@ -36,10 +37,11 @@ export const products = app
 
     /** build filters */
     const filters = [
-      ne(product.status, "archived"),
       eq(product.organizationId, organizationId),
+      notInArray(product.status, ["archived", "draft"]),
       or(eq(product.status, "active"), inArray(product.id, privateIds)),
     ]
+
     if (cat) {
       filters.push(arrayContains(product.categories, [cat]))
     }
