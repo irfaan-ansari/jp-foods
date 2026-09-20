@@ -16,6 +16,7 @@ const statement = {
   priceLevel: ["create", "read", "update", "delete"],
   taxRule: ["create", "read", "update", "delete"],
   orderGuide: ["create", "read", "update", "delete"],
+  promotion: ["create", "read", "update", "delete"],
 } as const
 
 const ac = createAccessControl(statement)
@@ -33,6 +34,7 @@ const owner = ac.newRole({
   priceLevel: ["create", "read", "update", "delete"],
   taxRule: ["create", "read", "update", "delete"],
   orderGuide: ["create", "read", "update", "delete"],
+  promotion: ["create", "read", "update", "delete"],
 })
 
 const manager = ac.newRole({
@@ -48,6 +50,7 @@ const manager = ac.newRole({
   priceLevel: ["create", "read", "update"],
   taxRule: ["create", "read", "update"],
   orderGuide: ["create", "read", "update"],
+  promotion: ["create", "read", "update"],
 })
 
 const sales = ac.newRole({
@@ -68,7 +71,7 @@ const customer = ac.newRole({
   invitation: ["create", "read"],
   product: ["read"],
   order: ["create", "read", "update", "cancel"],
-  orderGuide: ["create", "update", "delete"],
+  orderGuide: ["read"],
 })
 
 const orgRoles = {
