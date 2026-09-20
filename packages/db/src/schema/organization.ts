@@ -363,12 +363,11 @@ export const promotion = pgTable(
         onDelete: "cascade",
       }),
     name: text("name") /** internal refrence only */,
-    title: text("title") /** deprecated */,
-    description: text("description") /** deprecated */,
     media: text("media"),
-    badge: text("badge") /** deprecated */,
-    action: text("action") /** add-to-cart | popup */,
-    placement: jsonb("placement").$type<string[]>().default([]),
+    action: text("action") /** add-to-cart | popup | null */,
+    placement: jsonb("placement")
+      .$type<string[]>()
+      .default([]) /** sidebar | new-order | banner */,
     triggerProductIds: jsonb("trigger_product_ids")
       .$type<number[]>()
       .default([]),

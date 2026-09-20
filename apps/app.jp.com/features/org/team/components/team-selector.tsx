@@ -61,7 +61,7 @@ export const TeamSelector = ({
           onSearch={(value) => setFilters({ ...filters, q: value })}
           className="max-w-full"
         />
-        <div className="no-scrollbar flex-1 overflow-y-auto">
+        <div className="no-scrollbar flex-1 space-y-0.5 overflow-y-auto">
           <QueryState
             isPending={isPending}
             isError={isError}
