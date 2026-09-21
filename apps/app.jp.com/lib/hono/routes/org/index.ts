@@ -15,6 +15,7 @@ import { priceLevelRoutes } from "@/features/org/price-level/price-level.api"
 import { orderGuideRoutes } from "@/features/org/order-guide/order-guide.api"
 import { dashboardRoutes } from "@/features/org/dashboard/dashboard.api"
 import { promotionRoutes } from "@/features/org/promotion/promotion.api"
+import { messagingRoutes } from "@/features/org/messaging/messaging.api"
 
 export const orgRoutes = new Hono<OrgAppContext>()
 
@@ -31,3 +32,4 @@ export const orgRoutes = new Hono<OrgAppContext>()
   .route("/price-levels", priceLevelRoutes)
   .route("/tax-rules", taxRulesRoutes)
   .route("/promotions", promotionRoutes)
+  .route("/messaging", messagingRoutes)

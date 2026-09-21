@@ -13,6 +13,8 @@ import {
   priceLevelItem,
   order,
   lineItem,
+  messageCampaign,
+  messageRecipient,
   orderGuideItem,
   taxRule,
   teamProduct,
@@ -271,6 +273,35 @@ export const promotionTargetRelations = relations(
     team: one(team, {
       fields: [promotionTarget.teamId],
       references: [team.id],
+    }),
+  })
+)
+
+export const messageCampaignRelations = relations(
+  messageCampaign,
+  ({ one, many }) => ({
+    organization: one(organization, {
+      fields: [messageCampaign.organizationId],
+      references: [organization.id],
+    }),
+    creator: one(user, {
+      fields: [messageCampaign.createdBy],
+      references: [user.id],
+    }),
+    recipients: many(messageRecipient),
+  })
+)
+
+export const messageRecipientRelations = relations(
+  messageRecipient,
+  ({ one }) => ({
+    campaign: one(messageCampaign, {
+      fields: [messageRecipient.campaignId],
+      references: [messageCampaign.id],
+    }),
+    organization: one(organization, {
+      fields: [messageRecipient.organizationId],
+      references: [organization.id],
     }),
   })
 )

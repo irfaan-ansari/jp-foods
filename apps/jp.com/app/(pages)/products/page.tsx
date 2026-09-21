@@ -46,7 +46,7 @@ const ProductsPages = async () => {
             </span>
             <SearchQueryParam />
           </div>
-          <div className="grid grid-cols-2 gap-6 md:grid-cols-3 md:gap-8 lg:grid-cols-4 2xl:grid-cols-6">
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 2xl:grid-cols-6">
             {products.map((product, i) => (
               <ProductCard key={product.id} data={product} priority={i <= 10} />
             ))}

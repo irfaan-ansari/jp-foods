@@ -14,11 +14,18 @@ import { Button } from "@jp/ui/components/button"
 import { ImageOff, Plus, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
-
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@jp/ui/components/carousel"
 const variants = {
   sidebar: SidebarPromotion,
   banner: BannerPromotion,
   "new-order": NewOrderPromotion,
+  cart: CartPromotion,
 }
 
 type PromotionProps = {
@@ -78,6 +85,58 @@ function BannerPromotion({ data }: { data: PromotionType }) {
   )
 }
 
+// cart promotion
+function CartPromotion({ data }: { data: PromotionType }) {
+  const items = useOrderFormStore((s) => s.order.items)
+
+  const upsells = data.products
+  const triggers = data.triggerProductIds ?? []
+
+  const hasTriggerInCart = items.some((item) => triggers.includes(item.id))
+
+  // if (!hasTriggerInCart || !upsells.length) return null
+
+  return (
+    <Carousel>
+      <CarouselContent className="-ml-1 w-full">
+        {upsells.map((product, index) => (
+          <CarouselItem key={product.id} className="basis-4/5 pl-1">
+            <div className="flex w-full items-center gap-2 overflow-hidden rounded-2xl border bg-secondary/20 p-2">
+              <Avatar className="size-16 shrink-0 rounded-2xl border bg-secondary **:rounded-2xl">
+                <AvatarImage
+                  src={product.image ?? ""}
+                  className="object-contain p-1"
+                />
+                <AvatarFallback>
+                  <ImageOff className="size-6 text-muted-foreground" />
+                </AvatarFallback>
+              </Avatar>
+
+              <div className="flex min-w-0 flex-1 flex-col">
+                <h4 className="line-clamp-2 text-sm font-semibold">
+                  {product.title}
+                </h4>
+                <p className="truncate text-[11px] tracking-wide text-muted-foreground uppercase">
+                  {product.categories?.join(" • ")}
+                </p>
+                <div className="flex items-center justify-between">
+                  {/* <span className="font-semibold text-primary">
+                  {sellUnit
+                    ? `${formatUSD(sellUnit.price)} / ${sellUnit.name}`
+                    : "Unavailable"}
+                </span> */}
+                </div>
+              </div>
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious />
+      <CarouselNext />
+    </Carousel>
+  )
+}
+
 /** upsell */
 function NewOrderPromotion({ data }: { data: PromotionType }) {
   const items = useOrderFormStore((s) => s.order.items)
@@ -126,6 +185,7 @@ function PromotionToast({
   product: PromotionType["products"][number]
 }) {
   const sellUnit = getSellingUnits(product)[0]
+
   const { setQuantity, value } = useOrderItemQuantity(
     product,
     sellUnit?.name ?? ""

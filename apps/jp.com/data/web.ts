@@ -342,15 +342,6 @@ export const CONTACT_SECTIONS = {
   ],
   contacts: [
     {
-      title: "Management",
-      icon: Briefcase,
-      label: "Connect with leadership",
-      description:
-        "For business inquiries, partnerships, and company-level discussions.",
-      email: "info@jimenezproduce.com",
-      phone: "(251) 262-2607",
-    },
-    {
       title: "Robertsdale",
       icon: MapPinned,
       label: "Robertsdale warehouse team",
@@ -358,6 +349,7 @@ export const CONTACT_SECTIONS = {
         "Questions about receiving, pickups, delivery scheduling, and current inventory availability.",
       email: "jorge@jimenezproduce.com",
       phone: "(251) 262-2607",
+      className: "lg:col-span-3",
     },
     {
       title: "Lafayette",
@@ -367,7 +359,19 @@ export const CONTACT_SECTIONS = {
         "Questions about receiving, pickups, delivery scheduling, and current inventory availability.",
       email: "yhessenia@jimenezproduce.com",
       phone: "(337) 806-9008 ",
+      className: "lg:col-span-3",
     },
+    {
+      title: "Management",
+      icon: Briefcase,
+      label: "Connect with leadership",
+      description:
+        "For business inquiries, partnerships, and company-level discussions.",
+      email: "info@jimenezproduce.com",
+      phone: "(251) 262-2607",
+      className: "lg:col-span-2",
+    },
+
     {
       title: "Fleet",
       icon: Truck,
@@ -376,6 +380,7 @@ export const CONTACT_SECTIONS = {
         "Questions related to transportation, fleet operations, and delivery logistics.",
       email: "fleet@jimenezproduce.com",
       phone: "(251) 262-2607",
+      className: "lg:col-span-2",
     },
     {
       title: "Products",
@@ -385,6 +390,7 @@ export const CONTACT_SECTIONS = {
         "Inquiries about product availability, sourcing, and item details from our warehouse locations.",
       email: "info@jimenezproduce.com",
       phone: "(251) 262-2607",
+      className: "lg:col-span-2",
     },
   ],
   faqs: [

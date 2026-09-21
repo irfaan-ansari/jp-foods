@@ -32,13 +32,13 @@ const HomePage = () => {
               src={hero.image}
               alt="Hero banner"
               priority
-              className="h-svh w-full object-cover object-center"
+              className="h-[80svh] w-full object-cover object-center lg:h-225"
             />
           </div>
           {/* content */}
           <div className="col-start-1 row-start-1 size-full bg-linear-to-tr from-black">
             <Container className="h-full">
-              <div className="relative max-w-3xl py-20">
+              <div className="relative max-w-3xl py-32">
                 {/* <span className="absolute -inset-40 bg-black/40 mask-y-from-90% mask-x-from-90% backdrop-blur-xs"></span> */}
                 <div className="relative flex flex-col items-start gap-8 text-primary-foreground">
                   <h1 className="font-heading text-5xl/tight font-bold md:text-8xl/tight">

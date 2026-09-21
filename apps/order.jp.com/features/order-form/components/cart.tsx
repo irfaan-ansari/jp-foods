@@ -23,10 +23,12 @@ import {
 import { Input } from "@jp/ui/components/input"
 import { Textarea } from "@jp/ui/components/textarea"
 import { SubmitOrderButton } from "./submit-order-button"
+import { Promotion } from "@/features/promotion/components/promotion"
 
 export const Cart = () => {
   const isCartOpen = useOrderFormUI((state) => state.isCartOpen)
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
+
   const cart = useOrderFormStore((state) => state.order)
   const removecartItem = useOrderFormStore((state) => state.removeItem)
   const updateCartItem = useOrderFormStore((state) => state.updateItem)
@@ -126,6 +128,7 @@ export const Cart = () => {
               </div>
             </div>
           ))}
+          {/* <Promotion placement="cart" /> */}
         </div>
         <DrawerFooter className="relative p-2">
           <div className="grid gap-0.5 rounded-xl border bg-neutral-100/60 p-3">

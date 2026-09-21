@@ -121,9 +121,6 @@ const AboutPage = () => {
               <div className="grid grid-cols-2 gap-8">
                 <Card className="shadow-sm">
                   <div className="space-y-6 px-6">
-                    <CardTitle className="font-heading text-3xl font-semibold">
-                      Active Customers
-                    </CardTitle>
                     <div className="aspect-aquare flex h-56 items-center justify-center">
                       <AnimatedCircularProgressBar
                         min={0}
@@ -133,13 +130,13 @@ const AboutPage = () => {
                         gaugeSecondaryColor="rgba(0, 0, 0, 0.1)"
                       />
                     </div>
+                    <CardTitle className="text-center font-heading text-xl font-semibold">
+                      Active Customers
+                    </CardTitle>
                   </div>
                 </Card>
                 <Card className="shadow-sm">
                   <div className="space-y-6 px-6">
-                    <CardTitle className="font-heading text-3xl font-semibold">
-                      Coverage Areas
-                    </CardTitle>
                     <CardContent className="relative mt-auto flex h-56 w-full flex-col items-center justify-center overflow-hidden text-primary-foreground">
                       <OrbitingCircles radius={80} path={true} iconSize={20}>
                         {uniqueCodes.map((code) => (
@@ -162,6 +159,9 @@ const AboutPage = () => {
                         ))}
                       </OrbitingCircles>
                     </CardContent>
+                    <CardTitle className="text-center font-heading text-xl font-semibold">
+                      Coverage Areas
+                    </CardTitle>
                   </div>
                 </Card>
               </div>

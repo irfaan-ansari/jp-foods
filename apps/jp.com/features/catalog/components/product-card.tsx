@@ -7,7 +7,7 @@ type ProductCardProps = {
 
 export const ProductCard = ({ data, priority }: ProductCardProps) => {
   return (
-    <div className="relative rounded-[0.5rem] bg-linear-to-br from-secondary via-background to-secondary shadow-sm hover:[&_img]:scale-110">
+    <div className="relative rounded-[0.5rem] bg-linear-to-br from-secondary via-background to-secondary shadow-sm hover:[&_img]:scale-104">
       <div className="relative aspect-square overflow-hidden rounded-[0.5rem]">
         {data.image && (
           <img
@@ -16,7 +16,7 @@ export const ProductCard = ({ data, priority }: ProductCardProps) => {
             src={data.image}
             alt={data.title}
             loading={priority ? "eager" : "lazy"}
-            className="relative z-1 aspect-square w-full rounded-lg object-contain mix-blend-multiply transition ease-out"
+            className="relative z-1 aspect-square w-full rounded-lg object-contain mix-blend-multiply transition duration-500 ease-out"
           />
         )}
       </div>
