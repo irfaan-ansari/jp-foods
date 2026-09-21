@@ -19,6 +19,8 @@ import {
   order,
   orderGuide,
   orderGuideItem,
+  messageCampaign,
+  messageRecipient,
   priceLevel,
   priceLevelItem,
   product,
@@ -90,3 +92,9 @@ export type PromotionInsertType = InferInsertModel<typeof promotion>
 
 export type PromotionTargetSelectType = InferSelectModel<typeof promotionTarget>
 export type PromotionTargetInsertType = InferInsertModel<typeof promotionTarget>
+
+export type MessageCampaignSelectType = InferSelectModel<typeof messageCampaign>
+export type MessageCampaignInsertType = InferInsertModel<typeof messageCampaign>
+
+export type MessageRecipientSelectType = InferSelectModel<typeof messageRecipient>
+export type MessageRecipientInsertType = InferInsertModel<typeof messageRecipient>

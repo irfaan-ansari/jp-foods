@@ -412,3 +412,85 @@ export const promotionTarget = pgTable(
     ),
   ]
 )
+
+export const messageCampaign = pgTable(
+  "message_campaign",
+  {
+    id: serial("id").primaryKey(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    name: text("name").notNull(),
+    channel: text("channel").notNull().default("sms"),
+    status: text("status").notNull().default("draft"),
+    templateKey: text("template_key"),
+    message: text("message").notNull(),
+    variables: jsonb("variables")
+      .$type<string[]>()
+      .default(sql`'[]'::jsonb`),
+    recipientSource: text("recipient_source").notNull().default("mixed"),
+    recipientCount: integer("recipient_count").notNull().default(0),
+    sentCount: integer("sent_count").notNull().default(0),
+    failedCount: integer("failed_count").notNull().default(0),
+    skippedCount: integer("skipped_count").notNull().default(0),
+    metadata: jsonb("metadata").$type<Record<string, unknown>>().default({}),
+    createdBy: text("created_by").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    sentAt: timestamp("sent_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("message_campaign_organization_id_idx").on(table.organizationId),
+    index("message_campaign_status_idx").on(table.status),
+    index("message_campaign_created_by_idx").on(table.createdBy),
+  ]
+)
+
+export const messageRecipient = pgTable(
+  "message_recipient",
+  {
+    id: serial("id").primaryKey(),
+    campaignId: integer("campaign_id")
+      .notNull()
+      .references(() => messageCampaign.id, { onDelete: "cascade" }),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    teamId: text("team_id").references(() => team.id, {
+      onDelete: "set null",
+    }),
+    userId: text("user_id").references(() => user.id, {
+      onDelete: "set null",
+    }),
+    source: text("source").notNull(),
+    name: text("name"),
+    phoneNumber: text("phone_number").notNull(),
+    message: text("message").notNull(),
+    status: text("status").notNull().default("queued"),
+    provider: text("provider").notNull().default("twilio"),
+    providerMessageId: text("provider_message_id"),
+    errorCode: text("error_code"),
+    errorMessage: text("error_message"),
+    variables: jsonb("variables")
+      .$type<Record<string, string>>()
+      .default(sql`'{}'::jsonb`),
+    sentAt: timestamp("sent_at"),
+    failedAt: timestamp("failed_at"),
+    createdAt: timestamp("created_at").defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("message_recipient_campaign_id_idx").on(table.campaignId),
+    index("message_recipient_organization_id_idx").on(table.organizationId),
+    index("message_recipient_status_idx").on(table.status),
+    index("message_recipient_phone_number_idx").on(table.phoneNumber),
+  ]
+)
