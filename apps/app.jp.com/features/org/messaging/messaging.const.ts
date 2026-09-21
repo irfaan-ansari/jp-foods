@@ -17,9 +17,7 @@ export const RECIPIENT_STATUS: Record<string, BadgeStatus> = {
 
 export const MESSAGE_VARIABLES = [
   { key: "name", label: "Recipient name" },
-  { key: "teamName", label: "Customer/team name" },
-  { key: "phoneNumber", label: "Phone number" },
-  { key: "organizationName", label: "Organization name" },
+  { key: "customerName", label: "Customer name" },
 ]
 
 export const MESSAGE_TEMPLATES = [

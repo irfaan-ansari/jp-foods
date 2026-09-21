@@ -60,6 +60,7 @@ export const messagingRoutes = app
   })
   .get("/count", async (c) => {
     const organizationId = c.get("organizationId")
+
     const result = await db
       .select({
         status: messageCampaign.status,

@@ -99,11 +99,9 @@ export const PromotionForm = ({
       onChange: promotionSchema,
     },
     onSubmit: async ({ value }) => {
-      const toastId = toast.loading("Please wait...")
       let media = value.media
 
       if (file && file instanceof File) {
-        toast.loading("Uploading image...", { id: toastId })
         const blob = await upload(`promotions/${file.name}`, file, {
           access: "public",
           handleUploadUrl: "/api/v1/upload",
@@ -111,7 +109,6 @@ export const PromotionForm = ({
         if (blob.url) media = blob.url
       }
 
-      toast.loading("Saving promotion...", { id: toastId })
       const payload = {
         name: value.name,
         media,
@@ -129,13 +126,12 @@ export const PromotionForm = ({
       if (result.serverError || result.validationErrors || !result.data) {
         toast.error(
           result.serverError?.message ??
-            "Unable to save promotion. Check the form values.",
-          { id: toastId }
+            "Unable to save promotion. Check the form values."
         )
         return
       }
 
-      toast.success("Promotion saved.", { id: toastId })
+      toast.success("Promotion saved.")
       form.reset({ ...value, media })
       setFile(null)
       if (!id && result.data.id) {
@@ -343,7 +339,7 @@ export const PromotionForm = ({
                               }
                               label="Trigger Products"
                               description="When any of these products are added to the cart (or are
-                  already in it), the upsell products below will be
+                  already in it), the upsell products above will be
                   displayed."
                               items={items}
                               error={

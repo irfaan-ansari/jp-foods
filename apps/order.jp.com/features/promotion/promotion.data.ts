@@ -4,9 +4,12 @@ import { AppError } from "@jp/utils"
 import { Promotion } from "./promotion.type"
 import { apiClient } from "@/lib/api-client"
 
-export const usePromotions = () => {
+export const usePromotions = (kv?: Record<string, any>) => {
   return useQuery<ApiResponse<Promotion[]>, AppError>({
-    queryKey: ["promotions"],
-    queryFn: () => apiClient.get("/promotions"),
+    queryKey: ["promotions", kv],
+    queryFn: () =>
+      apiClient.get("/promotions", {
+        params: kv,
+      }),
   })
 }

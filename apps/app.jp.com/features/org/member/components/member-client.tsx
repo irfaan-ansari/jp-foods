@@ -43,7 +43,7 @@ export const MemberClient = () => {
                 inView
                 direction="up"
               >
-                <MemberCard data={member} />
+                <MemberCard key={member.id} data={member} />
               </BlurFade>
             ))}
           </GridWrapper>

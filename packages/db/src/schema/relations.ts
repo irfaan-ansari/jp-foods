@@ -303,13 +303,5 @@ export const messageRecipientRelations = relations(
       fields: [messageRecipient.organizationId],
       references: [organization.id],
     }),
-    team: one(team, {
-      fields: [messageRecipient.teamId],
-      references: [team.id],
-    }),
-    user: one(user, {
-      fields: [messageRecipient.userId],
-      references: [user.id],
-    }),
   })
 )

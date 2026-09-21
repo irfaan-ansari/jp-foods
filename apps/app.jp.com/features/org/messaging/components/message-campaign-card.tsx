@@ -21,7 +21,10 @@ export const MessageCampaignCard = ({ data }: { data: MessageCampaign }) => {
       size="sm"
       className="relative h-full shadow-xs transition hover:-translate-y-0.5 hover:bg-secondary/40 hover:shadow-sm"
     >
-      <Link href={`/org/messaging/${data.id}`} className="absolute inset-0 z-1" />
+      <Link
+        href={`/org/messaging/${data.id}`}
+        className="absolute inset-0 z-1"
+      />
       <CardHeader>
         <div className="grid min-w-0 gap-1">
           <div className="flex items-start justify-between gap-3">

@@ -30,12 +30,40 @@ import React from "react"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { OrderStatusBadge } from "@/features/org/order/components/order-card"
+import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
+import { completeOrder } from "@/features/org/order/order.action"
+import { toast } from "sonner"
+import { useQueryClient } from "@tanstack/react-query"
 
 const OrderPage = () => {
   const { id } = useParams()
+  const { open } = useConfirm()
+  const queryClient = useQueryClient()
   const { searchParams } = useRouterStuff()
   const { data: order, isPending, isError, error } = useOrder(id as string)
   const data = order?.data! ?? {}
+
+  const handleComplete = () => {
+    open({
+      title: "Mark as completed",
+      description:
+        "This will mark the order as completed and update its status.",
+      action: {
+        action: async () => {
+          const { serverError } = await completeOrder({
+            id: data.id,
+          })
+          if (serverError) {
+            toast.error(serverError.message)
+          } else {
+            queryClient.invalidateQueries({
+              queryKey: ["orders"],
+            })
+          }
+        },
+      },
+    })
+  }
 
   return (
     <React.Fragment>
@@ -69,7 +97,10 @@ const OrderPage = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-muted-foreground">
-                      {data.deliveryDate + " " + data.deliveryWindow}
+                      {data.deliveryDate}
+                    </div>
+                    <div className="text-sm font-medium text-muted-foreground">
+                      {data.deliveryWindow}
                     </div>
                     <div className="text-sm font-medium text-muted-foreground">
                       {data.deliveryInstruction}
@@ -87,7 +118,7 @@ const OrderPage = () => {
                     </Badge>
                   </div>
 
-                  <div className="min-w-0 flex-1 truncate">
+                  <div className="grid min-w-0 flex-1 truncate">
                     <span className="line-clamp-1 text-sm font-medium">
                       {data.team?.name}
                     </span>
@@ -106,7 +137,7 @@ const OrderPage = () => {
                     </Badge>
                   </div>
 
-                  <div className="min-w-0 flex-1 truncate">
+                  <div className="grid min-w-0 flex-1 truncate">
                     <span className="line-clamp-1 truncate text-sm font-medium">
                       {data.user?.name}
                     </span>
@@ -145,13 +176,13 @@ const OrderPage = () => {
                         <div className="font-semibold">
                           {formatUSD(item.total ?? 0)}
                         </div>
-                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                        <div className="flex items-center justify-end gap-2 text-right text-xs text-muted-foreground">
                           <span>{formatUSD(item.price ?? 0)}</span>
                           <span>x</span>
-                          <span>
+                          <div>
                             {item.quantity}
                             {item.unitName && <span>/{item.unitName}</span>}
-                          </span>
+                          </div>
                         </div>
                       </div>
                     </div>
@@ -214,7 +245,7 @@ const OrderPage = () => {
 
                   <div className="grid gap-2 px-6">
                     {data.status !== "completed" && (
-                      <Button className="w-full">
+                      <Button className="w-full" onClick={handleComplete}>
                         <CheckCircle />
                         Mark as Completed
                       </Button>

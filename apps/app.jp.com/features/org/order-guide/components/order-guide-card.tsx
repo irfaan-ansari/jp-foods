@@ -27,7 +27,7 @@ import { formatDate } from "@jp/utils"
 import { OrderGuideDropdown } from "./order-guide-dropdown"
 
 export const OrderGuideCard = ({ data }: { data: OrderGuide }) => {
-  const visibleProducts = data.products.slice(0, 4)
+  const visibleProducts = data.products.slice(0, 7)
   const remainingProducts = Math.max(
     data.products.length - visibleProducts.length,
     0
@@ -86,16 +86,14 @@ export const OrderGuideSkeleton = () => {
   return (
     <Card className="shadow-none" size="sm">
       <CardContent className="space-y-4">
-        <div className="flex items-start gap-3">
-          <Skeleton className="size-9" />
-          <div className="flex-1 space-y-1.5">
-            <Skeleton className="h-4 w-3/5" />
-            <Skeleton className="h-4 w-4/5" />
-          </div>
+        <div className="space-y-1.5">
+          <Skeleton className="h-4 w-3/5" />
+          <Skeleton className="h-4 w-4/5" />
         </div>
+
         <div className="flex gap-px">
           {[...Array(4)].map((_, i) => (
-            <Skeleton className="size-9 rounded-xl" key={i} />
+            <Skeleton className="size-9 rounded-full" key={i} />
           ))}
         </div>
         <Skeleton className="h-4 w-full" />

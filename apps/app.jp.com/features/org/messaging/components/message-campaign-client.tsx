@@ -22,7 +22,7 @@ export const MessageCampaignClient = () => {
       query={campaigns}
       loading={
         <GridWrapper>
-          {Array.from({ length: 6 }).map((_, i) => (
+          {Array.from({ length: 12 }).map((_, i) => (
             <MessageCampaignSkeleton key={i} />
           ))}
         </GridWrapper>
@@ -30,7 +30,7 @@ export const MessageCampaignClient = () => {
       isEmpty={(data) => data.data.length === 0}
     >
       {(data) => (
-        <div className="h-full flex-1 space-y-3">
+        <>
           <GridWrapper>
             {data.data.map((campaign, i) => (
               <BlurFade
@@ -52,7 +52,7 @@ export const MessageCampaignClient = () => {
               queryParams({ set: { page: page.toString() } })
             }
           />
-        </div>
+        </>
       )}
     </QueryBoundary>
   )

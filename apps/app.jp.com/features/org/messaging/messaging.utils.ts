@@ -39,14 +39,10 @@ export const renderMessage = (
   })
 }
 
-export const getRecipientVariables = (
-  recipient: MessageRecipientDraft,
-  organizationName: string
-) => ({
+export const getRecipientVariables = (recipient: MessageRecipientDraft) => ({
   name: recipient.name,
   teamName: recipient.teamName ?? recipient.name,
   phoneNumber: recipient.phoneNumber,
-  organizationName,
 })
 
 export const getKnownVariableKeys = () => MESSAGE_VARIABLES.map((v) => v.key)

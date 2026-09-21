@@ -17,18 +17,14 @@ import {
 import { MESSAGE_STATUS } from "@/features/org/messaging/messaging.const"
 import { useMessageCampaign } from "@/features/org/messaging/messaging.data"
 import { MessageRecipientClient } from "@/features/org/messaging/components/message-recipient-client"
+import { formatDate } from "@jp/utils"
 
 const MessageCampaignPage = () => {
   const params = useParams()
   const { searchParams } = useRouterStuff()
   const id = Number(params.id)
 
-  const {
-    data: campaign,
-    isPending,
-    isError,
-    error,
-  } = useMessageCampaign(id)
+  const { data: campaign, isPending, isError, error } = useMessageCampaign(id)
 
   const data = campaign?.data
 
@@ -39,34 +35,44 @@ const MessageCampaignPage = () => {
         backUrl={`/org/messaging?${searchParams}`}
         loading={isPending}
       />
-      <PageContent loading={isPending} className="space-y-6">
+      <PageContent loading={isPending} className="mx-auto max-w-5xl space-y-6">
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : data ? (
-          <React.Fragment>
-            <Card size="sm" className="shadow-xs">
-              <CardHeader>
-                <div className="flex items-start justify-between gap-3">
-                  <div className="grid gap-1">
-                    <CardTitle>{data.name}</CardTitle>
-                    <CardDescription>{data.message}</CardDescription>
+          <div className="">
+            <div className="space-y-4 @2xl/page-content:space-y-6">
+              <Card size="sm" className="shadow-xs">
+                <CardHeader>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="grid gap-1">
+                      <CardTitle>{data.name}</CardTitle>
+                      <CardDescription>{data.message}</CardDescription>
+                    </div>
+                    <StatusBadge
+                      status={
+                        MESSAGE_STATUS[data.status] ?? MESSAGE_STATUS.failed!
+                      }
+                    />
                   </div>
-                  <StatusBadge
-                    status={MESSAGE_STATUS[data.status] ?? MESSAGE_STATUS.failed!}
-                  />
-                </div>
-              </CardHeader>
-              <CardContent>
-                <div className="grid gap-3 md:grid-cols-4">
-                  <Metric label="Recipients" value={data.recipientCount} />
-                  <Metric label="Sent" value={data.sentCount} />
-                  <Metric label="Failed" value={data.failedCount} />
-                  <Metric label="Skipped" value={data.skippedCount} />
-                </div>
-              </CardContent>
-            </Card>
-            <MessageRecipientClient campaignId={id} />
-          </React.Fragment>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid gap-3 md:grid-cols-4">
+                    <Metric label="Recipients" value={data.recipientCount} />
+                    <Metric label="Sent" value={data.sentCount} />
+                    <Metric label="Failed" value={data.failedCount} />
+                    <Metric label="Skipped" value={data.skippedCount} />
+                  </div>
+                  <div className="my-4 border-t border-dashed" />
+                  <p className="text-muted-foreground">
+                    {data.sentAt
+                      ? `Sent ${formatDate(data.sentAt)}`
+                      : `Created ${formatDate(data.createdAt)}`}
+                  </p>
+                </CardContent>
+              </Card>
+              <MessageRecipientClient campaignId={id} />
+            </div>
+          </div>
         ) : null}
       </PageContent>
     </React.Fragment>
@@ -74,8 +80,8 @@ const MessageCampaignPage = () => {
 }
 
 const Metric = ({ label, value }: { label: string; value: number }) => (
-  <div className="rounded-xl bg-secondary p-4">
-    <div className="text-2xl font-semibold">{value}</div>
+  <div className="space-y-3 rounded-xl border bg-secondary/50 p-4 text-center">
+    <div className="text-xl font-bold">{value}</div>
     <div className="text-sm text-muted-foreground">{label}</div>
   </div>
 )

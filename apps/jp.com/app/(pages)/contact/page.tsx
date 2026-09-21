@@ -49,11 +49,11 @@ const ContactPage = () => {
       {/* contact cards */}
       <section className="mt-16">
         <Container>
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-6">
             {CONTACT_SECTIONS.contacts.map((contact, i) => (
-              <Card key={i} className="shadow-sm">
+              <Card key={i} className={`shadow-sm ${contact.className}`}>
                 <CardHeader className="flex items-center gap-2">
-                  <span className="inline-flex items-center justify-start text-neutral-200">
+                  <span className="inline-flex items-center justify-start text-primary">
                     <contact.icon className="size-12" />
                   </span>
                 </CardHeader>

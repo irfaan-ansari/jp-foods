@@ -461,12 +461,6 @@ export const messageRecipient = pgTable(
     organizationId: text("organization_id")
       .notNull()
       .references(() => organization.id, { onDelete: "cascade" }),
-    teamId: text("team_id").references(() => team.id, {
-      onDelete: "set null",
-    }),
-    userId: text("user_id").references(() => user.id, {
-      onDelete: "set null",
-    }),
     source: text("source").notNull(),
     name: text("name"),
     phoneNumber: text("phone_number").notNull(),
