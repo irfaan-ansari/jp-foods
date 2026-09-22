@@ -29,9 +29,12 @@ const MessagingPage = () => {
         </MessageComposeDialog>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab tabs={OPTIONS} path="/org/messaging/count" />
-          <SearchQueryParam className="ml-auto" />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search campaigns..."
+          />
         </div>
         <MessageCampaignClient />
       </PageContent>

@@ -21,7 +21,7 @@ import {
   SidebarFooter,
   SidebarHeader,
 } from "@jp/ui/components/sidebar"
-import { AuthType } from "@jp/auth"
+import type { AuthType, DeviceSessions } from "@jp/auth"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
 import { AltArrowRight, QuestionCircle, Settings } from "@solar-icons/react"
@@ -32,11 +32,16 @@ import { TeamSwitcher } from "@/features/team/components"
 
 import { Sparkles } from "lucide-react"
 import AiDrawer from "@/features/ai/components/ai-drawer"
-import { Promotion } from "@/features/promotion/components/promotion"
 
 type MenuIcon = ComponentType<{ className?: string }>
 
-export function AppSidebar({ session }: { session: AuthType }) {
+export function AppSidebar({
+  session,
+  sessionsList,
+}: {
+  session: AuthType
+  sessionsList: DeviceSessions
+}) {
   return (
     <Sidebar
       collapsible="icon"
@@ -103,7 +108,10 @@ export function AppSidebar({ session }: { session: AuthType }) {
         <SidebarGroup>
           <SidebarMenu className="group-data-[collapsible=icon]:items-center">
             <SidebarMenuItem>
-              <UserProfileDropdown session={session} />
+              <UserProfileDropdown
+                session={session}
+                sessionsList={sessionsList}
+              />
             </SidebarMenuItem>
           </SidebarMenu>
         </SidebarGroup>

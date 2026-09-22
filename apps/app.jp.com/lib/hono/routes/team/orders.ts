@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 
 import { db, order } from "@jp/db"
-import { and, count, eq } from "drizzle-orm"
+import { and, count, eq, ilike, or, sql } from "drizzle-orm"
 import { AppError, pluralize } from "@jp/utils"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
@@ -10,6 +10,7 @@ import { OrderInvoice } from "@jp/pdf"
 
 const orderApp = new Hono<TeamAppContext>()
   .get("/", async (c) => {
+    const user = c.get("user")
     const teamId = c.get("teamId")
     const organnizationId = c.get("organizationId")
 
@@ -22,11 +23,25 @@ const orderApp = new Hono<TeamAppContext>()
     ]
 
     if (status) conditions.push(eq(order.status, status))
+    const search = q?.trim()
+    if (search) {
+      const idSearch = search.replace(/^#/, "")
+      conditions.push(
+        or(
+          ilike(sql`${order.id}::text`, `%${idSearch}%`),
+          ilike(order.searchText, `%${search}%`),
+          ilike(order.po, `%${search}%`)
+        )!
+      )
+    }
 
     const [orders, total] = await Promise.all([
       db.query.order.findMany({
         where: and(...conditions),
         with: {
+          user: {
+            columns: { id: true, name: true, email: true },
+          },
           lineItems: {
             columns: { id: true },
           },
@@ -38,9 +53,10 @@ const orderApp = new Hono<TeamAppContext>()
       db.$count(order, and(...conditions)),
     ])
 
-    const transformedOrders = orders.map((o) => ({
-      ...o,
-      lineItemsCount: o.lineItems.length,
+    const transformedOrders = orders.map(({ lineItems, ...order }) => ({
+      ...order,
+
+      lineItemsCount: lineItems.length,
     }))
 
     return c.json({

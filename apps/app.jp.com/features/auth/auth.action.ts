@@ -13,6 +13,9 @@ export const getSession = cache(async () => {
     headers: await headers(),
   })
 })
+export const listDeviceSessions = cache(async () => {
+  return await auth.api.listDeviceSessions({ headers: await headers() })
+})
 
 export const hasPermission = cache(
   async (props: UserPermission & { userId: string }) => {

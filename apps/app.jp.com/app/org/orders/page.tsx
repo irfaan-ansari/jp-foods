@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Calendar, ChevronsUpDown, Plus } from "lucide-react"
+import { Plus } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
 import { PageContent, PageHeader } from "@/components/page-content"
@@ -24,9 +24,16 @@ const Orders = () => {
       </PageHeader>
 
       <PageContent className="space-y-6">
-        <div className="flex items-start justify-between gap-4">
-          <FilterTab tabs={Object.values(STATUS)} path="/org/orders/count" />
-          <SearchQueryParam />
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <FilterTab
+            tabs={Object.values(STATUS)}
+            path="/org/orders/count"
+            preserveQuery
+          />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search orders..."
+          />
         </div>
 
         <OrdersClient />

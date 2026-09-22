@@ -20,7 +20,7 @@ export const StatusBadge = ({
       variant="outline"
       style={{ "--color": map.color } as React.CSSProperties}
       className={cn(
-        "h-auto rounded-md border-(--color)/10 bg-(--color)/10 px-1.5 [&>svg]:size-3.5!",
+        "h-6 rounded-lg border-(--color)/10 bg-(--color)/10 px-1.5 [&>svg]:size-3.5!",
         size === "sm" ? "text-xs" : "text-[calc(var(--text-sm)-1px)]",
         className
       )}

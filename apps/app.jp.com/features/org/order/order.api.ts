@@ -17,24 +17,23 @@ const orderApp = app
   .get("/", async (c) => {
     const organizationId = c.get("organizationId")!
 
-    const { q, status, ...rest } = c.req.query()
+    const { q, status, customer, user, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)
 
     const conditions = [
       eq(order.organizationId, organizationId),
       status ? eq(order.status, status) : undefined,
+      customer ? eq(order.teamId, customer) : undefined,
+      user ? eq(order.userId, user) : undefined,
     ]
 
-    if (q) {
+    const search = q?.trim()
+    if (search) {
+      const orderNumber = search.replace(/^#/, "")
       conditions.push(
         or(
-          exists(
-            db
-              .select({ id: team.id })
-              .from(team)
-              .where(and(ilike(team.name, `%${q}%`)))
-          ),
-          ilike(sql`${order.id}::text`, `%${q}%`)
+          ilike(sql`${order.total}::text`, `%${orderNumber}%`),
+          ilike(sql`${order.id}::text`, `%${orderNumber}%`)
         )
       )
     }
@@ -43,7 +42,11 @@ const orderApp = app
       db.query.order.findMany({
         where: and(...conditions),
         with: {
-          lineItems: true,
+          lineItems: {
+            columns: {
+              id: true,
+            },
+          },
           team: {
             columns: {
               id: true,
@@ -68,9 +71,14 @@ const orderApp = app
       db.$count(order, and(...conditions)),
     ])
 
+    const transformed = response.map(({ lineItems, ...order }) => ({
+      ...order,
+      lineItemCount: lineItems.length,
+    }))
+
     return c.json({
       success: true,
-      data: response,
+      data: transformed,
       pagination: {
         page: page,
         limit: limit,

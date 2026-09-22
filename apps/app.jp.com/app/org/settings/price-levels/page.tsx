@@ -19,9 +19,8 @@ const PriceListPage = () => {
   return (
     <React.Fragment>
       <PageHeader title="Price Levels">
-        <OrgAccess
-          permission={{ priceLevel: ["create"] }}
-          children={(disabled) => (
+        <OrgAccess permission={{ priceLevel: ["create"] }}>
+          {(disabled) => (
             <PriceLevelDialog>
               <Button disabled={disabled}>
                 <Plus />
@@ -29,12 +28,15 @@ const PriceListPage = () => {
               </Button>
             </PriceLevelDialog>
           )}
-        />
+        </OrgAccess>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="flex justify-between gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab tabs={OPTIONS} path="/org/price-levels/count" />
-          <SearchQueryParam />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search price levels..."
+          />
         </div>
         <PriceLevelClient />
       </PageContent>

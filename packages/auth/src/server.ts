@@ -8,6 +8,7 @@ import {
   phoneNumber as phoneNumberPlugin,
   admin as adminPlugin,
   emailOTP,
+  multiSession,
 } from "better-auth/plugins"
 
 import { userAc, UserRole, userRoles } from "./permissions/user"
@@ -44,6 +45,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    multiSession(),
     adminPlugin({
       ac: userAc,
       roles: userRoles,
@@ -168,7 +170,8 @@ export const auth = betterAuth({
 
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (!ctx.path.startsWith("/sign-in")) return
+      const paths = ["/sign-in", "/multi-session/set-active"]
+      if (!paths.includes(ctx.path)) return
 
       const newSession = ctx.context.newSession
       if (!newSession) return
@@ -203,6 +206,9 @@ export const auth = betterAuth({
 })
 
 export type AuthType = {
-  user: typeof auth.$Infer.Session.user | null
-  session: typeof auth.$Infer.Session.session | null
+  user: typeof auth.$Infer.Session.user
+  session: typeof auth.$Infer.Session.session
 }
+export type DeviceSessions = Awaited<
+  ReturnType<typeof auth.api.listDeviceSessions>
+>
