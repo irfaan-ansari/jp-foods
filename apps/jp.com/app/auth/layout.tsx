@@ -1,8 +1,8 @@
 import React from "react"
 import Image from "next/image"
+import Link from "next/link"
 import { SITE_CONFIG } from "@/lib/config"
 import { Avatar, AvatarImage } from "@jp/ui/components/avatar"
-import Link from "next/link"
 
 const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (

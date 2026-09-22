@@ -53,13 +53,10 @@ export const ProductCard = ({ data }: { data: Product }) => {
           <ImageOff className="size-6 opacity-40" />
         )}
       </div>
-      <CardContent className="flex flex-1 flex-col space-y-1.5 rounded-t-2xl bg-background py-4">
-        <div className="flex items-center gap-2">
-          <CopyButton
-            value={data.itemCode}
-            className="**:data-[slot=copy-value]:font-medium **:data-[slot=copy-value]:text-primary"
-          />
-        </div>
+      <CardContent className="relative flex flex-1 flex-col space-y-1.5 rounded-t-2xl bg-background pt-6 pb-4">
+        <Badge className="absolute -top-3 left-2 z-1 h-5 rounded-lg">
+          {data.itemCode}
+        </Badge>
 
         <div className="text-xs font-medium text-muted-foreground uppercase">
           {data.categories?.join(" • ")}

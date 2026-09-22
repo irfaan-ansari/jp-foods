@@ -1,4 +1,9 @@
-import { LineItemSelectType, OrderSelectType, ProductSelectType } from "@jp/db"
+import {
+  LineItemSelectType,
+  OrderSelectType,
+  ProductSelectType,
+  UserSelectType,
+} from "@jp/db"
 
 type LineItem = LineItemSelectType & {
   productId: number
@@ -10,6 +15,7 @@ type LineItem = LineItemSelectType & {
 
 export type Orders = OrderSelectType & {
   lineItemsCount: number
+  user: Pick<UserSelectType, "id" | "name" | "email"> | null
 }
 export type Order = OrderSelectType & {
   lineItems: LineItem[]

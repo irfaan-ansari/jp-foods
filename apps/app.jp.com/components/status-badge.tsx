@@ -18,7 +18,7 @@ export const StatusBadge = ({
       variant="outline"
       style={{ "--color": status.color } as React.CSSProperties}
       className={cn(
-        "rounded-md border-(--color)/10 bg-(--color)/10 px-1.5 backdrop-blur-md",
+        "h-6 rounded-lg border-(--color)/10 bg-(--color)/10 px-1.5 backdrop-blur-md",
         size === "sm" ? "text-xs" : "text-[calc(var(--text-sm)-1px)]",
         className
       )}

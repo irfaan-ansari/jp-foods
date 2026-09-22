@@ -1,6 +1,7 @@
 import { Hono } from "hono"
 import { and, eq, or, exists, ilike, inArray, max, ne } from "drizzle-orm"
 import { db, member, session, team, teamMember, user } from "@jp/db"
+import { AppError } from "@jp/utils"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
 
@@ -135,6 +136,63 @@ export const memberRoutes = app
       success: true,
       data: {
         all: result,
+      },
+    })
+  })
+  .get("/:id", async (c) => {
+    const organizationId = c.get("organizationId")!
+    const id = c.req.param("id")
+
+    const response = await db.query.member.findFirst({
+      where: (m, { and, eq }) =>
+        and(eq(m.id, id), eq(m.organizationId, organizationId)),
+      with: {
+        user: true,
+      },
+    })
+
+    if (!response) throw new AppError("NOT_FOUND")
+
+    const latestSession = db
+      .select({
+        userId: session.userId,
+        lastSession: max(session.createdAt).as("lastSession"),
+      })
+      .from(session)
+      .groupBy(session.userId)
+      .as("latestSession")
+
+    const accountRows = await db
+      .select({
+        userId: teamMember.userId,
+        id: team.id,
+        name: team.name,
+        logo: team.logo,
+        lastSession: latestSession.lastSession,
+      })
+      .from(teamMember)
+      .innerJoin(team, eq(teamMember.teamId, team.id))
+      .leftJoin(latestSession, eq(teamMember.userId, latestSession.userId))
+      .where(
+        and(
+          eq(teamMember.userId, response.userId),
+          eq(team.organizationId, organizationId)
+        )
+      )
+
+    return c.json({
+      success: true,
+      data: {
+        ...response,
+        accounts:
+          response.role === "customer"
+            ? accountRows.map((account) => ({
+                id: account.id,
+                name: account.name,
+                logo: account.logo,
+              }))
+            : [],
+        lastSession: accountRows[0]?.lastSession ?? null,
       },
     })
   })

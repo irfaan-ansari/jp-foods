@@ -10,14 +10,16 @@ interface FilterTabProps {
   tabs: { label: string; value: string; color: string }[]
   path: string
   queryKey?: string
+  preserveQuery?: boolean
 }
 
 export const FilterTab = ({
   tabs,
   path,
   queryKey = "status",
+  preserveQuery = false,
 }: FilterTabProps) => {
-  const { searchParamsObj } = useRouterStuff()
+  const { searchParamsObj, searchParams } = useRouterStuff()
 
   const { data, isPending } = useCount(path)
 
@@ -29,10 +31,19 @@ export const FilterTab = ({
   return (
     <div className="relative no-scrollbar flex shrink-0 items-start gap-1 overflow-x-auto">
       {tabs.map(({ label, value, color }, i) => {
+        const params = new URLSearchParams(searchParams.toString())
+        params.delete(queryKey)
+        params.delete("page")
+        if (value) params.set(queryKey, value)
+
         return (
           <Link
             key={value + i}
-            href={`?${value ? `${queryKey}=${value}` : ""}`}
+            href={
+              preserveQuery
+                ? `?${params.toString()}`
+                : `?${value ? `${queryKey}=${value}` : ""}`
+            }
             data-active={activeStatus === value || (!value && !activeStatus)}
             className="relative z-1 inline-flex h-9 items-center gap-2 rounded-xl border bg-background px-3 pr-2 text-sm leading-tight font-medium whitespace-nowrap transition hover:bg-foreground hover:text-muted data-active:border-foreground data-active:bg-foreground data-active:text-muted"
             style={{ "--color": color } as React.CSSProperties}

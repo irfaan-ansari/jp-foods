@@ -1,58 +1,31 @@
 "use client"
 
-import React from "react"
-
-import { Pagination } from "@jp/ui/components/jp/pagination"
+import { DataTable } from "@jp/ui/components/data-table"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { BlurFade } from "@jp/ui/components/blur-fade"
-
-import { GridWrapper } from "@/components/page-content"
-import { QueryBoundary } from "@/components/query-boundry"
 import { usePromotions } from "../promotion.data"
-import { PromotionCard, PromotionSkeleton } from "./promotion-card"
+import { promotionColumns } from "./promotion-columns"
 
 export const PromotionClient = () => {
-  const { searchParamsObj, queryParams } = useRouterStuff()
+  const { searchParamsObj } = useRouterStuff()
   const promotions = usePromotions(searchParamsObj)
 
   return (
-    <QueryBoundary
-      query={promotions}
-      loading={
-        <GridWrapper>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <PromotionSkeleton key={i} />
-          ))}
-        </GridWrapper>
-      }
-      isEmpty={(data) => data.data.length === 0}
-    >
-      {(data) => (
-        <div className="h-full flex-1 space-y-3">
-          <GridWrapper>
-            {data.data.map((promotion, i) => (
-              <BlurFade
-                key={promotion.id}
-                delay={0.25 + i * 0.01}
-                inView
-                direction="up"
-              >
-                <PromotionCard data={promotion} />
-              </BlurFade>
-            ))}
-          </GridWrapper>
-
-          <Pagination
-            page={data.pagination.page}
-            total={data.pagination.total}
-            totalPages={data.pagination.totalPages}
-            limit={data.pagination.limit}
-            onPageChange={(page) =>
-              queryParams({ set: { page: page.toString() } })
-            }
-          />
-        </div>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={promotionColumns}
+      data={promotions.data?.data ?? []}
+      getRowId={(promotion) => String(promotion.id)}
+      isLoading={promotions.isPending}
+      error={{
+        isError: promotions.isError,
+        title: promotions.error?.message,
+        description: promotions.error?.description,
+      }}
+      empty={{
+        isEmpty: promotions.data?.data.length === 0,
+        title: "No promotions found.",
+        description: "Try adjusting your search or filters.",
+      }}
+      pagination={promotions.data?.pagination}
+    />
   )
 }

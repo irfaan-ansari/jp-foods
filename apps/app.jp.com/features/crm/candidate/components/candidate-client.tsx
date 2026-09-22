@@ -1,68 +1,36 @@
 "use client"
 
-import React from "react"
-
-import { BlurFade } from "@jp/ui/components/blur-fade"
-
-import { GridWrapper } from "@/components/page-content"
+import { DataTable } from "@jp/ui/components/data-table"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { EmptyState, Pagination } from "@jp/ui/components/jp"
-import { QueryBoundary } from "@/components/query-boundry"
-
 import { useCandidateApplications } from "../candidate.data"
-import {
-  CandidateApplicationCard,
-  CandidateApplicationCardSkeleton,
-} from "./candidate-card"
+import { candidateColumns } from "./candidate-columns"
 
-export const CandidateApplicationClient = () => {
-  const { searchParamsObj, queryParams } = useRouterStuff()
-  const query = useCandidateApplications(searchParamsObj)
+export const CandidateApplicationClient = ({ status }: { status?: string }) => {
+  const { searchParamsObj } = useRouterStuff()
+  const candidates = useCandidateApplications(
+    status ? { ...searchParamsObj, status } : searchParamsObj
+  )
 
   return (
-    <QueryBoundary
-      query={query}
-      loading={
-        <GridWrapper>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <CandidateApplicationCardSkeleton key={i} />
-          ))}
-        </GridWrapper>
-      }
-      isEmpty={(data) => data.data.length === 0}
-      empty={
-        <EmptyState
-          title="No application found"
-          description="Try adjusting your filter."
-        />
-      }
-    >
-      {(data) => (
-        <div className="h-full flex-1 space-y-3">
-          <GridWrapper>
-            {data.data.map((order, i) => (
-              <BlurFade
-                key={order.id}
-                delay={0.25 + i * 0.01}
-                inView
-                direction="up"
-              >
-                <CandidateApplicationCard data={order} />
-              </BlurFade>
-            ))}
-          </GridWrapper>
-
-          <Pagination
-            page={data.pagination.page}
-            total={data.pagination.total}
-            totalPages={data.pagination.totalPages}
-            limit={data.pagination.limit}
-            onPageChange={(page) =>
-              queryParams({ set: { page: page.toString() } })
-            }
-          />
-        </div>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={candidateColumns}
+      data={candidates.data?.data ?? []}
+      getRowId={(item) => String(item.id)}
+      isLoading={candidates.isPending}
+      error={{
+        isError: candidates.isError,
+        title: candidates.error?.message,
+        description: candidates.error?.description,
+      }}
+      empty={{
+        isEmpty: candidates.data?.data.length === 0,
+        title:
+          status === "hired"
+            ? "No employees found."
+            : "No candidate applications found.",
+        description: "Try adjusting your search or filters.",
+      }}
+      pagination={candidates.data?.pagination}
+    />
   )
 }

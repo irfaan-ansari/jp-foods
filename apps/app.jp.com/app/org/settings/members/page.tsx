@@ -2,7 +2,6 @@
 
 import React from "react"
 import { Plus } from "lucide-react"
-import { Sort } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
 import { PageContent, PageHeader } from "@/components/page-content"
@@ -10,7 +9,6 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { MemberDialog } from "@/features/org/member/components/member-dialog"
 import { MemberClient } from "@/features/org/member/components/member-client"
 
-import { MemberRoleSelector } from "@/features/org/member/components/member-role-selector"
 import { SearchQueryParam } from "@jp/ui/components/jp"
 
 const OPTIONS = [{ label: "All", value: "", color: "#A1A1AA" }]
@@ -32,18 +30,12 @@ const MembersPage = () => {
       </PageHeader>
 
       <PageContent className="space-y-3 lg:space-y-6">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab queryKey="role" tabs={OPTIONS} path="/org/members/count" />
-          {/* <MemberRoleSelector>
-            <Button
-              variant="outline"
-              className="ml-auto min-w-28 justify-start text-muted-foreground"
-            >
-              <Sort />
-              Role: All
-            </Button>
-          </MemberRoleSelector> */}
-          <SearchQueryParam />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search users..."
+          />
         </div>
         <MemberClient />
       </PageContent>

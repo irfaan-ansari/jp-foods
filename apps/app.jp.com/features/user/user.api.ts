@@ -1,5 +1,6 @@
 import { Hono } from "hono"
 import { db, session, user } from "@jp/db"
+import { AppError } from "@jp/utils"
 import { and, count, eq, ilike, inArray, max, or } from "drizzle-orm"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { AppContext, authMiddleware } from "@/lib/hono/middlewares"
@@ -90,5 +91,29 @@ export const userRoutes = app
     return c.json({
       success: true,
       data: counts,
+    })
+  })
+  .get("/:id", async (c) => {
+    const id = c.req.param("id")
+
+    const response = await db.query.user.findFirst({
+      where: (u, { eq }) => eq(u.id, id),
+    })
+
+    if (!response) throw new AppError("NOT_FOUND")
+
+    const [latestSession] = await db
+      .select({
+        lastSession: max(session.createdAt).as("lastSession"),
+      })
+      .from(session)
+      .where(eq(session.userId, id))
+
+    return c.json({
+      success: true,
+      data: {
+        ...response,
+        lastSession: latestSession?.lastSession ?? null,
+      },
     })
   })

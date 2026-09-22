@@ -1,13 +1,16 @@
 import { db } from "@jp/db"
+import { createElement } from "react"
 import { waitUntil } from "@vercel/functions"
 import { betterAuth } from "better-auth"
 import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
+import { sendEmail } from "@jp/notifications"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
   organization as organizationPlugin,
   phoneNumber as phoneNumberPlugin,
   admin as adminPlugin,
   emailOTP,
+  multiSession,
 } from "better-auth/plugins"
 
 import { userAc, UserRole, userRoles } from "./permissions/user"
@@ -44,6 +47,7 @@ export const auth = betterAuth({
     },
   },
   plugins: [
+    multiSession(),
     adminPlugin({
       ac: userAc,
       roles: userRoles,
@@ -131,7 +135,53 @@ export const auth = betterAuth({
       },
     }),
     emailOTP({
-      async sendVerificationOTP(data, ctx) {},
+      changeEmail: {
+        enabled: true,
+      },
+      async sendVerificationOTP({ email, otp, type }, ctx) {
+        waitUntil(
+          sendEmail({
+            to: email,
+            subject:
+              type === "change-email"
+                ? "Verify your new email"
+                : "Your Jimenez Produce verification code",
+            template: createElement(
+              "div",
+              {
+                style: {
+                  fontFamily: "Arial, sans-serif",
+                  color: "#243027",
+                  padding: "24px",
+                },
+              },
+              createElement("h1", null, "Jimenez Produce verification code"),
+              createElement(
+                "p",
+                null,
+                "Use this one-time code to continue with your account update."
+              ),
+              createElement(
+                "div",
+                {
+                  style: {
+                    fontSize: "32px",
+                    fontWeight: 700,
+                    letterSpacing: "8px",
+                    margin: "24px 0",
+                  },
+                },
+                otp
+              ),
+              createElement(
+                "p",
+                null,
+                "If you did not request this, you can safely ignore this email."
+              )
+            ),
+          })
+        )
+      },
     }),
   ],
   databaseHooks: {
@@ -168,7 +218,8 @@ export const auth = betterAuth({
 
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      if (!ctx.path.startsWith("/sign-in")) return
+      const paths = ["/sign-in", "/multi-session/set-active"]
+      if (!paths.includes(ctx.path)) return
 
       const newSession = ctx.context.newSession
       if (!newSession) return
@@ -203,6 +254,9 @@ export const auth = betterAuth({
 })
 
 export type AuthType = {
-  user: typeof auth.$Infer.Session.user | null
-  session: typeof auth.$Infer.Session.session | null
+  user: typeof auth.$Infer.Session.user
+  session: typeof auth.$Infer.Session.session
 }
+export type DeviceSessions = Awaited<
+  ReturnType<typeof auth.api.listDeviceSessions>
+>

@@ -1,4 +1,3 @@
-import { PORTAL_URLS, UserRole } from "@jp/auth"
 import { checkAuth } from "./lib/check-auth"
 import { NextRequest, NextResponse } from "next/server"
 
@@ -9,23 +8,12 @@ export default async function proxy(req: NextRequest) {
     throw new Error("NEXT_PUBLIC_AUTH_URL is not configured")
   }
 
-  const { authenticated, authorized, session } = await checkAuth({
+  const { authenticated, authorized } = await checkAuth({
     portal: ["customer"],
   })
 
-  if (!authenticated) {
+  if (!authenticated || !authorized) {
     return NextResponse.redirect(new URL(AUTH_URL, req.nextUrl))
-  }
-
-  if (!authorized) {
-    const role = session?.user.role as UserRole
-    const url = PORTAL_URLS[role].url
-
-    if (!role || !url) {
-      return NextResponse.redirect(new URL(AUTH_URL, req.nextUrl))
-    }
-
-    return NextResponse.redirect(new URL(url, req.nextUrl))
   }
 }
 

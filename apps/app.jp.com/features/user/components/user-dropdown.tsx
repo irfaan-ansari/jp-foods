@@ -23,7 +23,6 @@ import { UserDialog } from "./user-dialog"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { UserPasswordDialog } from "./user-password-dialog"
 import { authClient } from "@jp/auth/client"
-import { USER_ROLES } from "../user.const"
 
 export const UserDropdown = ({ data }: { data: User }) => {
   const { id } = data

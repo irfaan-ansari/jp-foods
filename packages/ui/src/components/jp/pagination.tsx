@@ -15,7 +15,7 @@ export const Pagination = ({
   limit,
   onPageChange,
 }: PaginationProps) => {
-  const start = (page - 1) * limit + 1
+  const start = total === 0 ? 0 : (page - 1) * limit + 1
   const end = Math.min(page * limit, total)
 
   return (

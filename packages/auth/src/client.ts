@@ -3,8 +3,10 @@ import {
   inferOrgAdditionalFields,
   inferAdditionalFields,
   adminClient as adminClientPlugin,
+  emailOTPClient,
   phoneNumberClient as phoneNumberClientPlugin,
   organizationClient as organizationClientPlugin,
+  multiSessionClient,
 } from "better-auth/client/plugins"
 import { createAuthClient } from "better-auth/react"
 import { orgAc, orgRoles } from "./permissions/organization"
@@ -18,6 +20,7 @@ export const authClient = createAuthClient({
     credentials: "include",
   },
   plugins: [
+    multiSessionClient(),
     adminClientPlugin({
       ac: userAc,
       roles: userRoles,
@@ -30,6 +33,7 @@ export const authClient = createAuthClient({
       roles: orgRoles,
       schema: inferOrgAdditionalFields<typeof auth>(),
     }),
+    emailOTPClient(),
     phoneNumberClientPlugin(),
   ],
 })

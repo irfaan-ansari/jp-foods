@@ -12,9 +12,11 @@ import { Checkbox } from "@jp/ui/components/checkbox"
 import { SortableItemHandle } from "@jp/ui/components/sortable"
 import { GripVertical, ImageOff } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
+
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
 import ProductQuantityStepper from "./product-quantity"
+import { Button } from "@jp/ui/components/button"
 
 export const ProductCard = React.memo(function ProductCard({
   data,
@@ -72,7 +74,14 @@ export const ProductCard = React.memo(function ProductCard({
         <CardTitle className="mt-auto text-xs font-medium @3xl/page-content:text-sm">
           {data.title}
         </CardTitle>
-
+        <div className="flex gap-0.5 rounded-xl bg-secondary p-0.5 *:flex-1">
+          <Button size="xs" variant="ghost">
+            LB
+          </Button>
+          <Button size="xs" variant="outline">
+            CASE
+          </Button>
+        </div>
         <ProductQuantityStepper
           value={value}
           onChange={setQuantity}

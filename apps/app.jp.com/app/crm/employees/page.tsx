@@ -1,7 +1,6 @@
 import React from "react"
 import { PageContent, PageHeader } from "@/components/page-content"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
-import { FilterTab } from "@/components/filter-tabs"
 import { CandidateApplicationClient } from "@/features/crm/candidate/components/candidate-client"
 
 const EmployeesPage = () => {
@@ -10,14 +9,13 @@ const EmployeesPage = () => {
       <PageHeader title="Employees" />
 
       <PageContent className="space-y-6">
-        <div className="gap flex justify-between">
-          <FilterTab
-            path="/crm/candidates/count"
-            tabs={[{ label: "All", value: "hired", color: "#A1A1AA" }]}
+        <div className="flex justify-end">
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search employees..."
           />
-          <SearchQueryParam />
         </div>
-        <CandidateApplicationClient />
+        <CandidateApplicationClient status="hired" />
       </PageContent>
     </React.Fragment>
   )

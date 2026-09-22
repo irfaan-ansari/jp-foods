@@ -16,9 +16,8 @@ const TaxRulePage = () => {
   return (
     <React.Fragment>
       <PageHeader title="Tax Rules">
-        <OrgAccess
-          permission={{ taxRule: ["create"] }}
-          children={(disabled) => (
+        <OrgAccess permission={{ taxRule: ["create"] }}>
+          {(disabled) => (
             <TaxRuleDialog>
               <Button disabled={disabled}>
                 <Plus />
@@ -26,12 +25,15 @@ const TaxRulePage = () => {
               </Button>
             </TaxRuleDialog>
           )}
-        />
+        </OrgAccess>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="flex items-start justify-between gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab tabs={OPTIONS} path="/org/tax-rules/count" />
-          <SearchQueryParam />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search tax rules..."
+          />
         </div>
         <TaxRuleClient />
       </PageContent>

@@ -9,12 +9,6 @@ import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import Link from "next/link"
 import { STATUS } from "@/features/org/team/team.const"
 
-const OPTIONS = Object.entries(STATUS).map(([_, { label, value, color }]) => ({
-  label,
-  value,
-  color,
-}))
-
 const CustomersPage = () => {
   return (
     <React.Fragment>
@@ -22,15 +16,18 @@ const CustomersPage = () => {
         <Button asChild>
           <Link href="/org/customers/new">
             <Plus />
-            Add New
+            New Customer
           </Link>
         </Button>
       </PageHeader>
 
       <PageContent className="space-y-6">
-        <div className="flex flex-col items-start justify-between gap-4 md:flex-row">
-          <FilterTab tabs={OPTIONS} path="/org/teams/count" />
-          <SearchQueryParam />
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+          <FilterTab tabs={Object.values(STATUS)} path="/org/teams/count" />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search customers..."
+          />
         </div>
         <TeamClient />
       </PageContent>

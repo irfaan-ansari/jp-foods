@@ -17,7 +17,7 @@ import {
   SidebarMenuSubItem,
   useSidebar,
 } from "@jp/ui/components/sidebar"
-import { AuthType } from "@jp/auth"
+import { AuthType, DeviceSessions } from "@jp/auth"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import {
   Collapsible,
@@ -51,14 +51,20 @@ import {
 import { SearchDialog } from "./search-dialog"
 import { Button } from "@jp/ui/components/button"
 import { Tooltip } from "@jp/ui/components/jp/tooltip"
-import { UserProfileDropdown } from "@/features/user/components/user-profile-dropdown"
+import { UserProfileDropdown } from "@/features/profile/components/user-profile-dropdown"
 import { OrganizationSwitcher } from "@/features/org/components/organization-swither"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { useOrganization } from "@/features/org/organization.data"
 
 type MenuIcon = ComponentType<{ className?: string }>
 
-export function AppSidebar({ session }: { session: AuthType }) {
+export function AppSidebar({
+  session,
+  sessionsList,
+}: {
+  session: AuthType
+  sessionsList: DeviceSessions
+}) {
   const { data: org, isPending: orgLoading } = useOrganization()
 
   return (
@@ -70,7 +76,7 @@ export function AppSidebar({ session }: { session: AuthType }) {
       <SidebarPanelProvider>
         <SidebarPanel>
           <SidebarPanelIcon>
-            <SidebarIconMenu session={session} />
+            <SidebarIconMenu session={session} sessionsList={sessionsList} />
           </SidebarPanelIcon>
 
           <SidebarPanelContent>
@@ -215,7 +221,13 @@ export function AppSidebar({ session }: { session: AuthType }) {
   )
 }
 
-const SidebarIconMenu = ({ session }: { session: AuthType }) => {
+const SidebarIconMenu = ({
+  session,
+  sessionsList,
+}: {
+  session: AuthType
+  sessionsList: DeviceSessions
+}) => {
   const { activePanel, setActivePanel } = useSidebarPanel()
   const { setOpen } = useSidebar()
   return (
@@ -368,7 +380,7 @@ const SidebarIconMenu = ({ session }: { session: AuthType }) => {
           </Tooltip>
 
           {/* profile */}
-          <UserProfileDropdown session={session!} />
+          <UserProfileDropdown sessionsList={sessionsList} session={session!} />
         </SidebarMenu>
       </SidebarFooter>
     </React.Fragment>
