@@ -219,7 +219,7 @@ export const auth = betterAuth({
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
       const paths = ["/sign-in", "/multi-session/set-active"]
-      if (!paths.includes(ctx.path)) return
+      if (!paths.some((path) => ctx.path.startsWith(path))) return
 
       const newSession = ctx.context.newSession
       if (!newSession) return
