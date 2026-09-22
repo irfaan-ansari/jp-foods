@@ -110,7 +110,7 @@ export function DataTable<TData extends RowData>({
               </TableRow>
             ) : rows.length && !empty?.isEmpty ? (
               rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-muted/30">
+                <TableRow key={row.id} className="relative hover:bg-muted/30">
                   {row.getAllCells().map((cell) => (
                     <TableCell key={cell.id}>
                       <table.FlexRender cell={cell} />

@@ -17,9 +17,18 @@ function CampaignLink({ campaign }: { campaign: MessageCampaign }) {
   return (
     <Link
       href={`/org/messaging/${campaign.id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      className="block max-w-sm space-y-1"
     >
-      {campaign.name}
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-foreground">{campaign.name}</span>
+        <StatusBadge
+          status={MESSAGE_STATUS[campaign.status] ?? MESSAGE_STATUS.failed!}
+          size="sm"
+        />
+      </div>
+      <div className="truncate text-xs text-muted-foreground">
+        {campaign.message}
+      </div>
     </Link>
   )
 }
@@ -38,22 +47,7 @@ function DeliveryStat({ label, value }: { label: string; value: number }) {
 export const messageCampaignColumns = column.columns([
   column.accessor("name", {
     header: "Campaign",
-    cell: ({ row }) => (
-      <div className="max-w-sm space-y-1">
-        <div className="flex items-center gap-2">
-          <CampaignLink campaign={row.original} />
-          <StatusBadge
-            status={
-              MESSAGE_STATUS[row.original.status] ?? MESSAGE_STATUS.failed!
-            }
-            size="sm"
-          />
-        </div>
-        <div className="truncate text-xs text-muted-foreground">
-          {row.original.message}
-        </div>
-      </div>
-    ),
+    cell: ({ row }) => <CampaignLink campaign={row.original} />,
   }),
   column.display({
     id: "delivery",

@@ -17,9 +17,17 @@ function CandidateLink({ candidate }: { candidate: CandidateApplication }) {
   return (
     <Link
       href={`/crm/application/candidates/${candidate.id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      className="block"
     >
-      {candidate.firstName} {candidate.lastName}
+      <div className="flex min-w-48 items-center gap-2">
+        <span className="font-semibold text-foreground">
+          {candidate.firstName} {candidate.lastName}
+        </span>
+        <CandidateApplicationBadge status={candidate.status} />
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {formatDate(candidate.createdAt)}
+      </div>
     </Link>
   )
 }
@@ -42,10 +50,7 @@ export const candidateColumns = column.columns([
   column.accessor("firstName", {
     header: "Candidate",
     cell: ({ row }) => (
-      <div className="flex min-w-48 items-center gap-2">
-        <CandidateLink candidate={row.original} />
-        <CandidateApplicationBadge status={row.original.status} />
-      </div>
+      <CandidateLink candidate={row.original} />
     ),
   }),
   column.display({
@@ -76,19 +81,12 @@ export const candidateColumns = column.columns([
       </span>
     ),
   }),
-  column.accessor("createdAt", {
-    header: "Applied",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {formatDate(row.original.createdAt)}
-      </span>
-    ),
-  }),
+
   column.display({
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,
     cell: ({ row }) => (
-      <div className="flex justify-end">
+      <div className="relative flex justify-end">
         <ViewCandidateButton id={row.original.id} />
       </div>
     ),

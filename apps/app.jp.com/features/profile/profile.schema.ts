@@ -32,3 +32,16 @@ export const passwordSchema = z
 export type ProfileFormSchema = z.infer<typeof profileSchema>
 export type UserFormSchema = z.infer<typeof userSchema>
 export type PasswordFormSchema = z.infer<typeof passwordSchema>
+
+export const changePhoneSchema = z.object({
+  phoneNumber: phoneSchema,
+  code: z.string().min(6, "Enter the 6-digit verification code"),
+})
+
+export const changeEmailSchema = z.object({
+  newEmail: z.email("Invalid email"),
+  code: z.string().min(6, "Enter the 6-digit verification code"),
+})
+
+export type ChangePhoneFormSchema = z.infer<typeof changePhoneSchema>
+export type ChangeEmailFormSchema = z.infer<typeof changeEmailSchema>

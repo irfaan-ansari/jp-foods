@@ -5,12 +5,23 @@ import type { User } from "./user.type"
 import { apiClient } from "@/lib/api-client"
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query"
 
-import type { PaginatedResponse } from "@/features/shared/shared.type"
+import type {
+  ApiResponse,
+  PaginatedResponse,
+} from "@/features/shared/shared.type"
 
 export const useUsers = (kv?: Record<string, any>) => {
   return useQuery<PaginatedResponse<User>, AppError>({
     queryKey: ["users", kv],
     queryFn: () => apiClient.get(`/users`, { params: kv }),
+    staleTime: 1000 * 60 * 5,
+  })
+}
+
+export const useUser = (id: string) => {
+  return useQuery<ApiResponse<User>, AppError>({
+    queryKey: ["user", id],
+    queryFn: () => apiClient.get(`/users/${id}`),
     staleTime: 1000 * 60 * 5,
   })
 }

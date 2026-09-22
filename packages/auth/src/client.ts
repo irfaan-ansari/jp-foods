@@ -3,6 +3,7 @@ import {
   inferOrgAdditionalFields,
   inferAdditionalFields,
   adminClient as adminClientPlugin,
+  emailOTPClient,
   phoneNumberClient as phoneNumberClientPlugin,
   organizationClient as organizationClientPlugin,
   multiSessionClient,
@@ -32,6 +33,7 @@ export const authClient = createAuthClient({
       roles: orgRoles,
       schema: inferOrgAdditionalFields<typeof auth>(),
     }),
+    emailOTPClient(),
     phoneNumberClientPlugin(),
   ],
 })

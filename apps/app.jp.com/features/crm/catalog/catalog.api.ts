@@ -1,5 +1,6 @@
 import { Hono } from "hono"
 import { customerInvite, db } from "@jp/db"
+import { AppError } from "@jp/utils"
 import { AppContext } from "@/lib/hono/middlewares"
 import { and, count, eq, ilike, or } from "drizzle-orm"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
@@ -72,5 +73,28 @@ export const catalogInquiryRoutes = app
     return c.json({
       success: true,
       data: counts,
+    })
+  })
+  // get catalog request by id
+  .get("/:id", async (c) => {
+    const id = c.req.param("id")
+
+    const response = await db.query.customerInvite.findFirst({
+      where: (c, { and, eq }) =>
+        and(eq(c.id, Number(id)), eq(c.type, "request")),
+    })
+
+    if (!response) throw new AppError("NOT_FOUND")
+
+    const { token, ...inquiry } = response
+
+    return c.json({
+      success: true,
+      data: {
+        ...inquiry,
+        url: token
+          ? `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.JP_APP_URL}/products`
+          : "",
+      },
     })
   })

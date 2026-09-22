@@ -19,9 +19,17 @@ function ApplicationLink({ item }: { item: CustomerApplication }) {
   return (
     <Link
       href={`/crm/application/customers/${item.id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      className="block"
     >
-      {item.companyName}
+      <div className="flex min-w-56 items-center gap-2">
+        <span className="font-semibold text-foreground">
+          {item.companyName}
+        </span>
+        <CustomerApplicationBadge status={item.status} />
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {formatDate(item.createdAt)}
+      </div>
     </Link>
   )
 }
@@ -44,10 +52,7 @@ export const customerApplicationColumns = application.columns([
   application.accessor("companyName", {
     header: "Customer application",
     cell: ({ row }) => (
-      <div className="flex min-w-56 items-center gap-2">
-        <ApplicationLink item={row.original} />
-        <CustomerApplicationBadge status={row.original.status} />
-      </div>
+      <ApplicationLink item={row.original} />
     ),
   }),
   application.display({
@@ -81,14 +86,6 @@ export const customerApplicationColumns = application.columns([
         {[row.original.companyState, row.original.companyZip]
           .filter(Boolean)
           .join(" ") || "—"}
-      </span>
-    ),
-  }),
-  application.accessor("createdAt", {
-    header: "Applied",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {formatDate(row.original.createdAt)}
       </span>
     ),
   }),

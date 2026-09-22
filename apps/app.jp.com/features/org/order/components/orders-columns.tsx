@@ -4,22 +4,28 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
-import { formatDate, formatPhone, formatUSD } from "@jp/utils"
+import { formatDate, formatPhone, formatUSD, pluralize } from "@jp/utils"
 import type { Order } from "../order.type"
 import { OrderStatusBadge } from "./order-card"
 import { OrderDropdown } from "./order-dropdown"
 
 const column = createColumnHelper<DataTableFeatures, Order>()
 
-function OrderLink({ id }: { id: Order["id"] }) {
+function OrderLink({ order }: { order: Order }) {
   const searchParams = useSearchParams()
   const query = searchParams.toString()
   return (
     <Link
-      href={`/org/orders/${id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      href={`/org/orders/${order.id}${query ? `?${query}` : ""}`}
+      className="block space-y-1"
     >
-      #{id}
+      <div className="flex items-center gap-2">
+        <span className="font-semibold text-foreground">#{order.id}</span>
+        <OrderStatusBadge status={order.status ?? ""} />
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {formatDate(order.createdAt)}
+      </div>
     </Link>
   )
 }
@@ -28,10 +34,12 @@ function OrderFilterLink({
   filter,
   id,
   children,
+  description,
 }: {
   filter: "customer" | "user"
   id: string
   children: string
+  description?: string
 }) {
   const searchParams = useSearchParams()
   const params = new URLSearchParams(searchParams.toString())
@@ -43,10 +51,13 @@ function OrderFilterLink({
   return (
     <Link
       href={`/org/orders?${params.toString()}`}
-      className="font-medium text-foreground hover:underline"
+      className="block"
       aria-label={`${active ? "Clear" : "Filter by"} ${filter === "customer" ? "customer" : "user"}: ${children}`}
     >
-      {children}
+      <span className="font-medium text-foreground">{children}</span>
+      {description && (
+        <div className="text-xs text-muted-foreground">{description}</div>
+      )}
     </Link>
   )
 }
@@ -54,50 +65,35 @@ function OrderFilterLink({
 export const orderColumns = column.columns([
   column.accessor("id", {
     header: "Order",
-    cell: ({ row }) => (
-      <div className="space-y-1">
-        <div className="flex gap-2">
-          <OrderLink id={row.original.id} />
-          <OrderStatusBadge status={row.original.status ?? ""} />
-        </div>
-        <div className="text-xs text-muted-foreground">
-          {formatDate(row.original.createdAt)}
-        </div>
-      </div>
-    ),
+    cell: ({ row }) => <OrderLink order={row.original} />,
   }),
   column.accessor("team", {
     header: "Customer",
     cell: ({ row }) => (
-      <div className="space-y-1">
-        <OrderFilterLink filter="customer" id={row.original.team.id}>
-          {row.original.team.name}
-        </OrderFilterLink>
-        <div className="text-xs text-muted-foreground">
-          {formatPhone(row.original.team.phoneNumber)}
-        </div>
-      </div>
+      <OrderFilterLink
+        filter="customer"
+        id={row.original.team.id}
+        description={formatPhone(row.original.team.phoneNumber)}
+      >
+        {row.original.team.name}
+      </OrderFilterLink>
     ),
   }),
   column.display({
     id: "placedBy",
     header: "Placed by",
-    cell: ({ row }) => (
-      <div className="space-y-1">
-        {row.original.user ? (
-          <OrderFilterLink filter="user" id={row.original.user.id}>
-            {row.original.user.name}
-          </OrderFilterLink>
-        ) : (
-          <span className="text-muted-foreground">—</span>
-        )}
-        {row.original.user?.email && (
-          <div className="text-xs text-muted-foreground">
-            {row.original.user.email}
-          </div>
-        )}
-      </div>
-    ),
+    cell: ({ row }) =>
+      row.original.user ? (
+        <OrderFilterLink
+          filter="user"
+          id={row.original.user.id}
+          description={row.original.user.email}
+        >
+          {row.original.user.name}
+        </OrderFilterLink>
+      ) : (
+        <span className="text-muted-foreground">—</span>
+      ),
   }),
   column.accessor("deliveryDate", {
     header: "Delivery",
@@ -114,7 +110,10 @@ export const orderColumns = column.columns([
     header: "Items",
     cell: ({ row }) => (
       <span className="text-muted-foreground tabular-nums">
-        {row.original.lineItemCount}
+        {pluralize(
+          row.original.lineItemCount,
+          `${row.original.lineItemCount} item`
+        )}
       </span>
     ),
   }),

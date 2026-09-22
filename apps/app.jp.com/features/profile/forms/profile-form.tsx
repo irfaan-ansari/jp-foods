@@ -135,16 +135,9 @@ export const ProfileForm = ({ user }: { user: AuthType["user"] }) => {
                   defaultValue={user?.phoneNumber ?? ""}
                   placeholder="1234-123-123"
                 />
-                <InputGroupAddon
-                  align="inline-end"
-                  className="gap-1 text-primary"
-                >
-                  <VerifiedCheck className="size-4" />
-                  Verified
-                </InputGroupAddon>
               </InputGroup>
               <ChangePhoneForm>
-                <Button variant="outline">Change</Button>
+                <Button className="min-w-28">Change</Button>
               </ChangePhoneForm>
             </div>
           </Field>
@@ -157,17 +150,10 @@ export const ProfileForm = ({ user }: { user: AuthType["user"] }) => {
                   defaultValue={user?.email ?? ""}
                   placeholder="yourname@email.com"
                 />
-                <InputGroupAddon
-                  align="inline-end"
-                  className="gap-1 bg-transparent text-primary"
-                >
-                  <VerifiedCheck className="size-4" />
-                  Verified
-                </InputGroupAddon>
               </InputGroup>
 
               <ChangeEmailForm>
-                <Button variant="outline">Change</Button>
+                <Button className="min-w-28">Change</Button>
               </ChangeEmailForm>
             </div>
           </Field>

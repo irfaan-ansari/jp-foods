@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate } from "@jp/utils"
@@ -9,16 +11,33 @@ import { CatalogDropdown } from "./catalog-dropdown"
 
 const column = createColumnHelper<DataTableFeatures, CatalogInquiry>()
 
+function CatalogInquiryLink({ inquiry }: { inquiry: CatalogInquiry }) {
+  const searchParams = useSearchParams()
+  const query = searchParams.toString()
+
+  return (
+    <Link
+      href={`/crm/application/catalog/${inquiry.id}${query ? `?${query}` : ""}`}
+      className="block"
+    >
+      <div className="flex min-w-48 items-center gap-2">
+        <span className="font-semibold text-foreground">
+          {inquiry.companyName}
+        </span>
+        <CatalogInquiryBadge status={inquiry.status} />
+      </div>
+      <div className="text-xs text-muted-foreground">
+        {formatDate(inquiry.createdAt)}
+      </div>
+    </Link>
+  )
+}
+
 export const catalogColumns = column.columns([
   column.accessor("companyName", {
     header: "Company",
     cell: ({ row }) => (
-      <div className="flex min-w-48 items-center gap-2">
-        <span className="font-semibold text-foreground">
-          {row.original.companyName}
-        </span>
-        <CatalogInquiryBadge status={row.original.status} />
-      </div>
+      <CatalogInquiryLink inquiry={row.original} />
     ),
   }),
   column.display({
@@ -50,7 +69,7 @@ export const catalogColumns = column.columns([
           href={row.original.url}
           target="_blank"
           rel="noopener noreferrer"
-          className="max-w-48 truncate text-primary hover:underline"
+          className="block max-w-48 truncate text-primary"
         >
           Open catalog
         </a>
@@ -58,14 +77,7 @@ export const catalogColumns = column.columns([
         <span className="text-muted-foreground">—</span>
       ),
   }),
-  column.accessor("createdAt", {
-    header: "Applied",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {formatDate(row.original.createdAt)}
-      </span>
-    ),
-  }),
+
   column.display({
     id: "actions",
     header: () => <span className="sr-only">Actions</span>,

@@ -1,5 +1,7 @@
 "use client"
 
+import Link from "next/link"
+import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import { User as UserIcon } from "@solar-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
@@ -11,32 +13,36 @@ import { UserDropdown } from "./user-dropdown"
 
 const column = createColumnHelper<DataTableFeatures, User>()
 
+function UserLink({ user }: { user: User }) {
+  const searchParams = useSearchParams()
+  const query = searchParams.toString()
+
+  return (
+    <Link
+      href={`/settings/users/${user.id}${query ? `?${query}` : ""}`}
+      className="flex min-w-56 items-center gap-3"
+    >
+      <Avatar className="shrink-0">
+        <AvatarImage src={user.image ?? ""} alt="" />
+        <AvatarFallback>
+          <UserIcon className="size-4" />
+        </AvatarFallback>
+      </Avatar>
+      <div className="min-w-0 space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-foreground">{user.name}</span>
+          <UserStatusBadge status={user.banned ? "banned" : "active"} />
+        </div>
+        <div className="text-xs text-muted-foreground">{user.email}</div>
+      </div>
+    </Link>
+  )
+}
+
 export const userColumns = column.columns([
   column.accessor("name", {
     header: "User",
-    cell: ({ row }) => (
-      <div className="flex min-w-56 items-center gap-3">
-        <Avatar className="shrink-0">
-          <AvatarImage src={row.original.image ?? ""} alt="" />
-          <AvatarFallback>
-            <UserIcon className="size-4" />
-          </AvatarFallback>
-        </Avatar>
-        <div className="min-w-0 space-y-1">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground">
-              {row.original.name}
-            </span>
-            <UserStatusBadge
-              status={row.original.banned ? "banned" : "active"}
-            />
-          </div>
-          <div className="text-xs text-muted-foreground">
-            {row.original.email}
-          </div>
-        </div>
-      </div>
-    ),
+    cell: ({ row }) => <UserLink user={row.original} />,
   }),
   column.accessor("role", {
     header: "Role",

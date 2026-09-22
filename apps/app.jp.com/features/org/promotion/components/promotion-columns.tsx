@@ -6,6 +6,7 @@ import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import { ImageOff } from "lucide-react"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
+import { formatDate } from "@jp/utils"
 import { StatusBadge } from "@/components/status-badge"
 import type { Promotion } from "../promotion.type"
 import { PLACEMENT, STATUS } from "../promotion.const"
@@ -19,9 +20,32 @@ function PromotionLink({ promotion }: { promotion: Promotion }) {
   return (
     <Link
       href={`/org/promotions/${promotion.id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      className="flex min-w-56 items-center gap-3"
     >
-      {promotion.name}
+      <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
+        {promotion.media ? (
+          <Image
+            src={promotion.media}
+            alt=""
+            width={48}
+            height={48}
+            className="size-full object-cover"
+          />
+        ) : (
+          <ImageOff className="size-4 text-muted-foreground" />
+        )}
+      </div>
+      <div className="space-y-1">
+        <div className="flex items-center gap-2">
+          <span className="font-semibold text-foreground">
+            {promotion.name}
+          </span>
+          <StatusBadge status={STATUS[promotion.status] ?? STATUS.inactive!} />
+        </div>
+        <div className="text-xs text-muted-foreground">
+          {formatDate(promotion.createdAt)}
+        </div>
+      </div>
     </Link>
   )
 }
@@ -29,29 +53,7 @@ function PromotionLink({ promotion }: { promotion: Promotion }) {
 export const promotionColumns = column.columns([
   column.accessor("name", {
     header: "Promotion",
-    cell: ({ row }) => (
-      <div className="flex min-w-56 items-center gap-3">
-        <div className="flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-muted">
-          {row.original.media ? (
-            <Image
-              src={row.original.media}
-              alt=""
-              width={48}
-              height={48}
-              className="size-full object-cover"
-            />
-          ) : (
-            <ImageOff className="size-4 text-muted-foreground" />
-          )}
-        </div>
-        <div className="flex items-center gap-2">
-          <PromotionLink promotion={row.original} />
-          <StatusBadge
-            status={STATUS[row.original.status] ?? STATUS.inactive!}
-          />
-        </div>
-      </div>
-    ),
+    cell: ({ row }) => <PromotionLink promotion={row.original} />,
   }),
   column.accessor("placement", {
     header: "Placement",

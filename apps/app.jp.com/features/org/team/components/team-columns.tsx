@@ -26,9 +26,22 @@ function CustomerLink({ team }: { team: Team }) {
   return (
     <Link
       href={`/org/customers/${team.id}${query ? `?${query}` : ""}`}
-      className="font-semibold text-foreground hover:underline"
+      className="flex items-start gap-3"
     >
-      {team.name}
+      <Avatar className="shrink-0">
+        <AvatarImage src={team.logo ?? ""} alt="" />
+        <AvatarFallback className="rounded-lg">
+          <Buildings className="size-4" />
+        </AvatarFallback>
+      </Avatar>
+
+      <div className="min-w-0 space-y-0.5">
+        <div className="font-semibold text-foreground">{team.name}</div>
+        <div className="text-xs text-muted-foreground">
+          {team.managerName || "No manager"}
+        </div>
+      </div>
+      <TeamBadge status={team.status ?? "suspended"} />
     </Link>
   )
 }
@@ -36,24 +49,7 @@ function CustomerLink({ team }: { team: Team }) {
 export const teamColumns = column.columns([
   column.accessor("name", {
     header: "Customer",
-    cell: ({ row }) => (
-      <div className="flex items-start gap-3">
-        <Avatar className="shrink-0">
-          <AvatarImage src={row.original.logo ?? ""} alt="" />
-          <AvatarFallback className="rounded-lg">
-            <Buildings className="size-4" />
-          </AvatarFallback>
-        </Avatar>
-
-        <div className="min-w-0 space-y-0.5">
-          <CustomerLink team={row.original} />
-          <div className="text-xs text-muted-foreground">
-            {row.original.managerName || "No manager"}
-          </div>
-        </div>
-        <TeamBadge status={row.original.status ?? "suspended"} />
-      </div>
-    ),
+    cell: ({ row }) => <CustomerLink team={row.original} />,
   }),
 
   column.accessor("email", {
