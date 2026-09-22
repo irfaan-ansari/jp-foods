@@ -12,11 +12,7 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { PromotionClient } from "@/features/org/promotion/components/promotion-client"
 import { STATUS } from "@/features/org/promotion/promotion.const"
 
-const OPTIONS = [
-  STATUS.all!,
-  STATUS.active!,
-  STATUS.inactive!,
-]
+const OPTIONS = [STATUS.all!, STATUS.active!, STATUS.inactive!]
 
 const PromotionsPage = () => {
   return (
@@ -34,9 +30,12 @@ const PromotionsPage = () => {
         </OrgAccess>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="flex gap-4">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab tabs={OPTIONS} path="/org/promotions/count" />
-          <SearchQueryParam className="ml-auto" />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search promotions..."
+          />
         </div>
         <PromotionClient />
       </PageContent>

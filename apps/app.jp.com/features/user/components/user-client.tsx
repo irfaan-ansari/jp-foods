@@ -1,73 +1,31 @@
 "use client"
-import React from "react"
 
-import { Pagination } from "@jp/ui/components/jp/pagination"
-import { BlurFade } from "@jp/ui/components/blur-fade"
+import { DataTable } from "@jp/ui/components/data-table"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { EmptyState, ErrorState } from "@jp/ui/components/jp/empty-state"
-
 import { useUsers } from "../user.data"
-import { GridWrapper } from "@/components/page-content"
-import { UserCard, UserSkeleton } from "./user-card"
-import { QueryBoundary } from "@/components/query-boundry"
+import { userColumns } from "./user-columns"
 
 export const UserClient = () => {
-  const { searchParamsObj, queryParams } = useRouterStuff()
-  const query = useUsers(searchParamsObj)
+  const { searchParamsObj } = useRouterStuff()
+  const users = useUsers(searchParamsObj)
 
   return (
-    <QueryBoundary
-      query={query}
-      loading={
-        <GridWrapper>
-          {[...Array(12)].map((_, i) => (
-            <UserSkeleton key={i} />
-          ))}
-        </GridWrapper>
-      }
-      isEmpty={(data) => data.data.length === 0}
-      error={(error) => (
-        <ErrorState title={error.message} description={error.description} />
-      )}
-      empty={
-        <EmptyState
-          title={"No users found"}
-          description="Try adjusting your filter"
-        />
-      }
-    >
-      {(data) => {
-        const { page, total, totalPages, limit } = data?.pagination
-        return (
-          <div className="h-full flex-1 space-y-3">
-            <GridWrapper>
-              {data?.data?.map((user, i) => {
-                return (
-                  <BlurFade
-                    key={user.id}
-                    delay={0.25 + i * 0.01}
-                    inView
-                    direction="up"
-                  >
-                    <UserCard data={user} />
-                  </BlurFade>
-                )
-              })}
-            </GridWrapper>
-
-            {/* pagination */}
-            <Pagination
-              page={page}
-              total={total}
-              totalPages={totalPages}
-              limit={limit}
-              onPageChange={(page) =>
-                queryParams({ set: { page: page.toString() } })
-              }
-            />
-          </div>
-        )
+    <DataTable
+      columns={userColumns}
+      data={users.data?.data ?? []}
+      getRowId={(user) => user.id}
+      isLoading={users.isPending}
+      error={{
+        isError: users.isError,
+        title: users.error?.message,
+        description: users.error?.description,
       }}
-    </QueryBoundary>
+      empty={{
+        isEmpty: users.data?.data.length === 0,
+        title: "No users found.",
+        description: "Try adjusting your search or filters.",
+      }}
+      pagination={users.data?.pagination}
+    />
   )
 }

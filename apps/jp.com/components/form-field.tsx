@@ -30,6 +30,7 @@ import {
   Upload,
   EyeOff,
   Eye,
+  CloudUpload,
 } from "lucide-react"
 import { cn } from "@jp/ui/lib/utils"
 import {
@@ -380,31 +381,13 @@ const FileField = ({ label, description, className }: FieldProps) => {
       </FieldLegend>
       <FieldLabel
         htmlFor={field.name}
-        className={`h-11 border border-dashed border-primary bg-primary/20 px-4`}
+        className={`group/label flex h-28 flex-col rounded-2xl border border-dashed p-4 hover:bg-secondary ${field.state.value ? "bg-secondary" : ""}`}
       >
-        {field.state.value ? (
-          <>
-            <Paperclip className="size-4 shrink-0" />
-            <span className="truncate">{field.state.value?.name}</span>
-            <Button
-              variant="outline"
-              type="button"
-              size="icon-sm"
-              className="ml-auto"
-              onClick={(e) => {
-                e.preventDefault()
-                field.handleChange(undefined as any)
-              }}
-            >
-              <Trash2 />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Upload className="size-4" /> Upload
-          </>
+        <CloudUpload className="size-6 text-muted-foreground transition-transform group-hover/label:-translate-y-0.5" />
+        <span className="text-muted-foreground">Click to upload/replace</span>
+        {field.state.value && (
+          <span className="truncate">{field.state.value?.name}</span>
         )}
-
         <Input
           type="file"
           id={field.name}

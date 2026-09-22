@@ -28,7 +28,7 @@ const Orders = async () => {
         </Button>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab queryKey="status" tabs={OPTIONS} path="/orders/count" />
 
           <SearchQueryParam />

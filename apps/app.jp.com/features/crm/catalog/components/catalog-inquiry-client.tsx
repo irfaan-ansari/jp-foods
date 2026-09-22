@@ -1,65 +1,31 @@
 "use client"
 
-import React from "react"
-
-import { BlurFade } from "@jp/ui/components/blur-fade"
-
-import { GridWrapper } from "@/components/page-content"
+import { DataTable } from "@jp/ui/components/data-table"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { EmptyState, Pagination } from "@jp/ui/components/jp"
-import { QueryBoundary } from "@/components/query-boundry"
-
-import { CatalogInquiryCard, CatalogInquiryCardSkeleton } from "./catalog-card"
 import { useCatalogInquiries } from "../catalog.data"
+import { catalogColumns } from "./catalog-columns"
 
 export const CatalogInquiryClient = () => {
-  const { searchParamsObj, queryParams } = useRouterStuff()
-  const query = useCatalogInquiries(searchParamsObj)
+  const { searchParamsObj } = useRouterStuff()
+  const inquiries = useCatalogInquiries(searchParamsObj)
 
   return (
-    <QueryBoundary
-      query={query}
-      loading={
-        <GridWrapper>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <CatalogInquiryCardSkeleton key={i} />
-          ))}
-        </GridWrapper>
-      }
-      isEmpty={(data) => data.data.length === 0}
-      empty={
-        <EmptyState
-          title="No inquiry found"
-          description="Try adjusting your filter."
-        />
-      }
-    >
-      {(data) => (
-        <div className="h-full flex-1 space-y-3">
-          <GridWrapper>
-            {data.data.map((order, i) => (
-              <BlurFade
-                key={order.id}
-                delay={0.25 + i * 0.01}
-                inView
-                direction="up"
-              >
-                <CatalogInquiryCard data={order} />
-              </BlurFade>
-            ))}
-          </GridWrapper>
-
-          <Pagination
-            page={data.pagination.page}
-            total={data.pagination.total}
-            totalPages={data.pagination.totalPages}
-            limit={data.pagination.limit}
-            onPageChange={(page) =>
-              queryParams({ set: { page: page.toString() } })
-            }
-          />
-        </div>
-      )}
-    </QueryBoundary>
+    <DataTable
+      columns={catalogColumns}
+      data={inquiries.data?.data ?? []}
+      getRowId={(item) => String(item.id)}
+      isLoading={inquiries.isPending}
+      error={{
+        isError: inquiries.isError,
+        title: inquiries.error?.message,
+        description: inquiries.error?.description,
+      }}
+      empty={{
+        isEmpty: inquiries.data?.data.length === 0,
+        title: "No catalog inquiries found.",
+        description: "Try adjusting your search or filters.",
+      }}
+      pagination={inquiries.data?.pagination}
+    />
   )
 }

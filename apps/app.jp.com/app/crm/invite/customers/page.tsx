@@ -18,9 +18,12 @@ const CustomerInvites = () => {
         </Button>
       </PageHeader>
       <PageContent className="space-y-6">
-        <div className="gap flex justify-between">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
           <FilterTab path="/crm/customers/invites/count" tabs={options} />
-          <SearchQueryParam />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search invites..."
+          />
         </div>
         <CustomerInviteClient />
       </PageContent>

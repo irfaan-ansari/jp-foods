@@ -49,8 +49,8 @@ const UsersPage = () => {
       </PageHeader>
 
       <PageContent className="space-y-3 lg:space-y-6">
-        <div className="flex items-center justify-start gap-3">
-          <FilterTab queryKey="role" tabs={OPTIONS} path="/users/count" />
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
+          <FilterTab queryKey="status" tabs={OPTIONS} path="/users/count" />
           <UserRoleSelector
             selected={searchParamsObj.role || "All"}
             onChange={(value) => {
@@ -59,7 +59,7 @@ const UsersPage = () => {
           >
             <Button
               variant="outline"
-              className="ml-auto w-40 justify-start text-muted-foreground"
+              className="w-40 justify-start text-muted-foreground lg:ml-auto"
             >
               <Sort />
               Role:
@@ -68,7 +68,10 @@ const UsersPage = () => {
               </span>
             </Button>
           </UserRoleSelector>
-          <SearchQueryParam />
+          <SearchQueryParam
+            className="w-full max-w-none lg:max-w-xs"
+            placeholder="Search users..."
+          />
         </div>
         <UserClient />
       </PageContent>

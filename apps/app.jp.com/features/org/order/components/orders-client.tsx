@@ -1,63 +1,72 @@
 "use client"
 
-import React from "react"
-
-import { BlurFade } from "@jp/ui/components/blur-fade"
-import { OrderCard, OrderSkeleton } from "./order-card"
-import { GridWrapper } from "@/components/page-content"
+import { DataTable } from "@jp/ui/components/data-table"
+import { Button } from "@jp/ui/components/button"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
+import { X } from "lucide-react"
 import { useOrders } from "@/features/org/order/order.data"
-import { EmptyState, Pagination } from "@jp/ui/components/jp"
-import { QueryBoundary } from "@/components/query-boundry"
+import { orderColumns } from "./orders-columns"
 
 export const OrdersClient = () => {
   const { searchParamsObj, queryParams } = useRouterStuff()
   const orders = useOrders(searchParamsObj)
+  const customer = searchParamsObj.customer
+  const user = searchParamsObj.user
 
   return (
-    <QueryBoundary
-      query={orders}
-      loading={
-        <GridWrapper>
-          {Array.from({ length: 12 }).map((_, i) => (
-            <OrderSkeleton key={i} />
-          ))}
-        </GridWrapper>
-      }
-      isEmpty={(data) => data.data.length === 0}
-      empty={
-        <EmptyState
-          title="No orders found"
-          description="Try adjusting your filter."
-        />
-      }
-    >
-      {(data) => (
-        <div className="h-full flex-1 space-y-3">
-          <GridWrapper>
-            {data.data.map((order, i) => (
-              <BlurFade
-                key={order.id}
-                delay={0.25 + i * 0.01}
-                inView
-                direction="up"
-              >
-                <OrderCard data={order} />
-              </BlurFade>
-            ))}
-          </GridWrapper>
-
-          <Pagination
-            page={data.pagination.page}
-            total={data.pagination.total}
-            totalPages={data.pagination.totalPages}
-            limit={data.pagination.limit}
-            onPageChange={(page) =>
-              queryParams({ set: { page: page.toString() } })
-            }
-          />
+    <div className="space-y-3">
+      {(customer || user) && (
+        <div className="flex flex-wrap items-center gap-2">
+          {customer && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                queryParams({
+                  del: "customer",
+                  set: { page: "1" },
+                  scroll: false,
+                })
+              }
+            >
+              Customer:{" "}
+              {orders.data?.data.find((order) => order.team.id === customer)
+                ?.team.name ?? customer}
+              <X className="size-3.5" />
+            </Button>
+          )}
+          {user && (
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() =>
+                queryParams({ del: "user", set: { page: "1" }, scroll: false })
+              }
+            >
+              Placed by:{" "}
+              {orders.data?.data.find((order) => order.user?.id === user)?.user
+                ?.name ?? user}
+              <X className="size-3.5" />
+            </Button>
+          )}
         </div>
       )}
-    </QueryBoundary>
+      <DataTable
+        columns={orderColumns}
+        data={orders.data?.data ?? []}
+        error={{
+          isError: orders.isError,
+          title: orders.error?.message,
+          description: orders.error?.description,
+        }}
+        empty={{
+          isEmpty: orders.data?.data?.length === 0,
+          title: "No orders found.",
+        }}
+        getRowId={(order) => String(order.id)}
+        isLoading={orders.isPending}
+        pagination={orders.data?.pagination}
+      />
+    </div>
   )
 }
