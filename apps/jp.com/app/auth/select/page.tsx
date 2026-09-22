@@ -9,7 +9,7 @@ const SelectAccountPage = async () => {
     headers: await headers(),
   })
 
-  if (!data) {
+  if (!data || data.length === 0) {
     redirect("/auth/signin")
   }
 
