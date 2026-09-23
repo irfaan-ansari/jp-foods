@@ -10,13 +10,14 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { StatusBadge } from "@/components/status-badge"
-import { Phone, Smartphone } from "@solar-icons/react"
+import { MenuDots, Phone, Smartphone } from "@solar-icons/react"
 import { CopyButton } from "@jp/ui/components/jp"
 import { formatDate, formatPhone, formatUSD } from "@jp/utils"
 import { OrderDropdown } from "./order-dropdown"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { STATUS } from "../order.const"
+import { Button } from "@jp/ui/components/button"
 
 export const OrderCard = ({ data }: { data: Order }) => {
   const { searchParams } = useRouterStuff()
@@ -43,7 +44,11 @@ export const OrderCard = ({ data }: { data: Order }) => {
           <div className="text-right text-base font-semibold">
             {formatUSD(data.total)}
           </div>
-          <OrderDropdown data={data} />
+          <OrderDropdown data={data}>
+            <Button size="icon-sm" variant="outline">
+              <MenuDots />
+            </Button>
+          </OrderDropdown>
         </CardAction>
       </CardHeader>
 

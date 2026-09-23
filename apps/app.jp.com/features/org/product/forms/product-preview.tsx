@@ -19,6 +19,9 @@ import { Badge } from "@jp/ui/components/badge"
 import { getUnit } from "../product.utils"
 import { Skeleton } from "@jp/ui/components/skeleton"
 
+const toNumber = (value: string | undefined) =>
+  value?.trim() && Number.isFinite(Number(value)) ? Number(value) : 0
+
 export const ProductPreview = withForm({
   defaultValues: {} as ProductFormSchema,
   props: {} as {
@@ -55,7 +58,10 @@ export const ProductPreview = withForm({
           title,
           image,
           price,
-          unit,
+          uom,
+          sellUnit,
+          unitSize,
+          enableSplit,
           categories,
           sellUnits,
           status,
@@ -98,12 +104,12 @@ export const ProductPreview = withForm({
               </FieldLabel>
 
               {/* badge */}
-              <div className="absolute top-2 left-2 z-2 flex flex-col gap-1">
+              <div className="absolute top-2 left-2 z-10 grid gap-1">
                 <ProductBadge status={status ?? "active"} />
                 {isTaxable && (
                   <Badge
                     variant="warning-light"
-                    className="rounded-md backdrop-blur-lg"
+                    className="h-6 rounded-md backdrop-blur-lg"
                   >
                     Taxable
                   </Badge>
@@ -125,57 +131,52 @@ export const ProductPreview = withForm({
                 <div className="h-5 rounded-lg bg-secondary" />
               )}
 
-              <div className="mt-4">
-                {price.trim() !== "" &&
-                Number.isFinite(Number(price)) &&
-                Number(price) >= 0 ? (
-                  <ProductPrice price={price} unit={unit} />
-                ) : (
-                  <Skeleton className="h-5 w-20" />
-                )}
-              </div>
               <div className="mt-4 space-y-3 border-t border-dashed pt-4">
-                <p className="text-xs font-medium text-muted-foreground">
-                  Selling options
-                </p>
-                {sellUnits.length === 0 && (
-                  <p className="text-sm text-muted-foreground">
-                    Add a selling option to preview it.
-                  </p>
-                )}
-                {sellUnits.map((sellUnit, index) => {
-                  const amount = Number(price) * Number(sellUnit.unitConversion)
-                  const validPrice =
-                    price.trim() !== "" &&
-                    Number(price) >= 0 &&
-                    Number(sellUnit.unitConversion) > 0 &&
-                    Number.isFinite(amount)
+                <div className="flex items-start justify-between gap-2 rounded-xl border bg-secondary p-3 text-sm font-medium">
+                  <div className="grid min-w-0 flex-1">
+                    <span>{getUnit(sellUnit)?.label}</span>
+                    <span className="text-xs text-muted-foreground">
+                      {`${unitSize || "—"} ${uom} per ${sellUnit}`}
+                    </span>
+                  </div>
 
-                  return (
-                    <div
-                      key={index}
-                      className="space-y-1 rounded-xl border p-3"
-                    >
-                      <div className="flex items-start justify-between gap-2 text-sm font-medium">
-                        <span>
-                          {getUnit(sellUnit.name)?.label ??
-                            (sellUnit.name || "Selling unit")}
-                        </span>
-                        <span className="text-primary">
-                          {validPrice ? formatUSD(amount) : "—"}
-                        </span>
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        {sellUnit.unitConversion || "—"} {unit} per{" "}
-                        {sellUnit.name || "unit"}
-                      </p>
-                      <p className="text-xs text-muted-foreground">
-                        Minimum: {sellUnit.minQuantity || "—"} · Increment:{" "}
-                        {sellUnit.orderIncreament || "—"}
-                      </p>
-                    </div>
-                  )
-                })}
+                  <span className="text-base font-bold text-primary">
+                    {formatUSD(price ?? 0)}
+                  </span>
+                </div>
+                {enableSplit &&
+                  sellUnits
+                    .filter((item) => item.name !== sellUnit)
+                    .map((splitUnit, index) => {
+                      const splitUnitsPerSellUnit =
+                        toNumber(splitUnit.unitConversion) > 0
+                          ? toNumber(unitSize) /
+                            toNumber(splitUnit.unitConversion)
+                          : 0
+                      const splitPrice =
+                        splitUnitsPerSellUnit > 0
+                          ? toNumber(splitUnit.price) / splitUnitsPerSellUnit
+                          : 0
+
+                      return (
+                        <div
+                          key={index}
+                          className="flex items-start justify-between gap-2 rounded-xl border bg-secondary p-3 text-sm font-medium"
+                        >
+                          <div className="grid">
+                            <span>Split option</span>
+
+                            <p className="text-xs text-muted-foreground">
+                              {splitUnit.unitConversion || "—"} {uom} per{" "}
+                              {splitUnit.name || "unit"}
+                            </p>
+                          </div>
+                          <span className="text-base font-bold text-primary">
+                            {splitPrice ? formatUSD(splitPrice) : "—"}
+                          </span>
+                        </div>
+                      )
+                    })}
               </div>
             </CardContent>
           </Card>

@@ -25,6 +25,10 @@ export const product = pgTable(
     }),
     itemCode: text("item_code").notNull(),
     uom: text("uom").notNull().default(""),
+    sellUnit: text("sell_unit"),
+    unitSize: text("unit_size"),
+    packSize: text("pack_size"),
+    catchWeight: boolean("average_weight"),
     price: text("price").notNull().default("0"),
     type: text("type").default(""),
     description: text("description").default(""),
@@ -41,7 +45,9 @@ export const product = pgTable(
       .$type<
         {
           name: string
-          unitConversion: string
+          label?: string
+          price?: string
+          unitConversion: string /** how many uom are there in one pack/unit */
           minQuantity: string
           orderIncreament: string
         }[]

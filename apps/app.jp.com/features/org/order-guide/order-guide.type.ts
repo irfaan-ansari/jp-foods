@@ -3,8 +3,9 @@ import { Product } from "../product/product.type"
 
 type OrderGuideProduct = Pick<
   Product,
-  "id" | "title" | "itemCode" | "image" | "price" | "unit"
+  "id" | "title" | "itemCode" | "image" | "price" | "uom"
 > & {
+  unit: string
   position: number
 }
 

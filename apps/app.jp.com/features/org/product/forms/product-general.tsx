@@ -1,10 +1,8 @@
 "use client"
 
 import React from "react"
-import { ChevronDown, ChevronsDown, ChevronsUpDown, X } from "lucide-react"
+import { ChevronDown, X } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
-
-import { ListCheckMinimalistic } from "@solar-icons/react"
 
 import {
   Card,
@@ -16,7 +14,6 @@ import {
 import {
   Field,
   FieldContent,
-  FieldDescription,
   FieldError,
   FieldGroup,
   FieldLabel,
@@ -24,13 +21,12 @@ import {
 } from "@jp/ui/components/field"
 import { Badge } from "@jp/ui/components/badge"
 import { Button } from "@jp/ui/components/button"
-import { Switch } from "@jp/ui/components/switch"
 
 import { CategorySelector } from "@/features/org/product/components/category-selector"
 
 import { type ProductFormSchema } from "../product.schema"
-import { PRODUCT_UNITS, STATUS } from "../product.const"
-import { getUnit } from "../product.utils"
+import { STATUS } from "../product.const"
+import { Switch } from "@jp/ui/components/switch"
 
 export const ProductGeneral = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -38,7 +34,7 @@ export const ProductGeneral = withForm({
     return (
       <Card size="sm" className="shadow-xs">
         <CardHeader>
-          <CardTitle className="font-bold">General</CardTitle>
+          <CardTitle className="font-bold">Product Details</CardTitle>
         </CardHeader>
         <CardContent>
           <FieldGroup className="grid grid-cols-1 lg:grid-cols-2">
@@ -48,7 +44,7 @@ export const ProductGeneral = withForm({
                 <field.TextField
                   label="Title"
                   className="lg:col-span-2"
-                  placeholder="Item title"
+                  placeholder="Product title"
                 />
               )}
             />
@@ -58,14 +54,14 @@ export const ProductGeneral = withForm({
                 <field.TextAreaField
                   label="Description"
                   className="lg:col-span-2"
-                  placeholder="Type here..."
+                  placeholder="Product details...."
                 />
               )}
             />
             <form.AppField
               name="itemCode"
               children={(field) => (
-                <field.TextField label="Item Code" placeholder="TBD-ITEM" />
+                <field.TextField label="Item Code" placeholder="item #" />
               )}
             />
             <form.AppField
@@ -79,56 +75,6 @@ export const ProductGeneral = withForm({
                       label: status.label,
                       value: status.value,
                     }))}
-                />
-              )}
-            />
-
-            <form.AppField
-              name="uom"
-              children={(field) => (
-                <field.SelectField label="UOM" options={PRODUCT_UNITS} />
-              )}
-            />
-
-            <form.Subscribe
-              selector={(state) => state.values.uom}
-              children={(unit) => (
-                <form.AppField
-                  name="price"
-                  children={(field) => (
-                    <field.TextField
-                      label="Price"
-                      placeholder="2.00"
-                      inputMode="decimal"
-                      prefix={"$"}
-                      suffix={`/${getUnit(unit)?.value}`}
-                    />
-                  )}
-                />
-              )}
-            />
-            <form.Subscribe
-              selector={(state) => state.values.uom}
-              children={(unit) => (
-                <form.AppField
-                  name="weight"
-                  children={(field) => (
-                    <field.TextField
-                      label="Weight"
-                      placeholder="2.00"
-                      inputMode="decimal"
-                      suffix={
-                        <div className="flex items-center gap-1">
-                          <Button size="sm" variant="secondary">
-                            FIXED
-                          </Button>
-                          <Button size="sm" variant="secondary">
-                            VARIABLE
-                          </Button>
-                        </div>
-                      }
-                    />
-                  )}
                 />
               )}
             />
@@ -159,17 +105,26 @@ export const ProductGeneral = withForm({
                       <Button
                         variant="outline"
                         className="flex h-auto min-h-10 justify-start py-2"
+                        id={field.name}
                       >
                         <span className="flex-1 text-left text-muted-foreground">
-                          Select...
+                          Select categories...
                         </span>
                         <ChevronDown className="ml-auto text-muted-foreground" />
                       </Button>
                     </CategorySelector>
                     <div className="flex flex-wrap items-center gap-1">
-                      {field.state.value.map((value) => (
+                      {field.state.value.map((value, i) => (
                         <Badge variant="primary-light" className="rounded-lg">
                           {value}
+                          <Button
+                            size="icon-xs"
+                            variant="destructive"
+                            className="size-4 rounded-full [&>svg]:size-3"
+                            onClick={() => field.removeValue(i)}
+                          >
+                            <X />
+                          </Button>
                         </Badge>
                       ))}
                     </div>
@@ -188,15 +143,12 @@ export const ProductGeneral = withForm({
                 return (
                   <Field
                     orientation="horizontal"
-                    className="rounded-xl border px-3 py-2 lg:col-span-2"
+                    className="rounded-xl border px-3 py-2.5 lg:col-span-2"
                     data-invalid={isInvalid}
                   >
                     <FieldLabel htmlFor={field.name}>
                       <FieldContent>
-                        <FieldTitle> Charge tax on this product</FieldTitle>
-                        {isInvalid && (
-                          <FieldError errors={field.state.meta.errors} />
-                        )}
+                        <FieldTitle>Charge tax on this item</FieldTitle>
                       </FieldContent>
                     </FieldLabel>
                     <Switch

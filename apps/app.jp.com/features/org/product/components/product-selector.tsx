@@ -17,8 +17,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 type ProductType = Pick<
   import("@jp/db").ProductSelectType,
-  "id" | "title" | "itemCode" | "price" | "unit" | "sellUnits"
-> & { image: string }
+  "id" | "title" | "itemCode" | "price" | "uom" | "sellUnits"
+> & { image: string; unit: string }
 
 type ProductSelectorProps = {
   selected: number | number[] | undefined
@@ -63,7 +63,8 @@ export const ProductSelector = ({
         image: t.image ?? "",
         sellUnits: t.sellUnits,
         price: t.price,
-        unit: t.unit,
+        uom: t.uom,
+        unit: t.uom,
       })) ?? []
     )
   }, [data])

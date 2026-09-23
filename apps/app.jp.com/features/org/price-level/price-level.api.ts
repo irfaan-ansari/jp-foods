@@ -60,7 +60,7 @@ export const priceLevelRoutes = app
         title: product.title,
         itemCode: product.itemCode,
         image: product.image,
-        unit: product.unit,
+        unit: product.uom,
         basePrice: product.price,
         price,
       }))

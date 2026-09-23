@@ -27,8 +27,15 @@ export const productFormSchema = z
     itemCode: z.string(),
     status: z.string().min(1, "Select status"),
     price: nonNegativeDecimal,
-    uom: z.string().min(1, "Select a price unit"),
+    uom: z.string().min(1, "Select unit of measure"),
+    sellUnit: z.string().min(1, "Select sell unit") /** eg: case|lb */,
+    unitSize: z
+      .string()
+      .min(1, "Enter unit size") /** contains uom eg: 1 case = 60 lb */,
+    packSize: z.string() /** eg: pack of 1 */,
+    catchWeight: z.boolean(),
     isTaxable: z.boolean(),
+    enableSplit: z.boolean(),
     categories: z.array(z.string()),
     image: z.string(),
     location: z.string(),
@@ -38,6 +45,8 @@ export const productFormSchema = z
     sellUnits: z
       .object({
         name: z.string().min(1, "Unit is required"),
+        label: z.string(),
+        price: z.string(),
         unitConversion: positiveDecimal,
         minQuantity: positiveDecimal,
         orderIncreament: positiveDecimal,
@@ -63,6 +72,28 @@ export const productFormSchema = z
         message: "Enter a valid stock quantity",
       })
     }
+
+    if (value.enableSplit) {
+      value.sellUnits.forEach((unit, index) => {
+        if (unit.name === value.sellUnit) return
+
+        if (!unit.label.trim()) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["sellUnits", index, "label"],
+            message: "Enter a split label",
+          })
+        }
+
+        if (!nonNegativeDecimal.safeParse(unit.price).success) {
+          ctx.addIssue({
+            code: "custom",
+            path: ["sellUnits", index, "price"],
+            message: "Enter a split price",
+          })
+        }
+      })
+    }
   })
 
 export type ProductFormSchema = z.infer<typeof productFormSchema>
@@ -71,7 +102,12 @@ export const productFormValues = {
   title: "",
   description: "",
   itemCode: "",
-  unit: "lb",
+  uom: "lb",
+  sellUnit: "case",
+  catchWeight: false,
+  unitSize: "1",
+  packSize: "",
+  enableSplit: false,
   price: "",
   status: "active",
   isTaxable: false,
@@ -84,6 +120,8 @@ export const productFormValues = {
   sellUnits: [
     {
       name: "case",
+      label: "Case",
+      price: "",
       unitConversion: "1",
       minQuantity: "1",
       orderIncreament: "1",
