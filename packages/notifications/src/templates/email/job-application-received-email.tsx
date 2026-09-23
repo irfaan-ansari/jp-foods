@@ -12,12 +12,12 @@ export const JobApplicationReceivedEmail = ({
 }: JobApplicationReceivedEmailProps) => {
   return (
     <EmailLayout template="customer" heading="Application Received">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello {name || "Applicant"},
         </Text>
 
-        <Text className="text-lg">
+        <Text className="text-sm leading-6">
           Thank you for applying for the{" "}
           <span className="inline-block font-semibold uppercase">
             {position}
@@ -25,17 +25,17 @@ export const JobApplicationReceivedEmail = ({
           position with Jimenez Produce.
         </Text>
 
-        <Text className="mt-4 text-lg">
+        <Text className="mt-4">
           We have successfully received your application, and our team will
           carefully review your qualifications and submitted documents.
         </Text>
 
-        <Section className="border-email-border mt-6 border p-6">
-          <Text className="text-email-brand text-lg font-semibold uppercase">
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
             What Happens Next
           </Text>
 
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             <strong>*</strong> Our Human Resources team will evaluate your
             experience and credentials
             <br />
@@ -47,7 +47,7 @@ export const JobApplicationReceivedEmail = ({
           </Text>
         </Section>
 
-        <Text className="mt-6 text-lg">
+        <Text className="mt-6">
           We sincerely appreciate your interest in joining our team and look
           forward to reviewing your application.
         </Text>
@@ -55,3 +55,10 @@ export const JobApplicationReceivedEmail = ({
     </EmailLayout>
   )
 }
+
+JobApplicationReceivedEmail.PreviewProps = {
+  name: "Alex Morgan",
+  position: "Delivery Driver",
+} satisfies Parameters<typeof JobApplicationReceivedEmail>[0]
+
+export default JobApplicationReceivedEmail

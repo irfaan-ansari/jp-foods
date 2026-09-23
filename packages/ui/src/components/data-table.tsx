@@ -72,13 +72,13 @@ export function DataTable<TData extends RowData>({
     <React.Fragment>
       <div className="h-full">
         <Table className={className}>
-          <TableHeader className="bg-muted/40">
+          <TableHeader className="bg-muted/60">
             {table.getHeaderGroups().map((group) => (
               <TableRow key={group.id} className="hover:bg-transparent">
                 {group.headers.map((header) => (
                   <TableHead
                     key={header.id}
-                    className="h-11 px-3 py-5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                    className="h-11 border-b-2 border-primary/50 px-3 py-5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
                   >
                     {header.isPlaceholder ? null : (
                       <table.FlexRender header={header} />
@@ -91,7 +91,7 @@ export function DataTable<TData extends RowData>({
           <TableBody>
             {isLoading ? (
               Array.from({ length: 6 }).map((_, index) => (
-                <TableRow key={index}>
+                <TableRow key={index} className="hover:transparent">
                   {columns.map((_, columnIndex) => (
                     <TableCell key={columnIndex} className="py-4">
                       <Skeleton className="h-5 w-3/4" />
@@ -110,7 +110,7 @@ export function DataTable<TData extends RowData>({
               </TableRow>
             ) : rows.length && !empty?.isEmpty ? (
               rows.map((row) => (
-                <TableRow key={row.id} className="relative hover:bg-muted/30">
+                <TableRow key={row.id} className="relative hover:bg-muted/50">
                   {row.getAllCells().map((cell) => (
                     <TableCell key={cell.id}>
                       <table.FlexRender cell={cell} />

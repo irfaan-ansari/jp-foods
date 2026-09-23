@@ -24,7 +24,7 @@ export const product = pgTable(
       onDelete: "cascade",
     }),
     itemCode: text("item_code").notNull(),
-    unit: text("unit").notNull().default(""),
+    uom: text("uom").notNull().default(""),
     price: text("price").notNull().default("0"),
     type: text("type").default(""),
     description: text("description").default(""),

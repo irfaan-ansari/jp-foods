@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { ChevronsUpDown, X } from "lucide-react"
+import { ChevronDown, ChevronsDown, ChevronsUpDown, X } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
 
 import { ListCheckMinimalistic } from "@solar-icons/react"
@@ -84,14 +84,14 @@ export const ProductGeneral = withForm({
             />
 
             <form.AppField
-              name="unit"
+              name="uom"
               children={(field) => (
-                <field.SelectField label="Price Unit" options={PRODUCT_UNITS} />
+                <field.SelectField label="UOM" options={PRODUCT_UNITS} />
               )}
             />
 
             <form.Subscribe
-              selector={(state) => state.values.unit}
+              selector={(state) => state.values.uom}
               children={(unit) => (
                 <form.AppField
                   name="price"
@@ -102,6 +102,31 @@ export const ProductGeneral = withForm({
                       inputMode="decimal"
                       prefix={"$"}
                       suffix={`/${getUnit(unit)?.value}`}
+                    />
+                  )}
+                />
+              )}
+            />
+            <form.Subscribe
+              selector={(state) => state.values.uom}
+              children={(unit) => (
+                <form.AppField
+                  name="weight"
+                  children={(field) => (
+                    <field.TextField
+                      label="Weight"
+                      placeholder="2.00"
+                      inputMode="decimal"
+                      suffix={
+                        <div className="flex items-center gap-1">
+                          <Button size="sm" variant="secondary">
+                            FIXED
+                          </Button>
+                          <Button size="sm" variant="secondary">
+                            VARIABLE
+                          </Button>
+                        </div>
+                      }
                     />
                   )}
                 />
@@ -136,18 +161,18 @@ export const ProductGeneral = withForm({
                         className="flex h-auto min-h-10 justify-start py-2"
                       >
                         <span className="flex-1 text-left text-muted-foreground">
-                          {field.state.value.length > 0
-                            ? field.state.value.join(" • ")
-                            : "Select..."}
+                          Select...
                         </span>
-                        {field.state.value.length > 0 && (
-                          <Badge variant="primary-light">
-                            {field.state.value.length}
-                          </Badge>
-                        )}
+                        <ChevronDown className="ml-auto text-muted-foreground" />
                       </Button>
                     </CategorySelector>
-
+                    <div className="flex flex-wrap items-center gap-1">
+                      {field.state.value.map((value) => (
+                        <Badge variant="primary-light" className="rounded-lg">
+                          {value}
+                        </Badge>
+                      ))}
+                    </div>
                     {isInvalid && (
                       <FieldError errors={field.state.meta.errors} />
                     )}
@@ -168,10 +193,7 @@ export const ProductGeneral = withForm({
                   >
                     <FieldLabel htmlFor={field.name}>
                       <FieldContent>
-                        <FieldTitle> Taxable</FieldTitle>
-                        <FieldDescription className="text-sm">
-                          Apply sales tax to this product
-                        </FieldDescription>
+                        <FieldTitle> Charge tax on this product</FieldTitle>
                         {isInvalid && (
                           <FieldError errors={field.state.meta.errors} />
                         )}

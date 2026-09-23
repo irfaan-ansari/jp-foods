@@ -20,7 +20,13 @@ import {
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
 
-export const OrderDropdown = ({ data }: { data: Order }) => {
+export const OrderDropdown = ({
+  data,
+  children,
+}: {
+  data: Order
+  children: React.ReactNode
+}) => {
   const { open } = useConfirm()
   const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
@@ -76,11 +82,7 @@ export const OrderDropdown = ({ data }: { data: Order }) => {
     <PopDrawer
       open={isOpen}
       setOpen={setIsOpen}
-      trigger={
-        <Button size="icon-sm" variant="outline" className="relative z-1">
-          <MenuDots />
-        </Button>
-      }
+      trigger={children}
       className="*:data-[slot=button]:justify-start"
     >
       <Button variant="ghost" asChild>

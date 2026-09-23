@@ -36,72 +36,53 @@ export const CustomerApplicationAdminEmail = ({
 }: CustomerApplicationAdminEmailProps) => {
   return (
     <EmailLayout heading="Customer Application Update" template="admin">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello Team,
         </Text>
 
-        <Text className="text-lg">
+        <Text className="text-sm leading-6">
           {STATUS_MESSAGE[status as keyof typeof STATUS_MESSAGE] ??
             "A customer application has been updated."}
         </Text>
 
-        <Section className="border-email-border mt-6 border p-6">
-          <Text className="my-0 text-lg font-semibold uppercase">
-            Company Name:
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
+            Company Details
           </Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {name || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Company Name:</Text>
+          <Text className="mt-0 text-secondary">{name || "N/A"}</Text>
 
-          <Text className="my-0 text-lg font-semibold uppercase">
-            Company Phone:
-          </Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {phone || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Company Phone:</Text>
+          <Text className="mt-0 text-secondary">{phone || "N/A"}</Text>
 
-          <Text className="my-0 text-lg font-semibold uppercase">
-            Company Email:
-          </Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {email || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Company Email:</Text>
+          <Text className="mt-0 text-secondary">{email || "N/A"}</Text>
 
-          <Text className="my-0 text-lg font-semibold uppercase">Address:</Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {address || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Address:</Text>
+          <Text className="mt-0 text-secondary">{address || "N/A"}</Text>
 
-          <Text className="my-0 text-lg font-semibold uppercase">
-            Primary Contact:
-          </Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {primaryContact || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Primary Contact:</Text>
+          <Text className="mt-0 text-secondary">{primaryContact || "N/A"}</Text>
 
-          <Text className="my-0 text-base font-semibold">Phone:</Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {primaryPhone || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Phone:</Text>
+          <Text className="mt-0 text-secondary">{primaryPhone || "N/A"}</Text>
 
-          <Text className="my-0 text-base font-semibold">Email:</Text>
-          <Text className="text-email-secondary mt-0 text-base">
-            {primaryEmail || "N/A"}
-          </Text>
+          <Text className="my-0 font-semibold">Email:</Text>
+          <Text className="mt-0 text-secondary">{primaryEmail || "N/A"}</Text>
         </Section>
         {(statusReason || statusDetails || internalNotes) && (
-          <Section className="border-email-border mt-6 border p-6">
-            <Text className="text-email-brand mt-0 text-lg font-semibold uppercase">
+          <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+            <Text className="text-text text-sm font-semibold">
               {statusReason ? `Reason: ${statusReason}` : "Application details"}
             </Text>
-            {statusDetails && <Text className="text-lg">{statusDetails}</Text>}
+            {statusDetails && <Text className="text-sm leading-6">{statusDetails}</Text>}
             {internalNotes && (
               <>
-                <Text className="text-email-brand mt-0 text-lg font-semibold uppercase">
+                <Text className="text-text text-sm font-semibold">
                   Notes:
                 </Text>
-                <Text className="text-lg">{internalNotes}</Text>
+                <Text className="text-sm leading-6">{internalNotes}</Text>
               </>
             )}
           </Section>
@@ -110,3 +91,16 @@ export const CustomerApplicationAdminEmail = ({
     </EmailLayout>
   )
 }
+
+CustomerApplicationAdminEmail.PreviewProps = {
+  name: "Example Market",
+  phone: "555-0100",
+  email: "office@example.com",
+  address: "123 Market Street",
+  primaryContact: "Alex Morgan",
+  primaryPhone: "555-0101",
+  primaryEmail: "alex@example.com",
+  status: "new",
+} satisfies Parameters<typeof CustomerApplicationAdminEmail>[0]
+
+export default CustomerApplicationAdminEmail

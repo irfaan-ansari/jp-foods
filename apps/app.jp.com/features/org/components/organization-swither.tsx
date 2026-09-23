@@ -22,6 +22,7 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { useLoader } from "@jp/ui/components/jp"
 import { OrganizationSelector } from "./organization-selector"
 import { useOrganization } from "../organization.data"
+import { Separator } from "@jp/ui/components/separator"
 
 export const OrganizationSwitcher = ({
   disabled,
@@ -76,7 +77,7 @@ export const OrganizationSwitcher = ({
           </Button>
         }
       >
-        <div className="mb-3 flex flex-col gap-3 rounded-lg border bg-neutral-100/50 p-2">
+        <div className="mb-3 flex flex-col gap-3 rounded-xl bg-secondary p-2">
           <div className="flex items-start gap-2">
             <Avatar className="size-9">
               <AvatarImage src={org?.data?.logo || ""} alt={org?.data?.name} />
@@ -118,12 +119,13 @@ export const OrganizationSwitcher = ({
           selected={org?.data?.id}
           onChange={handleChange}
         />
+
         <OrgAccess
           permission={{ organization: ["update"] }}
           children={(disabled) => (
             <Button
               variant="ghost"
-              className="justify-start pl-3"
+              className="mt-1 justify-start pl-3"
               asChild
               disabled={disabled}
             >

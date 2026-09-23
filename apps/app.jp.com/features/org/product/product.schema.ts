@@ -27,7 +27,7 @@ export const productFormSchema = z
     itemCode: z.string(),
     status: z.string().min(1, "Select status"),
     price: nonNegativeDecimal,
-    unit: z.string().min(1, "Select a price unit"),
+    uom: z.string().min(1, "Select a price unit"),
     isTaxable: z.boolean(),
     categories: z.array(z.string()),
     image: z.string(),

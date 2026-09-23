@@ -1,11 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { Search } from "lucide-react"
+import { Search, X } from "lucide-react"
 
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
 import { cn } from "@jp/ui/lib/utils"
@@ -38,6 +39,13 @@ export function SearchQueryParam({
         placeholder={placeholder}
         onChange={(e) => setSearch(e.target.value)}
       />
+      {search && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
+            <X />
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
     </InputGroup>
   )
 }

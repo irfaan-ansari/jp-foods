@@ -3,6 +3,7 @@ import { PageContent, PageHeader } from "@/components/page-content"
 import { useOrder } from "@/features/org/order/order.data"
 
 import { OrderDropdown } from "@/features/org/order/components/order-dropdown"
+import { OrderInvoiceDialog } from "@/features/org/order/components/order-invoice-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { Badge } from "@jp/ui/components/badge"
 import { Button } from "@jp/ui/components/button"
@@ -24,8 +25,16 @@ import {
 } from "@jp/ui/components/table"
 
 import { formatUSD } from "@jp/utils"
-import { Buildings, User } from "@solar-icons/react"
-import { CheckCircle, Download, ImageOff, Package, Truck } from "lucide-react"
+import { Buildings, MenuDots, User } from "@solar-icons/react"
+import {
+  CheckCircle,
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  ImageOff,
+  Package,
+  Truck,
+} from "lucide-react"
 import { useParams } from "next/navigation"
 import React from "react"
 
@@ -35,6 +44,7 @@ import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { completeOrder } from "@/features/org/order/order.action"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
+import { Tooltip } from "@jp/ui/components/jp"
 
 const OrderPage = () => {
   const { id } = useParams()
@@ -70,23 +80,54 @@ const OrderPage = () => {
     <React.Fragment>
       <PageHeader
         loading={isPending}
-        title={`#${data?.id}`}
+        title="Back"
         backUrl={`/org/orders?${searchParams}`}
-      >
-        <>
-          <OrderStatusBadge status={data?.status ?? "all"} />
-          <OrderDropdown data={data} />
-        </>
-      </PageHeader>
-      <PageContent loading={isPending}>
+      />
+
+      <PageContent loading={isPending} className="mx-auto max-w-7xl">
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : (
           <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
             <div className="min-w-0 space-y-6 lg:col-span-2">
+              <div className="flex items-center gap-3">
+                <span className="flex-1 text-base font-bold">
+                  Order #{data.id}
+                </span>
+                <OrderStatusBadge status={data?.status ?? "all"} />
+                <OrderDropdown data={data}>
+                  <Button
+                    size="icon"
+                    variant="outline"
+                    className="relative z-1"
+                  >
+                    <MenuDots />
+                  </Button>
+                </OrderDropdown>
+                <Tooltip content="Previous Order">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    disabled
+                    className="border border-border"
+                  >
+                    <ChevronLeft />
+                  </Button>
+                </Tooltip>
+                <Tooltip content="Next Order">
+                  <Button
+                    size="icon"
+                    variant="secondary"
+                    disabled
+                    className="border border-border"
+                  >
+                    <ChevronRight />
+                  </Button>
+                </Tooltip>
+              </div>
               {/* stats */}
               <div className="grid grid-cols-1 gap-3 @sm:grid-cols-3">
-                <Card className="gap-4 overflow-visible p-4 shadow-xs">
+                <Card className="gap-4 overflow-visible bg-linear-to-b from-amber-50 p-4 shadow-xs">
                   <div className="flex items-center justify-between gap-3">
                     <CardTitle>Delivery</CardTitle>
                     <Badge
@@ -108,7 +149,7 @@ const OrderPage = () => {
                     </div>
                   </div>
                 </Card>
-                <Card className="gap-4 overflow-visible p-4 shadow-xs">
+                <Card className="gap-4 overflow-visible bg-linear-to-b from-green-50 p-4 shadow-xs">
                   <div className="flex items-center justify-between gap-3">
                     <CardTitle>Customer</CardTitle>
                     <Badge
@@ -127,7 +168,7 @@ const OrderPage = () => {
                     <CopyButton value={data.team?.email} />
                   </div>
                 </Card>
-                <Card className="gap-4 overflow-visible p-4 shadow-xs">
+                <Card className="gap-4 overflow-visible bg-linear-to-b from-blue-50 p-4 shadow-xs">
                   <div className="flex items-center justify-between gap-3">
                     <CardTitle> Placed by</CardTitle>
                     <Badge
@@ -293,6 +334,14 @@ const OrderPage = () => {
                   </div>
 
                   <div className="grid gap-2 px-6">
+                    {data.status !== "completed" && (
+                      <OrderInvoiceDialog order={data}>
+                        <Button className="w-full bg-invert hover:bg-invert/80">
+                          <CheckCircle />
+                          Generate Invoice
+                        </Button>
+                      </OrderInvoiceDialog>
+                    )}
                     {data.status !== "completed" && (
                       <Button className="w-full" onClick={handleComplete}>
                         <CheckCircle />

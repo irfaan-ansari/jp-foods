@@ -28,7 +28,7 @@ const ProductPage = () => {
         backUrl={`/org/products?${searchParams}`}
         loading={isPending}
       ></PageHeader>
-      <PageContent loading={isPending}>
+      <PageContent loading={isPending} className="mx-auto max-w-7xl">
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : product?.data ? (
