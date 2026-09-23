@@ -28,7 +28,7 @@ const ProductPage = () => {
         backUrl={`/org/products?${searchParams}`}
         loading={isPending}
       ></PageHeader>
-      <PageContent loading={isPending}>
+      <PageContent loading={isPending} className="mx-auto max-w-7xl">
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : product?.data ? (
@@ -36,8 +36,19 @@ const ProductPage = () => {
             key={data.id}
             id={data?.id}
             data={{
-              sellUnits: data.sellUnits ?? [],
-              unit: data.unit ?? "lb",
+              sellUnits:
+                data.sellUnits?.map((unit) => ({
+                  ...unit,
+                  label: unit.label ?? "",
+                  price: unit.price ?? "",
+                })) ?? [],
+              uom: data.uom ?? "lb",
+              sellUnit: data.sellUnit ?? data.sellUnits?.[0]?.name ?? "case",
+              unitSize:
+                data.unitSize ?? data.sellUnits?.[0]?.unitConversion ?? "1",
+              packSize: data.packSize ?? "",
+              catchWeight: !!data.catchWeight,
+              enableSplit: (data.sellUnits?.length ?? 0) > 1,
               price: data.price ?? "",
               title: data.title ?? "",
               itemCode: data.itemCode ?? "",

@@ -35,53 +35,52 @@ export const JobApplicationAdminEmail = ({
 }: JobApplicationAdminEmailProps) => {
   return (
     <EmailLayout heading="Job Application Update" template="admin">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello Team,
         </Text>
 
-        <Text className="text-email-secondary text-lg">
+        <Text className="text-secondary">
           {STATUS_MESSAGE[status as keyof typeof STATUS_MESSAGE] ??
             "A job application has been updated."}
         </Text>
 
-        <Section className="border-email-border mt-6 border p-6">
-          <Text className="mb-1 text-base">
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
+            Applicant Details
+          </Text>
+          <Text className="mb-1">
             <strong>Name:</strong> {name}
           </Text>
-          <Text className="mb-1 text-base">
+          <Text className="mb-1">
             <strong>Position:</strong> {position}
           </Text>
-          <Text className="mb-1 text-base">
+          <Text className="mb-1">
             <strong>Facility:</strong> {location}
           </Text>
-          <Text className="mb-1 text-base">
+          <Text className="text-sm leading-6">
             <strong>Contact Details:</strong> {email} | {phone}
           </Text>
         </Section>
 
         {/* Dynamic Update Section */}
         {(statusReason || statusDetails || internalNotes) && (
-          <Section className="border-email-brand bg-email-details mt-6 border-l-4 p-6">
-            <Text className="text-email-brand mt-0 mb-2 text-xs font-bold uppercase">
+          <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+            <Text className="text-text text-sm font-semibold">
               Current Stage: {status.toUpperCase()}
             </Text>
 
-            {statusReason && <Text> Reason: {statusReason}</Text>}
+            {statusReason && <Text className="text-sm leading-6"> Reason: {statusReason}</Text>}
             {statusDetails && (
-              <Text className="mt-0 mb-2 text-base text-black italic">
+              <Text className="mt-0 mb-2 text-black italic">
                 "{statusDetails}"
               </Text>
             )}
 
             {internalNotes && (
               <>
-                <Text className="mt-4 mb-1 text-xs font-bold text-gray-400 uppercase">
-                  Internal Notes:
-                </Text>
-                <Text className="text-email-secondary mt-0 text-sm">
-                  {internalNotes}
-                </Text>
+                <Text className="font-semibold">Internal Notes:</Text>
+                <Text className="text-sm leading-6">{internalNotes}</Text>
               </>
             )}
           </Section>
@@ -90,3 +89,14 @@ export const JobApplicationAdminEmail = ({
     </EmailLayout>
   )
 }
+
+JobApplicationAdminEmail.PreviewProps = {
+  name: "Alex Morgan",
+  position: "Delivery Driver",
+  location: "Fort Smith, AR",
+  email: "alex@example.com",
+  phone: "555-0101",
+  status: "new",
+} satisfies Parameters<typeof JobApplicationAdminEmail>[0]
+
+export default JobApplicationAdminEmail

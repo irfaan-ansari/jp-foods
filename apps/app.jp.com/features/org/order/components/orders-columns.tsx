@@ -8,6 +8,8 @@ import { formatDate, formatPhone, formatUSD, pluralize } from "@jp/utils"
 import type { Order } from "../order.type"
 import { OrderStatusBadge } from "./order-card"
 import { OrderDropdown } from "./order-dropdown"
+import { MenuDots } from "@solar-icons/react"
+import { Button } from "@jp/ui/components/button"
 
 const column = createColumnHelper<DataTableFeatures, Order>()
 
@@ -130,7 +132,11 @@ export const orderColumns = column.columns([
     header: () => <span className="sr-only">Actions</span>,
     cell: ({ row }) => (
       <div className="flex justify-end">
-        <OrderDropdown data={row.original} />
+        <OrderDropdown data={row.original}>
+          <Button size="icon-sm" variant="outline" className="relative z-1">
+            <MenuDots />
+          </Button>
+        </OrderDropdown>
       </div>
     ),
   }),

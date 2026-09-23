@@ -15,12 +15,12 @@ export const WeeklyPriceListEmail = ({
 }: WeeklyPriceListEmailProps) => {
   return (
     <EmailLayout template="customer" heading="Weekly Price List">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello {name || "there"},
         </Text>
 
-        <Text className="mb-6 text-base">
+        <Text className="mb-6">
           Thank you for choosing Jimenez Produce.
           <br />
           Our latest weekly price list is now available. Click the button below
@@ -30,7 +30,7 @@ export const WeeklyPriceListEmail = ({
         <Section className="my-8 text-left">
           <Button
             href={pdfUrl}
-            className="bg-email-brand inline-block rounded-lg px-6 py-4 text-base font-semibold text-white no-underline"
+            className="bg-brand my-4 inline-block rounded-md px-5 py-3 text-sm font-semibold text-white no-underline"
           >
             View Price List
           </Button>
@@ -40,7 +40,7 @@ export const WeeklyPriceListEmail = ({
               Prefer browsing online?{" "}
               <Button
                 href={digitalUrl}
-                className="text-email-brand font-semibold underline"
+                className="text-brand font-semibold underline"
               >
                 View the digital catalog
               </Button>
@@ -48,15 +48,23 @@ export const WeeklyPriceListEmail = ({
           )}
         </Section>
 
-        <Text className="mt-6 text-base text-gray-700">
+        <Text className="mt-6 text-secondary">
           If you have any questions or would like to place an order, simply
           reach out to us on WhatsApp or contact us using the email address or
           phone number listed below.
         </Text>
-        <Text className="mt-6 text-base text-gray-700">
+        <Text className="mt-6 text-secondary">
           Thank you for choosing Jimenez Produce!
         </Text>
       </Section>
     </EmailLayout>
   )
 }
+
+WeeklyPriceListEmail.PreviewProps = {
+  name: "Alex Morgan",
+  pdfUrl: "https://example.com/weekly-price-list.pdf",
+  digitalUrl: "https://example.com/catalog",
+} satisfies Parameters<typeof WeeklyPriceListEmail>[0]
+
+export default WeeklyPriceListEmail

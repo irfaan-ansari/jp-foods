@@ -82,7 +82,7 @@ export const TeamSwitcher = () => {
           </SidebarMenuButton>
         }
       >
-        <div className="mb-1 flex flex-col gap-3 rounded-xl border bg-neutral-100/50 p-2">
+        <div className="mb-1 flex flex-col gap-3 rounded-xl bg-neutral-200/50 p-2">
           <div className="flex items-center gap-2">
             <Avatar className="size-10">
               <AvatarImage

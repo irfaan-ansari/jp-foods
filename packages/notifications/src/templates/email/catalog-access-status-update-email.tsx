@@ -20,13 +20,13 @@ export const CatalogAccessStatusUpdateEmail = ({
 }: CatalogAccessStatusUpdateEmailProps) => {
   return (
     <EmailLayout heading="Catalog Access Update">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello {name || "Name"},
         </Text>
 
         {status === "approved" && (
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             We are pleased to inform you that your catalog access request for{" "}
             <strong>{company || "Company"}</strong> has been approved.
             <br />
@@ -36,7 +36,7 @@ export const CatalogAccessStatusUpdateEmail = ({
           </Text>
         )}
         {status === "rejected" && (
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             Thank you for your interest with Jimenez Produce.
             <br />
             <br />
@@ -45,7 +45,7 @@ export const CatalogAccessStatusUpdateEmail = ({
           </Text>
         )}
         {status === "revoked" && (
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             Your catalog access has been discontinued following a recent account
             review.
             <br />
@@ -60,28 +60,28 @@ export const CatalogAccessStatusUpdateEmail = ({
           <Button
             href={link}
             target="_blank"
-            className="bg-email-brand mb-4 rounded-lg p-4 text-center text-sm font-semibold text-white uppercase"
+            className="bg-brand my-4 inline-block rounded-md px-5 py-3 text-sm font-semibold text-white no-underline"
           >
             View Products
           </Button>
         )}
 
         {reason && (
-          <Section className="border-email-border mt-4 border p-6">
-            <Text className="text-email-brand text-lg font-semibold uppercase">
+          <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+            <Text className="text-text text-sm font-semibold">
               Reason: {reason}
             </Text>
 
-            {message && <Text className="text-lg">{message}</Text>}
+            {message && <Text className="text-sm leading-6">{message}</Text>}
           </Section>
         )}
 
-        <Section className="border-email-border mt-4 border p-6">
-          <Text className="text-email-brand text-lg font-semibold uppercase">
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
             Need Assistance?
           </Text>
 
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             If you have any questions regarding catalog access, please contact
             our support team for further assistance.
           </Text>
@@ -90,3 +90,12 @@ export const CatalogAccessStatusUpdateEmail = ({
     </EmailLayout>
   )
 }
+
+CatalogAccessStatusUpdateEmail.PreviewProps = {
+  name: "Alex Morgan",
+  company: "Example Market",
+  status: "approved",
+  link: "https://example.com/catalog",
+} satisfies Parameters<typeof CatalogAccessStatusUpdateEmail>[0]
+
+export default CatalogAccessStatusUpdateEmail

@@ -9,8 +9,17 @@ import { orgActionClient } from "@/lib/safe-action"
 import {
   createProductSchema,
   deleteProductSchema,
+  type ProductFormSchema,
   updateProductSchema,
 } from "./product.schema"
+
+const getProductData = (data: ProductFormSchema) => {
+  const { enableSplit: _enableSplit, ...productData } = data
+
+  void _enableSplit
+
+  return productData
+}
 
 /**
  * create product
@@ -19,6 +28,7 @@ export const createProduct = orgActionClient({ product: ["create"] })
   .inputSchema(createProductSchema)
   .action(async ({ clientInput, ctx }) => {
     const { data } = clientInput
+    const productData = getProductData(data)
 
     const orgs = await db.query.organization.findMany({
       columns: {
@@ -45,7 +55,7 @@ export const createProduct = orgActionClient({ product: ["create"] })
 
     const orgsToInsert = orgs.filter((org) => !existingOrgIds.has(org.id))
 
-    const searchText = Object.values(data)
+    const searchText = Object.values(productData)
       .filter((value) => value != null)
       .map(String)
       .join(" ")
@@ -55,7 +65,7 @@ export const createProduct = orgActionClient({ product: ["create"] })
           .insert(product)
           .values(
             orgsToInsert.map((org) => ({
-              ...data,
+              ...productData,
               status: org.id === ctx.organizationId ? "active" : "draft",
               searchText,
               organizationId: org.id,
@@ -86,6 +96,7 @@ export const updateProduct = orgActionClient({ product: ["update"] })
   .inputSchema(updateProductSchema)
   .action(async ({ clientInput, ctx }) => {
     const { id, data } = clientInput
+    const productData = getProductData(data)
 
     const exist = await db.query.product.findFirst({
       where: (p, { and, eq }) =>
@@ -97,11 +108,11 @@ export const updateProduct = orgActionClient({ product: ["update"] })
         message: "Product not found",
       })
 
-    const searchText = Object.values(data).join(" ")
+    const searchText = Object.values(productData).join(" ")
 
     await db
       .update(product)
-      .set({ ...data, searchText })
+      .set({ ...productData, searchText })
       .where(eq(product.id, id))
       .returning({ id: product.id })
 

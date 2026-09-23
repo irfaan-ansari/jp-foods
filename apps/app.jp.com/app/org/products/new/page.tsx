@@ -6,7 +6,7 @@ const ProductPage = () => {
   return (
     <React.Fragment>
       <PageHeader title="Create Product" />
-      <PageContent>
+      <PageContent className="mx-auto max-w-7xl">
         <ProductForm />
       </PageContent>
     </React.Fragment>

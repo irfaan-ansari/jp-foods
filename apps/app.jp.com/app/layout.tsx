@@ -19,7 +19,10 @@ import { getSession, listDeviceSessions } from "@/features/auth"
 //   variable: "--font-sans",
 // })
 
-const loraHeading = Lora({ subsets: ["latin"], variable: "--font-heading" })
+const loraHeading = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-heading",
+})
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
 
 const SITE_CONFIG = { name: "Jimenez Produce" }

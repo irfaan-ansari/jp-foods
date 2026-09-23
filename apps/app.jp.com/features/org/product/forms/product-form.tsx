@@ -18,7 +18,7 @@ import {
   productFormValues,
 } from "../product.schema"
 
-import { ProductSellingOptions } from "./product-selling-options"
+import { ProductSplit } from "./product-split"
 import { ProductInventory } from "./product-inventory"
 import { ProductGeneral } from "./product-general"
 import { Button } from "@jp/ui/components/button"
@@ -32,6 +32,7 @@ import { Loader2 } from "lucide-react"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import ProductDeleteAlert from "../components/product-delete-alert"
+import { ProductPricing } from "./product-pricing"
 
 interface FormProps {
   data?: ProductFormSchema
@@ -123,10 +124,12 @@ export const ProductForm = ({ data, id }: FormProps) => {
         <div className="space-y-6 lg:col-span-2">
           {/* general */}
           <ProductGeneral form={form} />
-          {/* inventory  */}
-          <ProductInventory form={form} />
           {/* pricing */}
-          <ProductSellingOptions form={form} />
+          <ProductPricing form={form} />
+          {/* inventory  */}
+          {/* <ProductInventory form={form} /> */}
+          {/* pricing */}
+          <ProductSplit form={form} />
 
           {/* delete alert */}
           {id && <ProductDeleteAlert id={id} />}

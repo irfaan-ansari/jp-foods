@@ -2,12 +2,15 @@ import type { ReactNode } from "react"
 import { emailStyles } from "../../config/email-styles"
 import {
   Body,
+  Column,
   Container,
   Head,
   Heading,
   Html,
+  Img,
   Link,
   Preview,
+  Row,
   Section,
   Tailwind,
   Text,
@@ -29,34 +32,42 @@ export function EmailLayout({
 }: EmailLayoutProps) {
   return (
     <Html lang="en">
-      <Head />
       <Preview>{preview ?? `${heading} | Jimenez Produce`}</Preview>
       <Tailwind config={{ ...emailStyles, presets: [pixelBasedPreset] }}>
-        <Body className="bg-email-canvas text-email-text m-0 px-4 py-8 font-sans">
-          <Container className="border-email-outline mx-auto max-w-[600px] overflow-hidden rounded-xl border bg-white">
-            <Section className="bg-email-brand px-8 py-7">
-              <Text className="text-email-brand-soft m-0 text-sm font-bold tracking-[2px] uppercase">
-                Jimenez Produce
-              </Text>
-              <Heading
-                as="h1"
-                className="mt-3 mb-0 text-[28px] leading-[34px] font-semibold text-white"
-              >
-                {heading}
-              </Heading>
+        <Head />
+        <Body className="bg-canvas text-text m-0 px-3 py-10 font-sans">
+          <Container className="border-outline mx-auto w-full max-w-[600px] overflow-hidden rounded-xl border border-t-4 border-t-brand bg-white">
+            <Section className="border-b border-border px-6 pt-7 pb-6 sm:px-8">
+              <Row>
+                <Column className="w-12 align-middle">
+                  <Img
+                    src="https://jimenezproduce.com/logo.png"
+                    alt="Jimenez Produce"
+                    className="h-auto w-12"
+                  />
+                </Column>
+                <Column className="pl-4 align-middle">
+                  <Text className="m-0 text-base font-bold tracking-tight text-text">
+                    Jimenez Produce
+                  </Text>
+                  <Text className="m-0 mt-1 text-xs leading-4 text-muted">Foodservice distribution</Text>
+                </Column>
+              </Row>
+              <Text className="mt-7 mb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-brand">{template === "admin" ? "Team notification" : "Jimenez Produce"}</Text>
+              <Heading as="h1" className="m-0 text-[26px] leading-[34px] font-bold tracking-[-0.6px] text-text">{heading}</Heading>
             </Section>
             {children}
-            <Section className="border-email-border bg-email-footer border-t px-8 py-6">
-              <Text className="text-email-muted my-0 text-sm leading-6">
+            <Section className="bg-footer border-t border-border px-6 py-5 sm:px-8">
+              <Text className="my-0 text-xs leading-5 text-muted">
                 {template === "admin"
                   ? "Internal notification · Jimenez Produce"
                   : "Jimenez Produce · Foodservice distribution across the Gulf Coast"}
               </Text>
-              <Text className="text-email-subtle mt-3 mb-0 text-xs leading-5">
+              <Text className="text-subtle mt-2 mb-0 text-xs leading-5">
                 Questions? Reply to this email or contact{" "}
                 <Link
                   href="mailto:info@jimenezproduce.com"
-                  className="text-email-brand underline"
+                  className="text-brand underline"
                 >
                   info@jimenezproduce.com
                 </Link>

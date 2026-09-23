@@ -14,12 +14,12 @@ export const CustomerApplicationApprovedEmail = ({
 }: CustomerApplicationApprovedEmailProps) => {
   return (
     <EmailLayout template="customer" heading="Application Approved">
-      <Section className="p-6">
-        <Text className="mb-2 text-xl font-semibold text-black">
+      <Section className="px-6 pt-3 pb-7 sm:px-8">
+        <Text className="mb-3 text-base font-semibold text-text">
           Hello {name || "Name"},
         </Text>
 
-        <Text className="text-lg">
+        <Text className="text-sm leading-6">
           We are pleased to inform you that your account application for{" "}
           <span className="inline-block font-semibold uppercase">
             {company || "Company"}
@@ -27,15 +27,15 @@ export const CustomerApplicationApprovedEmail = ({
           has been approved.
         </Text>
 
-        <Text className="mt-8 mb-0 text-xl font-semibold">
+        <Text className="mt-6 font-semibold">
           Your account is now active in our system.
         </Text>
 
-        <Section className="border-email-border mt-6 border p-6">
-          <Text className="text-email-brand text-lg font-semibold uppercase">
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
             Ordering Information
           </Text>
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             <strong>*</strong> Orders must be placed the day before delivery
             <br />
             <strong>*</strong> Daily cutoff time: 3:00 PM
@@ -48,11 +48,11 @@ export const CustomerApplicationApprovedEmail = ({
           </Text>
         </Section>
 
-        <Section className="border-email-border mt-6 border p-6">
-          <Text className="text-email-brand text-lg font-semibold uppercase">
+        <Section className="bg-details mt-5 rounded-lg border border-border px-5 py-1">
+          <Text className="text-text text-sm font-semibold">
             You may now begin placing orders through:
           </Text>
-          <Text className="text-lg">
+          <Text className="text-sm leading-6">
             <strong>*</strong> Your assigned sales representative
             <br />
             <strong>*</strong> Our online ordering portal
@@ -61,21 +61,29 @@ export const CustomerApplicationApprovedEmail = ({
           {portalUrl && (
             <Button
               href={portalUrl}
-              className="bg-email-brand p-4 text-center text-sm font-semibold text-white"
+              className="bg-brand my-4 inline-block rounded-md px-5 py-3 text-sm font-semibold text-white no-underline"
             >
               Open Ordering Portal
             </Button>
           )}
         </Section>
 
-        <Text className="text-lg">
+        <Text className="text-sm leading-6">
           If you have any questions regarding pricing, delivery schedule, or
           product availability, please contact our team.
         </Text>
-        <Text className="text-lg font-semibold">
+        <Text className="font-semibold">
           We look forward to serving your business.
         </Text>
       </Section>
     </EmailLayout>
   )
 }
+
+CustomerApplicationApprovedEmail.PreviewProps = {
+  name: "Alex Morgan",
+  company: "Example Market",
+  portalUrl: "https://example.com/portal",
+} satisfies Parameters<typeof CustomerApplicationApprovedEmail>[0]
+
+export default CustomerApplicationApprovedEmail

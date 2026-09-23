@@ -67,7 +67,7 @@ export const ProductCard = ({ data }: { data: Product }) => {
         </CardTitle>
 
         <div className="font-semibold">
-          <ProductPrice unit={data.unit ?? ""} price={data.price ?? ""} />
+          <ProductPrice unit={data.uom ?? ""} price={data.price ?? ""} />
         </div>
       </CardContent>
     </Card>

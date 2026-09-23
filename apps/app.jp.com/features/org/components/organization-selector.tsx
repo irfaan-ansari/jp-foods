@@ -41,7 +41,7 @@ export const OrganizationSelector = ({
             <Checkbox
               id={item.id}
               checked={selected === item.id}
-              className="absolute top-2 right-2 size-4 rounded-full"
+              className="absolute top-1/2 right-2 size-4 -translate-y-1/2 rounded-full border-transparent"
               onCheckedChange={() => {
                 onChange(item.id)
               }}

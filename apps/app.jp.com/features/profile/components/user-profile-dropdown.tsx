@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useState } from "react"
 
 import { toast } from "sonner"
-import { Check } from "lucide-react"
+import { Check, Loader2, PlusCircle } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
 import type { DeviceSessions, AuthType } from "@jp/auth"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
@@ -13,6 +13,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 import { authClient } from "@jp/auth/client"
 import { Tooltip, useLoader } from "@jp/ui/components/jp"
+import { Separator } from "@jp/ui/components/separator"
 
 export const UserProfileDropdown = ({
   session,
@@ -24,7 +25,7 @@ export const UserProfileDropdown = ({
   const user = session?.user
 
   const loader = useLoader()
-
+  const [loading, setLoading] = useState("")
   const [open, setOpen] = useState(false)
 
   const handleLogout = async () => {
@@ -46,11 +47,13 @@ export const UserProfileDropdown = ({
   }
 
   async function handleSelect(sessionToken: string) {
+    setLoading(sessionToken)
     const { error } = await authClient.multiSession.setActive({
       sessionToken,
     })
     if (error) {
       toast.error(error.message)
+      setLoading("")
     }
   }
 
@@ -97,10 +100,13 @@ export const UserProfileDropdown = ({
                 {listUser?.email}
               </span>
             </div>
-
-            <Check
-              className={`size-3.5 ${user?.id === listUser?.id ? "opacity-100" : "opacity-0"}`}
-            />
+            {loading === session.session.token ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Check
+                className={`size-3.5 ${user?.id === listUser?.id ? "opacity-100" : "opacity-0"}`}
+              />
+            )}
           </Button>
         )
       })}
@@ -115,6 +121,18 @@ export const UserProfileDropdown = ({
           Stop Impersonating
         </Button>
       )}
+      <div className="mt-1 px-2">
+        <Separator />
+      </div>
+      <Button variant="ghost" className="h-9 w-full justify-start pl-2" asChild>
+        <Link href="#">
+          <PlusCircle />
+          Add Account
+        </Link>
+      </Button>
+      <div className="px-2">
+        <Separator />
+      </div>
       <Button variant="ghost" className="h-9 w-full justify-start pl-2" asChild>
         <Link href="/settings/account">
           <User />
@@ -128,10 +146,11 @@ export const UserProfileDropdown = ({
           Security
         </Link>
       </Button>
-
+      <div className="px-2">
+        <Separator />
+      </div>
       <Button
         variant="destructive"
-
         className="h-9 w-full justify-start bg-transparent pl-2"
         onClick={handleLogout}
       >

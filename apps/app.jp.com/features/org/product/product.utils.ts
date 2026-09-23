@@ -2,14 +2,14 @@ import { PRODUCT_UNITS } from "./product.const"
 import type { PricedSellingUnit, Product } from "./product.type"
 
 export const getSellingUnits = (
-  product: Pick<Product, "price" | "unit" | "sellUnits">
+  product: Pick<Product, "price" | "uom" | "sellUnits">
 ): PricedSellingUnit[] => {
   const units = product.sellUnits?.length
     ? product.sellUnits
-    : product.unit
+    : product.uom
       ? [
           {
-            name: product.unit,
+            name: product.uom,
             unitConversion: "1",
             minQuantity: "1",
             orderIncreament: "1",

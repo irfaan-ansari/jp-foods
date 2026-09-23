@@ -41,8 +41,8 @@ export const orderGuideRoutes = app
 
       const products = orderGuideItems.map((ogi) => {
         const { product, position } = ogi
-        const { id, title, itemCode, image, price, unit } = product
-        return { id, title, itemCode, image, price, unit, position }
+        const { id, title, itemCode, image, price, uom } = product
+        return { id, title, itemCode, image, price, uom, unit: uom, position }
       })
       return {
         ...rest,

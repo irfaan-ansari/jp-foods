@@ -27,7 +27,7 @@ export const TeamSelector = ({ selected, onChange }: TeamSelectorProps) => {
           <Checkbox
             id={team.id}
             checked={selected === team.id}
-            className="absolute top-2 right-2 size-4 rounded-full"
+            className="absolute top-1/2 right-2 size-4 -translate-y-1/2 rounded-full border-transparent"
             onCheckedChange={() => {
               onChange({
                 teamId: team.id,

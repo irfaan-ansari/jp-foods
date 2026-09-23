@@ -191,7 +191,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                     { color: colors.background, fontWeight: "bold" },
                   ]}
                 >
-                  {formatUSD(product.price)} / {product.unit}
+                  {formatUSD(product.price)} / {product.uom}
                 </Text>
               </View>
             ))}
@@ -272,7 +272,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                           ]}
                         >
                           {formatUSD(product.price)}
-                          {product.unit ? ` / ${product.unit}` : ""}
+                          {product.uom ? ` / ${product.uom}` : ""}
                         </Text>
                       </View>
                     ))}
