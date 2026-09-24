@@ -110,194 +110,135 @@ export const ProductSplit = withForm({
 
               return (
                 <div className="space-y-5">
-                  <div className="rounded-2xl border bg-secondary/20 p-4">
-                    <div className="flex flex-wrap items-start justify-between gap-3">
-                      <div>
-                        <p className="font-semibold">{defaultUnitLabel}</p>
-                        <p className="text-sm text-muted-foreground">
-                          Default selling option
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="font-bold text-primary">
-                          {price.trim() ? formatUSD(price) : "—"}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {`${unitSize || "—"} ${uom} per ${sellUnit} ${catchWeight ? "- avg" : ""}`}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-
                   <form.Field
-                    name="enableSplit"
-                    children={(field) => {
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid
-                      return (
-                        <Field
-                          orientation="horizontal"
-                          className="rounded-xl border px-3 py-2.5"
-                          data-invalid={isInvalid}
-                        >
-                          <FieldLabel htmlFor={field.name}>
-                            <FieldContent>
-                              <FieldTitle>Enable split case</FieldTitle>
-                              <FieldDescription className="text-sm">
-                                Sell a broken case as bags, eaches, packs, or
-                                another split unit.
-                              </FieldDescription>
-                            </FieldContent>
-                          </FieldLabel>
-                          <Switch
-                            className="self-center"
-                            id={field.name}
-                            name={field.name}
-                            checked={field.state.value}
-                            onCheckedChange={(checked) => {
-                              field.handleChange(checked)
-                              if (checked && splitUnits.length === 0) {
-                                handleAddOption()
-                              }
-                            }}
-                            aria-invalid={isInvalid}
-                          />
-                        </Field>
-                      )
-                    }}
-                  />
+                    name="sellUnits"
+                    mode="array"
+                    children={(field) => (
+                      <div className="space-y-4">
+                        {sellUnits.map((subField, i) => {
+                          if (subField.name === sellUnit) return null
 
-                  {enableSplit && (
-                    <form.Field
-                      name="sellUnits"
-                      mode="array"
-                      children={(field) => (
-                        <div className="space-y-4">
-                          {sellUnits.map((subField, i) => {
-                            if (subField.name === sellUnit) return null
+                          const splitUnitPrice = getSplitUnitPrice({
+                            splitPrice: subField.price,
+                            splitWeight: subField.unitConversion,
+                            defaultWeight: unitSize,
+                          })
 
-                            const splitUnitPrice = getSplitUnitPrice({
-                              splitPrice: subField.price,
-                              splitWeight: subField.unitConversion,
-                              defaultWeight: unitSize,
-                            })
+                          return (
+                            <div
+                              key={i}
+                              className="grid gap-4 rounded-2xl border p-4 shadow-xs"
+                            >
+                              <div className="flex flex-wrap items-center justify-between gap-3">
+                                <p className="min-w-0 truncate font-medium">
+                                  Split option
+                                </p>
 
-                            return (
-                              <div
-                                key={i}
-                                className="grid gap-4 rounded-2xl border p-4 shadow-xs"
-                              >
-                                <div className="flex flex-wrap items-center justify-between gap-3">
-                                  <p className="min-w-0 truncate font-medium">
-                                    Split option
-                                  </p>
-
-                                  <div className="flex items-center gap-2">
-                                    <Badge variant="primary-light">
-                                      {formatUSD(splitUnitPrice)} /
-                                      {subField.unitConversion || "—"} {uom} per{" "}
-                                      {subField.name || "unit"}
-                                    </Badge>
-                                    <Button
-                                      type="button"
-                                      size="icon-sm"
-                                      variant="destructive"
-                                      className="size-7 shrink-0"
-                                      aria-label="Remove split option"
-                                      onClick={() => field.removeValue(i)}
-                                    >
-                                      <TrashBinMinimalistic />
-                                    </Button>
-                                  </div>
+                                <div className="flex items-center gap-2">
+                                  <Badge variant="primary-light">
+                                    {formatUSD(splitUnitPrice)} /
+                                    {subField.unitConversion || "—"} {uom} per{" "}
+                                    {subField.name || "unit"}
+                                  </Badge>
+                                  <Button
+                                    type="button"
+                                    size="icon-sm"
+                                    variant="destructive"
+                                    className="size-7 shrink-0"
+                                    aria-label="Remove split option"
+                                    onClick={() => field.removeValue(i)}
+                                  >
+                                    <TrashBinMinimalistic />
+                                  </Button>
                                 </div>
-
-                                <FieldGroup className="grid flex-1 gap-4 lg:grid-cols-2">
-                                  <form.AppField
-                                    name={`sellUnits[${i}].name`}
-                                    children={(unitField) => (
-                                      <unitField.SelectField
-                                        label="Split unit"
-                                        placeholder="Select unit..."
-                                        options={getAvailableUnits(
-                                          sellUnits.map((item) => item.name),
-                                          i
-                                        ).filter(
-                                          (unit) => unit.value !== sellUnit
-                                        )}
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellUnits[${i}].label`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label="Label"
-                                        placeholder="5 lb Bag"
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellUnits[${i}].price`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label={`Split ${sellUnit} price`}
-                                        placeholder="45.00"
-                                        inputMode="decimal"
-                                        prefix="$"
-                                        description={`Equivalent ${sellUnit} price when sold in splits.`}
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellUnits[${i}].unitConversion`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label={`Split ${getUnit(subField.name)?.label?.toLowerCase() ?? "unit"} weight`}
-                                        placeholder="5"
-                                        inputMode="number"
-                                        suffix={uom}
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellUnits[${i}].minQuantity`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label={`Minimum ${subField.name} per order`}
-                                        placeholder="1"
-                                        inputMode="number"
-                                      />
-                                    )}
-                                  />
-                                </FieldGroup>
                               </div>
-                            )
-                          })}
 
-                          <Button
-                            type="button"
-                            variant="outline"
-                            className="w-full border-dashed"
-                            onClick={handleAddOption}
-                            disabled={
-                              getAvailableUnits(
-                                sellUnits.map((item) => item.name),
-                                sellUnits.length
-                              ).filter((unit) => unit.value !== sellUnit)
-                                .length === 0
-                            }
-                          >
-                            <Plus /> Add split option
-                          </Button>
-                          <FieldError errors={field.state.meta.errors} />
-                        </div>
-                      )}
-                    />
-                  )}
+                              <FieldGroup className="grid flex-1 gap-4 lg:grid-cols-2">
+                                <form.AppField
+                                  name={`sellUnits[${i}].name`}
+                                  children={(unitField) => (
+                                    <unitField.SelectField
+                                      label="Split unit"
+                                      placeholder="Select unit..."
+                                      options={getAvailableUnits(
+                                        sellUnits.map((item) => item.name),
+                                        i
+                                      ).filter(
+                                        (unit) => unit.value !== sellUnit
+                                      )}
+                                    />
+                                  )}
+                                />
+
+                                <form.AppField
+                                  name={`sellUnits[${i}].label`}
+                                  children={(field) => (
+                                    <field.TextField
+                                      label="Label"
+                                      placeholder="5 lb Bag"
+                                    />
+                                  )}
+                                />
+
+                                <form.AppField
+                                  name={`sellUnits[${i}].price`}
+                                  children={(field) => (
+                                    <field.TextField
+                                      label={`Split ${sellUnit} price`}
+                                      placeholder="45.00"
+                                      inputMode="decimal"
+                                      prefix="$"
+                                      description={`Equivalent ${sellUnit} price when sold in splits.`}
+                                    />
+                                  )}
+                                />
+
+                                <form.AppField
+                                  name={`sellUnits[${i}].unitConversion`}
+                                  children={(field) => (
+                                    <field.TextField
+                                      label={`Split ${getUnit(subField.name)?.label?.toLowerCase() ?? "unit"} weight`}
+                                      placeholder="5"
+                                      inputMode="number"
+                                      suffix={uom}
+                                    />
+                                  )}
+                                />
+
+                                <form.AppField
+                                  name={`sellUnits[${i}].minQuantity`}
+                                  children={(field) => (
+                                    <field.TextField
+                                      label={`Minimum ${subField.name} per order`}
+                                      placeholder="1"
+                                      inputMode="number"
+                                    />
+                                  )}
+                                />
+                              </FieldGroup>
+                            </div>
+                          )
+                        })}
+
+                        <Button
+                          type="button"
+                          variant="outline"
+                          className="w-full border-dashed"
+                          onClick={handleAddOption}
+                          disabled={
+                            getAvailableUnits(
+                              sellUnits.map((item) => item.name),
+                              sellUnits.length
+                            ).filter((unit) => unit.value !== sellUnit)
+                              .length === 0
+                          }
+                        >
+                          <Plus /> Add split option
+                        </Button>
+                        <FieldError errors={field.state.meta.errors} />
+                      </div>
+                    )}
+                  />
                 </div>
               )
             }}

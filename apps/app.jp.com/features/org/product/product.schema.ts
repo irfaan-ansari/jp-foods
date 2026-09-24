@@ -28,6 +28,8 @@ export const productFormSchema = z
     status: z.string().min(1, "Select status"),
     price: nonNegativeDecimal,
     uom: z.string().min(1, "Select unit of measure"),
+    weightUnit: z.string().min(1, "Select weight of measure"),
+    netWeight: z.string().min(1, "Enter net weight"),
     sellUnit: z.string().min(1, "Select sell unit") /** eg: case|lb */,
     unitSize: z
       .string()

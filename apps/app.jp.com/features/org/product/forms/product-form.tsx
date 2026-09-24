@@ -129,7 +129,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
           {/* inventory  */}
           {/* <ProductInventory form={form} /> */}
           {/* pricing */}
-          <ProductSplit form={form} />
+          {/* <ProductSplit form={form} /> */}
 
           {/* delete alert */}
           {id && <ProductDeleteAlert id={id} />}

@@ -32,9 +32,9 @@ export const ProductGeneral = withForm({
   defaultValues: {} as ProductFormSchema,
   render: function Render({ form }) {
     return (
-      <Card size="sm" className="shadow-xs">
+      <Card size="sm" className="bg-linear-to-b from-primary/10 shadow-xs">
         <CardHeader>
-          <CardTitle className="font-bold">Product Details</CardTitle>
+          <CardTitle className="font-bold">Product details</CardTitle>
         </CardHeader>
         <CardContent>
           <FieldGroup className="grid grid-cols-1 lg:grid-cols-2">
@@ -135,34 +135,41 @@ export const ProductGeneral = withForm({
                 )
               }}
             />
-            <form.Field
-              name="isTaxable"
-              children={(field) => {
-                const isInvalid =
-                  field.state.meta.isTouched && !field.state.meta.isValid
-                return (
-                  <Field
-                    orientation="horizontal"
-                    className="rounded-xl border px-3 py-2.5 lg:col-span-2"
-                    data-invalid={isInvalid}
-                  >
-                    <FieldLabel htmlFor={field.name}>
-                      <FieldContent>
-                        <FieldTitle>Charge tax on this item</FieldTitle>
-                      </FieldContent>
-                    </FieldLabel>
-                    <Switch
-                      className="self-center"
-                      id={field.name}
-                      name={field.name}
-                      checked={field.state.value}
-                      onCheckedChange={field.handleChange}
-                      aria-invalid={isInvalid}
-                    />
-                  </Field>
-                )
-              }}
-            />
+            <div>
+              <form.Field
+                name="isTaxable"
+                children={(field) => {
+                  const isInvalid =
+                    field.state.meta.isTouched && !field.state.meta.isValid
+                  return (
+                    <Field
+                      orientation="horizontal"
+                      className="inline-flex w-auto shrink-0"
+                      data-invalid={isInvalid}
+                    >
+                      <FieldLabel
+                        htmlFor={field.name}
+                        className="h-10 rounded-xl border bg-input p-3 has-data-checked:bg-input"
+                      >
+                        <FieldContent>
+                          <FieldTitle>
+                            <FieldTitle>Charge tax on this item</FieldTitle>
+                          </FieldTitle>
+                        </FieldContent>
+                        <Switch
+                          className="self-center"
+                          id={field.name}
+                          name={field.name}
+                          checked={field.state.value}
+                          onCheckedChange={field.handleChange}
+                          aria-invalid={isInvalid}
+                        />
+                      </FieldLabel>
+                    </Field>
+                  )
+                }}
+              />
+            </div>
           </FieldGroup>
         </CardContent>
       </Card>

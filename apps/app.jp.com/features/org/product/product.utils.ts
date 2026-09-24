@@ -1,4 +1,4 @@
-import { PRODUCT_UNITS } from "./product.const"
+import { MEASURE_UNITS } from "./product.const"
 import type { PricedSellingUnit, Product } from "./product.type"
 
 export const getSellingUnits = (
@@ -33,7 +33,7 @@ export const getAvailableUnits = (units: string[], index: number) => {
     .map((u, i) => (i === index ? null : u))
     .filter(Boolean)
 
-  return PRODUCT_UNITS.filter(
+  return MEASURE_UNITS.filter(
     (option) =>
       option.value === currentUnit || !usedUnits.includes(option.value)
   )
@@ -41,5 +41,5 @@ export const getAvailableUnits = (units: string[], index: number) => {
 
 export const getUnit = (value: string | undefined) => {
   if (!value) return null
-  return PRODUCT_UNITS.find((u) => u.value === value)
+  return MEASURE_UNITS.find((u) => u.value === value)
 }

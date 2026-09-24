@@ -28,7 +28,7 @@ export const STATUS: Record<string, BadgeStatus> = {
   },
 }
 
-export const PRODUCT_UNITS = [
+export const MEASURE_UNITS = [
   { label: "Case", value: "case" },
   { label: "Each", value: "each" },
   { label: "Pound", value: "lb" },
@@ -46,6 +46,13 @@ export const PRODUCT_UNITS = [
   { label: "Gallon", value: "gallon" },
   { label: "Quart", value: "quart" },
   { label: "Liter", value: "liter" },
+  { label: "Kilogram", value: "kg" },
+  { label: "Gram", value: "g" },
+  { label: "Ounce", value: "oz" },
+]
+
+export const WEIGHT_UNITS = [
+  { label: "Pound", value: "lb" },
   { label: "Kilogram", value: "kg" },
   { label: "Gram", value: "g" },
   { label: "Ounce", value: "oz" },
