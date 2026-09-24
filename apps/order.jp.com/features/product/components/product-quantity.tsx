@@ -1,17 +1,18 @@
 import React from "react"
-import { SellUnit } from "../product.type"
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupInput,
-} from "@jp/ui/components/input-group"
+import { PricedSellingUnit } from "../product.type"
 import { Button } from "@jp/ui/components/button"
-import { PopDrawer } from "@jp/ui/components/jp"
 import { cn } from "@jp/ui/lib/utils"
 import { formatUSD } from "@jp/utils"
-import { Check, ChevronDown, Minus, Plus } from "lucide-react"
-import { getUnit } from "../product.utils"
+import { Minus, Plus } from "lucide-react"
+import { Badge } from "@jp/ui/components/badge"
+
+const toNumber = (value: string | number | undefined, fallback = 0) => {
+  const numberValue = Number(value)
+  return Number.isFinite(numberValue) ? numberValue : fallback
+}
+
+const pluralize = (value: number, label: string) =>
+  `${value} ${label}${value === 1 ? "" : "s"}`
 
 const ProductQuantityStepper = ({
   value = 0,
@@ -22,177 +23,124 @@ const ProductQuantityStepper = ({
   className,
 }: {
   value: number | undefined
-  sellUnits: SellUnit[]
-  selectedUnit?: SellUnit
+  sellUnits: PricedSellingUnit[]
+  selectedUnit?: PricedSellingUnit
   onSelectUnit: (name: string) => void
   className?: string
   onChange?: (newValue: number) => void
 }) => {
-  const [open, setOpen] = React.useState(false)
+  const rawIncrement = toNumber(selectedUnit?.orderIncreament, 1)
+  const rawMinimum = toNumber(selectedUnit?.minQuantity, 1)
 
-  const rawIncrement = Number(selectedUnit?.orderIncreament ?? 1)
-  const rawMinimum = Number(selectedUnit?.minQuantity ?? 1)
-
-  const increment =
-    Number.isFinite(rawIncrement) && rawIncrement > 0 ? rawIncrement : 1
-  const minQty = Number.isFinite(rawMinimum) && rawMinimum > 0 ? rawMinimum : 1
-  const canSelectUnit = sellUnits.length > 1
-  const canEditQuantity = increment === 1
+  const increment = rawIncrement > 0 ? rawIncrement : 1
+  const minQty = rawMinimum > 0 ? rawMinimum : 1
+  const quantity = value ?? 0
+  const selectedLabel =
+    selectedUnit?.displayLabel ||
+    selectedUnit?.unitLabel ||
+    selectedUnit?.name ||
+    "Unit"
+  const unitName = selectedUnit?.displayUnit || selectedUnit?.name || "unit"
+  const lineTotal = toNumber(selectedUnit?.price) * quantity
+  const totalWeight = toNumber(selectedUnit?.unitConversion) * quantity
 
   const handleIncrement = () => {
-    if (value < minQty) {
+    if (quantity < minQty) {
       onChange?.(minQty)
       return
     }
 
-    onChange?.(value + increment)
+    onChange?.(quantity + increment)
   }
 
   const handleDecrement = () => {
-    if (value <= minQty) {
+    if (quantity <= minQty) {
       onChange?.(0)
       return
     }
 
-    const newValue = value - increment
+    const newValue = quantity - increment
     onChange?.(newValue < minQty ? minQty : newValue)
   }
 
-  const handleQuantityChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    event.stopPropagation()
-
-    const newValue = Number(event.target.value)
-
-    if (!Number.isFinite(newValue)) return
-
-    onChange?.(
-      newValue <= 0
-        ? 0
-        : minQty +
-            Math.ceil(Math.max(0, newValue - minQty) / increment) * increment
-    )
+  const handleAdd = () => {
+    if (!selectedUnit) return
+    onChange?.(quantity > 0 ? quantity : minQty)
   }
-
-  const selectedUnitValue =
-    getUnit(selectedUnit?.name)?.value ?? selectedUnit?.name ?? "Unit"
-
-  const unitSummary = (
-    <div className="grid min-w-0 leading-tight">
-      <span className="truncate text-xs font-semibold text-primary">
-        {formatUSD(selectedUnit?.price ?? 0)}
-        <span className="font-normal text-muted-foreground">
-          / {selectedUnitValue}
-        </span>
-      </span>
-      <span className="truncate text-left text-[10px] text-muted-foreground">
-        Min {minQty}, step {increment}
-      </span>
-    </div>
-  )
 
   return (
     <div
-      className={cn(
-        "-mx-2 flex flex-nowrap items-center justify-between gap-0.5",
-        className
-      )}
+      className={cn("space-y-2", className)}
       onClick={(event) => event.stopPropagation()}
     >
-      {canSelectUnit ? (
-        <PopDrawer
-          open={open}
-          setOpen={setOpen}
-          trigger={
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              disabled={!selectedUnit}
-              className="h-8 justify-between gap-2 px-2"
-            >
-              {unitSummary}
-            </Button>
-          }
-        >
-          <div className="grid gap-0.5 p-1">
-            {sellUnits.map((unit) => {
-              const unitLabel = getUnit(unit.name)?.label ?? unit.name
-              const isSelected = selectedUnit?.name === unit.name
+      {sellUnits.length > 1 && (
+        <div className="grid grid-cols-2 gap-1 rounded-lg bg-secondary p-px">
+          {sellUnits.map((unit) => {
+            const selected = selectedUnit?.name === unit.name
 
-              return (
-                <Button
-                  type="button"
-                  variant={isSelected ? "secondary" : "ghost"}
-                  key={unit.name}
-                  className="h-auto justify-start gap-3 px-3 py-2 text-left"
-                  onClick={() => {
-                    onSelectUnit(unit.name)
-                    setOpen(false)
-                  }}
-                >
-                  <span className="grid min-w-0 flex-1">
-                    <span className="truncate text-sm font-medium">
-                      {unitLabel}
-                    </span>
-                    <span className="truncate text-xs text-muted-foreground">
-                      {formatUSD(unit.price ?? 0)} | Min {unit.minQuantity},
-                      step {unit.orderIncreament}
-                    </span>
-                  </span>
-                  {isSelected && (
-                    <Check className="size-4 shrink-0 text-primary" />
-                  )}
-                </Button>
-              )
-            })}
-          </div>
-        </PopDrawer>
-      ) : (
-        <div className="inline-flex min-w-0 px-3 py-2">{unitSummary}</div>
+            return (
+              <Button
+                key={unit.name}
+                type="button"
+                size="xs"
+                variant={selected ? "outline" : "ghost"}
+                className={cn("uppercase")}
+                onClick={() => onSelectUnit(unit.name)}
+              >
+                {unit.displayLabel || unit.unitLabel || unit.name}
+              </Button>
+            )
+          })}
+        </div>
       )}
 
-      <InputGroup className="h-8 min-w-18 flex-1 bg-background">
-        <InputGroupAddon className="pl-1.5">
-          <InputGroupButton
-            type="button"
-            disabled={!selectedUnit}
-            variant="ghost"
-            className="size-6 hover:bg-primary/40!"
-            onClick={handleDecrement}
-          >
-            <Minus className="size-3.5" />
-          </InputGroupButton>
-        </InputGroupAddon>
+      <div className="flex items-center gap-1">
+        <p className="flex-1 text-base font-bold tracking-tight text-primary">
+          {selectedUnit ? formatUSD(selectedUnit.price) : "—"}
+        </p>
+        <Badge variant="primary-light">
+          {increment} {unitName} increments
+        </Badge>
+      </div>
 
-        {canEditQuantity ? (
-          <InputGroupInput
-            inputMode="numeric"
-            min={0}
-            step={increment}
-            placeholder="0"
-            className="px-px! text-center"
-            value={value}
-            disabled={!selectedUnit}
-            onChange={handleQuantityChange}
-          />
-        ) : (
-          <div className="flex min-w-0 flex-1 items-center justify-center px-1 text-sm font-medium tabular-nums">
-            {value}
-          </div>
-        )}
+      <div className="grid grid-cols-[36px_1fr_36px] overflow-hidden rounded-2xl border bg-background">
+        <Button
+          type="button"
+          variant="secondary"
+          className="h-full rounded-none"
+          disabled={!selectedUnit}
+          onClick={handleDecrement}
+        >
+          <Minus className="size-4" />
+        </Button>
+        <div className="grid place-items-center px-3 py-2 text-center">
+          <p className="text-sm leading-none font-bold">
+            {pluralize(quantity, selectedLabel)}
+          </p>
+        </div>
+        <Button
+          type="button"
+          variant="secondary"
+          className="h-full rounded-none px-0"
+          disabled={!selectedUnit}
+          onClick={handleIncrement}
+        >
+          <Plus className="size-4" />
+        </Button>
+      </div>
 
-        <InputGroupAddon align="inline-end" className="pr-1.5">
-          <InputGroupButton
-            type="button"
-            disabled={!selectedUnit}
-            variant="ghost"
-            className="size-6 hover:bg-primary/40!"
-            onClick={handleIncrement}
-          >
-            <Plus className="size-3.5" />
-          </InputGroupButton>
-        </InputGroupAddon>
-      </InputGroup>
+      {/* <p className="text-base font-bold text-center text-primary">
+        {formatUSD(lineTotal)}
+      </p>
+
+      <Button
+        type="button"
+        className="w-full text-base font-semibold h-9 rounded-2xl"
+        disabled={!selectedUnit}
+        onClick={handleAdd}
+      >
+        Add to cart
+      </Button> */}
     </div>
   )
 }

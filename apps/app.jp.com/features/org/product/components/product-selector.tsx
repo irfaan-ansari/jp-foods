@@ -64,7 +64,7 @@ export const ProductSelector = ({
         sellUnits: t.sellUnits,
         price: t.price,
         uom: t.uom,
-        unit: t.uom,
+        unit: t.uom ?? "",
       })) ?? []
     )
   }, [data])

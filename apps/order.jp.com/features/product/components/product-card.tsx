@@ -16,7 +16,6 @@ import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
 import ProductQuantityStepper from "./product-quantity"
-import { Button } from "@jp/ui/components/button"
 
 export const ProductCard = React.memo(function ProductCard({
   data,
@@ -38,14 +37,6 @@ export const ProductCard = React.memo(function ProductCard({
       size="sm"
       data-sortable={sortable}
       className={`relative h-full gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() =>
-        selectedUnit &&
-        setQuantity(
-          value
-            ? value + Number(selectedUnit.orderIncreament)
-            : Number(selectedUnit.minQuantity)
-        )
-      }
     >
       {sortable && (
         <SortableItemHandle className="absolute top-2 right-2 z-1 inline-flex size-7 items-center justify-center rounded-lg bg-background/50 shadow-sm backdrop-blur-sm">
@@ -74,14 +65,6 @@ export const ProductCard = React.memo(function ProductCard({
         <CardTitle className="mt-auto text-xs font-medium @3xl/page-content:text-sm">
           {data.title}
         </CardTitle>
-        <div className="flex gap-0.5 rounded-xl bg-secondary p-0.5 *:flex-1">
-          <Button size="xs" variant="ghost">
-            LB
-          </Button>
-          <Button size="xs" variant="outline">
-            CASE
-          </Button>
-        </div>
         <ProductQuantityStepper
           value={value}
           onChange={setQuantity}
@@ -111,14 +94,6 @@ const ProductRow = React.memo(function ProductRow({
     <Card
       size="sm"
       className={`relative h-full gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() =>
-        selectedUnit &&
-        setQuantity(
-          value
-            ? value + Number(selectedUnit.orderIncreament)
-            : Number(selectedUnit.minQuantity)
-        )
-      }
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
@@ -154,7 +129,7 @@ const ProductRow = React.memo(function ProductRow({
           sellUnits={sellUnits}
           selectedUnit={selectedUnit}
           onSelectUnit={setUnitName}
-          className="mx-0 grid max-w-32 gap-2 self-center **:data-[slot=popover-trigger]:h-10 **:data-[slot=popover-trigger]:border-border"
+          className="mx-0 w-full max-w-44 self-center"
         />
       </CardContent>
     </Card>

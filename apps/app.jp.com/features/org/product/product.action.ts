@@ -14,11 +14,7 @@ import {
 } from "./product.schema"
 
 const getProductData = (data: ProductFormSchema) => {
-  const { enableSplit: _enableSplit, ...productData } = data
-
-  void _enableSplit
-
-  return productData
+  return data
 }
 
 /**

@@ -16,6 +16,12 @@ export type PricedSellingUnit = NonNullable<
   ProductSelectType["sellUnits"]
 >[number] & {
   price: string
+  orderIncreament: string
+  displayLabel: string
+  displayUnit: string
+  unitLabel: string
+  packDescription: string
+  isDefaultUnit: boolean
 }
 
 export type Product = Omit<ProductSelectType, "sellUnits"> & {

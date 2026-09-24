@@ -18,7 +18,6 @@ import {
   productFormValues,
 } from "../product.schema"
 
-import { ProductSplit } from "./product-split"
 import { ProductInventory } from "./product-inventory"
 import { ProductGeneral } from "./product-general"
 import { Button } from "@jp/ui/components/button"
@@ -128,8 +127,6 @@ export const ProductForm = ({ data, id }: FormProps) => {
           <ProductPricing form={form} />
           {/* inventory  */}
           {/* <ProductInventory form={form} /> */}
-          {/* pricing */}
-          {/* <ProductSplit form={form} /> */}
 
           {/* delete alert */}
           {id && <ProductDeleteAlert id={id} />}

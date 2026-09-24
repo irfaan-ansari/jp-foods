@@ -7,7 +7,7 @@ const nonNegativeDecimal = z
       value.trim() !== "" &&
       Number.isFinite(Number(value)) &&
       Number(value) >= 0,
-    { message: "Enter a valid price" }
+    { message: "" }
   )
 
 const positiveDecimal = z
@@ -17,7 +17,7 @@ const positiveDecimal = z
       value.trim() !== "" &&
       Number.isFinite(Number(value)) &&
       Number(value) > 0,
-    { message: "Enter a value greater than zero" }
+    { message: "" }
   )
 
 export const productFormSchema = z
@@ -28,16 +28,12 @@ export const productFormSchema = z
     status: z.string().min(1, "Select status"),
     price: nonNegativeDecimal,
     uom: z.string().min(1, "Select unit of measure"),
-    weightUnit: z.string().min(1, "Select weight of measure"),
-    netWeight: z.string().min(1, "Enter net weight"),
+    weightLb: z.string().min(1, "Enter net weight"),
     sellUnit: z.string().min(1, "Select sell unit") /** eg: case|lb */,
-    unitSize: z
-      .string()
-      .min(1, "Enter unit size") /** contains uom eg: 1 case = 60 lb */,
-    packSize: z.string() /** eg: pack of 1 */,
+    contains: z.string().min(1, "") /** contains uom eg: 1 case = 60 lb */,
+    label: z.string(),
     catchWeight: z.boolean(),
     isTaxable: z.boolean(),
-    enableSplit: z.boolean(),
     categories: z.array(z.string()),
     image: z.string(),
     location: z.string(),
@@ -50,8 +46,6 @@ export const productFormSchema = z
         label: z.string(),
         price: z.string(),
         unitConversion: positiveDecimal,
-        minQuantity: positiveDecimal,
-        orderIncreament: positiveDecimal,
       })
       .array()
       .min(1, "Add at least one sell unit")
@@ -74,28 +68,6 @@ export const productFormSchema = z
         message: "Enter a valid stock quantity",
       })
     }
-
-    if (value.enableSplit) {
-      value.sellUnits.forEach((unit, index) => {
-        if (unit.name === value.sellUnit) return
-
-        if (!unit.label.trim()) {
-          ctx.addIssue({
-            code: "custom",
-            path: ["sellUnits", index, "label"],
-            message: "Enter a split label",
-          })
-        }
-
-        if (!nonNegativeDecimal.safeParse(unit.price).success) {
-          ctx.addIssue({
-            code: "custom",
-            path: ["sellUnits", index, "price"],
-            message: "Enter a split price",
-          })
-        }
-      })
-    }
   })
 
 export type ProductFormSchema = z.infer<typeof productFormSchema>
@@ -105,11 +77,11 @@ export const productFormValues = {
   description: "",
   itemCode: "",
   uom: "lb",
+  weightLb: "",
   sellUnit: "case",
   catchWeight: false,
-  unitSize: "1",
-  packSize: "",
-  enableSplit: false,
+  contains: "1",
+  label: "",
   price: "",
   status: "active",
   isTaxable: false,
@@ -122,11 +94,9 @@ export const productFormValues = {
   sellUnits: [
     {
       name: "case",
-      label: "Case",
-      price: "",
+      label: "10LB case",
+      price: "10",
       unitConversion: "1",
-      minQuantity: "1",
-      orderIncreament: "1",
     },
   ],
 }

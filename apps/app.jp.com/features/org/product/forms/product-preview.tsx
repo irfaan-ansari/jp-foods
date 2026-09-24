@@ -1,5 +1,5 @@
 import { toast } from "sonner"
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { formatUSD } from "@jp/utils"
 import {
   Card,
@@ -8,19 +8,16 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { cn } from "@jp/ui/lib/utils"
-import { ImageUp } from "lucide-react"
+import { ImageUp, ShoppingCart } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
 import { Input } from "@jp/ui/components/input"
 import { ProductFormSchema } from "../product.schema"
 import { FieldLabel, FieldLegend } from "@jp/ui/components/field"
-import { ProductPrice } from "../components/product-price"
 import { ProductBadge } from "../components/product-card"
 import { Badge } from "@jp/ui/components/badge"
-import { getUnit } from "../product.utils"
-import { Skeleton } from "@jp/ui/components/skeleton"
-
-const toNumber = (value: string | undefined) =>
-  value?.trim() && Number.isFinite(Number(value)) ? Number(value) : 0
+import { getSellingUnits } from "../product.utils"
+import { Tabs, TabsList, TabsTrigger } from "@jp/ui/components/tabs"
+import { Button } from "@jp/ui/components/button"
 
 export const ProductPreview = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -28,7 +25,9 @@ export const ProductPreview = withForm({
     setFile: (file: File | null) => void
   },
   render: function Render({ form, setFile }) {
+    const [selectedUnitName, setSelectedUnitName] = useState("")
     const previewUrl = useRef<string | null>(null)
+
     useEffect(
       () => () => {
         if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
@@ -36,6 +35,7 @@ export const ProductPreview = withForm({
       []
     )
 
+    // upload image
     const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
       if (!file) return
@@ -47,141 +47,183 @@ export const ProductPreview = withForm({
       if (previewUrl.current) URL.revokeObjectURL(previewUrl.current)
       const url = URL.createObjectURL(file)
       previewUrl.current = url
+
       form.setFieldValue("image", url)
       e.target.value = ""
     }
 
     return (
-      <form.Subscribe
-        selector={(state) => state.values}
-        children={({
+      <form.Subscribe selector={(state) => state.values}>
+        {({
           title,
           image,
           price,
           uom,
           sellUnit,
-          unitSize,
-          enableSplit,
+          contains,
+          label,
+          weightLb,
+          catchWeight,
           categories,
           sellUnits,
           status,
           isTaxable,
-        }) => (
-          <Card className="gap-0 bg-secondary py-0 shadow-xs" size="sm">
-            <div className="relative aspect-video overflow-hidden rounded-t-xl">
-              {/* product image */}
-              {image && (
-                <img
-                  width={100}
-                  height={100}
-                  src={image!}
-                  alt={title}
-                  loading="eager"
-                  className="absolute inset-0 size-full object-cover mix-blend-multiply transition ease-out"
-                />
-              )}
+          itemCode,
+        }) => {
+          const prices = getSellingUnits({
+            price,
+            uom,
+            sellUnit,
+            weightLb,
+            catchWeight,
+            sellUnits,
+            contains,
+            label,
+          })
 
-              {/* upload image */}
-              <FieldLabel
-                htmlFor="image-upload"
-                className={cn(
-                  "absolute inset-0 z-3 w-full flex-col justify-center rounded-t-2xl bg-secondary/80 backdrop-blur-lg transition hover:[&>svg]:-translate-y-1",
-                  image ? "opacity-0 hover:opacity-100" : ""
+          const selectedUnit =
+            prices.find((unit) => unit.name === selectedUnitName) ?? prices[0]
+          const selectedValue = selectedUnit?.name ?? ""
+          const itemMeta = [itemCode && `Item ${itemCode}`, label].filter(
+            Boolean
+          )
+          const unitLabel =
+            selectedUnit?.displayUnit || selectedUnit?.name || sellUnit || uom
+
+          return (
+            <Card
+              className="gap-0 overflow-hidden bg-secondary py-0 shadow-xs"
+              size="sm"
+            >
+              {/* image */}
+              <div className="relative mb-0 aspect-video overflow-hidden rounded-xl">
+                {/* product image */}
+                {image && (
+                  <img
+                    width={100}
+                    height={100}
+                    src={image!}
+                    alt={title}
+                    loading="eager"
+                    className="absolute inset-0 size-full object-cover mix-blend-multiply transition ease-out"
+                  />
                 )}
-              >
-                <ImageUp className="size-6 text-muted-foreground transition" />
-                <FieldLegend className="text-sm! text-muted-foreground">
-                  Click to upload/replace image
-                </FieldLegend>
 
-                <Input
-                  className="sr-only"
-                  type="file"
-                  accept="image/*"
-                  id="image-upload"
-                  onChange={handleFileChange}
-                />
-              </FieldLabel>
+                {/* upload image */}
+                <FieldLabel
+                  htmlFor="image-upload"
+                  className={cn(
+                    "absolute inset-0 z-3 w-full flex-col justify-center rounded-xl bg-secondary/80 backdrop-blur-lg transition hover:[&>svg]:-translate-y-1",
+                    image ? "opacity-0 hover:opacity-100" : ""
+                  )}
+                >
+                  <ImageUp className="size-6 text-muted-foreground transition" />
+                  <FieldLegend className="text-sm! text-muted-foreground">
+                    Click to upload/replace image
+                  </FieldLegend>
 
-              {/* badge */}
-              <div className="absolute top-2 left-2 z-10 grid gap-1">
-                <ProductBadge status={status ?? "active"} />
-                {isTaxable && (
-                  <Badge
-                    variant="warning-light"
-                    className="h-6 rounded-md backdrop-blur-lg"
-                  >
-                    Taxable
-                  </Badge>
-                )}
-              </div>
-            </div>
-            <CardContent className="space-y-2 rounded-t-2xl border-t bg-background p-4">
-              {categories.length > 0 ? (
-                <CardDescription className="text-xs font-medium uppercase">
-                  {categories.join(" • ")}
-                </CardDescription>
-              ) : (
-                <div className="h-4 rounded-lg bg-secondary" />
-              )}
+                  <Input
+                    className="sr-only"
+                    type="file"
+                    accept="image/*"
+                    id="image-upload"
+                    onChange={handleFileChange}
+                  />
+                </FieldLabel>
 
-              {title ? (
-                <CardTitle className="text-sm font-semibold">{title}</CardTitle>
-              ) : (
-                <div className="h-5 rounded-lg bg-secondary" />
-              )}
-
-              <div className="mt-4 space-y-3 border-t border-dashed pt-4">
-                <div className="flex items-start justify-between gap-2 rounded-xl border bg-secondary p-3 text-sm font-medium">
-                  <div className="grid min-w-0 flex-1">
-                    <span>{getUnit(sellUnit)?.label}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {`${unitSize || "—"} ${uom} per ${sellUnit}`}
-                    </span>
-                  </div>
-
-                  <span className="text-base font-bold text-primary">
-                    {formatUSD(price ?? 0)}
-                  </span>
+                {/* badge */}
+                <div className="absolute top-2 left-2 z-10 grid gap-1">
+                  <ProductBadge status={status ?? "active"} />
+                  {isTaxable && (
+                    <Badge
+                      variant="warning-light"
+                      className="h-6 rounded-md bg-background/80 backdrop-blur-lg"
+                    >
+                      Taxable
+                    </Badge>
+                  )}
                 </div>
-                {enableSplit &&
-                  sellUnits
-                    .filter((item) => item.name !== sellUnit)
-                    .map((splitUnit, index) => {
-                      const splitUnitsPerSellUnit =
-                        toNumber(splitUnit.unitConversion) > 0
-                          ? toNumber(unitSize) /
-                            toNumber(splitUnit.unitConversion)
-                          : 0
-                      const splitPrice =
-                        splitUnitsPerSellUnit > 0
-                          ? toNumber(splitUnit.price) / splitUnitsPerSellUnit
-                          : 0
-
-                      return (
-                        <div
-                          key={index}
-                          className="flex items-start justify-between gap-2 rounded-xl border bg-secondary p-3 text-sm font-medium"
-                        >
-                          <div className="grid">
-                            <span>Split option</span>
-
-                            <p className="text-xs text-muted-foreground">
-                              {splitUnit.unitConversion || "—"} {uom} per{" "}
-                              {splitUnit.name || "unit"}
-                            </p>
-                          </div>
-                          <span className="text-base font-bold text-primary">
-                            {splitPrice ? formatUSD(splitPrice) : "—"}
-                          </span>
-                        </div>
-                      )
-                    })}
               </div>
-            </CardContent>
-          </Card>
-        )}
-      />
+              <CardContent className="space-y-2 rounded-t-2xl bg-background p-4">
+                {categories.length > 0 ? (
+                  <CardDescription className="text-xs font-medium uppercase">
+                    {categories.join(" • ")}
+                  </CardDescription>
+                ) : (
+                  <div className="h-4 rounded-lg bg-secondary" />
+                )}
+
+                {title ? (
+                  <CardTitle className="text-base leading-tight font-bold">
+                    {title}
+                  </CardTitle>
+                ) : (
+                  <div className="h-5 rounded-lg bg-secondary" />
+                )}
+
+                {itemMeta.length > 0 ? (
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {itemMeta.join(" · ")}
+                  </p>
+                ) : (
+                  <div className="h-4 w-2/3 rounded-lg bg-secondary" />
+                )}
+
+                {prices.length > 0 ? (
+                  <Tabs
+                    value={selectedValue}
+                    onValueChange={setSelectedUnitName}
+                    className="gap-2"
+                  >
+                    <TabsList className="w-full rounded-xl border p-0.5!">
+                      {prices.map((unit) => (
+                        <TabsTrigger
+                          key={unit.name}
+                          value={unit.name}
+                          className="rounded-lg"
+                        >
+                          {unit.name}
+                        </TabsTrigger>
+                      ))}
+                    </TabsList>
+                  </Tabs>
+                ) : (
+                  <div className="h-10 rounded-xl border bg-transparent" />
+                )}
+
+                <div className="space-y-2">
+                  <div className="text-lg font-bold tracking-normal text-primary">
+                    {selectedUnit
+                      ? formatUSD(selectedUnit.displayPrice)
+                      : formatUSD(price)}
+                  </div>
+                  <p className="text-sm font-medium text-muted-foreground">
+                    {selectedUnit ? (
+                      <>
+                        {selectedUnit.pricing === "per_uom"
+                          ? `per ${unitLabel}`
+                          : `per ${unitLabel}`}
+                        {selectedUnit.weightIsEstimate
+                          ? ` · Estimated ${formatUSD(
+                              selectedUnit.calculatedPrice
+                            )} per ${selectedUnit.name}`
+                          : ` · Minimum 1 ${uom}`}
+                      </>
+                    ) : (
+                      "Pricing unavailable"
+                    )}
+                  </p>
+                </div>
+
+                <Button type="button" className="w-full">
+                  <ShoppingCart />
+                  Add to order
+                </Button>
+              </CardContent>
+            </Card>
+          )
+        }}
+      </form.Subscribe>
     )
   },
 })
