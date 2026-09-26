@@ -9,16 +9,19 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 
 import type { Product } from "@/features/org/product/product.type"
-import { ProductPrice } from "@/features/org/product/components/product-price"
 
 import { StatusBadge } from "@/components/status-badge"
 import { STATUS } from "../product.const"
-import { CopyButton } from "@jp/ui/components/jp"
+
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import Link from "next/link"
+import { formatUSD } from "@jp/utils"
 
 export const ProductCard = ({ data }: { data: Product }) => {
   const { searchParams } = useRouterStuff()
+
+  const price =
+    data?.sellingUnits?.filter((unit) => unit.isDefault)?.[0]?.price ?? "0"
 
   return (
     <Card
@@ -67,7 +70,7 @@ export const ProductCard = ({ data }: { data: Product }) => {
         </CardTitle>
 
         <div className="font-semibold">
-          <ProductPrice unit={data.uom ?? ""} price={data.price ?? ""} />
+          <div className="text-base text-primary">{formatUSD(price)}</div>
         </div>
       </CardContent>
     </Card>

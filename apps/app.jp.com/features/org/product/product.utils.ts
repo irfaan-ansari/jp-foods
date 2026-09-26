@@ -1,45 +1,29 @@
-import { PRODUCT_UNITS } from "./product.const"
-import type { PricedSellingUnit, Product } from "./product.type"
+export { getSellingUnits, getUnit } from "@jp/utils/commerce"
+export type { SellingUnit as PricedSellingUnit } from "@jp/utils/commerce"
 
-export const getSellingUnits = (
-  product: Pick<Product, "price" | "uom" | "sellUnits">
-): PricedSellingUnit[] => {
-  const units = product.sellUnits?.length
-    ? product.sellUnits
-    : product.uom
-      ? [
-          {
-            name: product.uom,
-            unitConversion: "1",
-            minQuantity: "1",
-            orderIncreament: "1",
-          },
-        ]
-      : []
+type SellingUnit = {
+  name: string
+  displayLabel: string
+  price: string
+  qtyPerUnit: string
+  isDefault: boolean
+}
+
+export function withCalculatedPrices<T extends SellingUnit>(
+  units: T[],
+  catchWeight: boolean
+): (T & { calculatedPrice: number })[] {
+  if (!catchWeight) {
+    return units.map((unit) => ({
+      ...unit,
+      displayLabel: unit.displayLabel || unit.name,
+      calculatedPrice: Number(unit.price),
+    }))
+  }
 
   return units.map((unit) => ({
     ...unit,
-    price: String(
-      Math.round(Number(product.price) * Number(unit.unitConversion) * 100) /
-        100
-    ),
+    displayLabel: unit.displayLabel || unit.name,
+    calculatedPrice: Number(unit.price) * Number(unit.qtyPerUnit),
   }))
-}
-
-export const getAvailableUnits = (units: string[], index: number) => {
-  const currentUnit = units[index]
-
-  const usedUnits = units
-    .map((u, i) => (i === index ? null : u))
-    .filter(Boolean)
-
-  return PRODUCT_UNITS.filter(
-    (option) =>
-      option.value === currentUnit || !usedUnits.includes(option.value)
-  )
-}
-
-export const getUnit = (value: string | undefined) => {
-  if (!value) return null
-  return PRODUCT_UNITS.find((u) => u.value === value)
 }

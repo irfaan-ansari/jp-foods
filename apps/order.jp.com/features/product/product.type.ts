@@ -1,26 +1,14 @@
-import { ProductSelectType } from "@jp/db"
+import type { ProductSelectType } from "@jp/db"
+export type { SellingUnit as PricedSellingUnit } from "@jp/utils/commerce"
 
-type LastOrder = {
-  id: number
-  quantity: string
-  unitName: string | null
-  orderId: number
-  createdAt: Date
+export type SellUnit = NonNullable<ProductSelectType["sellingUnits"]>[number]
+export type Product = ProductSelectType & {
+  lastOrder?: {
+    id: number
+    quantity: string
+    unitName: string | null
+    orderId: number | null
+    createdAt: Date | string | null
+  }
 }
-
-export type SellUnit = NonNullable<ProductSelectType["sellUnits"]>[number] & {
-  price?: string
-}
-
-export type PricedSellingUnit = NonNullable<
-  ProductSelectType["sellUnits"]
->[number] & {
-  price: string
-}
-
-export type Product = Omit<ProductSelectType, "sellUnits"> & {
-  sellUnits: SellUnit[]
-  lastOrder?: LastOrder | undefined
-}
-
 export type Category = string

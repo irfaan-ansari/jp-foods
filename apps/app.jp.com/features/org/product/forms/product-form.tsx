@@ -18,8 +18,7 @@ import {
   productFormValues,
 } from "../product.schema"
 
-import { ProductSplit } from "./product-split"
-import { ProductInventory } from "./product-inventory"
+import { useQueryClient } from "@tanstack/react-query"
 import { ProductGeneral } from "./product-general"
 import { Button } from "@jp/ui/components/button"
 import {
@@ -40,6 +39,7 @@ interface FormProps {
 }
 
 export const ProductForm = ({ data, id }: FormProps) => {
+  const queryClient = useQueryClient()
   const [file, setFile] = useState<File | null>(null)
 
   const { router } = useRouterStuff()
@@ -68,47 +68,34 @@ export const ProductForm = ({ data, id }: FormProps) => {
 
         toast.loading("Saving product...", { id: toastId })
 
-        if (id) {
-          const result = await updateProduct({
-            id,
-            data: values,
-          })
-          if (
-            result?.serverError ||
-            result?.validationErrors ||
-            !result?.data
-          ) {
-            toast.error(
-              result?.serverError?.message ??
-                "Unable to save product. Check the form values.",
-              { id: toastId }
-            )
-          } else {
-            toast.success("Product saved...", { id: toastId })
-            form.reset(values)
-            setFile(null)
-          }
-        } else {
-          const result = await createProduct({
-            data: values,
-          })
-          if (
-            result?.serverError ||
-            result?.validationErrors ||
-            !result?.data
-          ) {
-            toast.error(
-              result?.serverError?.message ??
-                "Unable to save product. Check the form values.",
-              { id: toastId }
-            )
-          } else {
-            toast.success("Product saved...", { id: toastId })
-            form.reset(values)
-            setFile(null)
-            router.push(`/org/products/${result.data.id}`)
-          }
+        const result = id
+          ? await updateProduct({ id, data: values })
+          : await createProduct({ data: values })
+        if (result?.serverError || result?.validationErrors || !result?.data) {
+          toast.error(
+            result?.serverError?.message ??
+              "Unable to save product. Check the form values.",
+            { id: toastId }
+          )
+          return
         }
+        toast.success("Product saved", { id: toastId })
+        form.reset(values)
+        setFile(null)
+        await Promise.all([
+          queryClient.invalidateQueries({ queryKey: ["products"] }),
+          queryClient.invalidateQueries({
+            queryKey: ["product", String(result.data.id)],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["product", result.data.id],
+          }),
+          queryClient.invalidateQueries({
+            queryKey: ["count", "/org/products/count"],
+          }),
+          queryClient.invalidateQueries({ queryKey: ["categories"] }),
+        ])
+        if (!id) router.push(`/org/products/${result.data.id}`)
       } catch (error) {
         toast.error(
           error instanceof Error ? error.message : "Unable to save product",
@@ -126,19 +113,16 @@ export const ProductForm = ({ data, id }: FormProps) => {
           <ProductGeneral form={form} />
           {/* pricing */}
           <ProductPricing form={form} />
-          {/* inventory  */}
+
           {/* <ProductInventory form={form} /> */}
-          {/* pricing */}
-          <ProductSplit form={form} />
 
           {/* delete alert */}
           {id && <ProductDeleteAlert id={id} />}
         </div>
         <div className="col-span-1">
           <div className="sticky top-20 space-y-6">
-            {/* preview */}
             <ProductPreview form={form} setFile={setFile} />
-            {/* analytics */}
+
             {id && (
               <Card className="shadow-xs" size="sm">
                 <CardHeader>

@@ -10,7 +10,7 @@ const app = new Hono<TeamAppContext>()
 export const teams = app
   .get("/list", async (c) => {
     const userId = c.get("user")?.id
-    console.log("userId::", userId)
+
     const response = await db.query.teamMember.findMany({
       where: (tm, { eq }) => eq(tm.userId, userId!),
       with: { team: true },

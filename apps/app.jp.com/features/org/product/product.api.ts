@@ -154,6 +154,6 @@ export const productRoute = app
 
     return c.json({
       success: true,
-      data: response,
+      data: { ...response, sellingUnits: response.sellingUnits ?? [] },
     })
   })

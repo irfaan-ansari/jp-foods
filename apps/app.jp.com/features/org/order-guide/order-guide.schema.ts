@@ -14,8 +14,6 @@ export const orderGuideSchema = z.object({
         title: z.string(),
         itemCode: z.string(),
         image: z.any(),
-        price: z.string(),
-        unit: z.string(),
       })
     )
     .min(1, "Select products"),

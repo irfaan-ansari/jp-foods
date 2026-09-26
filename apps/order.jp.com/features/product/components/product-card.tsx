@@ -16,7 +16,6 @@ import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
 import ProductQuantityStepper from "./product-quantity"
-import { Button } from "@jp/ui/components/button"
 
 export const ProductCard = React.memo(function ProductCard({
   data,
@@ -27,8 +26,8 @@ export const ProductCard = React.memo(function ProductCard({
 }) {
   const sellUnits = getSellingUnits(data)
   const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
-  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
-  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
+  const { value, setQuantity } = useOrderItemQuantity(data, selectedUnit?.name ?? "")
   const layout = useOrderFormUI((state) => state.layout)
 
   if (layout === "list") return <ProductRow data={data} sortable={sortable} />
@@ -38,14 +37,6 @@ export const ProductCard = React.memo(function ProductCard({
       size="sm"
       data-sortable={sortable}
       className={`relative h-full gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() =>
-        selectedUnit &&
-        setQuantity(
-          value
-            ? value + Number(selectedUnit.orderIncreament)
-            : Number(selectedUnit.minQuantity)
-        )
-      }
     >
       {sortable && (
         <SortableItemHandle className="absolute top-2 right-2 z-1 inline-flex size-7 items-center justify-center rounded-lg bg-background/50 shadow-sm backdrop-blur-sm">
@@ -62,7 +53,7 @@ export const ProductCard = React.memo(function ProductCard({
       {data?.lastOrder?.id && (
         <Badge className="absolute top-2 left-2 h-4.5 text-xs uppercase">
           {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •
-          {format(data?.lastOrder?.createdAt, "dd/MM")}
+          {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
         </Badge>
       )}
       <CardContent
@@ -74,18 +65,10 @@ export const ProductCard = React.memo(function ProductCard({
         <CardTitle className="mt-auto text-xs font-medium @3xl/page-content:text-sm">
           {data.title}
         </CardTitle>
-        <div className="flex gap-0.5 rounded-xl bg-secondary p-0.5 *:flex-1">
-          <Button size="xs" variant="ghost">
-            LB
-          </Button>
-          <Button size="xs" variant="outline">
-            CASE
-          </Button>
-        </div>
         <ProductQuantityStepper
           value={value}
           onChange={setQuantity}
-          sellUnits={sellUnits}
+          sellUnits={sellUnits} uom={data.uom ?? ""}
           selectedUnit={selectedUnit}
           onSelectUnit={setUnitName}
           className="mt-2"
@@ -104,21 +87,13 @@ const ProductRow = React.memo(function ProductRow({
 }) {
   const sellUnits = getSellingUnits(data)
   const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
-  const selectedUnit = sellUnits.find((unit) => unit.name === unitName)
-  const { value, setQuantity } = useOrderItemQuantity(data, unitName)
+  const selectedUnit = sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
+  const { value, setQuantity } = useOrderItemQuantity(data, selectedUnit?.name ?? "")
 
   return (
     <Card
       size="sm"
       className={`relative h-full gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
-      onClick={() =>
-        selectedUnit &&
-        setQuantity(
-          value
-            ? value + Number(selectedUnit.orderIncreament)
-            : Number(selectedUnit.minQuantity)
-        )
-      }
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
@@ -138,12 +113,12 @@ const ProductRow = React.memo(function ProductRow({
           {data?.lastOrder?.id && (
             <Badge className="text-xs uppercase">
               {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •{" "}
-              {format(data?.lastOrder?.createdAt, "dd/MM")}
+              {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
             </Badge>
           )}
           <div className="mt-auto text-sm font-semibold text-primary">
             {selectedUnit
-              ? `${formatUSD(selectedUnit.price)} / ${getUnit(selectedUnit.name)?.label ?? selectedUnit.name}`
+              ? `${formatUSD(selectedUnit.calculatedPrice)} / ${getUnit(selectedUnit.name)?.label ?? selectedUnit.name}`
               : "Unavailable"}
           </div>
         </div>
@@ -151,10 +126,10 @@ const ProductRow = React.memo(function ProductRow({
         <ProductQuantityStepper
           value={value}
           onChange={setQuantity}
-          sellUnits={sellUnits}
+          sellUnits={sellUnits} uom={data.uom ?? ""}
           selectedUnit={selectedUnit}
           onSelectUnit={setUnitName}
-          className="mx-0 grid max-w-32 gap-2 self-center **:data-[slot=popover-trigger]:h-10 **:data-[slot=popover-trigger]:border-border"
+          className="mx-0 w-full max-w-44 self-center"
         />
       </CardContent>
     </Card>
@@ -242,3 +217,4 @@ export const ProductCardSkeleton = () => {
     </Card>
   )
 }
+

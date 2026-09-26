@@ -41,7 +41,6 @@ export const PriceLevelDropdown = ({ data }: { data: PriceLevel }) => {
     })
   }
 
-  const itemProducts = data.products
   return (
     <PopDrawer
       open={isOpen}

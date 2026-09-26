@@ -125,7 +125,13 @@ const generatePDF = async ({
     }),
   ])
 
-  const groupedProducts = groupProducts(allProducts)
+  const products = allProducts.map((product) => ({
+    ...product,
+    price: (product.sellingUnits ?? []).find((unit) => unit.isDefault)?.price,
+    uom: product.catchWeight ? product.uom : null,
+  }))
+
+  const groupedProducts = groupProducts(products)
 
   const buffer = await renderToBuffer(
     CatalogPDF({

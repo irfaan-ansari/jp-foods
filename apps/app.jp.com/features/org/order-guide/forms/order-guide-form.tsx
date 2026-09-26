@@ -260,9 +260,7 @@ const OrderGuideForm = ({
                             {subField.itemCode}
                           </span>
                         </div>
-                        <div className="self-center text-right text-xs font-medium text-primary">
-                          {formatUSD(subField.price)}
-                        </div>
+
                         <Button
                           size="icon-xs"
                           variant="destructive"

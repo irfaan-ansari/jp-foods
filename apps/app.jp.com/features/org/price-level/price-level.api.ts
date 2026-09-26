@@ -55,14 +55,11 @@ export const priceLevelRoutes = app
     const transformed = response.map((item) => {
       const { priceLevelItem, ...rest } = item
 
-      const products = priceLevelItem.map(({ product, price }) => ({
+      const products = priceLevelItem.map(({ product }) => ({
         id: product.id,
         title: product.title,
         itemCode: product.itemCode,
         image: product.image,
-        unit: product.uom,
-        basePrice: product.price,
-        price,
       }))
 
       return {

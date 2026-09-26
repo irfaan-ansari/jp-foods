@@ -2,7 +2,7 @@ import { db } from "@jp/db"
 
 import type { Product } from "../product/product.type"
 import { getSellingUnits } from "../product/product.utils"
-import { createProductPriceResolver } from "./price-level.utils"
+import { createProductPriceResolver } from "@jp/utils/commerce"
 
 export const getTeamPriceResolver = async (teamId: string) => {
   const team = await db.query.team.findFirst({

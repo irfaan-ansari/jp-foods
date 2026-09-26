@@ -1,4 +1,5 @@
 import type { OrderItemInput } from "./order-form.type"
+import { roundMoney } from "@jp/utils/commerce"
 
 export function calculateOrder({
   items,
@@ -16,11 +17,11 @@ export function calculateOrder({
   let lineItemTotal = 0
 
   const calculatedItems = items.map((item) => {
-    const lineSubtotal = item.price * item.quantity
+    const lineSubtotal = roundMoney(item.price * item.quantity)
 
-    const taxAmount = item.isTaxable ? (lineSubtotal * taxRate) / 100 : 0
+    const taxAmount = item.isTaxable ? roundMoney((lineSubtotal * taxRate) / 100) : 0
 
-    const total = lineSubtotal + taxAmount
+    const total = roundMoney(lineSubtotal + taxAmount)
 
     subtotal += lineSubtotal
     lineItemQuantity += item.quantity
@@ -40,7 +41,7 @@ export function calculateOrder({
     }
   })
 
-  const taxAmount = (taxableSubtotal * taxRate) / 100
+  const taxAmount = roundMoney(calculatedItems.reduce((sum, item) => sum + item.taxAmount, 0))
 
   const appliedCharges = calculatedItems.length > 0 ? charges : 0
 
@@ -50,11 +51,11 @@ export function calculateOrder({
       lineItemCount: calculatedItems.length,
       lineItemQuantity,
       lineItemTotal,
-      subtotal,
-      taxableSubtotal,
-      nonTaxableSubtotal,
+      subtotal: roundMoney(subtotal),
+      taxableSubtotal: roundMoney(taxableSubtotal),
+      nonTaxableSubtotal: roundMoney(nonTaxableSubtotal),
       taxAmount,
-      total: subtotal + taxAmount + appliedCharges,
+      total: roundMoney(subtotal + taxAmount + appliedCharges),
     },
   }
 }

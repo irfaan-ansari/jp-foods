@@ -197,8 +197,8 @@ function PromotionToast({
         if (sellUnit)
           setQuantity(
             value
-              ? value + Number(sellUnit.orderIncreament)
-              : Number(sellUnit.minQuantity)
+              ? value + Number(sellUnit.increament)
+              : Number(sellUnit.min)
           )
         toast.dismiss(id)
       }}
@@ -252,3 +252,4 @@ function PromotionToast({
     </div>
   )
 }
+

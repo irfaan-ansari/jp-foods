@@ -5,7 +5,8 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./error": "./src/error/index.ts"
+    "./error": "./src/error/index.ts",
+    "./commerce": "./src/commerce/index.ts"
   },
   "scripts": {
     "lint": "eslint",

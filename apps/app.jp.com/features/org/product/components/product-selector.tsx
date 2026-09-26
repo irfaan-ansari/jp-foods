@@ -9,20 +9,20 @@ import {
   LoadMore,
   SearchBar,
 } from "@jp/ui/components/jp"
-import { formatUSD } from "@jp/utils"
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { useInfiniteProducts } from "@/features/org/product/product.data"
 import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
-type ProductType = Pick<
-  import("@jp/db").ProductSelectType,
-  "id" | "title" | "itemCode" | "price" | "uom" | "sellUnits"
-> & { image: string; unit: string }
-
+type SelectedProduct = {
+  id: number
+  title: string
+  itemCode: string
+  image: string
+}
 type ProductSelectorProps = {
   selected: number | number[] | undefined
-  setSelectedChange: (value: ProductType) => void
+  setSelectedChange: (value: SelectedProduct) => void
   children: React.ReactNode
   status?: string
 }
@@ -61,10 +61,6 @@ export const ProductSelector = ({
         itemCode: t.itemCode!,
         status: t.status!,
         image: t.image ?? "",
-        sellUnits: t.sellUnits,
-        price: t.price,
-        uom: t.uom,
-        unit: t.uom,
       })) ?? []
     )
   }, [data])
@@ -110,10 +106,6 @@ export const ProductSelector = ({
                         <span className="text-xs text-muted-foreground">
                           {item.itemCode}
                         </span>
-                      </div>
-
-                      <div className="shrink-0 text-xs text-muted-foreground">
-                        {formatUSD(item.price)} / {item.unit}
                       </div>
                     </div>
                   </FieldContent>
