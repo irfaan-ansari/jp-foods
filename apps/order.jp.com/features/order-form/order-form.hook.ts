@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Product } from "../product/product.type"
-import { getSellingUnits } from "../product/product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 import { toOrderItemInput } from "./order-form.utils"
 import { initOrderForm, useOrderFormStore } from "./order-form.store"
 import { useActiveTeam } from "../team/team.data"
@@ -12,7 +12,10 @@ export function useOrderItemQuantity(data: Product, unitName: string) {
   const updateItem = useOrderFormStore((state) => state.updateItem)
   const item = useOrderFormStore((state) => state.getItem(data.id, unitName))
 
-  const sellUnit = getSellingUnits(data).find((unit) => unit.name === unitName)
+  const sellUnit = withCalculatedPrices(
+    data.sellingUnits ?? [],
+    !!data.catchWeight
+  ).find((unit) => unit.name === unitName)
 
   const value = item?.quantity ?? 0
 

@@ -2,7 +2,7 @@ import { db } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { and, eq, inArray } from "drizzle-orm"
 
-import { getSellingUnits } from "../product/product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 import { getTeamPriceResolver } from "../team/team.price-resolver"
 import { toOrderItemInput } from "./order-form.utils"
 import { isValidQuantity } from "@jp/utils/commerce"
@@ -63,7 +63,10 @@ export async function resolveOrderItems(
     }
 
     const pricedProduct = resolvePrice(product)
-    const unit = getSellingUnits(pricedProduct).find(
+    const unit = withCalculatedPrices(
+      pricedProduct.sellingUnits ?? [],
+      !!pricedProduct.catchWeight
+    ).find(
       (sellingUnit) => sellingUnit.name === request.unitName
     )
     if (!unit) {

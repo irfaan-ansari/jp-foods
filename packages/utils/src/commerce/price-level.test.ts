@@ -2,7 +2,7 @@ import assert from "node:assert/strict"
 import { test } from "node:test"
 
 import { createProductPriceResolver } from "./price-level"
-import { getSellingUnits } from "./selling-units"
+import { withCalculatedPrices } from "./selling-units"
 
 const product = {
   id: 1,
@@ -95,12 +95,20 @@ test("discounts stop at zero and decimal prices round consistently", () => {
 
 test("resolved units use per-unit prices and multiply only catch-weight prices", () => {
   const resolve = createProductPriceResolver(config)
-  const fixed = getSellingUnits(resolve(product))
+  const fixedProduct = resolve(product)
+  const fixed = withCalculatedPrices(
+    fixedProduct.sellingUnits,
+    fixedProduct.catchWeight
+  )
   assert.deepEqual(
     fixed.map((unit) => unit.calculatedPrice),
     [22, 5]
   )
-  const weighted = getSellingUnits(resolve({ ...product, catchWeight: true }))
+  const weightedProduct = resolve({ ...product, catchWeight: true })
+  const weighted = withCalculatedPrices(
+    weightedProduct.sellingUnits,
+    weightedProduct.catchWeight
+  )
   assert.deepEqual(
     weighted.map((unit) => unit.calculatedPrice),
     [220, 5]
@@ -112,12 +120,13 @@ test("resolved units use per-unit prices and multiply only catch-weight prices",
 })
 
 test("selling units retain quantity rules and reject invalid entries", () => {
-  const units = getSellingUnits({
-    sellingUnits: [
+  const units = withCalculatedPrices(
+    [
       { ...product.sellingUnits[0]!, minOrderQty: "2", orderIncrement: "0.5" },
       { ...product.sellingUnits[1]!, qtyPerUnit: "0" },
     ],
-  })
+    false
+  )
   assert.equal(units.length, 1)
   assert.equal(units[0]?.min, 2)
   assert.equal(units[0]?.increament, 0.5)

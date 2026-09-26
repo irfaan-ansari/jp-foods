@@ -10,7 +10,7 @@ import {
   FieldLabel,
   FieldTitle,
 } from "@jp/ui/components/field"
-import { getUnit } from "../product.utils"
+import { getUnit } from "@jp/utils/commerce"
 import { withForm } from "@/hooks/use-app-form"
 import { Switch } from "@jp/ui/components/switch"
 import { ProductFormSchema } from "../product.schema"

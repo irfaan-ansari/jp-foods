@@ -1,29 +1,27 @@
 import { PRODUCT_UNITS } from "./units"
 
-export type SellingUnit = {
+export type SellingUnitPriceInput = {
   name: string
-  label: string
-  min: number
-  price: number
-  calculatedPrice: number
-  catchWeight: boolean
-  increament: number
-  contains: number
+  displayLabel?: string
+  price: string | number
+  qtyPerUnit: string | number
+  minOrderQty?: string | number
+  orderIncrement?: string | number
+  isDefault?: boolean
 }
 
-export type ProductPricing = {
-  catchWeight?: boolean | null
-  sellingUnits?:
-    | {
-        name: string
-        displayLabel: string
-        price: string | number
-        qtyPerUnit: string | number
-        minOrderQty?: string | number
-        orderIncrement?: string | number
-      }[]
-    | null
-}
+export type PricedSellingUnit<
+  T extends SellingUnitPriceInput = SellingUnitPriceInput,
+> = Omit<T, "displayLabel" | "price"> & {
+    displayLabel: string
+    label: string
+    min: number
+    price: number
+    calculatedPrice: number
+    catchWeight: boolean
+    increament: number
+    contains: number
+  }
 
 export const roundMoney = (value: number) =>
   Math.round((value + Number.EPSILON) * 100) / 100
@@ -34,12 +32,10 @@ const decimal = (value: unknown) =>
 export const getUnit = (value: string | undefined) =>
   PRODUCT_UNITS.find((unit) => unit.value === value)
 
-/** Prices are per selling unit for fixed products, and per UOM for catch weight.
- * qtyPerUnit is the quantity of the base UOM in a selling unit. Invalid entries are
- * unavailable, rather than silently becoming free or incorrectly sized items.
- */
-export function getSellingUnits(product: ProductPricing): SellingUnit[] {
-  const units = product.sellingUnits ?? []
+export function withCalculatedPrices<T extends SellingUnitPriceInput>(
+  units: T[],
+  catchWeight: boolean
+): PricedSellingUnit<T>[] {
   const names = new Set<string>()
   return units.flatMap((unit) => {
     const name = unit.name.trim()
@@ -61,16 +57,13 @@ export function getSellingUnits(product: ProductPricing): SellingUnit[] {
     )
       return []
     names.add(name)
-    const catchWeight = !!product.catchWeight
     const calculatedPrice = roundMoney(catchWeight ? price * contains : price)
-    if (
-      !Number.isFinite(contains) ||
-      !Number.isSafeInteger(Math.round(calculatedPrice * 100))
-    )
-      return []
+    if (!Number.isSafeInteger(Math.round(calculatedPrice * 100))) return []
     return [
       {
+        ...unit,
         name,
+        displayLabel: unit.displayLabel || name,
         label: unit.displayLabel?.trim() || getUnit(name)?.label || name,
         min,
         price,

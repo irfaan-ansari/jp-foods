@@ -1,10 +1,10 @@
 import React from "react"
 import Image from "next/image"
-import { Product } from "../product.type"
+import type { PricedSellingUnit, Product } from "../product.type"
 import { formatUSD } from "@jp/utils"
 import { cn } from "@jp/ui/lib/utils"
 import { format } from "date-fns/format"
-import { getSellingUnits, getUnit } from "../product.utils"
+import { getUnit, withCalculatedPrices } from "@jp/utils/commerce"
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"
 import { Skeleton } from "@jp/ui/components/skeleton"
@@ -12,10 +12,31 @@ import { Checkbox } from "@jp/ui/components/checkbox"
 import { SortableItemHandle } from "@jp/ui/components/sortable"
 import { GripVertical, ImageOff } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
+import {
+  HoverCard,
+  HoverCardTrigger,
+  HoverCardContent,
+} from "@jp/ui/components/hover-card"
 
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
+import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
+import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import ProductQuantityStepper from "./product-quantity"
+
+type ProductCardState = {
+  sellUnits: PricedSellingUnit[]
+  selectedUnit?: PricedSellingUnit
+  value: number | undefined
+  setQuantity: (value: number | string) => void
+  setUnitName: (name: string) => void
+  actionProps: {
+    role: "button"
+    tabIndex: number
+    onClick: () => void
+    onKeyDown: (event: React.KeyboardEvent) => void
+  }
+}
 
 export const ProductCard = React.memo(function ProductCard({
   data,
@@ -24,19 +45,79 @@ export const ProductCard = React.memo(function ProductCard({
   data: Product
   sortable?: boolean
 }) {
-  const sellUnits = getSellingUnits(data)
-  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
-  const selectedUnit = sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
-  const { value, setQuantity } = useOrderItemQuantity(data, selectedUnit?.name ?? "")
   const layout = useOrderFormUI((state) => state.layout)
 
-  if (layout === "list") return <ProductRow data={data} sortable={sortable} />
+  return (
+    <ProductCardWrapper data={data}>
+      {(state) =>
+        layout === "list" ? (
+          <ProductRow data={data} sortable={sortable} state={state} />
+        ) : (
+          <ProductGridCard data={data} sortable={sortable} state={state} />
+        )
+      }
+    </ProductCardWrapper>
+  )
+})
 
+const ProductCardWrapper = ({
+  data,
+  children,
+}: {
+  data: Product
+  children: (state: ProductCardState) => React.ReactNode
+}) => {
+  const sellUnits = withCalculatedPrices(
+    data.sellingUnits ?? [],
+    !!data.catchWeight
+  )
+  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
+  const selectedUnit =
+    sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
+  const { value, setQuantity } = useOrderItemQuantity(
+    data,
+    selectedUnit?.name ?? ""
+  )
+  const addItem = useOrderFormStore((state) => state.addItem)
+  const handleAddSelectedUnit = React.useCallback(() => {
+    if (!selectedUnit) return
+    addItem(toOrderItemInput(data, selectedUnit))
+  }, [addItem, data, selectedUnit])
+
+  return children({
+    sellUnits,
+    selectedUnit,
+    value,
+    setQuantity,
+    setUnitName,
+    actionProps: {
+      role: "button",
+      tabIndex: 0,
+      onClick: handleAddSelectedUnit,
+      onKeyDown: (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return
+        event.preventDefault()
+        handleAddSelectedUnit()
+      },
+    },
+  })
+}
+
+const ProductGridCard = React.memo(function ProductGridCard({
+  data,
+  sortable = false,
+  state,
+}: {
+  data: Product
+  sortable?: boolean
+  state: ProductCardState
+}) {
   return (
     <Card
       size="sm"
       data-sortable={sortable}
-      className={`relative h-full gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
+      {...state.actionProps}
+      className={`relative h-full cursor-pointer gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
     >
       {sortable && (
         <SortableItemHandle className="absolute top-2 right-2 z-1 inline-flex size-7 items-center justify-center rounded-lg bg-background/50 shadow-sm backdrop-blur-sm">
@@ -45,11 +126,21 @@ export const ProductCard = React.memo(function ProductCard({
       )}
 
       <ProductCheckbox id={data.id} className="p-2.5" />
+      <HoverCard>
+        <HoverCardTrigger>
+          <ProductMedia
+            data={data}
+            className="aspect-video size-auto rounded-none"
+          />
+        </HoverCardTrigger>
+        <HoverCardContent className="overflow-hidden p-0">
+          <ProductMedia
+            data={data}
+            className="aspect-video size-auto rounded-none"
+          />
+        </HoverCardContent>
+      </HoverCard>
 
-      <ProductMedia
-        data={data}
-        className="aspect-video size-auto rounded-none"
-      />
       {data?.lastOrder?.id && (
         <Badge className="absolute top-2 left-2 h-4.5 text-xs uppercase">
           {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •
@@ -66,11 +157,12 @@ export const ProductCard = React.memo(function ProductCard({
           {data.title}
         </CardTitle>
         <ProductQuantityStepper
-          value={value}
-          onChange={setQuantity}
-          sellUnits={sellUnits} uom={data.uom ?? ""}
-          selectedUnit={selectedUnit}
-          onSelectUnit={setUnitName}
+          value={state.value}
+          onChange={state.setQuantity}
+          sellUnits={state.sellUnits}
+          uom={data.uom ?? ""}
+          selectedUnit={state.selectedUnit}
+          onSelectUnit={state.setUnitName}
           className="mt-2"
         />
       </CardContent>
@@ -81,19 +173,17 @@ export const ProductCard = React.memo(function ProductCard({
 const ProductRow = React.memo(function ProductRow({
   data,
   sortable = false,
+  state,
 }: {
   data: Product
   sortable?: boolean
+  state: ProductCardState
 }) {
-  const sellUnits = getSellingUnits(data)
-  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
-  const selectedUnit = sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
-  const { value, setQuantity } = useOrderItemQuantity(data, selectedUnit?.name ?? "")
-
   return (
     <Card
       size="sm"
-      className={`relative h-full gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
+      {...state.actionProps}
+      className={`relative h-full cursor-pointer gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
@@ -117,18 +207,19 @@ const ProductRow = React.memo(function ProductRow({
             </Badge>
           )}
           <div className="mt-auto text-sm font-semibold text-primary">
-            {selectedUnit
-              ? `${formatUSD(selectedUnit.calculatedPrice)} / ${getUnit(selectedUnit.name)?.label ?? selectedUnit.name}`
+            {state.selectedUnit
+              ? `${formatUSD(state.selectedUnit.calculatedPrice)} / ${getUnit(state.selectedUnit.name)?.label ?? state.selectedUnit.name}`
               : "Unavailable"}
           </div>
         </div>
 
         <ProductQuantityStepper
-          value={value}
-          onChange={setQuantity}
-          sellUnits={sellUnits} uom={data.uom ?? ""}
-          selectedUnit={selectedUnit}
-          onSelectUnit={setUnitName}
+          value={state.value}
+          onChange={state.setQuantity}
+          sellUnits={state.sellUnits}
+          uom={data.uom ?? ""}
+          selectedUnit={state.selectedUnit}
+          onSelectUnit={state.setUnitName}
           className="mx-0 w-full max-w-44 self-center"
         />
       </CardContent>
@@ -217,4 +308,3 @@ export const ProductCardSkeleton = () => {
     </Card>
   )
 }
-

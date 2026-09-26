@@ -1,3 +1,5 @@
+import type { PricedSellingUnit } from "../product/product.type"
+
 type TaxRule = { name: string; rate: number }
 type Charges = { type: string; amount: number }
 
@@ -15,6 +17,7 @@ export type OrderItemInput = {
   unitConversion: number
   minQuantity: number
   orderIncrement: number
+  sellingUnits: PricedSellingUnit[]
   pricing: {
     label: string
     uom: string

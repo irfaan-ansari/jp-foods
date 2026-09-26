@@ -18,7 +18,7 @@ import { BagCheck, BagCross } from "@solar-icons/react"
 import { PageContent } from "@/components/page-content"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
-import { getSellingUnits } from "@/features/product/product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams()
@@ -50,11 +50,13 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
       subtotal: Number(data.subtotal),
       total: Number(data.total),
       items: data.lineItems.map((item) => {
-        const unit = item.product
-          ? getSellingUnits(item.product).find(
-              (unit) => unit.name === item.unitName
+        const sellingUnits = item.product
+          ? withCalculatedPrices(
+              item.product.sellingUnits ?? [],
+              !!item.product.catchWeight
             )
-          : undefined
+          : []
+        const unit = sellingUnits.find((unit) => unit.name === item.unitName)
         const quantity = Number(item.quantity)
         const inputOrder = {
           id: item.productId,
@@ -62,12 +64,21 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
           itemCode: item.itemCode,
           price: Number(item.price),
           unitName: item.unitName ?? unit?.name ?? "",
-          baseQuantity: Number(unit?.unitConversion ?? item.baseQuantity ?? 1),
-          unitConversion: Number(
-            unit?.unitConversion ?? item.baseQuantity ?? 1
-          ),
-          minQuantity: Number(unit?.minQuantity ?? 1),
-          orderIncrement: Number(unit?.orderIncreament ?? 1),
+          baseQuantity: Number(unit?.contains ?? item.baseQuantity ?? 1),
+          unitConversion: Number(unit?.contains ?? item.baseQuantity ?? 1),
+          minQuantity: Number(unit?.min ?? 1),
+          orderIncrement: Number(unit?.increament ?? 1),
+          sellingUnits,
+          pricing: {
+            label: unit?.label ?? item.unitName ?? "",
+            uom: item.product?.uom ?? "",
+            catchWeight: !!unit?.catchWeight,
+            contains: Number(unit?.contains ?? item.baseQuantity ?? 1),
+            price: Number(unit?.price ?? item.price),
+            calculatedPrice: Number(unit?.calculatedPrice ?? item.price),
+            min: Number(unit?.min ?? 1),
+            increament: Number(unit?.increament ?? 1),
+          },
           quantity,
           isTaxable: !!item.isTaxable,
           image: item.image ?? "",
