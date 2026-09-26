@@ -23,7 +23,6 @@ import {
 import { Input } from "@jp/ui/components/input"
 import { Textarea } from "@jp/ui/components/textarea"
 import { SubmitOrderButton } from "./submit-order-button"
-import { Promotion } from "@/features/promotion/components/promotion"
 
 export const Cart = () => {
   const isCartOpen = useOrderFormUI((state) => state.isCartOpen)
@@ -50,6 +49,7 @@ export const Cart = () => {
           </Button>
         </DrawerHeader>
         <div className="no-scrollbar flex-1 divide-y divide-dashed overflow-auto px-2">
+          {items.length === 0 && <p className="p-6 text-center text-sm text-muted-foreground">Your cart is empty. Choose a selling unit and quantity to get started.</p>}
           {items.map((item) => (
             <div
               className="flex items-center gap-2 not-first:pt-2 not-last:pb-2"
@@ -79,10 +79,15 @@ export const Cart = () => {
                   {item.quantity} {item.unitName} × {formatUSD(item.price)} /{" "}
                   {item.unitName}
                 </p>
+                {item.pricing.catchWeight && (
+                  <p className="text-xs text-muted-foreground">
+                    Est. {item.quantity * item.pricing.contains} {item.pricing.uom} at {formatUSD(item.pricing.price)} / {item.pricing.uom}
+                  </p>
+                )}
               </div>
               <div className="grid min-w-0 gap-1 text-right">
                 <p className="font-semibold text-primary">
-                  {formatUSD(item.subtotal)}
+                  {item.pricing.catchWeight && "Est. "}{formatUSD(item.subtotal)}
                 </p>
                 <div className="flex items-center justify-end gap-1">
                   <Button
@@ -144,7 +149,7 @@ export const Cart = () => {
             <div className="flex justify-between text-muted-foreground">
               <span>{cart.charges.type}</span>
               <span className="font-medium">
-                {formatUSD(cart.charges.amount)}
+                {formatUSD(items.length ? cart.charges.amount : 0)}
               </span>
             </div>
             <div className="flex justify-between text-muted-foreground">
@@ -152,9 +157,10 @@ export const Cart = () => {
               <span className="font-medium">{formatUSD(cart.taxAmount)}</span>
             </div>
             <div className="flex justify-between text-base font-semibold">
-              <span>Total</span>
+              <span>{items.some((item) => item.pricing.catchWeight) ? "Estimated total" : "Total"}</span>
               <span>{formatUSD(cart.total)}</span>
             </div>
+            {items.some((item) => item.pricing.catchWeight) && <p className="py-2 text-xs text-muted-foreground">Catch-weight amounts are estimates. Final charges depend on the weight delivered.</p>}
             <SubmitOrderButton>
               <Button className="mt-2">
                 {cart.id ? "Update" : "Submit"} Order • {formatUSD(cart.total)}
@@ -185,7 +191,7 @@ const CartNotes = () => {
           size="xs"
           variant="outline"
         >
-          Notes and Prefrences
+          Notes and Preferences
           <ChevronUp className="size-3.5!" />
         </Button>
       </CollapsibleTrigger>
@@ -199,6 +205,8 @@ const CartNotes = () => {
         <Input
           className="bg-background"
           placeholder="Delivery Date"
+          type="date"
+          aria-label="Delivery date"
           value={deliveryDate}
           onChange={(e) => update({ deliveryDate: e.target.value })}
         />

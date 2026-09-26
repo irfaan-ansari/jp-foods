@@ -20,7 +20,6 @@ export const promotionProductSchema = z.object({
   title: z.string(),
   image: z.string().nullable().optional(),
   itemCode: z.string(),
-  price: z.string(),
 })
 
 export const promotionSchema = z.object({

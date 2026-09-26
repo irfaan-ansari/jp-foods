@@ -115,7 +115,11 @@ export const ProductGeneral = withForm({
                     </CategorySelector>
                     <div className="flex flex-wrap items-center gap-1">
                       {field.state.value.map((value, i) => (
-                        <Badge variant="primary-light" className="rounded-lg">
+                        <Badge
+                          variant="primary-light"
+                          className="rounded-lg"
+                          key={value}
+                        >
                           {value}
                           <Button
                             size="icon-xs"

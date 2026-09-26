@@ -3,7 +3,6 @@
 import React from "react"
 import { toast } from "sonner"
 
-import { getAdjustedPrice } from "../price-level.utils"
 import { Badge } from "@jp/ui/components/badge"
 import { formatUSD, pluralize } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
@@ -54,7 +53,7 @@ export const PriceLevelForm = ({
     onSubmit: async ({ value }) => {
       const products = value.products.map((product) => ({
         id: product.id,
-        price: product.price,
+        adjustmentValue: product.adjustmentValue,
       }))
 
       if (id) {
@@ -203,9 +202,7 @@ export const PriceLevelForm = ({
                                 title,
                                 itemCode,
                                 image,
-                                unit: value.unit,
-                                basePrice: value.price,
-                                price: type === "percentage" ? "" : value.price,
+                                adjustmentValue: "0",
                               })
                             }
                           }}
@@ -255,7 +252,7 @@ export const PriceLevelForm = ({
                                 <div className="flex max-w-44 items-center gap-2 self-center">
                                   <div className="inline-flex items-center justify-between">
                                     <form.AppField
-                                      name={`products[${itemIndex}].price`}
+                                      name={`products[${itemIndex}].adjustmentValue`}
                                       children={(field) => (
                                         <field.TextField
                                           className="w-24 *:data-[slot=input-group]:h-8"
@@ -267,20 +264,6 @@ export const PriceLevelForm = ({
                                       )}
                                     />
                                   </div>
-                                  {type === "percentage" && (
-                                    <div className="inline-flex items-center justify-between gap-2">
-                                      <ArrowRight className="size-3" />
-                                      <span className="text-xs text-primary">
-                                        {formatUSD(
-                                          getAdjustedPrice(
-                                            type,
-                                            item.basePrice,
-                                            item.price
-                                          )
-                                        )}
-                                      </span>
-                                    </div>
-                                  )}
                                 </div>
                                 <Button
                                   type="button"

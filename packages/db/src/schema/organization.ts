@@ -27,10 +27,7 @@ export const product = pgTable(
     uom: text("uom"),
     weightLb: text("pack_size"),
     catchWeight: boolean("average_weight"),
-    sellUnit: text("sell_unit"),
-    price: text("price").notNull().default("0"),
-    contains: text("unit_size"),
-    label: text("label"),
+
     type: text("type").default(""),
     description: text("description").default(""),
     categories: jsonb("categories")
@@ -42,13 +39,14 @@ export const product = pgTable(
     trackInventory: boolean("track_inventory").default(false),
     stock: text("stock").default("0"),
     allowBackorder: boolean("allow_backorder").default(true),
-    sellUnits: jsonb("sell_units")
+    sellingUnits: jsonb("selling_units")
       .$type<
         {
           name: string
-          label: string
+          displayLabel: string
           price: string
-          unitConversion: string
+          qtyPerUnit: string
+          isDefault: boolean
         }[]
       >()
       .default(sql`'[]'::jsonb`),
@@ -108,9 +106,9 @@ export const priceLevelItem = pgTable(
       .references(() => product.id, {
         onDelete: "cascade",
       }),
-    price:
+    adjustmentValue:
       text(
-        "price"
+        "adjustment_value"
       ).notNull() /** adjustmentType == percentage ? increase or decrease by percent  */,
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at")
@@ -340,6 +338,17 @@ export const lineItem = pgTable(
       .notNull()
       .default("1") /** used for inventory tracking */,
     unitConversion: text("unit_conversion").notNull().default("1"),
+    // Immutable ordering-time pricing details; null for legacy orders.
+    pricingSnapshot: jsonb("pricing_snapshot").$type<{
+      label: string
+      uom: string
+      catchWeight: boolean
+      contains: number
+      price: number
+      calculatedPrice: number
+      min: number
+      increament: number
+    }>(),
 
     subtotal: text("subtotal").default("0"),
     isTaxable: boolean("is_taxable").default(false),

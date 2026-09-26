@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/use-app-form"
-import { MEASURE_UNITS, WEIGHT_UNITS } from "../product.const"
+import { MEASURE_UNITS } from "../product.const"
 import { ProductFormSchema } from "../product.schema"
 
 import {
@@ -11,9 +11,9 @@ import {
 import {
   Field,
   FieldContent,
+  FieldError,
   FieldGroup,
   FieldLabel,
-  FieldLegend,
   FieldTitle,
 } from "@jp/ui/components/field"
 import { Switch } from "@jp/ui/components/switch"
@@ -22,16 +22,18 @@ import { formatUSD } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import { Plus } from "lucide-react"
 import { TrashBinMinimalistic } from "@solar-icons/react"
+import { getUnit } from "../product.utils"
 
 export const ProductPricing = withForm({
   defaultValues: {} as ProductFormSchema,
   render: function Render({ form }) {
     const handleClick = () => {
-      form.pushFieldValue("sellUnits", {
+      form.pushFieldValue("sellingUnits", {
         name: "lb",
-        label: "",
-        price: form.getFieldValue("price"),
-        unitConversion: "1",
+        displayLabel: "",
+        price: "",
+        qtyPerUnit: "1",
+        isDefault: false,
       })
     }
 
@@ -41,7 +43,7 @@ export const ProductPricing = withForm({
           <CardTitle className="font-bold">Units and pricing</CardTitle>
         </CardHeader>
         <form.Subscribe selector={(state) => state.values}>
-          {({ uom, sellUnit, label, catchWeight, contains }) => {
+          {({ uom, catchWeight }) => {
             return (
               <CardContent className="space-y-6">
                 <FieldGroup className="grid items-end lg:grid-cols-3">
@@ -69,6 +71,7 @@ export const ProductPricing = withForm({
                     children={(field) => {
                       const isInvalid =
                         field.state.meta.isTouched && !field.state.meta.isValid
+
                       return (
                         <Field
                           orientation="horizontal"
@@ -96,105 +99,74 @@ export const ProductPricing = withForm({
                   />
                 </FieldGroup>
 
-                {/* default selling option */}
-                <Card size="sm" className="ring-2 ring-primary/50">
-                  <CardContent className="relative">
-                    <Badge
-                      variant="default"
-                      className="absolute -top-1 right-4"
-                    >
-                      {label || sellUnit}
-                    </Badge>
-                    <FieldGroup className="grid lg:grid-cols-3">
-                      <form.AppField
-                        name="sellUnit"
-                        children={(field) => (
-                          <field.SelectField
-                            className="lg:col-span-3"
-                            label="Selling Unit"
-                            options={MEASURE_UNITS}
-                          />
-                        )}
-                      />
-
-                      <form.AppField
-                        name="price"
-                        children={(field) => (
-                          <field.TextField
-                            label="Price"
-                            placeholder="2.00"
-                            className="**:data-[slot=input-group-addon]:uppercase"
-                            inputMode="decimal"
-                            prefix={"$"}
-                            suffix={catchWeight ? uom : sellUnit}
-                          />
-                        )}
-                      />
-                      <form.AppField
-                        name="contains"
-                        children={(field) => (
-                          <field.TextField
-                            label="Contains"
-                            placeholder="60"
-                            className="**:data-[slot=input-group-addon]:uppercase"
-                            inputMode="decimal"
-                            suffix={uom}
-                          />
-                        )}
-                      />
-                      <form.AppField
-                        name="label"
-                        children={(field) => (
-                          <field.TextField
-                            label="Label (optional)"
-                            placeholder="10LB CASE"
-                          />
-                        )}
-                      />
-                    </FieldGroup>
-                  </CardContent>
-                </Card>
-
                 {/* split items */}
-                <form.Field name="sellUnits" mode="array">
+                <form.Field name="sellingUnits" mode="array">
                   {(field) => {
                     return (
                       <div className="space-y-4">
+                        <FieldError errors={field.state.meta.errors} />
                         {field.state.value.map((subField, i) => {
-                          const conv = Number(subField.unitConversion)
-                          const price = Number(subField.price)
-                          const qty = Number(contains)
-                          const valid = conv > 0
-
-                          const whole = [contains, uom, sellUnit]
-                            .filter(Boolean)
-                            .join(" ")
-                          const perSplit = valid && qty ? qty / conv : null
                           return (
-                            <Card size="sm">
+                            <Card
+                              key={i}
+                              size="sm"
+                              className={
+                                subField.isDefault
+                                  ? "ring-2 ring-primary/50"
+                                  : ""
+                              }
+                            >
                               <CardContent className="relative">
-                                <Button
-                                  size="icon-xs"
-                                  variant="destructive"
-                                  className="absolute -top-1 right-4"
-                                  onClick={() => field.removeValue(i)}
-                                >
-                                  <TrashBinMinimalistic />
-                                </Button>
+                                <div className="absolute -top-1 right-4 flex items-center gap-1.5">
+                                  {subField.isDefault ? (
+                                    <Badge variant="primary-light">
+                                      Default
+                                    </Badge>
+                                  ) : (
+                                    <Button
+                                      type="button"
+                                      size="xs"
+                                      variant="outline"
+                                      onClick={() => {
+                                        field.setValue((previous) =>
+                                          previous.map((unit, index) => ({
+                                            ...unit,
+                                            isDefault: index === i,
+                                          }))
+                                        )
+                                      }}
+                                    >
+                                      Make Default
+                                    </Button>
+                                  )}
+                                  {!subField.isDefault &&
+                                    field.state.value.length > 1 && (
+                                      <Button
+                                        type="button"
+                                        aria-label="Remove split option"
+                                        size="icon-xs"
+                                        variant="destructive"
+                                        onClick={() => field.removeValue(i)}
+                                      >
+                                        <TrashBinMinimalistic />
+                                      </Button>
+                                    )}
+                                </div>
+
                                 <FieldGroup className="grid lg:grid-cols-3">
                                   <form.AppField
-                                    name={`sellUnits[${i}].name`}
+                                    name={`sellingUnits[${i}].name`}
                                     children={(field) => (
                                       <field.SelectField
                                         className="lg:col-span-3"
-                                        label="Split Unit"
+                                        label="Sell as"
                                         options={MEASURE_UNITS}
                                       />
                                     )}
                                   />
 
                                   <form.AppField
-                                    name={`sellUnits[${i}].price`}
+                                    name={`sellingUnits[${i}].price`}
                                     children={(field) => (
                                       <field.TextField
                                         label="Price"
@@ -202,30 +174,32 @@ export const ProductPricing = withForm({
                                         className="**:data-[slot=input-group-addon]:uppercase"
                                         inputMode="decimal"
                                         prefix={"$"}
-                                        suffix={catchWeight ? uom : sellUnit}
+                                        suffix={
+                                          catchWeight ? uom : subField.name
+                                        }
                                       />
                                     )}
                                   />
 
                                   <form.AppField
-                                    name={`sellUnits[${i}].unitConversion`}
+                                    name={`sellingUnits[${i}].qtyPerUnit`}
                                     children={(field) => (
                                       <field.TextField
-                                        label="Split into"
+                                        label="Contains"
                                         placeholder="60"
                                         className="**:data-[slot=input-group-addon]:uppercase"
                                         inputMode="decimal"
-                                        suffix={subField.name}
+                                        suffix={uom}
                                       />
                                     )}
                                   />
 
                                   <form.AppField
-                                    name={`sellUnits[${i}].label`}
+                                    name={`sellingUnits[${i}].displayLabel`}
                                     children={(field) => (
                                       <field.TextField
                                         label="Label (optional)"
-                                        placeholder="5LB Bag"
+                                        placeholder="Case"
                                       />
                                     )}
                                   />
@@ -234,25 +208,24 @@ export const ProductPricing = withForm({
                                 {/* preview */}
                                 <div className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-2.5">
                                   <div className="flex items-center gap-2">
-                                    <div className="grid min-w-0">
-                                      <span className="truncate text-base font-bold">
-                                        {subField.label ||
-                                          subField.name ||
-                                          "Untitled"}
+                                    <div className="flex-1 space-x-1">
+                                      <span className="font-semibold">
+                                        {subField.displayLabel ||
+                                          getUnit(subField.name)?.label}
                                       </span>
-                                      {valid && (
-                                        <p className="text-muted-foreground">
-                                          <strong>Conversion:</strong> {whole} ÷{" "}
-                                          {conv} split units
-                                          {perSplit !== null &&
-                                            ` = ${perSplit} ${uom ?? ""}`}
-                                        </p>
-                                      )}
+                                      <span className="text-muted-foreground">
+                                        • {subField.qtyPerUnit} {uom}{" "}
+                                        {catchWeight && "avg"}
+                                      </span>
                                     </div>
-                                    <span className="ml-auto shrink-0 text-base font-bold text-primary">
-                                      {valid && price
-                                        ? formatUSD(price / conv)
-                                        : "—"}
+                                    <span className="text-base font-bold text-primary">
+                                      {formatUSD(subField.price)}
+                                      {catchWeight && (
+                                        <span className="text-xs font-normal text-muted-foreground">
+                                          {" / "}
+                                          {uom}
+                                        </span>
+                                      )}
                                     </span>
                                   </div>
                                 </div>
@@ -261,11 +234,12 @@ export const ProductPricing = withForm({
                           )
                         })}
                         <Button
+                          type="button"
                           variant="outline"
                           className="w-full border-dashed"
                           onClick={handleClick}
                         >
-                          <Plus /> Add split option
+                          <Plus /> Add option
                         </Button>
                       </div>
                     )

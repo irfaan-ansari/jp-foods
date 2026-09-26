@@ -30,7 +30,7 @@ export const createPriceLevel = orgActionClient({ priceLevel: ["create"] })
     if (appliesTo === "per_item" && products.length > 0) {
       const priceLevelItemValues = products.map((p) => ({
         productId: p.id,
-        price: p.price,
+        adjustmentValue: p.adjustmentValue,
         priceLevelId: result.id,
       }))
       await db.insert(priceLevelItem).values(priceLevelItemValues)
@@ -92,7 +92,7 @@ export const updatePriceLevel = orgActionClient({
         ? products.map((product) => ({
             priceLevelId: result.id,
             productId: product.id,
-            price: product.price,
+            adjustmentValue: product.adjustmentValue,
           }))
         : []
 
@@ -121,7 +121,7 @@ export const updatePriceLevel = orgActionClient({
           .onConflictDoUpdate({
             target: [priceLevelItem.priceLevelId, priceLevelItem.productId],
             set: {
-              price: sql`excluded.price`,
+              adjustmentValue: sql`excluded.adjustmentValue`,
             },
           })
       )

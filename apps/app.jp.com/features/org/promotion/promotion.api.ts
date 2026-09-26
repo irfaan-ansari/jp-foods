@@ -10,11 +10,11 @@ const app = new Hono<OrgAppContext>()
 app.use("*", orgPermission({ promotion: ["read"] }))
 
 const mapProduct = (item: typeof product.$inferSelect) => ({
+  ...item,
   id: item.id,
   title: item.title,
   image: item.image ?? "",
   itemCode: item.itemCode,
-  price: item.price,
 })
 
 const transformPromotions = async (
@@ -67,39 +67,41 @@ const transformPromotions = async (
 
   const productMap = new Map(products.map((item) => [item.id, item]))
 
-  return response.map(({ productIds, triggerProductIds, placement, ...item }) => ({
-    ...item,
-    placement: placement?.[0] ?? "sidebar",
-    teams: (targetsByPromotionId.get(item.id) ?? [])
-      .map(({ team }) =>
-        team
-          ? {
-              id: team.id,
-              name: team.name,
-              phoneNumber: team.phoneNumber,
-              email: team.email,
-            }
-          : null
-      )
-      .filter(
-        (
-          value
-        ): value is {
-          id: string
-          name: string
-          phoneNumber: string
-          email: string
-        } => Boolean(value)
-      ),
-    products: (productIds ?? [])
-      .map((id) => productMap.get(id))
-      .filter((item): item is typeof product.$inferSelect => Boolean(item))
-      .map(mapProduct),
-    triggerProducts: (triggerProductIds ?? [])
-      .map((id) => productMap.get(id))
-      .filter((item): item is typeof product.$inferSelect => Boolean(item))
-      .map(mapProduct),
-  }))
+  return response.map(
+    ({ productIds, triggerProductIds, placement, ...item }) => ({
+      ...item,
+      placement: placement?.[0] ?? "sidebar",
+      teams: (targetsByPromotionId.get(item.id) ?? [])
+        .map(({ team }) =>
+          team
+            ? {
+                id: team.id,
+                name: team.name,
+                phoneNumber: team.phoneNumber,
+                email: team.email,
+              }
+            : null
+        )
+        .filter(
+          (
+            value
+          ): value is {
+            id: string
+            name: string
+            phoneNumber: string
+            email: string
+          } => Boolean(value)
+        ),
+      products: (productIds ?? [])
+        .map((id) => productMap.get(id))
+        .filter((item): item is typeof product.$inferSelect => Boolean(item))
+        .map(mapProduct),
+      triggerProducts: (triggerProductIds ?? [])
+        .map((id) => productMap.get(id))
+        .filter((item): item is typeof product.$inferSelect => Boolean(item))
+        .map(mapProduct),
+    })
+  )
 }
 
 export const promotionRoutes = app

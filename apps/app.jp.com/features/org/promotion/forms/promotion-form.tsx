@@ -568,7 +568,6 @@ const ProductListField = ({
           title: value.title,
           image: value.image,
           itemCode: value.itemCode,
-          price: value.price,
         })
       }}
     >
@@ -605,9 +604,7 @@ const ProductListField = ({
                 {item.itemCode}
               </span>
             </div>
-            <span className="text-xs font-medium text-primary">
-              {formatUSD(item.price)}
-            </span>
+
             <Button
               size="icon-xs"
               variant="destructive"

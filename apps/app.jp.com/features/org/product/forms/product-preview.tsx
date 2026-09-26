@@ -1,6 +1,5 @@
 import { toast } from "sonner"
 import { useEffect, useRef, useState } from "react"
-import { formatUSD } from "@jp/utils"
 import {
   Card,
   CardContent,
@@ -8,16 +7,29 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { cn } from "@jp/ui/lib/utils"
-import { ImageUp, ShoppingCart } from "lucide-react"
+import { ImageUp, Minus, Plus } from "lucide-react"
 import { withForm } from "@/hooks/use-app-form"
 import { Input } from "@jp/ui/components/input"
 import { ProductFormSchema } from "../product.schema"
 import { FieldLabel, FieldLegend } from "@jp/ui/components/field"
 import { ProductBadge } from "../components/product-card"
 import { Badge } from "@jp/ui/components/badge"
-import { getSellingUnits } from "../product.utils"
-import { Tabs, TabsList, TabsTrigger } from "@jp/ui/components/tabs"
-import { Button } from "@jp/ui/components/button"
+import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@jp/ui/components/tabs"
+import { formatUSD } from "@jp/utils"
+import { normalizeQuantity, roundMoney } from "@jp/utils/commerce"
+
+import { withCalculatedPrices } from "../product.utils"
+import {
+  InputGroup,
+  InputGroupAddon,
+  InputGroupButton,
+  InputGroupInput,
+} from "@jp/ui/components/input-group"
 
 export const ProductPreview = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -25,7 +37,13 @@ export const ProductPreview = withForm({
     setFile: (file: File | null) => void
   },
   render: function Render({ form, setFile }) {
-    const [selectedUnitName, setSelectedUnitName] = useState("")
+    const [quantities, setQuantities] = useState<Record<string, number>>({})
+    const setQuantity = (unit: string, value: number) => {
+      setQuantities((previous) => ({
+        ...previous,
+        [unit]: normalizeQuantity(Math.max(0, value)),
+      }))
+    }
     const previewUrl = useRef<string | null>(null)
 
     useEffect(
@@ -57,39 +75,16 @@ export const ProductPreview = withForm({
         {({
           title,
           image,
-          price,
           uom,
-          sellUnit,
-          contains,
-          label,
-          weightLb,
           catchWeight,
           categories,
-          sellUnits,
+          sellingUnits,
           status,
           isTaxable,
-          itemCode,
         }) => {
-          const prices = getSellingUnits({
-            price,
-            uom,
-            sellUnit,
-            weightLb,
-            catchWeight,
-            sellUnits,
-            contains,
-            label,
-          })
-
-          const selectedUnit =
-            prices.find((unit) => unit.name === selectedUnitName) ?? prices[0]
-          const selectedValue = selectedUnit?.name ?? ""
-          const itemMeta = [itemCode && `Item ${itemCode}`, label].filter(
-            Boolean
-          )
-          const unitLabel =
-            selectedUnit?.displayUnit || selectedUnit?.name || sellUnit || uom
-
+          const sellUnits = withCalculatedPrices(sellingUnits, catchWeight)
+          const defaultUnit =
+            sellUnits.find((unit) => unit.isDefault) ?? sellUnits[0]
           return (
             <Card
               className="gap-0 overflow-hidden bg-secondary py-0 shadow-xs"
@@ -161,64 +156,119 @@ export const ProductPreview = withForm({
                   <div className="h-5 rounded-lg bg-secondary" />
                 )}
 
-                {itemMeta.length > 0 ? (
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {itemMeta.join(" · ")}
-                  </p>
-                ) : (
-                  <div className="h-4 w-2/3 rounded-lg bg-secondary" />
-                )}
-
-                {prices.length > 0 ? (
+                <div className="space-y-4 pt-2">
                   <Tabs
-                    value={selectedValue}
-                    onValueChange={setSelectedUnitName}
+                    key={JSON.stringify([
+                      defaultUnit?.name,
+                      sellUnits.map((unit) => unit.name),
+                    ])}
+                    defaultValue={defaultUnit?.name}
                     className="gap-2"
                   >
-                    <TabsList className="w-full rounded-xl border p-0.5!">
-                      {prices.map((unit) => (
-                        <TabsTrigger
+                    {sellUnits.length > 1 && (
+                      <TabsList className="w-full rounded-xl p-0.5">
+                        {sellUnits.map((unit) => (
+                          <TabsTrigger
+                            key={unit.name}
+                            value={unit.name}
+                            className="rounded-lg"
+                          >
+                            {unit.displayLabel}
+                          </TabsTrigger>
+                        ))}
+                      </TabsList>
+                    )}
+
+                    {sellUnits.map((unit) => {
+                      const quantity = quantities[unit.name] ?? 0
+                      const total = roundMoney(unit.calculatedPrice * quantity)
+
+                      return (
+                        <TabsContent
                           key={unit.name}
                           value={unit.name}
-                          className="rounded-lg"
+                          className="space-y-2 rounded-lg"
                         >
-                          {unit.name}
-                        </TabsTrigger>
-                      ))}
-                    </TabsList>
+                          <div className="space-x-1">
+                            <span className="text-lg font-bold text-primary">
+                              {formatUSD(unit.price)}
+                              {catchWeight && (
+                                <span className="text-xs font-normal text-muted-foreground">
+                                  {" / "}
+                                  {uom}
+                                </span>
+                              )}
+                            </span>
+                            <span className="text-sm font-medium text-muted-foreground">
+                              • {unit.qtyPerUnit} {uom}
+                              {catchWeight && " avg"}
+                            </span>
+                          </div>
+                          <div className="mt-4">
+                            <InputGroup>
+                              <InputGroupAddon>
+                                <InputGroupButton
+                                  type="button"
+                                  variant="default"
+                                  disabled={quantity === 0}
+                                  onClick={() =>
+                                    setQuantity(unit.name, quantity - 1)
+                                  }
+                                >
+                                  <Minus />
+                                </InputGroupButton>
+                              </InputGroupAddon>
+                              <InputGroupAddon align="inline-end">
+                                <InputGroupButton
+                                  type="button"
+                                  variant="default"
+                                  onClick={() =>
+                                    setQuantity(unit.name, quantity + 1)
+                                  }
+                                >
+                                  <Plus />
+                                </InputGroupButton>
+                              </InputGroupAddon>
+                              <InputGroupInput
+                                className="text-center"
+                                type="number"
+                                inputMode="decimal"
+                                min={0}
+                                aria-label={`Quantity in ${unit.name}`}
+                                value={quantity}
+                                onChange={(event) => {
+                                  const parsed = Number(event.target.value)
+                                  setQuantity(
+                                    unit.name,
+                                    Number.isFinite(parsed) ? parsed : 0
+                                  )
+                                }}
+                              />
+                            </InputGroup>
+                          </div>
+                          {quantity > 0 && (
+                            <div className="space-y-1.5 rounded-xl bg-secondary p-3">
+                              <div className="flex justify-between gap-1">
+                                <span>Items</span>
+                                <span>
+                                  {quantity} x {unit.qtyPerUnit} {uom}
+                                </span>
+                              </div>
+                              <div className="flex justify-between font-semibold">
+                                <span>
+                                  {catchWeight ? "Est. total" : "Total"}
+                                </span>
+                                <span className="text-base text-primary">
+                                  {formatUSD(total)}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </TabsContent>
+                      )
+                    })}
                   </Tabs>
-                ) : (
-                  <div className="h-10 rounded-xl border bg-transparent" />
-                )}
-
-                <div className="space-y-2">
-                  <div className="text-lg font-bold tracking-normal text-primary">
-                    {selectedUnit
-                      ? formatUSD(selectedUnit.displayPrice)
-                      : formatUSD(price)}
-                  </div>
-                  <p className="text-sm font-medium text-muted-foreground">
-                    {selectedUnit ? (
-                      <>
-                        {selectedUnit.pricing === "per_uom"
-                          ? `per ${unitLabel}`
-                          : `per ${unitLabel}`}
-                        {selectedUnit.weightIsEstimate
-                          ? ` · Estimated ${formatUSD(
-                              selectedUnit.calculatedPrice
-                            )} per ${selectedUnit.name}`
-                          : ` · Minimum 1 ${uom}`}
-                      </>
-                    ) : (
-                      "Pricing unavailable"
-                    )}
-                  </p>
                 </div>
-
-                <Button type="button" className="w-full">
-                  <ShoppingCart />
-                  Add to order
-                </Button>
               </CardContent>
             </Card>
           )

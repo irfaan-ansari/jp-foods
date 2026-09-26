@@ -15,6 +15,16 @@ export type OrderItemInput = {
   unitConversion: number
   minQuantity: number
   orderIncrement: number
+  pricing: {
+    label: string
+    uom: string
+    catchWeight: boolean
+    contains: number
+    price: number
+    calculatedPrice: number
+    min: number
+    increament: number
+  }
 }
 
 export type OrderItem = OrderItemInput & {

@@ -85,18 +85,10 @@ export const products = app
       })
     )
 
-    const items = resolvedPrices.map((item) => ({
-      ...item,
-      sellUnits: item.sellUnits?.map((unit) => ({
-        ...unit,
-        price: Number(unit.unitConversion) * Number(item.price),
-      })),
-    }))
-
     return c.json(
       {
         success: true,
-        data: items,
+        data: resolvedPrices,
         pagination: {
           page: page,
           limit: limit,

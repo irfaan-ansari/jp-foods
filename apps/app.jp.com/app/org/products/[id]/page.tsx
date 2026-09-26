@@ -36,19 +36,10 @@ const ProductPage = () => {
             key={data.id}
             id={data?.id}
             data={{
-              sellUnits:
-                data.sellUnits?.map((unit) => ({
-                  ...unit,
-                  label: unit.label ?? "",
-                  price: unit.price ?? "",
-                })) ?? [],
+              sellingUnits: data?.sellingUnits ?? [],
               uom: data.uom ?? "lb",
-              sellUnit: data.sellUnit ?? data.sellUnits?.[0]?.name ?? "case",
-              contains: data.contains ?? "1",
               weightLb: data.weightLb ?? "",
-              label: data.label ?? "",
               catchWeight: !!data.catchWeight,
-              price: data.price ?? "",
               title: data.title ?? "",
               itemCode: data.itemCode ?? "",
               image: data.image ?? "",

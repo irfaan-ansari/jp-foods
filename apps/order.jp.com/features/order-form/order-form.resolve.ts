@@ -5,6 +5,7 @@ import { and, eq, inArray } from "drizzle-orm"
 import { getSellingUnits } from "../product/product.utils"
 import { getTeamPriceResolver } from "../team/team.price-resolver"
 import { toOrderItemInput } from "./order-form.utils"
+import { isValidQuantity } from "@jp/utils/commerce"
 
 export type RequestedOrderItem = {
   id: number
@@ -14,15 +15,6 @@ export type RequestedOrderItem = {
 
 const lineKey = (productId: number, unitName: string) =>
   `${productId}:${unitName}`
-
-function isValidIncrement(
-  quantity: number,
-  minimum: number,
-  increment: number
-) {
-  const steps = (quantity - minimum) / increment
-  return quantity >= minimum && Math.abs(steps - Math.round(steps)) <= 1e-8
-}
 
 export async function resolveOrderItems(
   requestedItems: RequestedOrderItem[],
@@ -62,8 +54,8 @@ export async function resolveOrderItems(
     const product = productsById.get(request.id)
     if (
       !product ||
-      product.status === "archived" ||
-      (product.status !== "active" && !privateIds.has(product.id))
+      !(product.status === "active" ||
+        (product.status === "private" && privateIds.has(product.id)))
     ) {
       throw new AppError("INVALID_REQUEST", {
         message: "A selected product is no longer available.",
@@ -80,10 +72,10 @@ export async function resolveOrderItems(
       })
     }
 
-    const minimum = Number(unit.minQuantity)
-    const increment = Number(unit.orderIncreament)
-    const conversion = Number(unit.unitConversion)
-    const price = Number(unit.price)
+    const minimum = unit.min
+    const increment = unit.increament
+    const conversion = unit.contains
+    const price = unit.calculatedPrice
     if (
       !Number.isFinite(minimum) ||
       minimum <= 0 ||
@@ -93,7 +85,7 @@ export async function resolveOrderItems(
       conversion <= 0 ||
       !Number.isFinite(price) ||
       price < 0 ||
-      !isValidIncrement(request.quantity, minimum, increment)
+      !isValidQuantity(request.quantity, minimum, increment)
     ) {
       throw new AppError("INVALID_REQUEST", {
         message: `Quantity for ${product.title} must meet the ${unit.name} minimum and increment.`,

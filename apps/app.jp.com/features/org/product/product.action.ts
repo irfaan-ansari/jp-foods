@@ -9,22 +9,26 @@ import { orgActionClient } from "@/lib/safe-action"
 import {
   createProductSchema,
   deleteProductSchema,
-  type ProductFormSchema,
   updateProductSchema,
 } from "./product.schema"
-
-const getProductData = (data: ProductFormSchema) => {
-  return data
-}
 
 /**
  * create product
  */
 export const createProduct = orgActionClient({ product: ["create"] })
   .inputSchema(createProductSchema)
-  .action(async ({ clientInput, ctx }) => {
-    const { data } = clientInput
-    const productData = getProductData(data)
+  .action(async ({ parsedInput, ctx }) => {
+    const { data } = parsedInput
+
+    const hasDefault = data.sellingUnits.some((unit) => unit.isDefault)
+
+    const productData = {
+      ...data,
+      sellingUnits: data.sellingUnits.map((unit, index) => ({
+        ...unit,
+        isDefault: unit.isDefault || (!hasDefault && index === 0),
+      })),
+    }
 
     const orgs = await db.query.organization.findMany({
       columns: {
@@ -47,6 +51,12 @@ export const createProduct = orgActionClient({ product: ["create"] })
       },
     })
 
+    if (existing.some((item) => item.organizationId === ctx.organizationId)) {
+      throw new AppError("INVALID_REQUEST", {
+        message: "Item code already exists.",
+      })
+    }
+
     const existingOrgIds = new Set(existing.map((p) => p.organizationId))
 
     const orgsToInsert = orgs.filter((org) => !existingOrgIds.has(org.id))
@@ -62,7 +72,7 @@ export const createProduct = orgActionClient({ product: ["create"] })
           .values(
             orgsToInsert.map((org) => ({
               ...productData,
-              status: org.id === ctx.organizationId ? "active" : "draft",
+              status: org.id === ctx.organizationId ? data.status : "draft",
               searchText,
               organizationId: org.id,
             }))
@@ -90,9 +100,16 @@ export const createProduct = orgActionClient({ product: ["create"] })
  */
 export const updateProduct = orgActionClient({ product: ["update"] })
   .inputSchema(updateProductSchema)
-  .action(async ({ clientInput, ctx }) => {
-    const { id, data } = clientInput
-    const productData = getProductData(data)
+  .action(async ({ parsedInput, ctx }) => {
+    const { id, data } = parsedInput
+    const hasDefault = data.sellingUnits.some((unit) => unit.isDefault)
+    const productData = {
+      ...data,
+      sellingUnits: data.sellingUnits.map((unit, index) => ({
+        ...unit,
+        isDefault: unit.isDefault || (!hasDefault && index === 0),
+      })),
+    }
 
     const exist = await db.query.product.findFirst({
       where: (p, { and, eq }) =>
@@ -120,8 +137,8 @@ export const updateProduct = orgActionClient({ product: ["update"] })
  */
 export const deleteProduct = orgActionClient({ product: ["delete"] })
   .inputSchema(deleteProductSchema)
-  .action(async ({ clientInput, ctx }) => {
-    const { id } = clientInput
+  .action(async ({ parsedInput, ctx }) => {
+    const { id } = parsedInput
 
     const exist = await db.query.product.findFirst({
       where: (p, { and, eq }) =>

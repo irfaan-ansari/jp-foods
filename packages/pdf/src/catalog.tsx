@@ -9,6 +9,7 @@ const colors = {
   border: "#d9f99d",
   text: "#ffffff",
 }
+
 interface CatalogProps {
   org: OrganizationSelectType
   products: Record<string, ProductSelectType[]>
@@ -191,6 +192,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                     { color: colors.background, fontWeight: "bold" },
                   ]}
                 >
+                  {/* @ts-ignore */}
                   {formatUSD(product.price)} / {product.uom}
                 </Text>
               </View>

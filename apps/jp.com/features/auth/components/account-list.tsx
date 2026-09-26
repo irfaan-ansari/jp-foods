@@ -33,7 +33,7 @@ export const AccountList = ({ data }: { data: DeviceSessions }) => {
             to continue to the Jimezez Produce portal.
           </p>
         </div>
-        <ul className="-mx-2.5 grid gap-2">
+        <ul className="grid gap-2">
           {data?.map(({ session, user }) => (
             <li key={session.token}>
               <Button

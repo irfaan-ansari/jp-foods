@@ -8,9 +8,7 @@ type PriceLeveItem = Pick<
   ProductSelectType,
   "id" | "title" | "image" | "itemCode"
 > & {
-  unit: string
-  basePrice: string
-  price: string
+  adjustmentValue: string
 }
 
 export type PriceLevel = PriceLevelSelectType & {
@@ -32,5 +30,8 @@ export type PriceLevelConfig = Pick<
   PriceLevelSelectType,
   "status" | "appliesTo" | "adjustmentType" | "adjustmentValue"
 > & {
-  priceLevelItem: Pick<PriceLevelItemSelectType, "productId" | "price">[]
+  priceLevelItem: Pick<
+    PriceLevelItemSelectType,
+    "productId" | "adjustmentValue"
+  >[]
 }
