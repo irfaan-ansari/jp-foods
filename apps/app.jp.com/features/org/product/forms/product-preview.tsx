@@ -23,7 +23,7 @@ import {
 import { formatUSD } from "@jp/utils"
 import { normalizeQuantity, roundMoney } from "@jp/utils/commerce"
 
-import { withCalculatedPrices } from "../product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 import {
   InputGroup,
   InputGroupAddon,

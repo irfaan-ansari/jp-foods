@@ -1,8 +1,10 @@
 import type { ProductSelectType } from "@jp/db"
-export type { SellingUnit as PricedSellingUnit } from "@jp/utils/commerce"
+export type { PricedSellingUnit } from "@jp/utils/commerce"
 
 export type SellUnit = NonNullable<ProductSelectType["sellingUnits"]>[number]
-export type Product = ProductSelectType & {
+
+export type Product = Omit<ProductSelectType, "sellingUnits"> & {
+  sellingUnits: SellUnit[]
   lastOrder?: {
     id: number
     quantity: string

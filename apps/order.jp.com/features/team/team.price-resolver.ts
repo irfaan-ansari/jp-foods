@@ -2,7 +2,7 @@ import { createProductPriceResolver } from "@jp/utils/commerce"
 import { db } from "@jp/db"
 
 import type { Product } from "../product/product.type"
-import { getSellingUnits } from "../product/product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 
 
 
@@ -40,8 +40,11 @@ export async function resolveTeamPrice({
   teamId: string
 }) {
   const resolve = await getTeamPriceResolver(teamId)
-  return getSellingUnits(resolve(product)).find(
+  const resolvedProduct = resolve(product)
+  return withCalculatedPrices(
+    resolvedProduct.sellingUnits ?? [],
+    !!resolvedProduct.catchWeight
+  ).find(
     (unit) => unit.name === unitName
   )?.price
 }
-

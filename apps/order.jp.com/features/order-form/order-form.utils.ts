@@ -1,6 +1,6 @@
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
-import { getSellingUnits } from "../product/product.utils"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 import type { PricedSellingUnit } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
@@ -21,15 +21,21 @@ export const toOrderItemInputs = (product: Partial<Product>[]) => {
   return product.map((p) => toOrderItemInput(p))
 }
 
-type OrderItemProduct = Partial<Omit<Product, "sellUnits">> & {
-  sellUnits?: Product["sellUnits"] | null
+type OrderItemProduct = Partial<Omit<Product, "sellingUnits">> & {
+  sellingUnits?: Product["sellingUnits"] | null
 }
 
 export const toOrderItemInput = (
   product: OrderItemProduct,
   selectedUnit?: PricedSellingUnit
 ) => {
-  const sellUnit = selectedUnit ?? getSellingUnits(product)[0]
+  const sellingUnits = withCalculatedPrices(
+    product.sellingUnits ?? [],
+    !!product.catchWeight
+  )
+  const sellUnit =
+    selectedUnit ??
+    sellingUnits[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
   const { id, title, isTaxable, itemCode, image, categories } = product
   return {
@@ -42,6 +48,7 @@ export const toOrderItemInput = (
     unitConversion: sellUnit.contains,
     minQuantity: sellUnit.min,
     orderIncrement: sellUnit.increament,
+    sellingUnits,
     pricing: {
       label: sellUnit.label,
       uom: product.uom ?? "",

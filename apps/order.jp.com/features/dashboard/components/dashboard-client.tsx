@@ -12,10 +12,9 @@ import {
 import { Button } from "@jp/ui/components/button"
 import { CardDescription, CardTitle } from "@jp/ui/components/card"
 import { IconTile } from "@jp/ui/components/icon-tile"
-import { Skeleton } from "@jp/ui/components/skeleton"
+
 import { formatDate, formatUSD } from "@jp/utils"
 
-import { QueryBoundary } from "@/components/query-boundry"
 import { StatusBadge } from "@/components/status-badge"
 import { useOrderDashboard } from "@/features/order/order.data"
 
@@ -23,13 +22,15 @@ import { DashboardCard } from "./dashboard-card"
 import { OrderGuides } from "./order-guides"
 import { OverviewChart } from "./overview"
 import { StatCard } from "./stat-card"
+import { Promotion } from "@/features/promotion/components/promotion"
 
 export function DashboardClient() {
   const { data: dashboard, isPending, isError } = useOrderDashboard()
-
   const data = dashboard?.data
+
   return (
     <div className="space-y-6">
+      <Promotion placement="banner" />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Open orders"
@@ -104,7 +105,7 @@ export function DashboardClient() {
                 key={order.id}
                 className="flex items-center gap-4 px-4 py-3 hover:bg-secondary/50"
               >
-                <div className="flex-1 min-w-0 space-y-1">
+                <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <CardTitle>Order #{order.id}</CardTitle>
                     <StatusBadge status={order.status} />
@@ -125,7 +126,7 @@ export function DashboardClient() {
             ))}
           </div>
         ) : (
-          <div className="py-8 text-sm text-center text-muted-foreground">
+          <div className="py-8 text-center text-sm text-muted-foreground">
             Your recent orders will appear here.
           </div>
         )}

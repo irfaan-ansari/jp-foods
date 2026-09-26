@@ -1,5 +1,5 @@
 import { withForm } from "@/hooks/use-app-form"
-import { MEASURE_UNITS } from "../product.const"
+import { MEASURE_UNITS } from "@jp/utils/commerce"
 import { ProductFormSchema } from "../product.schema"
 
 import {
@@ -22,7 +22,7 @@ import { formatUSD } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import { Plus } from "lucide-react"
 import { TrashBinMinimalistic } from "@solar-icons/react"
-import { getUnit } from "../product.utils"
+import { getUnit } from "@jp/utils/commerce"
 
 export const ProductPricing = withForm({
   defaultValues: {} as ProductFormSchema,
