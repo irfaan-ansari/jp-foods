@@ -17,8 +17,14 @@ export const metadata: Metadata = {
     "Browse our foodservice catalog featuring fresh produce and essential supplies for restaurants, food trucks, and commercial kitchens.",
 }
 
-const ProductsPages = async () => {
-  const { data: products, pagination, authorized } = await getCatalogProducts()
+const ProductsPages = async ({ searchParams }: { searchParams: any }) => {
+  const params = await searchParams
+
+  const {
+    data: products,
+    pagination,
+    authorized,
+  } = await getCatalogProducts(params)
 
   return (
     <React.Fragment>

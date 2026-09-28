@@ -9,6 +9,7 @@ import {
   serial,
   integer,
   unique,
+  date,
 } from "drizzle-orm/pg-core"
 import { organization, team, user } from "./auth"
 
@@ -278,7 +279,7 @@ export const order = pgTable(
     total: text("total").default("0").notNull(),
     po: text("po"),
     notes: text("notes"),
-    deliveryDate: text("delivery_date"),
+    deliveryDate: date("delivery_date"),
     deliveryWindow: text("delivery_window"),
     deliveryInstruction: text("delivery_instruction"),
     status: text("status")

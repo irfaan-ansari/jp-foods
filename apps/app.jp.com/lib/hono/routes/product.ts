@@ -2,7 +2,15 @@ import { Hono } from "hono"
 import { getCookie, setCookie, deleteCookie } from "hono/cookie"
 import { db, product } from "@jp/db"
 import { parsePagination } from "../lib/parse-pagination"
-import { eq } from "drizzle-orm"
+import {
+  and,
+  arrayContains,
+  countDistinct,
+  eq,
+  ilike,
+  like,
+  sql,
+} from "drizzle-orm"
 
 const COOKIE_NAME = `JP_product_access`
 
@@ -55,28 +63,40 @@ export const productRoutes = new Hono()
     const token = getCookie(c, COOKIE_NAME)
     const valid = token ? await validateToken(token) : null
 
-    const { q, status = "", ...rest } = c.req.query()
+    const { q, cat, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)
+
+    const filters = and(
+      eq(product.status, "active"),
+      like(product.image, "https://%"),
+      q ? ilike(product.searchText, `%${q}%`) : undefined,
+      cat ? arrayContains(product.categories, [cat]) : undefined
+    )
 
     if (!valid) {
       deleteCookie(c, COOKIE_NAME, cookieOptions)
     }
 
-    const [products, total] = await Promise.all([
-      db.query.product.findMany({
-        columns: {
-          id: true,
-          title: true,
-          description: true,
-          image: true,
-          categories: true,
-        },
-        limit: valid ? limit : 24,
-        offset: valid ? offset : 0,
-        where: (product, { and, eq }) => and(eq(product.status, "active")),
-      }),
-      db.$count(product, eq(product.status, "active")),
+    const [products, [count]] = await Promise.all([
+      db
+        .selectDistinctOn([product.itemCode], {
+          id: product.id,
+          title: product.title,
+          description: product.description,
+          image: product.image,
+          categories: product.categories,
+        })
+        .from(product)
+        .where(filters)
+        .orderBy(product.itemCode, product.id)
+        .limit(valid ? limit : 24)
+        .offset(valid ? offset : 0),
+      db
+        .select({ total: countDistinct(product.itemCode) })
+        .from(product)
+        .where(filters),
     ])
+    const total = count?.total ?? 0
 
     return c.json({
       success: true,

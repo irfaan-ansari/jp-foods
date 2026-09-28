@@ -12,7 +12,6 @@ import {
 } from "@jp/ui/components/jp"
 import { useQueryClient } from "@tanstack/react-query"
 import { toast } from "sonner"
-import { AppError } from "@jp/utils"
 
 interface Props {
   children: React.ReactNode

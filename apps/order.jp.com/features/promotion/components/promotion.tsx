@@ -21,8 +21,10 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@jp/ui/components/carousel"
+
 const variants = {
   sidebar: SidebarPromotion,
+  dashboard: DashboardPromotion,
   banner: BannerPromotion,
   "new-order": NewOrderPromotion,
   cart: CartPromotion,
@@ -45,13 +47,36 @@ export function Promotion({ placement }: PromotionProps) {
       {({ data }) => (
         <>
           {data
-            ?.filter((promotion) => promotion?.placement?.includes(placement))
+            ?.filter((promotion) => promotion?.placement?.includes("dashboard"))
             .map((promotion) => (
               <Component key={promotion.id} data={promotion} />
             ))}
         </>
       )}
     </QueryBoundary>
+  )
+}
+
+function DashboardPromotion({ data }: { data: PromotionType }) {
+  if (data.products.length === 0) return
+  return (
+    <Carousel>
+      <CarouselContent>
+        {data.products.map((p) => (
+          <CarouselItem className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+            <div className="flex rounded-xl bg-secondary">
+              <Image
+                src={p.image!}
+                alt={p.title}
+                width={500}
+                height={500}
+                className="aspect-video h-auto w-full rounded-xl object-contain"
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+    </Carousel>
   )
 }
 

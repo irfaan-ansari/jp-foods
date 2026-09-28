@@ -335,7 +335,14 @@ const OrderPage = () => {
 
                   <div className="grid gap-2 px-6">
                     {data.status !== "completed" && (
-                      <OrderInvoiceDialog order={data}>
+                      <OrderInvoiceDialog
+                        order={{
+                          ...data,
+                          lineItems: data.lineItems?.filter(
+                            (item) => item.catchWeight
+                          ),
+                        }}
+                      >
                         <Button className="w-full bg-invert hover:bg-invert/80">
                           <CheckCircle />
                           Generate Invoice
