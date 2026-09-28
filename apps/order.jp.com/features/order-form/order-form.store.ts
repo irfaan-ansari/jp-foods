@@ -4,6 +4,12 @@ import { OrderForm, OrderItem, OrderItemInput } from "./order-form.type"
 import { calculateOrder } from "./order-form.calculate"
 
 const CART_KEY = "CART"
+const CART_VERSION = 5
+
+export const DEFAULT_CHARGE = {
+  type: "Fuel Charge",
+  amount: 15,
+}
 
 const initialState: OrderForm = {
   subtotal: 0,
@@ -23,6 +29,7 @@ const initialState: OrderForm = {
 }
 
 interface OrderStore {
+  ready: boolean
   order: OrderForm
 
   update: (values: Partial<OrderForm>) => void
@@ -58,7 +65,7 @@ export const useOrderFormStore = create<OrderStore>()(
   persist(
     (set, get) => ({
       order: initialState,
-
+      ready: false,
       update: (values) =>
         set((state) => ({
           order: {
@@ -113,6 +120,9 @@ export const useOrderFormStore = create<OrderStore>()(
     }),
     {
       name: CART_KEY,
+      version: CART_VERSION,
+      skipHydration: true,
+      partialize: (state) => ({ order: state.order }),
       storage: createJSONStorage(() => localStorage),
     }
   )
@@ -120,27 +130,22 @@ export const useOrderFormStore = create<OrderStore>()(
 
 export async function initOrderForm(
   teamId?: string,
-  initialOrder?: Partial<OrderForm>
+  values?: Partial<OrderForm>
 ) {
-  if (!teamId) {
-    useOrderFormStore.persist.setOptions({ name: CART_KEY })
-    useOrderFormStore.setState({
-      order: { ...initialState, ...initialOrder },
-    })
-    return
-  }
-
-  const name = CART_KEY + "-" + teamId
+  const name = values?.id
+    ? `${CART_KEY}-edit-${values.id}`
+    : `${CART_KEY}-${teamId}`
 
   useOrderFormStore.persist.setOptions({ name })
 
-  const hasCart = localStorage.getItem(name)
+  const hasCart = !values?.id && !!localStorage.getItem(name)
+  if (hasCart) await useOrderFormStore.persist.rehydrate()
 
-  if (!hasCart) {
-    useOrderFormStore.setState({
-      order: { ...initialState, ...initialOrder },
-    })
-  }
+  const saved = hasCart ? useOrderFormStore.getState().order : initialState
+  const order = { ...saved, ...values, teamId }
 
-  await useOrderFormStore.persist.rehydrate()
+  useOrderFormStore.setState({
+    order: recalculate(order, order.items),
+    ready: true,
+  })
 }

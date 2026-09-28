@@ -17,6 +17,7 @@ import { Promotion } from "@/features/promotion/components/promotion"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
+import { useOrderForm } from "@/features/order-form/order-form.hook"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const { pathname } = useRouterStuff()
@@ -26,6 +27,14 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const items = useOrderFormStore((state) => state.order.items)
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
 
+  const { init, ready } = useOrderForm()
+  const cartReady = useOrderFormStore((state) => state.ready)
+
+  React.useEffect(() => {
+    init()
+  }, [init, ready])
+
+  console.log(ready, cartReady)
   return (
     <React.Fragment>
       <OrderPageHeader>
@@ -40,13 +49,13 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
             New Guide
           </Link>
         </Button>
-        <Button onClick={() => setCartOpen(true)}>
+        <Button onClick={() => setCartOpen(true)} className="tabular-nums">
           {items.length > 0 ? <BagCheck /> : <BagCross />}
           View Cart ({items.length})
         </Button>
       </OrderPageHeader>
 
-      <PageContent className="space-y-6">
+      <PageContent className="space-y-6" loading={!ready || !cartReady}>
         <OrderFormToolbar />
         {children}
       </PageContent>

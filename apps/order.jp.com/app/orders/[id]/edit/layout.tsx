@@ -1,60 +1,114 @@
 "use client"
 
 import React from "react"
-import Link from "next/link"
-import { Plus } from "lucide-react"
+import { useParams } from "next/navigation"
+
 import {
   Cart,
   OrderPageHeader,
   StickyCartAction,
-  StickyGuideAction,
 } from "@/features/order-form/components"
+import {
+  initOrderForm,
+  useOrderFormStore,
+} from "@/features/order-form/order-form.store"
 import { Button } from "@jp/ui/components/button"
-import { PageContent } from "@/components/page-content"
+import { useOrder } from "@/features/order/order.data"
 import { BagCheck, BagCross } from "@solar-icons/react"
-import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { Promotion } from "@/features/promotion/components/promotion"
+import { PageContent } from "@/components/page-content"
+import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
-import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
+import { ErrorState } from "@jp/ui/components/jp"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
-  const { pathname } = useRouterStuff()
-  const selecting = useOrderFormUI((state) => state.selecting)
-  const setSelecting = useOrderFormUI((state) => state.setSelecting)
+  const params = useParams()
 
+  const {
+    data: order,
+    isPending,
+    isError,
+    error,
+  } = useOrder(params.id as string)
   const items = useOrderFormStore((state) => state.order.items)
+  const cartReady = useOrderFormStore((state) => state.ready)
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
+
+  const initializedRef = React.useRef(false)
+
+  React.useEffect(() => {
+    if (initializedRef.current) return
+
+    if (isPending || isError) return
+
+    const data = order?.data
+
+    initOrderForm(undefined, {
+      id: data.id,
+      taxRule: {
+        name: data.taxName ?? "",
+        rate: Number(data.taxRate ?? 0),
+      },
+      charges: {
+        type: data.charges?.type ?? "",
+        amount: Number(data.charges?.amount),
+      },
+      lineItemCount: Number(data.lineItemCount),
+      lineItemQuantity: Number(data.lineItemQuantity),
+      subtotal: Number(data.subtotal),
+      total: Number(data.total),
+      items: data.lineItems.map((item) => {
+        const inputOrder = toOrderItemInput({
+          ...item,
+          id: item.productId,
+          sellingUnits: [
+            {
+              price: item.price,
+              name: item.unitName,
+              displayLabel: item.unitLabel || item.unitName,
+              minOrderQty: "1",
+              qtyPerUnit: item.qtyPerUnit,
+              orderIncrement: "1",
+              isDefault: true,
+            },
+          ],
+        })
+        return {
+          ...inputOrder,
+          quantity: Number(item.quantity),
+          unitQuantity: Number(item.unitQuantity),
+          subtotal: Number(item.subtotal),
+          taxAmount: Number(item.taxAmount),
+          total: Number(item.total),
+        }
+      }),
+    })
+
+    initializedRef.current = true
+  }, [order, isError, isPending])
 
   return (
     <React.Fragment>
       <OrderPageHeader>
-        <Button
-          className="text-primary hover:text-primary"
-          variant="outline"
-          onClick={() => setSelecting(true)}
-          asChild
-        >
-          <Link href="/create/all">
-            <Plus />
-            New Guide
-          </Link>
-        </Button>
         <Button onClick={() => setCartOpen(true)}>
           {items.length > 0 ? <BagCheck /> : <BagCross />}
           View Cart ({items.length})
         </Button>
       </OrderPageHeader>
-
-      <PageContent className="space-y-6">
+      <PageContent className="space-y-6" loading={isPending || !cartReady}>
         <OrderFormToolbar />
-        {children}
+        {isError ? (
+          <ErrorState title={error.message} description={error.description} />
+        ) : (
+          children
+        )}
       </PageContent>
-
-      <Cart />
-      {!selecting && <StickyCartAction />}
-      {!pathname.includes("guides") && <StickyGuideAction />}
-      <Promotion placement="new-order" />
+      {!isPending && !isError && (
+        <>
+          <Cart />
+          <StickyCartAction />
+        </>
+      )}
     </React.Fragment>
   )
 }

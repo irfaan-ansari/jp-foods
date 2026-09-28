@@ -21,6 +21,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@jp/ui/components/carousel"
+import { ProductItem } from "@/features/product/components/product-card"
 
 const variants = {
   sidebar: SidebarPromotion,
@@ -38,6 +39,7 @@ export function Promotion({ placement }: PromotionProps) {
   const promotions = usePromotions()
   const Component = variants[placement]
 
+  if (!Component) return null
   return (
     <QueryBoundary
       query={promotions}
@@ -47,7 +49,7 @@ export function Promotion({ placement }: PromotionProps) {
       {({ data }) => (
         <>
           {data
-            ?.filter((promotion) => promotion?.placement?.includes("dashboard"))
+            ?.filter((promotion) => promotion?.placement?.includes(placement))
             .map((promotion) => (
               <Component key={promotion.id} data={promotion} />
             ))}
@@ -60,19 +62,14 @@ export function Promotion({ placement }: PromotionProps) {
 function DashboardPromotion({ data }: { data: PromotionType }) {
   if (data.products.length === 0) return
   return (
-    <Carousel>
+    <Carousel className="**:data-[slot=carousel-content]:overflow-visible">
       <CarouselContent>
-        {data.products.map((p) => (
-          <CarouselItem className="basis-full md:basis-1/2 lg:basis-1/3 xl:basis-1/4">
-            <div className="flex rounded-xl bg-secondary">
-              <Image
-                src={p.image!}
-                alt={p.title}
-                width={500}
-                height={500}
-                className="aspect-video h-auto w-full rounded-xl object-contain"
-              />
-            </div>
+        {data.products.map((product) => (
+          <CarouselItem
+            key={product.id}
+            className="basis-full overflow-visible pb-0.5 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+          >
+            <ProductItem data={product} />
           </CarouselItem>
         ))}
       </CarouselContent>
@@ -97,8 +94,12 @@ function SidebarPromotion({ data }: { data: PromotionType }) {
 }
 
 function BannerPromotion({ data }: { data: PromotionType }) {
+  console.log(data)
   return (
-    <div className="flex rounded-3xl transition hover:-translate-y-0.5">
+    <div
+      data-placement={data.placement}
+      className="flex rounded-3xl transition hover:-translate-y-0.5"
+    >
       <Image
         src={data.media!}
         alt={data.name!}
@@ -181,7 +182,7 @@ function NewOrderPromotion({ data }: { data: PromotionType }) {
 
     if (!data.triggerProductIds?.includes(lastAddedProductId)) return
 
-    showPromotionProducts(data.products)
+    ShowPromotionProducts(data.products)
   }, [items, data])
 
   return null
@@ -189,7 +190,8 @@ function NewOrderPromotion({ data }: { data: PromotionType }) {
 
 const TOAST_DURATION = 8000
 const GAP = -3000
-export function showPromotionProducts(products: PromotionType["products"]) {
+
+export function ShowPromotionProducts(products: PromotionType["products"]) {
   products.forEach((product, index) => {
     setTimeout(
       () => {
@@ -211,22 +213,12 @@ function PromotionToast({
   id: number | string
   product: PromotionType["products"][number]
 }) {
-  const sellUnit = withCalculatedPrices(
-    product.sellingUnits ?? [],
-    !!product.catchWeight
-  )[0]
-
-  const { quantity, addToCart } = useOrderItemQuantity(product)
+  const { quantity, addToCart, selectedUnit } = useOrderItemQuantity(product)
   return (
     <div
       className="relative flex w-sm items-center gap-2 overflow-hidden rounded-2xl border bg-background p-3 shadow-lg"
       onClick={() => {
-        if (sellUnit)
-          addToCart(
-            quantity
-              ? quantity + Number(sellUnit.orderIncrement)
-              : Number(sellUnit.minOrderQty)
-          )
+        addToCart(quantity + 1)
         toast.dismiss(id)
       }}
     >
@@ -261,9 +253,8 @@ function PromotionToast({
         </p>
         <div className="flex items-center justify-between">
           <span className="font-semibold text-primary">
-            {sellUnit
-              ? `${formatUSD(sellUnit.price)} / ${sellUnit.name}`
-              : "Unavailable"}
+            {formatUSD(selectedUnit?.price ?? 0)}
+            {selectedUnit?.catchWeight && "/" + product?.uom}
           </span>
         </div>
       </div>

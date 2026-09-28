@@ -23,7 +23,7 @@
   --accent: oklch(0.39 0.09 153);
   --accent-foreground: oklch(0.205 0 0);
   --destructive: oklch(0.51 0.19 28);
-  --border: oklch(0.94 0 0);
+  --border: oklch(0.92 0 0);
   --input: oklch(0.99 0 0);
   --ring: oklch(0.708 0 0);
   --chart-1: oklch(0.897 0.196 126.665);
@@ -170,16 +170,19 @@
       transform: translateY(calc(-100% - var(--gap)));
     }
   }
-  --animate-orbit: orbit calc(var(--duration)*1s) linear infinite
-;
+  --animate-orbit: orbit calc(var(--duration) * 1s) linear infinite;
   @keyframes orbit {
-  0% {
-    transform: rotate(calc(var(--angle) * 1deg)) translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
+    0% {
+      transform: rotate(calc(var(--angle) * 1deg))
+        translateY(calc(var(--radius) * 1px)) rotate(calc(var(--angle) * -1deg));
     }
-  100% {
-    transform: rotate(calc(var(--angle) * 1deg + 360deg)) translateY(calc(var(--radius) * 1px)) rotate(calc((var(--angle) * -1deg) - 360deg));
+    100% {
+      transform: rotate(calc(var(--angle) * 1deg + 360deg))
+        translateY(calc(var(--radius) * 1px))
+        rotate(calc((var(--angle) * -1deg) - 360deg));
     }
-  }}
+  }
+}
 
 @layer base {
   * {
@@ -189,13 +192,13 @@
     @apply bg-background text-foreground;
   }
   .maplibregl-popup-content {
-    @apply bg-transparent! shadow-none! p-0! rounded-none!;
+    @apply rounded-none! bg-transparent! p-0! shadow-none!;
   }
   .maplibregl-popup-tip {
     @apply hidden!;
   }
   .maplibregl-ctrl-attrib {
-    @apply bg-background! text-muted-foreground! border-border! rounded-md! border! shadow-sm!;
+    @apply rounded-md! border! border-border! bg-background! text-muted-foreground! shadow-sm!;
   }
   .maplibregl-ctrl-attrib a {
     @apply text-muted-foreground!;

@@ -35,6 +35,7 @@ export const promotions = app.get("/", async (c) => {
   })
 
   const productIds = [...new Set(promotions.flatMap((p) => p.productIds ?? []))]
+
   const products = await db.query.product.findMany({
     where: (product, { inArray }) => inArray(product.id, productIds),
   })

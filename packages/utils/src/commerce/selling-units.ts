@@ -1,4 +1,4 @@
-import { PRODUCT_UNITS } from "./units"
+import { MEASURE_UNITS } from "./units"
 
 export type SellingUnitPriceInput = {
   name: string
@@ -23,7 +23,7 @@ const decimal = (value: unknown) =>
   value === null || value === undefined || value === "" ? NaN : Number(value)
 
 export const getUnit = (value: string | undefined) =>
-  PRODUCT_UNITS.find((unit) => unit.value === value)
+  MEASURE_UNITS.find((unit) => unit.value === value)
 
 export function withCalculatedPrices<T extends SellingUnitPriceInput>(
   units: T[],
