@@ -1170,6 +1170,20 @@
       "when": 1790420257770,
       "tag": "0166_medical_bloodstrike",
       "breakpoints": true
+    },
+    {
+      "idx": 167,
+      "version": "7",
+      "when": 1790543268534,
+      "tag": "0167_whole_doctor_octopus",
+      "breakpoints": true
+    },
+    {
+      "idx": 168,
+      "version": "7",
+      "when": 1790577038961,
+      "tag": "0168_remarkable_solo",
+      "breakpoints": true
     }
   ]
 }

@@ -33,36 +33,30 @@ export const toOrderItemInput = (
     product.sellingUnits ?? [],
     !!product.catchWeight
   )
-  const sellUnit =
-    selectedUnit ??
-    sellingUnits[0]
+  const sellUnit = selectedUnit ?? sellingUnits[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
+
   const { id, title, isTaxable, itemCode, image, categories } = product
+
   return {
-    id: id!,
+    id: `${id}:${sellUnit.name}`,
+    productId: id!,
     title: title!,
-    price: sellUnit.calculatedPrice,
     itemCode: itemCode!,
-    unitName: sellUnit.name,
-    baseQuantity: sellUnit.contains,
-    unitConversion: sellUnit.contains,
-    minQuantity: sellUnit.min,
-    orderIncrement: sellUnit.increament,
-    sellingUnits,
-    pricing: {
-      label: sellUnit.label,
-      uom: product.uom ?? "",
-      catchWeight: sellUnit.catchWeight,
-      contains: sellUnit.contains,
-      price: sellUnit.price,
-      calculatedPrice: sellUnit.calculatedPrice,
-      min: sellUnit.min,
-      increament: sellUnit.increament,
-    },
     isTaxable: !!isTaxable,
     image: image ?? "",
     categories: categories ?? [],
-    quantity: sellUnit.min,
+
+    price: Number(sellUnit.price),
+    quantity: Number(sellUnit.minOrderQty),
+    uom: product.uom ?? "",
+    unitName: sellUnit.name,
+    unitLabel: sellUnit.displayLabel || sellUnit.name,
+    minOrderQty: Number(sellUnit.minOrderQty),
+    qtyPerUnit: Number(sellUnit.qtyPerUnit),
+    orderIncrement: Number(sellUnit.orderIncrement),
+    catchWeight: !!product.catchWeight,
+    calculatedPrice: Number(sellUnit.calculatedPrice),
   }
 }
 
@@ -146,18 +140,26 @@ export const toInsertLineItems = ({
   taxRate: string | undefined
 }) =>
   items.map((item) => ({
-    productId: item.id,
+    productId: item.productId,
     title: item.title,
     image: item.image,
     itemCode: item.itemCode,
     categories: item.categories,
     isTaxable: item.isTaxable,
-    baseQuantity: String(item.quantity * item.baseQuantity),
-    unitConversion: String(item.unitConversion),
-    pricingSnapshot: item.pricing,
-    unitName: item.unitName,
+
     price: item.price.toFixed(2),
     quantity: String(item.quantity),
+
+    uom: item.uom ?? "",
+    unitName: item.unitName,
+    unitLabel: item.unitLabel,
+    minOrderQty: item.minOrderQty,
+    orderIncrement: item.orderIncrement,
+    catchWeight: item.catchWeight,
+    calculatedPrice: item.calculatedPrice.toFixed(2),
+
+    unitQuantity: item.unitQuantity.toFixed(0),
+
     subtotal: item.subtotal.toFixed(2),
     taxAmount: item.taxAmount.toFixed(2),
     total: item.total.toFixed(2),

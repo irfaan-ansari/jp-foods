@@ -116,7 +116,7 @@ export const TeamSwitcher = () => {
                 Settings
               </Link>
             </Button>
-            <Button
+            {/* <Button
               variant="outline"
               asChild
               size="sm"
@@ -127,7 +127,7 @@ export const TeamSwitcher = () => {
                 <UserPlus className="size-3.5" />
                 Invite members
               </Link>
-            </Button>
+            </Button> */}
           </div>
         </div>
 

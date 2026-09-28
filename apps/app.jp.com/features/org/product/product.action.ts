@@ -26,6 +26,8 @@ export const createProduct = orgActionClient({ product: ["create"] })
       ...data,
       sellingUnits: data.sellingUnits.map((unit, index) => ({
         ...unit,
+        minOrderQty: String(unit.minOrderQty ?? 1),
+        orderIncrement: String(unit.orderIncrement ?? 1),
         isDefault: unit.isDefault || (!hasDefault && index === 0),
       })),
     }
@@ -107,6 +109,8 @@ export const updateProduct = orgActionClient({ product: ["update"] })
       ...data,
       sellingUnits: data.sellingUnits.map((unit, index) => ({
         ...unit,
+        minOrderQty: String(unit.minOrderQty ?? 1),
+        orderIncrement: String(unit.orderIncrement ?? 1),
         isDefault: unit.isDefault || (!hasDefault && index === 0),
       })),
     }

@@ -4,7 +4,7 @@ import { Plus } from "lucide-react"
 import { Guide } from "../guide.type"
 import { Tooltip } from "@jp/ui/components/jp"
 import { Button } from "@jp/ui/components/button"
-import { ProductCard } from "@/features/product/components"
+import { ProductItem } from "@/features/product/components"
 import { Sortable, SortableItem } from "@jp/ui/components/sortable"
 import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
@@ -45,7 +45,7 @@ export const GuideBoard = ({ data }: { data: Guide }) => {
         >
           {filteredItems.map((item) => (
             <SortableItem key={item.id} value={String(item.id)}>
-              <ProductCard data={item} sortable={true} />
+              <ProductItem data={item} sortable={true} />
             </SortableItem>
           ))}
         </Sortable>
@@ -59,7 +59,11 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
 
   const handleAddToCart = () => {
     for (const item of data.items) {
-      if (withCalculatedPrices(item.sellingUnits ?? [], !!item.catchWeight).length === 0) continue
+      if (
+        withCalculatedPrices(item.sellingUnits ?? [], !!item.catchWeight)
+          .length === 0
+      )
+        continue
       const orderItem = toOrderItemInput(item)
       addItem({
         ...orderItem,

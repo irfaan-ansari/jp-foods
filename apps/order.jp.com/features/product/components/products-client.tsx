@@ -2,7 +2,7 @@
 
 import React from "react"
 import { QueryBoundary } from "@/components/query-boundry"
-import { ProductCard, ProductCardSkeleton } from "./product-card"
+import { ProductItem, ProductCardSkeleton } from "./product-card"
 import { GridWrapper } from "@/components/page-content"
 import { EmptyState, LoadMore } from "@jp/ui/components/jp"
 import { BlurFade } from "@jp/ui/components/blur-fade"
@@ -20,7 +20,7 @@ export const ProductsClient = () => {
       loading={
         <GridWrapper
           data-layout={layout}
-          className="group/wrapper grid-cols-2 gap-2 data-[layout=list]:flex data-[layout=list]:flex-col data-[layout=list]:gap-2 @md/page-content:grid-cols-2 @lg/page-content:grid-cols-3 @lg/page-content:gap-4 @2xl/page-content:grid-cols-4 @5xl/page-content:grid-cols-5 @7xl/page-content:grid-cols-8"
+          className="group/wrapper grid-cols-2 gap-2 data-[layout=list]:flex data-[layout=list]:flex-col data-[layout=list]:gap-2 @md/page-content:grid-cols-2 @lg/page-content:grid-cols-3 @lg/page-content:gap-4 @2xl/page-content:grid-cols-4 @5xl/page-content:grid-cols-5 @7xl/page-content:grid-cols-7"
         >
           {Array.from({ length: 16 }).map((_, i) => (
             <ProductCardSkeleton key={i} />
@@ -39,7 +39,7 @@ export const ProductsClient = () => {
         <div>
           <GridWrapper
             data-layout={layout}
-            className="grid-cols-2 gap-2 data-[layout=list]:flex data-[layout=list]:flex-col data-[layout=list]:gap-2 @md/page-content:grid-cols-2 @lg/page-content:grid-cols-3 @lg/page-content:gap-4 @2xl/page-content:grid-cols-4 @5xl/page-content:grid-cols-5 @7xl/page-content:grid-cols-8"
+            className="grid-cols-2 gap-2 data-[layout=list]:flex data-[layout=list]:flex-col data-[layout=list]:gap-2 @md/page-content:grid-cols-2 @lg/page-content:grid-cols-3 @lg/page-content:gap-4 @2xl/page-content:grid-cols-4 @5xl/page-content:grid-cols-5 @7xl/page-content:grid-cols-7"
           >
             {data.pages
               .flatMap((page) => page.data)
@@ -50,7 +50,7 @@ export const ProductsClient = () => {
                   inView
                   direction="up"
                 >
-                  <ProductCard data={product} />
+                  <ProductItem data={product} />
                 </BlurFade>
               ))}
           </GridWrapper>

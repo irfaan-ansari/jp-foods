@@ -1,7 +1,7 @@
 import z from "zod"
 
 const lineItemSchema = z.object({
-  id: z.number().positive(),
+  productId: z.number().positive(),
   unitName: z.string().min(1),
   quantity: z.number().positive(),
 })

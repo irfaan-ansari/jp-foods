@@ -21,7 +21,7 @@ import {
   TabsTrigger,
 } from "@jp/ui/components/tabs"
 import { formatUSD } from "@jp/utils"
-import { normalizeQuantity, roundMoney } from "@jp/utils/commerce"
+import { roundMoney } from "@jp/utils/commerce"
 
 import { withCalculatedPrices } from "@jp/utils/commerce"
 import {
@@ -38,10 +38,11 @@ export const ProductPreview = withForm({
   },
   render: function Render({ form, setFile }) {
     const [quantities, setQuantities] = useState<Record<string, number>>({})
+
     const setQuantity = (unit: string, value: number) => {
       setQuantities((previous) => ({
         ...previous,
-        [unit]: normalizeQuantity(Math.max(0, value)),
+        [unit]: value,
       }))
     }
     const previewUrl = useRef<string | null>(null)
@@ -82,6 +83,7 @@ export const ProductPreview = withForm({
           status,
           isTaxable,
         }) => {
+          // @ts-expect-error
           const sellUnits = withCalculatedPrices(sellingUnits, catchWeight)
           const defaultUnit =
             sellUnits.find((unit) => unit.isDefault) ?? sellUnits[0]

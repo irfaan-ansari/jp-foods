@@ -15,6 +15,7 @@ import {
 import { parsePagination } from "@/lib/hono/lib"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { resolveTeamPrices } from "@/features/org/price-level/price-level-resolver"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 
 const app = new Hono<TeamAppContext>()
 
@@ -78,12 +79,17 @@ export const products = app
       teamId,
     })
 
-    const resolvedPrices = resolvedProducts.map(
-      ({ lineItems, ...product }) => ({
+    const resolvedPrices = resolvedProducts.map(({ lineItems, ...product }) => {
+      const sellingUnits = withCalculatedPrices(
+        product.sellingUnits as [],
+        product.catchWeight as boolean
+      )
+      return {
         ...product,
+        sellingUnits,
         lastOrder: lineItems[0],
-      })
-    )
+      }
+    })
 
     return c.json(
       {

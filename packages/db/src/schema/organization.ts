@@ -46,6 +46,8 @@ export const product = pgTable(
           displayLabel: string
           price: string
           qtyPerUnit: string
+          minOrderQty: string
+          orderIncrement: string
           isDefault: boolean
         }[]
       >()
@@ -331,25 +333,19 @@ export const lineItem = pgTable(
       .$type<string[]>()
       .default(sql`'[]'::jsonb`),
 
-    price: text("price").notNull().default("0"),
-    quantity: text("quantity").notNull().default("1"),
     unitName: text("unit_name").notNull().default(""),
-    baseQuantity: text("base_quantity")
-      .notNull()
-      .default("1") /** used for inventory tracking */,
-    unitConversion: text("unit_conversion").notNull().default("1"),
-    // Immutable ordering-time pricing details; null for legacy orders.
-    pricingSnapshot: jsonb("pricing_snapshot").$type<{
-      label: string
-      uom: string
-      catchWeight: boolean
-      contains: number
-      price: number
-      calculatedPrice: number
-      min: number
-      increament: number
-    }>(),
+    unitLabel: text("unit_label").default(""),
+    uom: text("uom"),
+    qtyPerUnit: text("qty_per_unit").notNull().default("1"),
+    catchWeight: boolean("catch_weight").default(false),
+    price: text("price").notNull().default("0"),
+    calculatedPrice: text("calculated_price").notNull().default("0"),
 
+    unitQuantity: text("unit_quantity")
+      .notNull()
+      .default("0") /** used for inventory */,
+
+    quantity: text("quantity").notNull().default("1"),
     subtotal: text("subtotal").default("0"),
     isTaxable: boolean("is_taxable").default(false),
     taxRate: text("tax_rate").default("0"),

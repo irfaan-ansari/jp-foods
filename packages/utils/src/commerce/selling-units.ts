@@ -5,23 +5,16 @@ export type SellingUnitPriceInput = {
   displayLabel?: string
   price: string | number
   qtyPerUnit: string | number
-  minOrderQty?: string | number
-  orderIncrement?: string | number
-  isDefault?: boolean
+  minOrderQty: string | number
+  orderIncrement: string | number
+  isDefault: boolean
 }
 
 export type PricedSellingUnit<
   T extends SellingUnitPriceInput = SellingUnitPriceInput,
-> = Omit<T, "displayLabel" | "price"> & {
-    displayLabel: string
-    label: string
-    min: number
-    price: number
-    calculatedPrice: number
-    catchWeight: boolean
-    increament: number
-    contains: number
-  }
+> = T & {
+  calculatedPrice: number
+}
 
 export const roundMoney = (value: number) =>
   Math.round((value + Number.EPSILON) * 100) / 100
@@ -35,48 +28,41 @@ export const getUnit = (value: string | undefined) =>
 export function withCalculatedPrices<T extends SellingUnitPriceInput>(
   units: T[],
   catchWeight: boolean
-): PricedSellingUnit<T>[] {
+) {
   const names = new Set<string>()
+
   return units.flatMap((unit) => {
     const name = unit.name.trim()
     const price = decimal(unit.price)
-    const contains = decimal(unit.qtyPerUnit)
-    const min = decimal(unit.minOrderQty ?? 1)
-    const increment = decimal(unit.orderIncrement ?? 1)
-    if (
-      !name ||
-      names.has(name) ||
-      !Number.isFinite(price) ||
-      price < 0 ||
-      !Number.isFinite(contains) ||
-      contains <= 0 ||
-      !Number.isFinite(min) ||
-      min <= 0 ||
-      !Number.isFinite(increment) ||
-      increment <= 0
-    )
-      return []
+    const qtyPerUnit = decimal(unit.qtyPerUnit)
+    const minOrderQty = decimal(unit.minOrderQty ?? 1)
+    const orderIncrement = decimal(unit.orderIncrement ?? 1)
+
     names.add(name)
-    const calculatedPrice = roundMoney(catchWeight ? price * contains : price)
+    const calculatedPrice = roundMoney(catchWeight ? price * qtyPerUnit : price)
+
     if (!Number.isSafeInteger(Math.round(calculatedPrice * 100))) return []
+
     return [
       {
         ...unit,
         name,
         displayLabel: unit.displayLabel || name,
-        label: unit.displayLabel?.trim() || getUnit(name)?.label || name,
-        min,
+        minOrderQty,
         price,
         calculatedPrice,
         catchWeight,
-        increament: increment,
-        contains,
+        orderIncrement,
       },
     ]
   })
 }
 
-export function isValidQuantity(quantity: number, minimum = 1, increment = 1) {
+export function isValidOrderQuantity(
+  quantity: number,
+  minimum = 1,
+  increment = 1
+) {
   const steps = (quantity - minimum) / increment
   return (
     Number.isFinite(quantity) &&
@@ -88,7 +74,7 @@ export function isValidQuantity(quantity: number, minimum = 1, increment = 1) {
   )
 }
 
-export function normalizeQuantity(
+export function normalizeOrderQuantity(
   quantity: number,
   minimum = 1,
   increment = 1
