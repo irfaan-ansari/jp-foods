@@ -20,7 +20,8 @@ export const STATUS: Record<string, BadgeStatus> = {
 
 export const PLACEMENT: Record<string, string> = {
   sidebar: "Sidebar",
+  dashbaord: "Dashboard",
   banner: "Banner",
   "new-order": "New Order",
-  cart: "Cart Upsell",
+  cart: "Cart",
 }

@@ -58,6 +58,7 @@ const statusOptions = [
 const placementOptions = [
   { label: "Sidebar", value: "sidebar" },
   { label: "Banner", value: "banner" },
+  { label: "Dashboard", value: "dashboard" },
   { label: "New Order", value: "new-order" },
   { label: "Cart", value: "cart" },
 ]

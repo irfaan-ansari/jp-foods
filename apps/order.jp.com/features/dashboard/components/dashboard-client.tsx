@@ -30,7 +30,7 @@ export function DashboardClient() {
 
   return (
     <div className="space-y-6">
-      <Promotion placement="banner" />
+      <Promotion placement="dashboard" />
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatCard
           title="Open orders"

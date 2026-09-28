@@ -23,6 +23,7 @@ import {
   UserId,
   ChatRoundDots,
   LetterUnread,
+  UndoLeftSquare,
 } from "@solar-icons/react"
 
 export const ORG_NAV = [
@@ -36,6 +37,7 @@ export const ORG_NAV = [
     label: "Sales",
     items: [
       { label: "Orders", icon: InboxLine, href: "/org/orders", items: [] },
+      { label: "Returns", icon: UndoLeftSquare, href: "#", items: [] },
       { label: "Invoices", icon: BillCheck, href: "/org/invoices", items: [] },
       {
         label: "Transactions",
