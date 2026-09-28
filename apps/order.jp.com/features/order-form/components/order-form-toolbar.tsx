@@ -27,7 +27,7 @@ export function OrderFormToolbar() {
   )
 
   return (
-    <div className="flex gap-4">
+    <div className="flex flex-wrap gap-4 @3xl/page-content:flex-nowrap">
       <ToggleGroup
         type="single"
         value={layout}
@@ -77,7 +77,7 @@ export function OrderFormToolbar() {
       )}
 
       <SearchBar
-        className="ml-auto"
+        className="order-1 ml-auto max-w-full @3xl/page-content:max-w-2xs"
         value={filters.q}
         onSearch={handleSearch}
       />

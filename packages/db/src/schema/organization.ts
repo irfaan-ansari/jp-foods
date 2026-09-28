@@ -341,6 +341,10 @@ export const lineItem = pgTable(
     price: text("price").notNull().default("0"),
     calculatedPrice: text("calculated_price").notNull().default("0"),
 
+    unitQuantity: text("unit_quantity")
+      .notNull()
+      .default("0") /** used for inventory */,
+
     quantity: text("quantity").notNull().default("1"),
     subtotal: text("subtotal").default("0"),
     isTaxable: boolean("is_taxable").default(false),

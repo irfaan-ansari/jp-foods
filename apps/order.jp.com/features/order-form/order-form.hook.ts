@@ -4,26 +4,28 @@ import React from "react"
 import { Product } from "../product/product.type"
 import { withCalculatedPrices } from "@jp/utils/commerce"
 import { toOrderItemInput } from "./order-form.utils"
-import { useOrderFormStore } from "./order-form.store"
+import { initOrderForm, useOrderFormStore } from "./order-form.store"
 import { useActiveTeam } from "../team/team.data"
 import { OrderForm } from "./order-form.type"
+import { useOrderFormUI } from "./order-form-ui.store"
 
 export function useOrderItemQuantity(data: Product) {
   const defaultUnit =
     data.sellingUnits.find((unit) => unit.isDefault)?.name ??
     data.sellingUnits[0]?.name
 
-  const [unitName, setUnitName] = React.useState(defaultUnit)
+  const unitName = useOrderFormUI(
+    (state) => state.selectedUnitByProductId[data.id] ?? defaultUnit
+  )
+  const setSelectedUnit = useOrderFormUI((state) => state.setSelectedUnit)
 
-  // useState only reads its argument on first mount. If this hook is
-  // reused for a different product (same component instance, new
-  // `data` prop) or sellingUnits load in after first render, unitName
-  // would otherwise be stuck on whatever the first product's default was.
-  React.useEffect(() => {
-    setUnitName(defaultUnit)
-  }, [defaultUnit])
+  const setUnitName = React.useCallback(
+    (unitName: string) => setSelectedUnit(data.id, unitName),
+    [data.id, setSelectedUnit]
+  )
 
   const updateItem = useOrderFormStore((state) => state.updateItem)
+
   const itemId = `${data.id}:${unitName}`
   const item = useOrderFormStore((state) => state.getItem(itemId))
 
@@ -32,15 +34,14 @@ export function useOrderItemQuantity(data: Product) {
     [data.sellingUnits, data.catchWeight]
   )
 
-  const sellUnit = sellingUnits.find((unit) => unit.name === unitName)
+  const selectedUnit = sellingUnits.find((unit) => unit.name === unitName)
+  const cartQuantity = item?.quantity ?? 0
 
-  const value = item?.quantity ?? 0
-
-  const setQuantity = React.useCallback(
+  const addToCart = React.useCallback(
     (newValue: number | string) => {
-      if (!sellUnit) return
+      if (!selectedUnit) return
       const numberValue = Math.max(0, Number(newValue) || 0)
-      const base = toOrderItemInput(data, sellUnit)
+      const base = toOrderItemInput(data, selectedUnit)
 
       updateItem({
         ...base,
@@ -49,16 +50,16 @@ export function useOrderItemQuantity(data: Product) {
         quantity: numberValue,
       })
     },
-    [data, sellUnit, itemId, updateItem]
+    [data, selectedUnit, itemId, updateItem]
   )
 
   return {
-    value,
-    setQuantity,
-    unitName,
-    setUnitName,
+    quantity: cartQuantity,
+    addToCart,
+    cartItem: item,
     sellingUnits,
-    sellUnit,
+    selectedUnit,
+    setSelectedUnit: setUnitName,
   }
 }
 

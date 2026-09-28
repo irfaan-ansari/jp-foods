@@ -7,7 +7,7 @@ import { toOrderItemInput } from "./order-form.utils"
 
 export type RequestedOrderItem = {
   productId: number
-  unit: string
+  unitName: string
   quantity: number
 }
 
@@ -39,7 +39,7 @@ export async function resolveOrderItems(
     const unit = withCalculatedPrices(
       pricedProduct.sellingUnits!,
       !!pricedProduct.catchWeight
-    ).find((sellingUnit) => sellingUnit.name === request.unit)
+    ).find((sellingUnit) => sellingUnit.name === request.unitName)
 
     return {
       ...toOrderItemInput(pricedProduct, unit),

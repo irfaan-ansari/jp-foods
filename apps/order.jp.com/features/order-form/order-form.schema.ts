@@ -2,7 +2,7 @@ import z from "zod"
 
 const lineItemSchema = z.object({
   productId: z.number().positive(),
-  unit: z.string().min(1),
+  unitName: z.string().min(1),
   quantity: z.number().positive(),
 })
 

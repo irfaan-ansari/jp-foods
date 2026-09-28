@@ -53,6 +53,7 @@ export const toOrderItemInput = (
     unitName: sellUnit.name,
     unitLabel: sellUnit.displayLabel || sellUnit.name,
     minOrderQty: Number(sellUnit.minOrderQty),
+    qtyPerUnit: Number(sellUnit.qtyPerUnit),
     orderIncrement: Number(sellUnit.orderIncrement),
     catchWeight: !!product.catchWeight,
     calculatedPrice: Number(sellUnit.calculatedPrice),
@@ -139,7 +140,7 @@ export const toInsertLineItems = ({
   taxRate: string | undefined
 }) =>
   items.map((item) => ({
-    productId: item.id,
+    productId: item.productId,
     title: item.title,
     image: item.image,
     itemCode: item.itemCode,
@@ -155,7 +156,9 @@ export const toInsertLineItems = ({
     minOrderQty: item.minOrderQty,
     orderIncrement: item.orderIncrement,
     catchWeight: item.catchWeight,
-    calculatedPrice: item.calculatedPrice,
+    calculatedPrice: item.calculatedPrice.toFixed(2),
+
+    unitQuantity: item.unitQuantity.toFixed(0),
 
     subtotal: item.subtotal.toFixed(2),
     taxAmount: item.taxAmount.toFixed(2),

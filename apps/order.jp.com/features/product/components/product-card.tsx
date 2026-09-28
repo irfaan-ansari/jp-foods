@@ -1,10 +1,10 @@
 import React from "react"
 import Image from "next/image"
-import type { PricedSellingUnit, Product } from "../product.type"
-import { formatUSD } from "@jp/utils"
+import type { Product } from "../product.type"
+
 import { cn } from "@jp/ui/lib/utils"
 import { format } from "date-fns/format"
-import { getUnit, withCalculatedPrices } from "@jp/utils/commerce"
+
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"
 import { Skeleton } from "@jp/ui/components/skeleton"
@@ -18,27 +18,11 @@ import {
   HoverCardContent,
 } from "@jp/ui/components/hover-card"
 
+import { ProductUnits, ProductCartAction } from "./product-action"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
-import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
-import { toOrderItemInput } from "@/features/order-form/order-form.utils"
-import ProductQuantityStepper from "./product-quantity"
 
-type ProductCardState = {
-  sellUnits: PricedSellingUnit[]
-  selectedUnit?: PricedSellingUnit
-  value: number | undefined
-  setQuantity: (value: number | string) => void
-  setUnitName: (name: string) => void
-  actionProps: {
-    role: "button"
-    tabIndex: number
-    onClick: () => void
-    onKeyDown: (event: React.KeyboardEvent) => void
-  }
-}
-
-export const ProductCard = React.memo(function ProductCard({
+export const ProductItem = React.memo(function ProductItem({
   data,
   sortable = false,
 }: {
@@ -47,76 +31,26 @@ export const ProductCard = React.memo(function ProductCard({
 }) {
   const layout = useOrderFormUI((state) => state.layout)
 
-  return (
-    <ProductCardWrapper data={data}>
-      {(state) =>
-        layout === "list" ? (
-          <ProductRow data={data} sortable={sortable} state={state} />
-        ) : (
-          <ProductGridCard data={data} sortable={sortable} state={state} />
-        )
-      }
-    </ProductCardWrapper>
-  )
+  if (layout === "list") {
+    return <ProductRow data={data} sortable={sortable} />
+  }
+
+  return <ProductCard data={data} sortable={sortable} />
 })
 
-const ProductCardWrapper = ({
-  data,
-  children,
-}: {
-  data: Product
-  children: (state: ProductCardState) => React.ReactNode
-}) => {
-  const sellUnits = withCalculatedPrices(
-    data.sellingUnits ?? [],
-    !!data.catchWeight
-  )
-  const [unitName, setUnitName] = React.useState(() => sellUnits[0]?.name ?? "")
-  const selectedUnit =
-    sellUnits.find((unit) => unit.name === unitName) ?? sellUnits[0]
-  const { value, setQuantity } = useOrderItemQuantity(
-    data,
-    selectedUnit?.name ?? ""
-  )
-  const addItem = useOrderFormStore((state) => state.addItem)
-  const handleAddSelectedUnit = React.useCallback(() => {
-    if (!selectedUnit) return
-    addItem(toOrderItemInput(data, selectedUnit))
-  }, [addItem, data, selectedUnit])
-
-  return children({
-    sellUnits,
-    selectedUnit,
-    value,
-    setQuantity,
-    setUnitName,
-    actionProps: {
-      role: "button",
-      tabIndex: 0,
-      onClick: handleAddSelectedUnit,
-      onKeyDown: (event) => {
-        if (event.key !== "Enter" && event.key !== " ") return
-        event.preventDefault()
-        handleAddSelectedUnit()
-      },
-    },
-  })
-}
-
-const ProductGridCard = React.memo(function ProductGridCard({
+const ProductCard = React.memo(function ProductGridCard({
   data,
   sortable = false,
-  state,
 }: {
   data: Product
   sortable?: boolean
-  state: ProductCardState
 }) {
+  const { quantity, addToCart } = useOrderItemQuantity(data)
   return (
     <Card
       size="sm"
       data-sortable={sortable}
-      {...state.actionProps}
+      onClick={() => addToCart(quantity + 1)}
       className={`relative h-full cursor-pointer gap-0 bg-secondary py-0 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
     >
       {sortable && (
@@ -126,45 +60,23 @@ const ProductGridCard = React.memo(function ProductGridCard({
       )}
 
       <ProductCheckbox id={data.id} className="p-2.5" />
-      <HoverCard>
-        <HoverCardTrigger>
-          <ProductMedia
-            data={data}
-            className="aspect-video size-auto rounded-none"
-          />
-        </HoverCardTrigger>
-        <HoverCardContent className="overflow-hidden p-0">
-          <ProductMedia
-            data={data}
-            className="aspect-video size-auto rounded-none"
-          />
-        </HoverCardContent>
-      </HoverCard>
 
-      {data?.lastOrder?.id && (
-        <Badge className="absolute top-2 left-2 h-4.5 text-xs uppercase">
-          {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •
-          {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
-        </Badge>
-      )}
+      <ProductMedia
+        data={data}
+        className="aspect-video size-auto rounded-none"
+      />
+
+      <ProductLastOrder
+        className="absolute top-2 left-2 h-4.5 text-[10px] uppercase"
+        data={data}
+      />
+
       <CardContent
-        className={`relative flex flex-1 flex-col space-y-1.5 rounded-t-2xl bg-background py-4`}
+        className={`relative flex flex-1 flex-col space-y-1.5 rounded-t-2xl bg-background px-3 py-4`}
       >
-        <div className="truncate text-[10px] font-medium text-muted-foreground uppercase">
-          {data.categories?.join(" • ")}
-        </div>
-        <CardTitle className="mt-auto text-xs font-medium @3xl/page-content:text-sm">
-          {data.title}
-        </CardTitle>
-        <ProductQuantityStepper
-          value={state.value}
-          onChange={state.setQuantity}
-          sellUnits={state.sellUnits}
-          uom={data.uom ?? ""}
-          selectedUnit={state.selectedUnit}
-          onSelectUnit={state.setUnitName}
-          className="mt-2"
-        />
+        <ProductMeta data={data} />
+        <ProductUnits className="mt-auto" data={data} />
+        <ProductCartAction data={data} />
       </CardContent>
     </Card>
   )
@@ -173,17 +85,16 @@ const ProductGridCard = React.memo(function ProductGridCard({
 const ProductRow = React.memo(function ProductRow({
   data,
   sortable = false,
-  state,
 }: {
   data: Product
   sortable?: boolean
-  state: ProductCardState
 }) {
+  const { quantity, addToCart } = useOrderItemQuantity(data)
   return (
     <Card
       size="sm"
-      {...state.actionProps}
       className={`relative h-full cursor-pointer gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
+      onClick={() => addToCart(quantity + 1)}
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
@@ -196,32 +107,14 @@ const ProductRow = React.memo(function ProductRow({
         <ProductMedia data={data} />
 
         <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <CardTitle>{data.title}</CardTitle>
-          <div className="truncate text-xs font-medium text-muted-foreground uppercase">
-            {data.categories?.join(" • ")}
-          </div>
-          {data?.lastOrder?.id && (
-            <Badge className="text-xs uppercase">
-              {data.lastOrder?.quantity} {data.lastOrder.unitName || "units"} •{" "}
-              {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
-            </Badge>
-          )}
-          <div className="mt-auto text-sm font-semibold text-primary">
-            {state.selectedUnit
-              ? `${formatUSD(state.selectedUnit.calculatedPrice)} / ${getUnit(state.selectedUnit.name)?.label ?? state.selectedUnit.name}`
-              : "Unavailable"}
-          </div>
+          <ProductMeta data={data} />
+          <ProductLastOrder data={data} />
         </div>
 
-        <ProductQuantityStepper
-          value={state.value}
-          onChange={state.setQuantity}
-          sellUnits={state.sellUnits}
-          uom={data.uom ?? ""}
-          selectedUnit={state.selectedUnit}
-          onSelectUnit={state.setUnitName}
-          className="mx-0 w-full max-w-44 self-center"
-        />
+        <div className="flex gap-3 self-center">
+          <ProductUnits className="min-w-36" data={data} />
+          <ProductCartAction className="max-w-36 self-center" data={data} />
+        </div>
       </CardContent>
     </Card>
   )
@@ -259,35 +152,80 @@ const ProductCheckbox = ({
   )
 }
 
-const ProductMedia = ({
+const ProductMeta = ({ data }: { data: Product }) => (
+  <>
+    <div className="truncate text-xs font-medium text-muted-foreground uppercase">
+      {data.categories?.join(" • ")}
+    </div>
+    <CardTitle className="text-sm font-medium">{data.title}</CardTitle>
+  </>
+)
+
+const ProductImage = ({ data }: { data: Product }) =>
+  data.image ? (
+    <Image
+      src={data.image}
+      width={320}
+      height={320}
+      alt={data.title}
+      className="absolute inset-0 size-full object-contain mix-blend-multiply"
+    />
+  ) : (
+    <ImageOff className="size-6 opacity-40" />
+  )
+
+const ProductLastOrder = ({
   data,
   className,
 }: {
   data: Product
   className?: string
 }) => {
+  if (!data.lastOrder?.id) return null
   return (
-    <div
-      className={cn(
-        "relative flex aspect-square size-24 items-center justify-center rounded-xl bg-secondary",
-        className
-      )}
-    >
-      {data.image ? (
-        <Image
-          src={data.image}
-          width={160}
-          height={160}
-          alt={data.title}
-          className="absolute inset-0 size-full object-contain opacity-0 mix-blend-multiply transition"
-          onLoad={(e) => e.currentTarget.classList.add("opacity-100")}
-        />
-      ) : (
-        <ImageOff className="size-6 opacity-40" />
-      )}
-    </div>
+    <Badge className={cn("h-5 text-[10px] uppercase", className)}>
+      {data.lastOrder.quantity} {data.lastOrder.unitName || "CS"} •{" "}
+      {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
+    </Badge>
   )
 }
+
+const ProductMedia = ({
+  data,
+  className,
+}: {
+  data: Product
+  className?: string
+}) => (
+  <HoverCard openDelay={300} closeDelay={100}>
+    <HoverCardTrigger asChild>
+      <div
+        className={cn(
+          "relative flex aspect-square size-24 items-center justify-center rounded-xl bg-secondary",
+          className
+        )}
+      >
+        <ProductImage data={data} />
+      </div>
+    </HoverCardTrigger>
+
+    <HoverCardContent
+      side="right"
+      align="start"
+      className="w-72 overflow-hidden bg-secondary p-0"
+    >
+      <div className="relative flex aspect-video items-center justify-center">
+        <ProductImage data={data} />
+      </div>
+      <div className="space-y-2 rounded-t-2xl bg-background p-3">
+        <ProductMeta data={data} />
+        <ProductLastOrder data={data} />
+        <ProductUnits data={data} />
+        <ProductCartAction data={data} />
+      </div>
+    </HoverCardContent>
+  </HoverCard>
+)
 
 export const ProductCardSkeleton = () => {
   return (

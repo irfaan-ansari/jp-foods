@@ -92,7 +92,9 @@ function CartPromotion({ data }: { data: PromotionType }) {
   const upsells = data.products
   const triggers = data.triggerProductIds ?? []
 
-  const hasTriggerInCart = items.some((item) => triggers.includes(item.id))
+  const hasTriggerInCart = items.some((item) =>
+    triggers.includes(item.productId)
+  )
 
   // if (!hasTriggerInCart || !upsells.length) return null
 
@@ -149,7 +151,7 @@ function NewOrderPromotion({ data }: { data: PromotionType }) {
 
     if (!wasAdded) return
 
-    const lastAddedProductId = items.at(-1)?.id
+    const lastAddedProductId = items.at(-1)?.productId
     if (!lastAddedProductId) return
 
     if (!data.triggerProductIds?.includes(lastAddedProductId)) return
@@ -189,19 +191,16 @@ function PromotionToast({
     !!product.catchWeight
   )[0]
 
-  const { setQuantity, value } = useOrderItemQuantity(
-    product,
-    sellUnit?.name ?? ""
-  )
+  const { quantity, addToCart } = useOrderItemQuantity(product)
   return (
     <div
       className="relative flex w-sm items-center gap-2 overflow-hidden rounded-2xl border bg-background p-3 shadow-lg"
       onClick={() => {
         if (sellUnit)
-          setQuantity(
-            value
-              ? value + Number(sellUnit.increament)
-              : Number(sellUnit.min)
+          addToCart(
+            quantity
+              ? quantity + Number(sellUnit.orderIncrement)
+              : Number(sellUnit.minOrderQty)
           )
         toast.dismiss(id)
       }}

@@ -2,7 +2,7 @@ type TaxRule = { name: string; rate: number }
 type Charges = { type: string; amount: number }
 
 export type OrderItemInput = {
-  id: string /** productId+sellingUnit.name */
+  id: string /** productId:sellingUnit.name */
   productId: number
   itemCode: string
   title: string
@@ -16,12 +16,14 @@ export type OrderItemInput = {
   unitName: string
   unitLabel: string
   minOrderQty: number
+  qtyPerUnit: number
   orderIncrement: number
   catchWeight: boolean
   calculatedPrice: number
 }
 
 export type OrderItem = OrderItemInput & {
+  unitQuantity: number
   subtotal: number
   taxAmount: number
   total: number

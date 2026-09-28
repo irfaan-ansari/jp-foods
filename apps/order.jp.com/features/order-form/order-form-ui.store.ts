@@ -13,6 +13,9 @@ interface OrderFormUI {
   selecting: boolean
   selected: number[]
 
+  selectedUnitByProductId: Record<number, string>
+  setSelectedUnit: (productId: number, unitName: string) => void
+
   setLayout: (layout: Layout) => void
 
   setFilters: (
@@ -40,6 +43,15 @@ export const useOrderFormUI = create<OrderFormUI>()(
 
       selecting: false,
       selected: [],
+
+      selectedUnitByProductId: {},
+      setSelectedUnit: (productId, unitName) =>
+        set((state) => ({
+          selectedUnitByProductId: {
+            ...state.selectedUnitByProductId,
+            [productId]: unitName,
+          },
+        })),
 
       setLayout: (layout) => set({ layout }),
       setFilters: (filters) =>

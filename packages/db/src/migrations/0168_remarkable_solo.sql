@@ -1,0 +1,1 @@
+ALTER TABLE "line_item" ADD COLUMN "unit_quantity" text DEFAULT '0' NOT NULL;

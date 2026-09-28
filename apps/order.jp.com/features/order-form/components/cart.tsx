@@ -80,9 +80,8 @@ export const Cart = () => {
               <div className="grid min-w-0 flex-1 gap-1">
                 <p className="truncate text-sm font-medium">{item.title}</p>
                 <p className="truncate text-xs font-medium text-muted-foreground">
-                  {formatUSD(item.pricing.price)} x {item.quantity} {" • "}
-                  {item.pricing.contains} {item.pricing.uom}{" "}
-                  {item.pricing.catchWeight && "avg"}
+                  {formatUSD(item.calculatedPrice)} x {item.quantity} {" • "}
+                  {item.unitQuantity} {item.uom} {item.catchWeight && "avg"}
                 </p>
               </div>
               <div className="grid min-w-0 gap-1 text-right">
@@ -96,8 +95,8 @@ export const Cart = () => {
                     aria-label={`Decrease ${item.title}`}
                     onClick={() => {
                       const next = item.quantity - item.orderIncrement
-                      if (next < item.minQuantity) {
-                        removecartItem(item.id, item.unitName)
+                      if (next < item.minOrderQty) {
+                        removecartItem(item.id)
                       } else {
                         updateCartItem({ ...item, quantity: next })
                       }
@@ -125,7 +124,7 @@ export const Cart = () => {
                     size="icon-xs"
                     variant="destructive"
                     aria-label={`Remove ${item.title}`}
-                    onClick={() => removecartItem(item.id, item.unitName)}
+                    onClick={() => removecartItem(item.id)}
                   >
                     <TrashBinMinimalistic />
                   </Button>
@@ -158,7 +157,7 @@ export const Cart = () => {
             </div>
             <div className="flex justify-between text-base font-semibold">
               <span>
-                {items.some((item) => item.pricing.catchWeight)
+                {items.some((item) => item.catchWeight)
                   ? "Estimated total"
                   : "Total"}
               </span>
