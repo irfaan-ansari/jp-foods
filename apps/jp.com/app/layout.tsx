@@ -2,12 +2,12 @@ import "./styles.css"
 import { type Metadata } from "next"
 import { cn } from "@jp/ui/lib/utils"
 import { SITE_CONFIG } from "@/lib/config"
-import { Manrope, Bricolage_Grotesque } from "next/font/google"
+import { Manrope, Archivo } from "next/font/google"
 import { SiteProvider } from "@/components/site-provider"
 import { Suspense } from "react"
 import { Spinner } from "@jp/ui/components/jp/empty-state"
 
-const loraHeading = Bricolage_Grotesque({
+const loraHeading = Archivo({
   subsets: ["latin"],
   variable: "--font-heading",
 })
