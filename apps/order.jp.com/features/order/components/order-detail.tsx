@@ -28,7 +28,7 @@ export const OrderDetail = ({ data }: { data: Order }) => {
       <div className="min-w-0 space-y-6 break-all @5xl/page-content:col-span-2">
         {/* stats */}
         <Card className="shadow-none">
-          <CardContent className="">
+          <CardContent>
             <OrderTimeline
               data={{
                 status: data.status,

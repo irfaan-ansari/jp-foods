@@ -48,7 +48,7 @@ export const Cart = () => {
             <X />
           </Button>
         </DrawerHeader>
-        <div className="no-scrollbar flex-1 divide-y divide-dashed overflow-auto px-2">
+        <div className="no-scrollbar flex-1 divide-y overflow-auto px-2">
           {items.length === 0 && (
             <p className="p-6 text-center text-sm text-muted-foreground">
               Your cart is empty.
@@ -56,11 +56,11 @@ export const Cart = () => {
           )}
           {items.map((item) => (
             <div
-              className="flex items-center gap-2 not-first:pt-2 not-last:pb-2"
+              className="flex items-start gap-2 not-first:pt-2 not-last:pb-2"
               key={`${item.id}:${item.unitName}`}
             >
               <Avatar
-                className="size-12! rounded-xl bg-neutral-100 **:rounded-xl"
+                className="relative size-12! rounded-xl bg-secondary **:rounded-xl"
                 size="lg"
               >
                 <AvatarImage src={item.image ?? ""} asChild>
@@ -70,29 +70,28 @@ export const Cart = () => {
                     width={40}
                     height={40}
                     onLoad={(e) => e.currentTarget.classList.add("opacity-100")}
-                    className="opacity-0 transition"
+                    className="bg-secondary opacity-0 transition"
                   />
                 </AvatarImage>
                 <AvatarFallback>
                   <ImageOff className="text-muted-foreground" />
                 </AvatarFallback>
               </Avatar>
-              <div className="grid min-w-0 flex-1 gap-1">
+
+              <div className="grid min-w-0 flex-1 gap-0.5">
                 <p className="truncate text-sm font-medium">{item.title}</p>
-                <p className="truncate text-xs font-medium text-muted-foreground">
-                  {formatUSD(item.calculatedPrice)} x {item.quantity} {" • "}
-                  {item.unitQuantity} {item.uom} {item.catchWeight && "avg"}
+
+                <p className="truncate text-sm font-medium text-muted-foreground">
+                  {formatUSD(item.price)} {item.catchWeight && "/" + item.uom}
+                  {" • "}
+                  {item.qtyPerUnit} {item.uom} {item.catchWeight && "avg"}
                 </p>
-              </div>
-              <div className="grid min-w-0 gap-1 text-right">
-                <p className="font-semibold text-primary">
-                  {formatUSD(item.subtotal)}
-                </p>
-                <div className="flex items-center justify-end gap-1">
+
+                <div className="mt-1 flex max-w-28 items-center justify-between gap-1 self-center rounded-xl border p-0.5">
                   <Button
                     size="icon-xs"
-                    variant="outline"
-                    aria-label={`Decrease ${item.title}`}
+                    variant="secondary"
+                    className="rounded-lg bg-primary/30 hover:bg-primary/50"
                     onClick={() => {
                       const next = item.quantity - item.orderIncrement
                       if (next < item.minOrderQty) {
@@ -104,13 +103,13 @@ export const Cart = () => {
                   >
                     <Minus />
                   </Button>
-                  <span className="min-w-7 text-center text-xs font-semibold">
+                  <span className="min-w-7 flex-2 text-center text-xs font-semibold">
                     {item.quantity}
                   </span>
                   <Button
                     size="icon-xs"
-                    variant="outline"
-                    aria-label={`Increase ${item.title}`}
+                    variant="secondary"
+                    className="rounded-lg bg-primary/30 hover:bg-primary/50"
                     onClick={() =>
                       updateCartItem({
                         ...item,
@@ -120,15 +119,21 @@ export const Cart = () => {
                   >
                     <Plus />
                   </Button>
-                  <Button
-                    size="icon-xs"
-                    variant="destructive"
-                    aria-label={`Remove ${item.title}`}
-                    onClick={() => removecartItem(item.id)}
-                  >
-                    <TrashBinMinimalistic />
-                  </Button>
                 </div>
+              </div>
+
+              <div className="grid h-full min-w-0 gap-3 text-right">
+                <p className="text-base font-bold text-primary">
+                  {formatUSD(item.subtotal)}
+                </p>
+                <Button
+                  size="xs"
+                  variant="link"
+                  className="mt-auto ml-auto px-0 text-destructive"
+                  onClick={() => removecartItem(item.id)}
+                >
+                  Remove
+                </Button>
               </div>
             </div>
           ))}

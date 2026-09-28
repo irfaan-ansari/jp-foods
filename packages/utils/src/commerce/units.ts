@@ -1,35 +1,20 @@
 export const MEASURE_UNITS = [
-  { label: "Case", value: "case" },
-  { label: "Each", value: "each" },
-  { label: "Pound", value: "lb" },
-  { label: "Bag", value: "bag" },
-  { label: "Jug", value: "jug" },
-  { label: "Count", value: "count" },
-  { label: "Box", value: "box" },
-  { label: "Pack", value: "pack" },
-  { label: "Carton", value: "carton" },
-  { label: "Tray", value: "tray" },
-  { label: "Bottle", value: "bottle" },
-  { label: "Can", value: "can" },
-  { label: "Piece", value: "piece" },
-  { label: "Dozen", value: "dozen" },
-  { label: "Gallon", value: "gallon" },
-  { label: "Quart", value: "quart" },
-  { label: "Liter", value: "liter" },
-  { label: "Ounce", value: "oz" },
-]
-
-export const WEIGHT_UNITS = [
-  { label: "Pound", value: "lb" },
-  { label: "Kilogram", value: "kg" },
-  { label: "Gram", value: "g" },
-  { label: "Ounce", value: "oz" },
-]
-
-export const PRODUCT_UNITS = [
-  ...MEASURE_UNITS,
-  ...WEIGHT_UNITS.filter(
-    (weightUnit) =>
-      !MEASURE_UNITS.some((measureUnit) => measureUnit.value === weightUnit.value)
-  ),
-]
+  { label: "Case", value: "CS" },
+  { label: "Each", value: "EA" },
+  { label: "Pound", value: "LB" },
+  { label: "Bag", value: "BG" },
+  { label: "Jug", value: "JG" },
+  { label: "Count", value: "CT" },
+  { label: "Box", value: "BX" },
+  { label: "Pack", value: "PK" },
+  { label: "Carton", value: "CTN" },
+  { label: "Tray", value: "TR" },
+  { label: "Bottle", value: "BTL" },
+  { label: "Can", value: "CAN" },
+  { label: "Piece", value: "PC" },
+  { label: "Dozen", value: "DZ" },
+  { label: "Gallon", value: "GAL" },
+  { label: "Quart", value: "QT" },
+  { label: "Liter", value: "L" },
+  { label: "Ounce", value: "OZ" },
+] as const
