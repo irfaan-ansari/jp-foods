@@ -1,3 +1,4 @@
+import { phoneSchema } from "@jp/utils"
 import { z } from "zod"
 export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024 // 10MB
 
@@ -17,14 +18,7 @@ export const step1Schema = z.object({
   companyCity: z.string().min(2, "City is required"),
   companyState: z.string().min(2, "State is required"),
   companyZip: z.string().min(2, "Zip code is required"),
-  companyPhone: z
-    .string()
-    .min(1, "Phone is required")
-    .trim()
-    .regex(
-      /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}$/,
-      "Invalid phone number"
-    ),
+  companyPhone: phoneSchema,
   // new field
   companyType: z.string().min(2, "Business type is required"),
   companyEmail: z.string().min(2, "Email is required"),
@@ -71,7 +65,7 @@ export const step4Schema = z.object({
     z.object({
       day: z.string().min(2, "Delivery day is required"),
       window: z.string().min(2, "Delivery time is required"),
-      receivingName: z.string().min(2, "Name is required"),
+      receivingName: phoneSchema,
       receivingPhone: z
         .string()
         .min(1, "Phone is required")
@@ -88,10 +82,23 @@ export const step4Schema = z.object({
 export const step5Schema = z.object({
   // files
   certificate: z
-    .string("Resale certificate is required.")
-    .min(2, "Resale certificate is required."),
-  dlFront: z.string("Licence is required.").min(2, "Licence is required."),
-  dlBack: z.string("Licence is required.").min(2, "Licence is required."),
+    .file("Certificate is required")
+    .mime(
+      ["image/png", "image/jpeg", "application/pdf"],
+      "Only PNG, JPG, or PDF files are allowed"
+    ),
+  dlFront: z
+    .file("Certificate is required")
+    .mime(
+      ["image/png", "image/jpeg", "application/pdf"],
+      "Only PNG, JPG, or PDF files are allowed"
+    ),
+  dlBack: z
+    .file("Certificate is required")
+    .mime(
+      ["image/png", "image/jpeg", "application/pdf"],
+      "Only PNG, JPG, or PDF files are allowed"
+    ),
 })
 
 export const step6Schema = z.object({

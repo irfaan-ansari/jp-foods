@@ -39,18 +39,18 @@ export function EmailLayout({
           <Container className="border-outline border-t-brand mx-auto w-full max-w-[600px] overflow-hidden rounded-xl border border-t-4 bg-white">
             <Section className="border-b border-border px-6 pt-7 pb-6 sm:px-8">
               <Row>
-                <Column className="w-12 align-middle">
+                <Column className="w-20 align-middle">
                   <Img
                     src="https://jimenezproduce.com/logo.png"
                     alt="Jimenez Produce"
-                    className="h-auto w-18"
+                    className="h-auto w-20"
                   />
                 </Column>
                 <Column className="pl-4 align-middle">
-                  <Text className="text-text m-0 text-2xl font-bold tracking-tight">
+                  <Text className="text-text m-0 text-3xl font-bold tracking-tight">
                     Jimenez Produce
                   </Text>
-                  <Text className="m-0 mt-1 text-base leading-4 text-muted">
+                  <Text className="m-0 mt-1 text-base leading-4 font-semibold text-muted">
                     Foodservice distribution
                   </Text>
                 </Column>
@@ -71,20 +71,71 @@ export function EmailLayout({
             </Section>
             {children}
             <Section className="bg-footer border-t border-border px-6 py-5 sm:px-8">
-              <Text className="my-0 text-xs leading-5 text-muted">
-                {template === "admin"
-                  ? "Internal notification · Jimenez Produce"
-                  : "Jimenez Produce · Foodservice distribution across the Gulf Coast"}
-              </Text>
-              <Text className="text-subtle mt-2 mb-0 text-xs leading-5">
-                Questions? Reply to this email or contact{" "}
-                <Link
-                  href="mailto:info@jimenezproduce.com"
-                  className="text-brand underline"
-                >
-                  info@jimenezproduce.com
-                </Link>
-                .
+              <Row style={{ tableLayout: "fixed", width: "100%" }}>
+                <Column width="50%" className="pr-3 align-top">
+                  <Text className="text-text m-0 mb-2 text-sm font-semibold">
+                    Alabama
+                  </Text>
+                  <Text className="m-0 text-xs leading-5 text-muted">
+                    <Link
+                      href="tel:+12512622607"
+                      className="text-muted no-underline"
+                    >
+                      +1 (251) 262-2607
+                    </Link>
+                  </Text>
+                  <Text className="m-0 text-xs leading-5">
+                    <Link
+                      href="mailto:jorge@jimenezproduce.com"
+                      className="text-muted no-underline"
+                      style={{
+                        overflowWrap: "anywhere",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      jorge@jimenezproduce.com
+                    </Link>
+                  </Text>
+                  <Text className="m-0 mt-1 text-xs leading-5 text-muted">
+                    23141 Rubens Ln
+                    <br />
+                    Robertsdale, AL 36567
+                  </Text>
+                </Column>
+                <Column width="50%" className="pl-3 align-top">
+                  <Text className="text-text m-0 mb-2 text-sm font-semibold">
+                    Louisiana
+                  </Text>
+                  <Text className="m-0 text-xs leading-5 text-muted">
+                    <Link
+                      href="tel:+13378069008"
+                      className="text-muted no-underline"
+                    >
+                      +1 (337) 806-9008
+                    </Link>
+                  </Text>
+                  <Text className="m-0 text-xs leading-5">
+                    <Link
+                      href="mailto:yhessenia@jimenezproduce.com"
+                      className="text-muted no-underline"
+                      style={{
+                        overflowWrap: "anywhere",
+                        wordBreak: "break-word",
+                      }}
+                    >
+                      yhessenia@jimenezproduce.com
+                    </Link>
+                  </Text>
+                  <Text className="m-0 mt-1 text-xs leading-5 text-muted">
+                    100 Goldenrod Dr
+                    <br />
+                    Lafayette, LA 70507
+                  </Text>
+                </Column>
+              </Row>
+              <Text className="text-subtle mt-6 mb-0 text-xs leading-5">
+                © {new Date().getFullYear()} Jimenez Produce · All rights
+                reserved
               </Text>
             </Section>
           </Container>
