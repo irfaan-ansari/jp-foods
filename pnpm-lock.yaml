@@ -153,6 +153,9 @@ importers:
       '@jp/db':
         specifier: workspace:*
         version: link:../../packages/db
+      '@jp/notifications':
+        specifier: workspace:*
+        version: link:../../packages/notifications
       '@jp/ui':
         specifier: workspace:*
         version: link:../../packages/ui

@@ -8,26 +8,24 @@ import {
 import { toast } from "sonner"
 import { Button } from "@jp/ui/components/button"
 import { useRouter } from "next/navigation"
-import { upload } from "@vercel/blob/client"
-
 import { createCustomer } from "@/features/apply/customer.action"
 import { DEFAULT_VALUES } from "@/features/apply/customer.const"
 import { steps } from "@/features/apply/customer.steps"
 import {
   ArrowLeft,
   ArrowRight,
-  Check,
   CircleCheck,
   Loader,
   ShieldCheck,
 } from "lucide-react"
+import { uploadFile } from "@/lib/upload"
+import { useAppForm } from "@/hooks/use-app-form"
 import translations from "@/features/apply/customer.translations.json"
 import { formOptions, useStore } from "@tanstack/react-form"
 import { customerSchema } from "@/features/apply/customer.schema"
 
 import { Card, CardFooter, CardHeader } from "@jp/ui/components/card"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
-import { useAppForm } from "@/hooks/use-app-form"
 
 export const formOpts = formOptions({
   defaultValues: DEFAULT_VALUES,
@@ -59,25 +57,33 @@ export const CustomerForm = () => {
           formApi.setFieldValue("step", value.step + 1)
           return
         }
-
-        // upload files and send the files url to
-        const sign = await upload(
-          `customer/${value.signature.name}`,
-          value.signature,
-          {
-            access: "public",
-            handleUploadUrl: "/api/v1/upload",
-          }
-        )
-
         const { certificate, dlFront, dlBack, signature, ...rest } = value
+        const [certUrl, frontUrl, backUrl, signUrl] = await Promise.all([
+          uploadFile({
+            file: value.certificate,
+            path: `/customer/${value.certificate.name}`,
+          }),
+          uploadFile({
+            file: value.dlFront,
+            path: `/customer/${value.dlFront.name}`,
+          }),
+          uploadFile({
+            file: value.dlBack,
+            path: `/customer/${value.dlBack.name}`,
+          }),
+          uploadFile({
+            file: value.signature,
+            path: `/customer/${value.signature.name}`,
+          }),
+        ])
+
         // submit form
         const { success, error } = await createCustomer({
           ...rest,
-          certificateUrl: value.certificate,
-          dlFrontUrl: value.dlFront,
-          dlBackUrl: value.dlBack,
-          signatureUrl: sign.url,
+          certificateUrl: certUrl.url,
+          dlFrontUrl: frontUrl.url,
+          dlBackUrl: backUrl.url,
+          signatureUrl: signUrl.url,
         })
 
         if (success) {

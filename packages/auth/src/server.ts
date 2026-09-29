@@ -1,5 +1,4 @@
 import { db } from "@jp/db"
-import { createElement } from "react"
 import { waitUntil } from "@vercel/functions"
 import { betterAuth } from "better-auth"
 import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
@@ -143,11 +142,8 @@ export const auth = betterAuth({
         waitUntil(
           sendEmail({
             to: email,
-            subject:
-              type === "change-email"
-                ? "Verify your new email"
-                : "Your Jimenez Produce verification code",
-            template: createElement(VerificationOtpEmail, { otp }),
+            subject: "Your Jimenez Produce verification code",
+            template: VerificationOtpEmail({ otp }),
           })
         )
       },

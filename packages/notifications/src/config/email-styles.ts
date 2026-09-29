@@ -6,9 +6,9 @@ export const emailStyles: TailwindConfig = {
       colors: {
         canvas: "#f4f5f2",
         surface: "#ffffff",
-        brand: "#365b32",
+        brand: "#80b83a",
         "brand-soft": "#d5e8c4",
-        text: "#202c24",
+        text: "#141414",
         muted: "#556258",
         subtle: "#69756c",
         border: "#e6ece4",
