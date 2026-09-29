@@ -88,7 +88,9 @@ export const sendCatalogInquiryLink = authActionClient({
     })
     if (!inquiry) throw new AppError("NOT_FOUND")
     if (inquiry.status !== "approved") {
-      throw new AppError("Catalog inquiry must be approved before sending link")
+      throw new AppError("INVALID_REQUEST", {
+        message: "Catalog inquiry must be approved before sending link",
+      })
     }
 
     const token = inquiry.token ?? crypto.randomUUID()
