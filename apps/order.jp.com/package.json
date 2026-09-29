@@ -15,6 +15,7 @@
     "@duo-icons/react": "^1.0.1",
     "@jp/auth": "workspace:*",
     "@jp/db": "workspace:*",
+    "@jp/notifications": "workspace:*",
     "@jp/pdf": "workspace:*",
     "@jp/ui": "workspace:*",
     "@jp/utils": "workspace:*",

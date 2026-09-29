@@ -11,7 +11,12 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
   const adjustments = new Map(
     config?.priceLevelItem.map((item) => [item.productId, item.adjustmentValue])
   )
-  return <T extends { id: number; sellingUnits?: { price: string }[] | null }>(
+  return <
+    T extends {
+      id: number
+      sellingUnits?: { price: string | number }[] | null
+    },
+  >(
     product: T
   ): T => {
     if (!config || config.status !== "active") return product
@@ -32,9 +37,9 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
       !Number.isFinite(Number(adjustment))
     )
       return product
-    const adjust = (price: string) => {
+    const adjust = (price: string | number) => {
       const base = Number(price)
-      if (price.trim() === "" || !Number.isFinite(base)) return price
+      if (String(price).trim() === "" || !Number.isFinite(base)) return price
       const amount = Number(adjustment)
       const next =
         config.adjustmentType === "percentage"
@@ -52,6 +57,6 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
         ...unit,
         price: adjust(unit.price),
       })),
-    }
+    } as T
   }
 }

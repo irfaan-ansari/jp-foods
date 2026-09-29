@@ -1,12 +1,12 @@
 import { Hono } from "hono"
 
-import { AppError, pluralize } from "@jp/utils"
-import { db, order, team, invoice } from "@jp/db"
+import { AppError } from "@jp/utils"
+import { db, order, invoice } from "@jp/db"
 import { sortLineItems } from "./order.utils"
 import { OrderInvoice, PackingSlip } from "@jp/pdf"
 import { renderToStream } from "@react-pdf/renderer"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
-import { and, count, eq, exists, ilike, or, sql } from "drizzle-orm"
+import { and, count, eq, ilike, or, sql } from "drizzle-orm"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
 const app = new Hono<OrgAppContext>()
@@ -124,16 +124,9 @@ const orderApp = app
 
     const lineItems = sortLineItems(response.lineItems)
 
-    const transformed = lineItems.map((item) => ({
-      ...item,
-      unitName: item.unitName
-        ? pluralize(Number(item.quantity), item.unitName)
-        : "",
-    }))
-
     return c.json({
       success: true,
-      data: { ...response, lineItems: transformed },
+      data: { ...response, lineItems },
     })
   })
   .get("/:id/slip", async (c) => {
@@ -152,20 +145,12 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
-    const lineItems = data.lineItems.map((item) => ({
-      ...item,
-      unitName: item.unitName
-        ? pluralize(Number(item.quantity), item.unitName)
-        : "",
-    }))
-
     const stream = await renderToStream(
       PackingSlip({
         data: {
           ...data,
           organization: data.organization!,
           team: data.team!,
-          lineItems,
         },
       })
     )
@@ -192,20 +177,12 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
-    const lineItems = data.lineItems.map((item) => ({
-      ...item,
-      unitName: item.unitName
-        ? pluralize(Number(item.quantity), item.unitName)
-        : "",
-    }))
-
     const stream = await renderToStream(
       OrderInvoice({
         data: {
           ...data,
           organization: data.organization!,
           team: data.team!,
-          lineItems,
         },
       })
     )

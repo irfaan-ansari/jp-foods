@@ -48,7 +48,7 @@ const CustomerApplicationActions = ({
                 id: data.id,
                 data: {
                   ...updateData,
-                  status: "active",
+                  status: "approved",
                 },
               })
               if (serverError) toast.message(serverError.message)

@@ -3,8 +3,11 @@ import { ReactElement } from "react"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
 
+const FROM_EMAIL = "Jimenez Produce <no-reply@jimenezproduce.com>"
+const ADMIN_EMAILS = ["info@jimenezproduce.net"]
+
 type SendEmailOptions = {
-  to: string | string[]
+  to?: string | string[]
   subject: string
   template: ReactElement
   from?: string
@@ -12,10 +15,10 @@ type SendEmailOptions = {
 }
 
 export async function sendEmail({
-  to,
+  to = ADMIN_EMAILS,
   subject,
   template,
-  from = "noreply@jimenezproduce.com",
+  from = FROM_EMAIL,
   replyTo,
 }: SendEmailOptions) {
   if (!process.env.RESEND_API_KEY) {

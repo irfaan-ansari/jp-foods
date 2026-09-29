@@ -2,13 +2,10 @@ import z from "zod"
 
 const positiveDecimal = z
   .string()
-  .refine(
-    (value) =>
-      value.trim() !== "" &&
-      Number.isFinite(Number(value)) &&
-      Number(value) > 0,
-    { message: "Invalid value" }
-  )
+  .or(z.number())
+  .refine((value) => Number.isFinite(Number(value)) && Number(value) > 0, {
+    message: "Invalid value",
+  })
 
 const sellingUnitSchema = z.object({
   name: z.string().trim().min(1, "Unit is required"),

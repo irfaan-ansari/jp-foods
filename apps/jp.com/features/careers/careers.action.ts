@@ -2,7 +2,10 @@
 import { handleAction } from "@/lib/action"
 import { db, jobApplication, JobApplicationInsertType } from "@jp/db"
 import { sendEmail } from "@jp/notifications"
-import { JobApplicationReceivedEmail } from "@jp/notifications/templates"
+import {
+  JobApplicationAdminEmail,
+  JobApplicationReceivedEmail,
+} from "@jp/notifications/templates"
 import { capitalize } from "@jp/utils"
 import { headers } from "next/headers"
 
@@ -26,15 +29,29 @@ export const createJobApplication = handleAction(
 
     const [result] = await db.insert(jobApplication).values(values).returning()
 
-    // send email
-    await sendEmail({
-      to: data.email,
-      subject: "New job application",
-      template: JobApplicationReceivedEmail({
-        name: data.firstName,
-        position: data.position,
+    await Promise.all([
+      sendEmail({
+        to: data.email,
+        subject: `Jimenez Produce - Application Received`,
+        template: JobApplicationReceivedEmail({
+          name: data.firstName,
+          position: data.position,
+        }),
       }),
-    })
+      sendEmail({
+        subject: "New candidate application",
+        template: JobApplicationAdminEmail({
+          name: data.firstName,
+          position: data.position,
+          location: data.location ?? "NA",
+          email: data.email,
+          phone: data.phone,
+
+          status: "new",
+        }),
+      }),
+    ])
+
     return { id: result?.id }
   }
 )

@@ -6,6 +6,11 @@ export const updateCatalogInquirySchema = z.object({
     status: z.string(),
   }),
 })
+
+export const sendCatalogInquiryLinkSchema = z.object({
+  id: z.number().positive(),
+})
+
 export const deleteCatalogInquirySchema = z.object({
   id: z.number().positive(),
 })

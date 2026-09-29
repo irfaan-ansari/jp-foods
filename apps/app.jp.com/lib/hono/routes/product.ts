@@ -23,7 +23,8 @@ const cookieOptions = {
 
 async function validateToken(token: string) {
   return db.query.customerInvite.findFirst({
-    where: (ci, { eq }) => eq(ci.token, token),
+    where: (ci, { and, eq }) =>
+      and(eq(ci.token, token), eq(ci.status, "approved")),
   })
 }
 

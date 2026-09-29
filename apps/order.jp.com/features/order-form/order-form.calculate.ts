@@ -4,7 +4,7 @@ import { roundMoney } from "@jp/utils/commerce"
 export function calculateOrder({
   items,
   taxRate = 0,
-  charges = 0,
+  charges = 15,
 }: {
   items: OrderItemInput[]
   taxRate?: number
