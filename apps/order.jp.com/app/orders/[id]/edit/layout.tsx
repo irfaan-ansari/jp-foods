@@ -24,12 +24,7 @@ import { ErrorState } from "@jp/ui/components/jp"
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams()
 
-  const {
-    data: order,
-    isPending,
-    isError,
-    error,
-  } = useOrder(params.id as string)
+  const { data, isPending, isError, error } = useOrder(params.id as string)
   const items = useOrderFormStore((state) => state.order.items)
   const cartReady = useOrderFormStore((state) => state.ready)
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
@@ -41,40 +36,41 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
 
     if (isPending || isError) return
 
-    const data = order?.data
+    const { lineItems, ...order } = data.data
 
     initOrderForm(undefined, {
-      id: data.id,
+      id: order.id,
       taxRule: {
-        name: data.taxName ?? "",
-        rate: Number(data.taxRate ?? 0),
+        name: order.taxName ?? "",
+        rate: Number(order.taxRate ?? 0),
       },
       charges: {
-        type: data.charges?.type ?? "",
-        amount: Number(data.charges?.amount),
+        type: order.charges?.type ?? "",
+        amount: Number(order.charges?.amount),
       },
-      lineItemCount: Number(data.lineItemCount),
-      lineItemQuantity: Number(data.lineItemQuantity),
-      subtotal: Number(data.subtotal),
-      total: Number(data.total),
-      items: data.lineItems.map((item) => {
+      lineItemCount: Number(order.lineItemCount),
+      lineItemQuantity: Number(order.lineItemQuantity),
+      subtotal: Number(order.subtotal),
+      total: Number(order.total),
+      items: lineItems.map((item) => {
         const inputOrder = toOrderItemInput({
           ...item,
           id: item.productId,
           sellingUnits: [
             {
-              price: item.price,
+              price: Number(item.price),
               name: item.unitName,
               displayLabel: item.unitLabel || item.unitName,
-              minOrderQty: "1",
-              qtyPerUnit: item.qtyPerUnit,
-              orderIncrement: "1",
+              minOrderQty: 1,
+              qtyPerUnit: Number(item.qtyPerUnit ?? 0),
+              orderIncrement: 1,
               isDefault: true,
             },
           ],
         })
         return {
           ...inputOrder,
+          lineItemId: item.id,
           quantity: Number(item.quantity),
           unitQuantity: Number(item.unitQuantity),
           subtotal: Number(item.subtotal),
@@ -85,7 +81,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
     })
 
     initializedRef.current = true
-  }, [order, isError, isPending])
+  }, [data, isError, isPending])
 
   return (
     <React.Fragment>

@@ -33,6 +33,7 @@ export const toOrderItemInput = (
     product.sellingUnits ?? [],
     !!product.catchWeight
   )
+
   const sellUnit = selectedUnit ?? sellingUnits[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
 
@@ -97,7 +98,7 @@ export const toInsertOrder = ({
     deliveryDate: data.deliveryDate,
     deliveryWindow: data.deliveryWindow,
     deliveryInstruction: data.deliveryInstruction,
-    lineItemCount: String(totals.lineItemCount),
+    lineItemCount: totals.lineItemCount,
     lineItemQuantity: String(totals.lineItemQuantity),
     lineItemTotal: totals.lineItemTotal.toFixed(2),
     subtotal: totals.subtotal.toFixed(2),
@@ -155,6 +156,7 @@ export const toInsertLineItems = ({
     unitLabel: item.unitLabel,
     minOrderQty: item.minOrderQty,
     orderIncrement: item.orderIncrement,
+    qtyPerUnit: item.qtyPerUnit,
     catchWeight: item.catchWeight,
     calculatedPrice: item.calculatedPrice.toFixed(2),
 

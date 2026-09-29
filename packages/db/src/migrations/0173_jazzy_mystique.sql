@@ -1,0 +1,36 @@
+-- ALTER TABLE "line_item" ALTER COLUMN "qty_per_unit" SET DATA TYPE integer USING COALESCE(NULLIF("qty_per_unit" #>> '{}', '')::numeric, 1)::integer;--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "qty_per_unit" SET DEFAULT 1;--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "price" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("price", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "price" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "calculated_price" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("calculated_price", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "calculated_price" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DATA TYPE numeric(12, 4) USING COALESCE(NULLIF("unit_quantity", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "quantity" SET DATA TYPE numeric(12, 4) USING COALESCE(NULLIF("quantity", '')::numeric, 1);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "quantity" SET DEFAULT '1';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "subtotal" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("subtotal", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "subtotal" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "tax_rate" SET DATA TYPE numeric(8, 4) USING COALESCE(NULLIF("tax_rate", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "tax_rate" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "tax_amount" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("tax_amount", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "tax_amount" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "total" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("total", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "total" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "line_item_count" SET DATA TYPE integer USING NULLIF("line_item_count", '')::numeric::integer;--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "line_item_quantity" SET DATA TYPE numeric(12, 4) USING NULLIF("line_item_quantity", '')::numeric;--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "line_item_total" SET DATA TYPE numeric(12, 2) USING NULLIF("line_item_total", '')::numeric;--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "subtotal" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("subtotal", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "taxable_subtotal" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("taxable_subtotal", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "taxable_subtotal" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "non_taxable_subtotal" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("non_taxable_subtotal", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "non_taxable_subtotal" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "discount" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("discount", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "discount" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "tax_rate" SET DATA TYPE numeric(8, 4) USING NULLIF("tax_rate", '')::numeric;--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "tax_amount" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("tax_amount", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "tax_amount" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "total" SET DATA TYPE numeric(12, 2) USING COALESCE(NULLIF("total", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "order" ALTER COLUMN "total" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "product" ALTER COLUMN "pack_size" SET DATA TYPE numeric(12, 4) USING NULLIF("pack_size", '')::numeric;--> statement-breakpoint
+-- ALTER TABLE "product" ALTER COLUMN "stock" SET DATA TYPE numeric(12, 4) USING COALESCE(NULLIF("stock", '')::numeric, 0);--> statement-breakpoint
+-- ALTER TABLE "product" ALTER COLUMN "stock" SET DEFAULT '0';

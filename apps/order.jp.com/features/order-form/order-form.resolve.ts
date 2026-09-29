@@ -7,6 +7,7 @@ import { toOrderItemInput } from "./order-form.utils"
 
 export type RequestedOrderItem = {
   productId: number
+  lineItemId?: number
   unitName: string
   quantity: number
 }
@@ -43,6 +44,7 @@ export async function resolveOrderItems(
 
     return {
       ...toOrderItemInput(pricedProduct, unit),
+      lineItemId: request.lineItemId,
       quantity: request.quantity,
     }
   })

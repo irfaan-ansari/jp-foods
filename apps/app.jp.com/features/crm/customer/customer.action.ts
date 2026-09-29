@@ -34,10 +34,12 @@ export const updateCustomerApplication = authActionClient({
       .where(eq(customer.id, id))
 
     if (exist.status !== data.status) {
-      triggerNotification({
+      await triggerNotification({
+        application: exist,
         status: data.status!,
         statusReason: data.statusReason,
         statusDetails: data.statusDetails,
+        internalNotes: data.internalNotes,
       })
     }
 

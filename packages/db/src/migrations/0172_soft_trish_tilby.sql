@@ -1,0 +1,1 @@
+ALTER TABLE "line_item" RENAME COLUMN "qty_unit" TO "qty_per_unit";

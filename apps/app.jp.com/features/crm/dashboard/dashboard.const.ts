@@ -18,7 +18,7 @@ export const DASHBOARD_SECTIONS = {
     badge: CustomerApplicationBadge,
     segments: [
       customerStatuses.new!,
-      customerStatuses.active!,
+      customerStatuses.approved!,
       customerStatuses.rejected!,
     ],
   },

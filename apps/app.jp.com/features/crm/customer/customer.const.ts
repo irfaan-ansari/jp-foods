@@ -30,9 +30,9 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
     value: "on_hold",
     color: "#F97316",
   },
-  active: {
+  approved: {
     label: "Approved",
-    value: "active",
+    value: "approved",
     color: "#22C55E",
   },
   rejected: {
@@ -76,7 +76,7 @@ export const INVITE_STATUS: Record<string, BadgeStatus> = {
   },
   approved: {
     label: "Approved",
-    value: "active",
+    value: "approved",
     color: "#22C55E",
   },
   rejected: {

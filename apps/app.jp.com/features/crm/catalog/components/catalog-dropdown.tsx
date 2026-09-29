@@ -16,7 +16,11 @@ import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 
 import { CatalogInquiry } from "../catalog.type"
 import { UserAccess } from "@/features/auth/components/user-permission"
-import { deleteCatalogInquiry, updateCatalogInquiry } from "../catalog.action"
+import {
+  deleteCatalogInquiry,
+  sendCatalogInquiryLink,
+  updateCatalogInquiry,
+} from "../catalog.action"
 import { MailPlus } from "lucide-react"
 
 export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
@@ -56,7 +60,24 @@ export const CatalogDropdown = ({ data }: { data: CatalogInquiry }) => {
     const isApprove = action === "approved"
 
     if (action === "send-link") {
-      // send link logic here
+      open({
+        variant: "default",
+        title: "Send catalog access link?",
+        description:
+          "The approved contact will receive another catalog access email.",
+        action: {
+          action: async () => {
+            const { serverError } = await sendCatalogInquiryLink({ id })
+
+            if (serverError) {
+              toast.error(serverError.message)
+              return
+            }
+
+            toast.success("Catalog access link sent.")
+          },
+        },
+      })
       return
     }
     open({

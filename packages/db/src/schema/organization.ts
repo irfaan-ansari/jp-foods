@@ -6,6 +6,7 @@ import {
   boolean,
   index,
   jsonb,
+  numeric,
   serial,
   integer,
   unique,
@@ -26,7 +27,7 @@ export const product = pgTable(
     }),
     itemCode: text("item_code").notNull(),
     uom: text("uom"),
-    weightLb: text("pack_size"),
+    weightLb: numeric("pack_size", { precision: 12, scale: 4 }),
     catchWeight: boolean("average_weight"),
 
     type: text("type").default(""),
@@ -38,17 +39,17 @@ export const product = pgTable(
     image: text("image").default(""),
     location: text("location"),
     trackInventory: boolean("track_inventory").default(false),
-    stock: text("stock").default("0"),
+    stock: numeric("stock", { precision: 12, scale: 4 }).default("0"),
     allowBackorder: boolean("allow_backorder").default(true),
     sellingUnits: jsonb("selling_units")
       .$type<
         {
           name: string
           displayLabel: string
-          price: string
-          qtyPerUnit: string
-          minOrderQty: string
-          orderIncrement: string
+          price: number
+          qtyPerUnit: number
+          minOrderQty: number
+          orderIncrement: number
           isDefault: boolean
         }[]
       >()
@@ -262,21 +263,38 @@ export const order = pgTable(
       state: string
       zip: string
     }>(),
-    lineItemCount: text("line_item_count"),
-    lineItemQuantity: text("line_item_quantity"),
-    lineItemTotal: text("line_item_total"),
-    subtotal: text("subtotal").notNull(),
-    taxableSubtotal: text("taxable_subtotal").notNull().default("0"),
-    nonTaxableSubtotal: text("non_taxable_subtotal").notNull().default("0"),
-    discount: text("discount").default("0").notNull(),
+    lineItemCount: integer("line_item_count"),
+    lineItemQuantity: numeric("line_item_quantity", {
+      precision: 12,
+      scale: 4,
+    }),
+    lineItemTotal: numeric("line_item_total", { precision: 12, scale: 2 }),
+    subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull(),
+    taxableSubtotal: numeric("taxable_subtotal", {
+      precision: 12,
+      scale: 2,
+    })
+      .notNull()
+      .default("0"),
+    nonTaxableSubtotal: numeric("non_taxable_subtotal", {
+      precision: 12,
+      scale: 2,
+    })
+      .notNull()
+      .default("0"),
+    discount: numeric("discount", { precision: 12, scale: 2 })
+      .default("0")
+      .notNull(),
     taxName: text("tax_name"),
-    taxRate: text("tax_rate"),
-    taxAmount: text("tax_amount").default("0").notNull(),
+    taxRate: numeric("tax_rate", { precision: 8, scale: 4 }),
+    taxAmount: numeric("tax_amount", { precision: 12, scale: 2 })
+      .default("0")
+      .notNull(),
     charges: jsonb("charges").$type<{
       type: string
       amount: string
     }>(),
-    total: text("total").default("0").notNull(),
+    total: numeric("total", { precision: 12, scale: 2 }).default("0").notNull(),
     po: text("po"),
     notes: text("notes"),
     deliveryDate: date("delivery_date"),
@@ -336,19 +354,23 @@ export const lineItem = pgTable(
     unitName: text("unit_name").notNull().default(""),
     unitLabel: text("unit_label").default(""),
     uom: text("uom"),
-    qtyPerUnit: text("qty_per_unit").notNull().default("1"),
+    qtyPerUnit: integer("qty_per_unit").notNull().default(1),
     catchWeight: boolean("catch_weight").default(false),
-    price: text("price").notNull().default("0"),
-    calculatedPrice: text("calculated_price").notNull().default("0"),
-    unitQuantity: text("unit_quantity")
+    price: numeric("price", { precision: 12, scale: 2 }).notNull().default("0"),
+    calculatedPrice: numeric("calculated_price", { precision: 12, scale: 2 })
+      .notNull()
+      .default("0"),
+    unitQuantity: numeric("unit_quantity", { precision: 12, scale: 4 })
       .notNull()
       .default("0") /** used for inventory */,
-    quantity: text("quantity").notNull().default("1"),
-    subtotal: text("subtotal").default("0"),
+    quantity: numeric("quantity", { precision: 12, scale: 4 })
+      .notNull()
+      .default("1"),
+    subtotal: numeric("subtotal", { precision: 12, scale: 2 }).default("0"),
     isTaxable: boolean("is_taxable").default(false),
-    taxRate: text("tax_rate").default("0"),
-    taxAmount: text("tax_amount").default("0"),
-    total: text("total").default("0"),
+    taxRate: numeric("tax_rate", { precision: 8, scale: 4 }).default("0"),
+    taxAmount: numeric("tax_amount", { precision: 12, scale: 2 }).default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).default("0"),
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

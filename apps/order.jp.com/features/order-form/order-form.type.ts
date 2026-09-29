@@ -3,6 +3,7 @@ type Charges = { type: string; amount: number }
 
 export type OrderItemInput = {
   id: string /** productId:sellingUnit.name */
+  lineItemId?: number
   productId: number
   itemCode: string
   title: string
