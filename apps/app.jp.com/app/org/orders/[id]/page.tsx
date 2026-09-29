@@ -3,6 +3,8 @@ import { PageContent, PageHeader } from "@/components/page-content"
 import { useOrder } from "@/features/org/order/order.data"
 
 import { OrderDropdown } from "@/features/org/order/components/order-dropdown"
+import { OrderCompleteDialog } from "@/features/org/order/components/order-complete-dialog"
+import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderInvoiceDialog } from "@/features/org/order/components/order-invoice-dialog"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { Badge } from "@jp/ui/components/badge"
@@ -40,41 +42,15 @@ import React from "react"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { OrderStatusBadge } from "@/features/org/order/components/order-card"
-import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
-import { completeOrder } from "@/features/org/order/order.action"
-import { toast } from "sonner"
-import { useQueryClient } from "@tanstack/react-query"
+
 import { Tooltip } from "@jp/ui/components/jp"
 
 const OrderPage = () => {
   const { id } = useParams()
-  const { open } = useConfirm()
-  const queryClient = useQueryClient()
+
   const { searchParams } = useRouterStuff()
   const { data: order, isPending, isError, error } = useOrder(id as string)
   const data = order?.data! ?? {}
-
-  const handleComplete = () => {
-    open({
-      title: "Mark as completed",
-      description:
-        "This will mark the order as completed and update its status.",
-      action: {
-        action: async () => {
-          const { serverError } = await completeOrder({
-            id: data.id,
-          })
-          if (serverError) {
-            toast.error(serverError.message)
-          } else {
-            queryClient.invalidateQueries({
-              queryKey: ["orders"],
-            })
-          }
-        },
-      },
-    })
-  }
 
   return (
     <React.Fragment>
@@ -334,26 +310,50 @@ const OrderPage = () => {
                   </div>
 
                   <div className="grid gap-2 px-6">
-                    {data.status !== "completed" && (
-                      <OrderInvoiceDialog
-                        order={{
-                          ...data,
-                          lineItems: data.lineItems?.filter(
-                            (item) => item.catchWeight
-                          ),
-                        }}
-                      >
-                        <Button className="w-full bg-invert hover:bg-invert/80">
-                          <CheckCircle />
-                          Generate Invoice
+                    {data.status === "completed" &&
+                      (data.invoiceStatus === "issued" ? (
+                        <Button className="w-full" asChild>
+                          <a
+                            href={`/api/v1/org/orders/${data.id}/invoice`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <Download />
+                            Download Invoice
+                          </a>
                         </Button>
-                      </OrderInvoiceDialog>
-                    )}
-                    {data.status !== "completed" && (
-                      <Button className="w-full" onClick={handleComplete}>
-                        <CheckCircle />
-                        Mark as Completed
-                      </Button>
+                      ) : (
+                        <OrgAccess permission={{ order: ["update"] }}>
+                          {(disabled) => (
+                            <OrderInvoiceDialog id={data.id}>
+                              <Button className="w-full" disabled={disabled}>
+                                <CheckCircle />
+                                Generate Invoice
+                              </Button>
+                            </OrderInvoiceDialog>
+                          )}
+                        </OrgAccess>
+                      ))}
+                    {data.status === "in_progress" && (
+                      <OrgAccess permission={{ order: ["update"] }}>
+                        {(disabled) => (
+                          <OrderCompleteDialog
+                            id={data.id}
+                            lineItems={data.lineItems
+                              .filter((item) => item.catchWeight)
+                              .map((item) => ({
+                                lineItemId: item.id,
+                                title: item.title ?? "",
+                                unitQuantity: item.unitQuantity,
+                              }))}
+                          >
+                            <Button className="w-full" disabled={disabled}>
+                              <CheckCircle />
+                              Mark as Completed
+                            </Button>
+                          </OrderCompleteDialog>
+                        )}
+                      </OrgAccess>
                     )}
 
                     <Button className="w-full" variant="outline" asChild>

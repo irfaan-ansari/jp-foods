@@ -1,4 +1,5 @@
 "use client"
+import React from "react"
 import {
   useTranslation,
   LanguageSelector,
@@ -12,21 +13,21 @@ import { upload } from "@vercel/blob/client"
 import { createCustomer } from "@/features/apply/customer.action"
 import { DEFAULT_VALUES } from "@/features/apply/customer.const"
 import { steps } from "@/features/apply/customer.steps"
-import { ArrowLeft, ArrowRight, Loader } from "lucide-react"
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CircleCheck,
+  Loader,
+  ShieldCheck,
+} from "lucide-react"
 import translations from "@/features/apply/customer.translations.json"
 import { formOptions, useStore } from "@tanstack/react-form"
 import { customerSchema } from "@/features/apply/customer.schema"
 
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@jp/ui/components/card"
-import React from "react"
+import { Card, CardFooter, CardHeader } from "@jp/ui/components/card"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { useAppForm } from "@/hooks/use-app-form"
-import { Tabs, TabsContent } from "@jp/ui/components/tabs"
 
 export const formOpts = formOptions({
   defaultValues: DEFAULT_VALUES,
@@ -104,105 +105,171 @@ export const CustomerForm = () => {
 
   const step = useStore(form.store, (state) => state.values.step)
 
+  const labels = steps.map((_, index) => t[`applicationStep${index + 1}Label`])
+  const descriptions = steps.map(
+    (_, index) => t[`applicationStep${index + 1}Description`]
+  )
+
+  const progress = Math.round((step / steps.length) * 100)
+
   return (
-    <Tabs value={step.toString()} dir={dir}>
-      <LanguageSelector
-        value={language}
-        onValueChange={(v) => setLanguage(v)}
-        className="mb-8 ml-auto"
-      />
+    <div
+      dir={dir}
+      className="grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10"
+    >
+      <aside className="lg:sticky lg:top-28">
+        <div className="mb-6 flex items-center justify-between lg:block">
+          <div>
+            <p className="text-xs font-semibold tracking-widest text-primary uppercase">
+              {t.applicationNewAccount}
+            </p>
+            <h2 className="mt-2 font-heading text-2xl font-semibold tracking-tight">
+              {t.applicationTitle}
+            </h2>
+          </div>
+          <span className="rounded-full border bg-background px-3 py-1 text-xs font-medium lg:hidden">
+            {step + 1} / {steps.length}
+          </span>
+        </div>
+        <ol
+          aria-label={t.applicationSteps}
+          className="hidden space-y-2 lg:block"
+        >
+          {steps.map((item, index) => {
+            const Icon = item.icon
+            return (
+              <li
+                key={item.key}
+                aria-current={index === step ? "step" : undefined}
+                className={`flex items-start gap-3 rounded-xl p-3 transition-colors ${index === step ? "bg-primary/10 text-primary" : "text-muted-foreground"}`}
+              >
+                <span
+                  className={`flex size-10 shrink-0 items-center justify-center rounded-xl border ${index === step ? "border-primary bg-primary text-primary-foreground shadow-sm" : index < step ? "border-primary/20 bg-primary/10 text-primary" : "border-border bg-background"}`}
+                >
+                  {index < step ? (
+                    <CircleCheck className="size-4" />
+                  ) : (
+                    <Icon className="size-4" />
+                  )}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold">{labels[index]}</p>
+                  <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                    {descriptions[index]}
+                  </p>
+                </div>
+              </li>
+            )
+          })}
+        </ol>
+        <div className="mt-8 hidden border-t pt-6 text-sm/6 text-muted-foreground lg:block">
+          <ShieldCheck className="mb-3 size-5 text-primary" />
+          <p className="font-medium text-foreground">
+            {t.applicationPrivacyTitle}
+          </p>
+          <p className="mt-1">{t.applicationPrivacyDescription}</p>
+        </div>
+      </aside>
 
       <form
-        className="@container"
+        className="@container min-w-0"
         onSubmit={(e) => {
           e.preventDefault()
           form.handleSubmit()
         }}
       >
-        <Card className="gap-8 rounded-2xl bg-secondary/20 shadow-md ring ring-border/50 lg:py-8">
-          <CardHeader className="space-y-1 lg:px-8">
-            <form.Subscribe selector={(state) => state.values.step}>
-              {(step) => {
-                const progress = Math.round((step / steps.length) * 100)
-
-                return (
-                  <>
-                    <div className="flex items-center justify-between">
-                      <span className="text-sm font-medium uppercase">
-                        Step {step + 1} of {steps.length}
-                      </span>
-                      <span className="text-sm text-muted-foreground">
-                        {progress}% Complete
-                      </span>
-                    </div>
-
-                    <div className="h-2.5 w-full overflow-hidden rounded-full bg-secondary">
-                      <div
-                        className="h-full rounded-full bg-primary transition-all duration-300 ease-in-out"
-                        style={{ width: `${progress}%` }}
-                      />
-                    </div>
-                  </>
-                )
-              }}
-            </form.Subscribe>
-          </CardHeader>
-          {steps.map((step, i) => (
-            <TabsContent value={i.toString()} key={step.key}>
-              <CardContent className="lg:px-8">
-                <step.component
-                  // @ts-ignore
-                  form={form}
+        <Card className="gap-0 rounded-2xl border bg-background py-0 shadow-sm ring-0">
+          <CardHeader className="gap-5 rounded-none border-b p-5 sm:p-8">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+                {t.applicationStep} {String(step + 1).padStart(2, "0")} /{" "}
+                {String(steps.length).padStart(2, "0")}
+              </p>
+              <LanguageSelector
+                value={language}
+                onValueChange={setLanguage}
+                className="gap-0.5 rounded-xl border bg-secondary/50 p-1"
+              />
+            </div>
+            <div aria-live="polite">
+              <h2 className="font-heading text-2xl font-semibold tracking-tight sm:text-3xl">
+                {labels[step]}
+              </h2>
+              <p className="mt-2 text-sm/6 text-muted-foreground">
+                {descriptions[step]}
+              </p>
+            </div>
+            <div
+              role="progressbar"
+              aria-label={t.applicationProgress}
+              aria-valuenow={progress}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              className="flex gap-1.5"
+            >
+              {steps.map((item, index) => (
+                <span
+                  key={item.key}
+                  className={`h-1.5 flex-1 rounded-full transition-colors ${index < step ? "bg-primary" : index === step ? "bg-primary/40" : "bg-secondary"}`}
                 />
-              </CardContent>
-            </TabsContent>
-          ))}
-
-          {/* submit and preview */}
-          <CardFooter className="justify-end gap-6 lg:px-8">
-            {/* reset*/}
+              ))}
+            </div>
+          </CardHeader>
+          <div className="p-5 **:data-[slot=card-description]:mt-2 **:data-[slot=card-description]:leading-6 **:data-[slot=card-title]:font-semibold **:data-[slot=input]:min-h-11 **:data-[slot=select-trigger]:min-h-11 sm:p-8">
+            {steps.map(
+              (item, index) =>
+                step === index && (
+                  <div key={item.key}>
+                    <item.component form={form} />
+                  </div>
+                )
+            )}
+          </div>
+          <CardFooter className="flex-wrap justify-between gap-3 rounded-none border-t bg-secondary/20 p-5 sm:px-8 sm:py-5">
             <Button
-              size="xl"
-              className="min-w-32 rounded-2xl"
               type="button"
-              variant="outline"
+              variant="ghost"
+              className="text-muted-foreground"
               onClick={() => {
                 form.reset()
+                form.setFieldValue("step", 0)
               }}
             >
-              Reset
+              {t.applicationReset}
             </Button>
-            {step > 0 && step < steps.length && (
-              <Button
-                size="xl"
-                className="min-w-32 rounded-2xl"
-                type="button"
-                variant="secondary"
-                onClick={() => form.setFieldValue("step", step - 1)}
-              >
-                <ArrowLeft />
-                Previous
-              </Button>
-            )}
-
-            {/* submit button */}
-            <form.Subscribe
-              children={({ isSubmitting }) => (
+            <div className="flex flex-wrap gap-2 sm:gap-3">
+              {step > 0 && step < steps.length && (
                 <Button
-                  size="xl"
-                  className="min-w-32 rounded-2xl"
-                  type="submit"
-                  disabled={isSubmitting}
+                  size="lg"
+                  className="rounded-lg"
+                  type="button"
+                  variant="outline"
+                  onClick={() => form.setFieldValue("step", step - 1)}
                 >
-                  {isSubmitting && <Loader className="animate-spin" />}
-                  {step < steps.length - 1 ? "Next" : "Submit"}
-                  {step < steps.length && <ArrowRight />}
+                  <ArrowLeft />
+                  {t.applicationPrevious}
                 </Button>
               )}
-            />
+              <form.Subscribe selector={(state) => state.isSubmitting}>
+                {(isSubmitting) => (
+                  <Button
+                    size="lg"
+                    className="rounded-lg px-5 sm:min-w-36"
+                    type="submit"
+                    disabled={isSubmitting}
+                  >
+                    {isSubmitting && <Loader className="animate-spin" />}
+                    {step < steps.length - 1
+                      ? t.applicationContinue
+                      : t.applicationSubmit}
+                    {!isSubmitting && <ArrowRight />}
+                  </Button>
+                )}
+              </form.Subscribe>
+            </div>
           </CardFooter>
         </Card>
       </form>
-    </Tabs>
+    </div>
   )
 }

@@ -8,17 +8,11 @@ import { useQueryClient } from "@tanstack/react-query"
 import type { Order } from "@/features/org/order/order.type"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
-import { cancelOrder, completeOrder } from "@/features/org/order/order.action"
-import {
-  Bill,
-  BillCheck,
-  CalendarMark,
-  CheckCircle,
-  CloseCircle,
-  MenuDots,
-} from "@solar-icons/react"
+import { cancelOrder } from "@/features/org/order/order.action"
+import { Bill, BillCheck, CalendarMark, CloseCircle } from "@solar-icons/react"
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
+import { OrderInvoiceDialog } from "./order-invoice-dialog"
 
 export const OrderDropdown = ({
   data,
@@ -34,27 +28,6 @@ export const OrderDropdown = ({
 
   const handleAction = (action: string) => {
     switch (action) {
-      case "completed":
-        open({
-          title: "Mark as completed",
-          description:
-            "This will mark the order as completed and update its status.",
-          action: {
-            action: async () => {
-              const { serverError } = await completeOrder({
-                id,
-              })
-              if (serverError) {
-                toast.error(serverError.message)
-              } else {
-                queryClient.invalidateQueries({
-                  queryKey: ["orders"],
-                })
-              }
-            },
-          },
-        })
-        break
       case "cancel":
         open({
           variant: "warning",
@@ -97,7 +70,7 @@ export const OrderDropdown = ({
         </a>
       </Button>
 
-      {status !== "completed" && (
+      {status === "in_progress" && (
         <>
           <OrderScheduleDialog
             id={id}
@@ -110,10 +83,7 @@ export const OrderDropdown = ({
               <CalendarMark /> Edit Schedule
             </Button>
           </OrderScheduleDialog>
-          <Button variant="ghost" onClick={() => handleAction("completed")}>
-            <CheckCircle /> Mark as Completed
-            <div className="-mx-4 my-1 border-t md:-mx-2"></div>
-          </Button>
+
           <div className="-mx-4 my-1 border-t md:-mx-2" />
           <OrgAccess permission={{ order: ["cancel"] }}>
             {(disabled) => (
@@ -121,7 +91,7 @@ export const OrderDropdown = ({
                 variant="ghost"
                 className="hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => handleAction("cancel")}
-                disabled={disabled}
+                disabled={disabled || data.status !== "in_progress"}
               >
                 <CloseCircle /> Cancel
               </Button>
@@ -129,6 +99,28 @@ export const OrderDropdown = ({
           </OrgAccess>
         </>
       )}
+      {status === "completed" &&
+        (data.invoiceStatus === "issued" ? (
+          <Button variant="ghost" asChild>
+            <a
+              href={`/api/v1/org/orders/${id}/invoice`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <BillCheck /> Download Invoice
+            </a>
+          </Button>
+        ) : (
+          <OrgAccess permission={{ order: ["update"] }}>
+            {(disabled) => (
+              <OrderInvoiceDialog id={id}>
+                <Button variant="ghost" disabled={disabled}>
+                  <BillCheck /> Generate Invoice
+                </Button>
+              </OrderInvoiceDialog>
+            )}
+          </OrgAccess>
+        ))}
     </PopDrawer>
   )
 }

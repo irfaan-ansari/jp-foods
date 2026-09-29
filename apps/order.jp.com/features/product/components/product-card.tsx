@@ -25,11 +25,14 @@ import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
 export const ProductItem = React.memo(function ProductItem({
   data,
   sortable = false,
+  layoutOverride,
 }: {
   data: Product
   sortable?: boolean
+  layoutOverride?: "list" | "grid"
 }) {
-  const layout = useOrderFormUI((state) => state.layout)
+  const storeLayout = useOrderFormUI((state) => state.layout)
+  const layout = layoutOverride ?? storeLayout
 
   if (layout === "list") {
     return <ProductRow data={data} sortable={sortable} />

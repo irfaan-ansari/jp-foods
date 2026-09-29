@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { OrderSelectType } from "@jp/db"
 import { Button } from "@jp/ui/components/button"
 import { OrderCancelDialog } from "./order-cancel-dialog"
@@ -11,18 +11,28 @@ import { CloseCircle, MenuDots, PenNewSquare } from "@solar-icons/react"
 export const OrderDropdown = ({
   data,
 }: {
-  data: Pick<OrderSelectType, "id" | "status">
+  data: Pick<OrderSelectType, "id" | "status" | "createdAt">
 }) => {
   const { id } = data
+
   const [open, setOpen] = useState(false)
 
-  if (data.status !== "in_progress") return
+  const cancelDeadline = data.createdAt
+    ? new Date(data.createdAt).getTime() + 15 * 60 * 1000
+    : 0
+  const cancelDisabled = Date.now() > cancelDeadline
+
   return (
     <PopDrawer
       open={open}
       setOpen={setOpen}
       trigger={
-        <Button size="icon-sm" variant="outline" className="relative z-1">
+        <Button
+          size="icon-sm"
+          variant="outline"
+          className="relative z-1"
+          disabled={data.status !== "in_progress"}
+        >
           <MenuDots />
         </Button>
       }
@@ -35,7 +45,11 @@ export const OrderDropdown = ({
       </Button>
 
       <OrderCancelDialog id={data.id}>
-        <Button variant="destructive" className="justify-start bg-background">
+        <Button
+          variant="destructive"
+          className="justify-start bg-background"
+          disabled={cancelDisabled}
+        >
           <CloseCircle /> Cancel
         </Button>
       </OrderCancelDialog>

@@ -29,7 +29,7 @@ export const ProductPricing = withForm({
   render: function Render({ form }) {
     const handleClick = () => {
       form.pushFieldValue("sellingUnits", {
-        name: "lb",
+        name: "LB",
         displayLabel: "",
         price: "",
         qtyPerUnit: "1",
@@ -52,7 +52,7 @@ export const ProductPricing = withForm({
                     children={(field) => (
                       <field.SelectField
                         label="Unit of Measure"
-                        options={MEASURE_UNITS}
+                        options={[...MEASURE_UNITS]}
                       />
                     )}
                   />
@@ -160,7 +160,7 @@ export const ProductPricing = withForm({
                                       <field.SelectField
                                         className="lg:col-span-3"
                                         label="Sell as"
-                                        options={MEASURE_UNITS}
+                                        options={[...MEASURE_UNITS]}
                                       />
                                     )}
                                   />

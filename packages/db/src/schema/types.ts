@@ -28,6 +28,7 @@ import {
   promotionTarget,
   taxRule,
 } from "./organization"
+import { invoice, invoiceLineItem } from "./invoice"
 
 /** applications */
 export type CustomerApplicationSelectType = InferSelectModel<typeof customer>
@@ -96,5 +97,15 @@ export type PromotionTargetInsertType = InferInsertModel<typeof promotionTarget>
 export type MessageCampaignSelectType = InferSelectModel<typeof messageCampaign>
 export type MessageCampaignInsertType = InferInsertModel<typeof messageCampaign>
 
-export type MessageRecipientSelectType = InferSelectModel<typeof messageRecipient>
-export type MessageRecipientInsertType = InferInsertModel<typeof messageRecipient>
+export type MessageRecipientSelectType = InferSelectModel<
+  typeof messageRecipient
+>
+export type MessageRecipientInsertType = InferInsertModel<
+  typeof messageRecipient
+>
+
+// Invoice
+export type InvoiceSelectType = InferSelectModel<typeof invoice>
+export type InvoiceInsertType = InferInsertModel<typeof invoice>
+export type InvoiceItemSelectType = InferSelectModel<typeof invoiceLineItem>
+export type InvoiceItemInsertType = InferInsertModel<typeof invoiceLineItem>

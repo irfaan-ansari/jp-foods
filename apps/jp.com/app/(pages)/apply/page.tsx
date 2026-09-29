@@ -1,5 +1,4 @@
 import React from "react"
-import Image from "next/image"
 import { Metadata } from "next"
 import { Container } from "@/components/container"
 import { LanguageProvider } from "@/components/language-selector"
@@ -14,35 +13,26 @@ export const metadata: Metadata = {
 export default function ApplyPage() {
   return (
     <LanguageProvider defaultLanguage="en">
-      {/* page title*/}
-      <section className="relative py-16 text-primary-foreground">
-        <div className="absolute inset-0 bg-linear-to-br from-lime-800 to-lime-50">
-          <Image
-            src="/page-banner.jpg"
-            width={1800}
-            height={600}
-            alt="image"
-            className="h-full w-full object-cover"
-          />
-        </div>
-        <Container className="relative">
-          <div className="flex h-full flex-col items-center">
-            <div className="mx-auto max-w-3xl space-y-6 text-center">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
-                Become a customer
-              </h2>
-              <p className="text-lg">
-                Please complete this secure application to open a new account
-                with Jimenez Produce. All information is kept confidential and
-                will be reviewed by our team before approval.
-              </p>
-              <p></p>
-            </div>
+      <section className="bg-secondary py-12 sm:py-16">
+        <Container className="max-w-4xl">
+          <div className="flex h-full flex-col items-center text-center">
+            <p className="mb-4 text-xs font-semibold tracking-[0.2em] text-primary uppercase">
+              Jimenez Produce · Customer application
+            </p>
+            <h1 className="flex-1 font-heading text-4xl/tight font-semibold text-primary sm:text-5xl/tight md:text-7xl/tight">
+              Fresh starts here.
+            </h1>
+
+            <p className="mt-5 max-w-2xl text-base/7 text-muted-foreground sm:text-lg/8">
+              Bring fresh produce and reliable service to your business.
+              Complete your application below to open an account with Jimenez
+              Produce.
+            </p>
           </div>
         </Container>
       </section>
-      <section className="mt-16">
-        <Container className="mb-16 max-w-4xl">
+      <section className="bg-secondary/25 py-8 sm:py-12">
+        <Container className="max-w-7xl">
           <CustomerForm />
         </Container>
       </section>

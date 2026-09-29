@@ -29,7 +29,6 @@ const orderApp = new Hono<TeamAppContext>()
       conditions.push(
         or(
           ilike(sql`${order.id}::text`, `%${idSearch}%`),
-          ilike(order.searchText, `%${search}%`),
           ilike(order.po, `%${search}%`)
         )!
       )

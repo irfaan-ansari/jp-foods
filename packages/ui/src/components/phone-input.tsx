@@ -72,6 +72,7 @@ function PhoneInput({
         flagComponent={FlagComponent}
         countrySelectComponent={CountrySelect}
         inputComponent={InputComponent}
+        defaultCountry="US"
         smartCaret={false}
         value={value || undefined}
         onChange={(value) => onChange?.(value || ("" as BasePhoneInput.Value))}

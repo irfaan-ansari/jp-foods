@@ -69,7 +69,7 @@ function DashboardPromotion({ data }: { data: PromotionType }) {
             key={product.id}
             className="basis-full overflow-visible pb-0.5 md:basis-1/2 lg:basis-1/3 xl:basis-1/4"
           >
-            <ProductItem data={product} />
+            <ProductItem data={product} layoutOverride="grid" />
           </CarouselItem>
         ))}
       </CarouselContent>

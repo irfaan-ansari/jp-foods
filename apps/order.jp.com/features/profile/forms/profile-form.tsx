@@ -17,6 +17,7 @@ import { Loader2 } from "lucide-react"
 import {
   InputGroup,
   InputGroupAddon,
+  InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
 import { AuthType } from "@jp/auth"
@@ -135,17 +136,12 @@ export const ProfileForm = ({ user }: { user: AuthType["user"] }) => {
                   defaultValue={user?.phoneNumber ?? ""}
                   placeholder="1234-123-123"
                 />
-                <InputGroupAddon
-                  align="inline-end"
-                  className="gap-1 text-primary"
-                >
-                  <VerifiedCheck className="size-4" />
-                  Verified
+                <InputGroupAddon align="inline-end">
+                  <ChangePhoneForm>
+                    <InputGroupButton variant="link">Change</InputGroupButton>
+                  </ChangePhoneForm>
                 </InputGroupAddon>
               </InputGroup>
-              <ChangePhoneForm>
-                <Button variant="outline">Change</Button>
-              </ChangePhoneForm>
             </div>
           </Field>
           <Field>
@@ -157,18 +153,12 @@ export const ProfileForm = ({ user }: { user: AuthType["user"] }) => {
                   defaultValue={user?.email ?? ""}
                   placeholder="yourname@email.com"
                 />
-                <InputGroupAddon
-                  align="inline-end"
-                  className="gap-1 bg-transparent text-primary"
-                >
-                  <VerifiedCheck className="size-4" />
-                  Verified
+                <InputGroupAddon align="inline-end">
+                  <ChangeEmailForm>
+                    <InputGroupButton variant="link">Change</InputGroupButton>
+                  </ChangeEmailForm>
                 </InputGroupAddon>
               </InputGroup>
-
-              <ChangeEmailForm>
-                <Button variant="outline">Change</Button>
-              </ChangeEmailForm>
             </div>
           </Field>
         </FieldGroup>

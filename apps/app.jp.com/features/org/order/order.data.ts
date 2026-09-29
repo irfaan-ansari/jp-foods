@@ -20,10 +20,11 @@ export const useOrders = (kv?: Record<string, any> | undefined) => {
   })
 }
 
-export const useOrder = (id: string | number) => {
+export const useOrder = (id: string | number, enabled = true) => {
   return useQuery<ApiResponse<OrderWithLineItems>, AppError>({
     queryKey: ["orders", id],
+    enabled,
     queryFn: () => apiClient.get(`/org/orders/${id}`),
-    staleTime: 50 * 60,
+    staleTime: 0,
   })
 }

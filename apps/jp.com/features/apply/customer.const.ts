@@ -1,7 +1,7 @@
 import { CustomerFormType } from "@/features/apply/customer.schema"
 
 export const DEFAULT_VALUES: CustomerFormType = {
-  step: 0,
+  step: 5,
 
   companyName: "",
   companyType: "",

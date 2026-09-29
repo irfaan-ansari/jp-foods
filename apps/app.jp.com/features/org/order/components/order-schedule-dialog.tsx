@@ -2,9 +2,16 @@
 
 import React from "react"
 
-import { OrderScheduleForm } from "../forms/order-schedule-form"
+import { Loader2 } from "lucide-react"
+import { useAppForm } from "@/hooks/use-app-form"
+import { Button } from "@jp/ui/components/button"
+import { rescheduleOrder } from "../order.action"
+import { Field, FieldGroup } from "@jp/ui/components/field"
+import { orderSchema } from "../order.schema"
+
 import {
   AppDialog,
+  AppDialogClose,
   AppDialogContent,
   AppDialogHeader,
   AppDialogTitle,
@@ -26,14 +33,35 @@ export const OrderScheduleDialog = ({ children, defaultValues, id }: Props) => {
   const [open, setOpen] = React.useState(false)
   const queryClient = useQueryClient()
 
-  const handleSuccess = () => {
-    setOpen(false)
-    queryClient.invalidateQueries({ queryKey: ["orders"] })
-    queryClient.invalidateQueries({
-      queryKey: ["count", "/org/orders/count"],
-    })
-    toast.success("Order updated successfully.")
-  }
+  const { deliveryDate, deliveryWindow } = defaultValues
+
+  const form = useAppForm({
+    defaultValues: {
+      deliveryDate: deliveryDate ?? "",
+      deliveryWindow: deliveryWindow ?? "",
+    },
+    validators: {
+      onSubmit: orderSchema.omit({ status: true }),
+    },
+    onSubmit: async ({ value }) => {
+      const { serverError, data, validationErrors } = await rescheduleOrder({
+        id,
+        data: { ...value },
+      })
+
+      if (serverError || validationErrors) {
+        toast.error(serverError?.message ?? "Failed to update order.")
+      }
+      if (data) {
+        setOpen(false)
+        queryClient.invalidateQueries({ queryKey: ["orders"] })
+        queryClient.invalidateQueries({
+          queryKey: ["count", "/org/orders/count"],
+        })
+        toast.success("Order updated successfully.")
+      }
+    },
+  })
 
   return (
     <AppDialog open={open} onOpenChange={setOpen}>
@@ -44,12 +72,47 @@ export const OrderScheduleDialog = ({ children, defaultValues, id }: Props) => {
             Edit Schedule
           </AppDialogTitle>
         </AppDialogHeader>
-        <OrderScheduleForm
-          onCancel={() => setOpen(false)}
-          onSuccess={handleSuccess}
-          id={id}
-          defaultValues={defaultValues}
-        />
+        <form
+          onSubmit={(e) => {
+            e.preventDefault()
+            form.handleSubmit()
+          }}
+        >
+          <FieldGroup>
+            <form.AppField
+              name="deliveryDate"
+              children={(field) => <field.DateField label="Delivery Date" />}
+            />
+            <form.AppField
+              name="deliveryWindow"
+              children={(field) => (
+                <field.SelectField
+                  label="Delivery Window"
+                  options={[{ label: "3-6", value: "3-6" }]}
+                />
+              )}
+            />
+          </FieldGroup>
+
+          <Field className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:[&>button]:w-28">
+            <AppDialogClose asChild>
+              <Button variant="outline" type="button">
+                Cancel
+              </Button>
+            </AppDialogClose>
+            <form.Subscribe
+              selector={({ isSubmitting, canSubmit }) => ({
+                isSubmitting,
+                canSubmit,
+              })}
+              children={({ isSubmitting, canSubmit }) => (
+                <Button type="submit" disabled={isSubmitting || !canSubmit}>
+                  {isSubmitting ? <Loader2 className="animate-spin" /> : "Save"}
+                </Button>
+              )}
+            />
+          </Field>
+        </form>
       </AppDialogContent>
     </AppDialog>
   )

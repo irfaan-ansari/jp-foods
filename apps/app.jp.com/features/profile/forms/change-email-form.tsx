@@ -17,7 +17,9 @@ import {
 import {
   InputOTP,
   InputOTPGroup,
+  InputOTPSeparator,
   InputOTPSlot,
+  REGEXP_ONLY_DIGITS,
 } from "@jp/ui/components/input-otp"
 import {
   AppDialog,
@@ -29,7 +31,7 @@ import {
   AppDialogTrigger,
 } from "@jp/ui/components/jp/app-dialog"
 type Step = "send" | "verify"
-const DIGITS_ONLY = "^\\d+$"
+
 const formSchema = z.object({
   newEmail: z.email("Invalid email"),
   code: z.string(),
@@ -155,12 +157,15 @@ export const ChangeEmailForm = ({
                         onChange={(value) => field.handleChange(value)}
                         onBlur={field.handleBlur}
                         maxLength={6}
-                        pattern={DIGITS_ONLY}
+                        pattern={REGEXP_ONLY_DIGITS}
                       >
-                        <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1!">
+                        <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:border-border">
                           <InputOTPSlot index={0} />
                           <InputOTPSlot index={1} />
                           <InputOTPSlot index={2} />
+                        </InputOTPGroup>
+                        <InputOTPSeparator />
+                        <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:border-border">
                           <InputOTPSlot index={3} />
                           <InputOTPSlot index={4} />
                           <InputOTPSlot index={5} />

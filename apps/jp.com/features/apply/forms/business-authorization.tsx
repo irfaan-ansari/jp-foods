@@ -28,7 +28,7 @@ export const Authorization = withForm({
           children={(field) => (
             <field.TextField
               label={t[field.name]}
-              className="**:data-[slot=input]:rounded-2xl lg:col-span-2"
+              className="lg:col-span-2"
               placeholder={t[`${field.name}Placeholder`]}
               description={t[`${field.name}Desc`]}
             />
@@ -39,7 +39,7 @@ export const Authorization = withForm({
           children={(field) => (
             <field.SignatureField
               label={t[field.name]}
-              className="**:data-[slot=button]:rounded-2xl lg:col-span-2 **:[.border-dashed]:rounded-2xl **:[canvas]:rounded-xl"
+              className="lg:col-span-2 **:[canvas]:rounded-xl"
               description={t[`${field.name}Desc`]}
             />
           )}
@@ -52,7 +52,7 @@ export const Authorization = withForm({
 
             return (
               <Field className="gap-2 lg:col-span-2" data-invalid={isInvalid}>
-                <FieldLabel className="rounded-2xl!">
+                <FieldLabel>
                   <Field orientation="horizontal">
                     <Checkbox
                       id={field.name}
@@ -83,7 +83,7 @@ export const Authorization = withForm({
 
             return (
               <Field className="gap-2 lg:col-span-2" data-invalid={isInvalid}>
-                <FieldLabel className="rounded-2xl!">
+                <FieldLabel>
                   <Field orientation="horizontal">
                     <Checkbox
                       id={field.name}
