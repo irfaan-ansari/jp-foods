@@ -364,6 +364,7 @@ const PhoneField = ({
         id={field.name}
         name={field.name}
         value={field.state.value}
+
         aria-invalid={isInvalid}
         placeholder="123-123-1234"
         onChange={(value) => field.handleChange(value)}

@@ -36,25 +36,38 @@ export function EmailLayout({
       <Tailwind config={{ ...emailStyles, presets: [pixelBasedPreset] }}>
         <Head />
         <Body className="bg-canvas text-text m-0 px-3 py-10 font-sans">
-          <Container className="border-outline mx-auto w-full max-w-[600px] overflow-hidden rounded-xl border border-t-4 border-t-brand bg-white">
+          <Container className="border-outline border-t-brand mx-auto w-full max-w-[600px] overflow-hidden rounded-xl border border-t-4 bg-white">
             <Section className="border-b border-border px-6 pt-7 pb-6 sm:px-8">
               <Row>
                 <Column className="w-12 align-middle">
                   <Img
                     src="https://jimenezproduce.com/logo.png"
                     alt="Jimenez Produce"
-                    className="h-auto w-12"
+                    className="h-auto w-18"
                   />
                 </Column>
                 <Column className="pl-4 align-middle">
-                  <Text className="m-0 text-base font-bold tracking-tight text-text">
+                  <Text className="text-text m-0 text-2xl font-bold tracking-tight">
                     Jimenez Produce
                   </Text>
-                  <Text className="m-0 mt-1 text-xs leading-4 text-muted">Foodservice distribution</Text>
+                  <Text className="m-0 mt-1 text-base leading-4 text-muted">
+                    Foodservice distribution
+                  </Text>
                 </Column>
               </Row>
-              <Text className="mt-7 mb-2 text-[10px] font-bold uppercase tracking-[1.5px] text-brand">{template === "admin" ? "Team notification" : "Jimenez Produce"}</Text>
-              <Heading as="h1" className="m-0 text-[26px] leading-[34px] font-bold tracking-[-0.6px] text-text">{heading}</Heading>
+            </Section>
+            <Section className="border-b border-border px-6 pt-7 pb-6 sm:px-8">
+              {template === "admin" && (
+                <Text className="text-brand mt-0 mb-2 text-[10px] font-bold tracking-[1.5px] uppercase">
+                  Internal notification
+                </Text>
+              )}
+              <Heading
+                as="h1"
+                className="text-text m-0 text-[26px] leading-[34px] font-bold tracking-[-0.6px]"
+              >
+                {heading}
+              </Heading>
             </Section>
             {children}
             <Section className="bg-footer border-t border-border px-6 py-5 sm:px-8">

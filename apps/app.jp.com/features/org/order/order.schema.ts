@@ -11,13 +11,37 @@ export const orderSchema = z.object({
 })
 
 export const cancelOrderSchema = orderIdSchema
-export const completeOrderSchema = orderIdSchema
+
+export const completeOrderSchema = z.object({
+  lineItems: z
+    .object({
+      lineItemId: z.number().int().positive(),
+      title: z.string(),
+      unitQuantity: z.string(),
+    })
+    .array(),
+})
+
+export type UpdateOrderFormSchema = z.infer<typeof orderSchema>
+export type CompleteOrderFormSchema = z.infer<typeof completeOrderSchema>
+
+/**
+ * action schema
+ */
+export const completeOrderActionSchema = orderIdSchema.extend({
+  data: z
+    .object({
+      lineItemId: z.number().int().positive(),
+      unitQuantity: z.string(),
+    })
+    .array(),
+})
+
+export const generateInvoiceSchema = orderIdSchema
 
 export const rescheduleOrderSchema = orderIdSchema.extend({
   data: orderSchema.omit({ status: true }),
 })
 export const updateOrderSchema = orderIdSchema.extend({
-  data: orderSchema,
+  data: orderSchema.omit({ status: true }),
 })
-
-export type UpdateOrderFormSchema = z.infer<typeof orderSchema>

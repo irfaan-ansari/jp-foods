@@ -15,7 +15,7 @@ export const BusinessDetails = withForm({
     const { t } = useTranslation(translations as Translations, "en")
     return (
       <>
-        <FieldGroup className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        <FieldGroup className="grid grid-cols-1 gap-6 lg:grid-cols-2">
           <div className="lg:col-span-2">
             <CardTitle className="text-lg">Company Information</CardTitle>
             <CardDescription>
@@ -29,7 +29,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -41,7 +40,6 @@ export const BusinessDetails = withForm({
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
                 options={BUSINESS_TYPES}
-                className="**:data-[slot=select-trigger]:rounded-2xl"
               />
             )}
           />
@@ -51,7 +49,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -61,7 +58,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -71,7 +67,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -81,7 +76,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -98,7 +92,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -108,7 +101,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -118,7 +110,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />
@@ -128,7 +119,6 @@ export const BusinessDetails = withForm({
               <field.TextField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
-                className="**:data-[slot=input]:rounded-2xl"
               />
             )}
           />

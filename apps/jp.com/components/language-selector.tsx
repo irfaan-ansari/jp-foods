@@ -101,7 +101,7 @@ export function LanguageSelector({
           key={lang.value}
           value={lang.value}
           data-name="language-selector"
-          className="text-xs font-medium uppercase"
+          className="rounded-lg text-xs uppercase data-[state=on]:bg-primary/20"
         >
           {lang.label}
         </ToggleGroupItem>

@@ -1,6 +1,7 @@
 {
   "extends": "@jp/typescript-config/base.json",
   "compilerOptions": {
+    "jsx": "react-jsx",
     "module": "ESNext",
     "moduleResolution": "bundler",
     "paths": {

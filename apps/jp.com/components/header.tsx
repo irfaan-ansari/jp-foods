@@ -51,10 +51,10 @@ export const Header = () => {
           </Button>
           <div className="hidden flex-[1_1_0] justify-end gap-4 lg:flex">
             <Button asChild size="xl">
-              <a href="/auth/signin" target="_blank">
+              <Link href="/auth/select">
                 Place Order
                 <ArrowRight />
-              </a>
+              </Link>
             </Button>
             <Button
               asChild

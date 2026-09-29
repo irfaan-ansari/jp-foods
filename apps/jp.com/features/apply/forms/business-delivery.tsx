@@ -30,7 +30,7 @@ export const BusinessDelivery = withForm({
           children={(field) => (
             <field.RadioField
               label={t[field.name]}
-              className="**:data-[slot=field-label]:rounded-2xl lg:col-span-2"
+              className="lg:col-span-2"
               options={[
                 { label: "Yes", value: "yes" },
                 { label: "No", value: "no" },
@@ -48,14 +48,13 @@ export const BusinessDelivery = withForm({
                 {field.state.value.map((_, i) => {
                   return (
                     <React.Fragment key={i}>
-                      <div className="col-span-2 flex">
+                      <div className="flex gap-4 lg:col-span-2">
                         <div className="div flex-1">
                           <CardTitle className="text-lg">
-                            Delivery Prefrence
+                            Delivery preference
                           </CardTitle>
                           <CardDescription>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit.
+                            Choose a preferred delivery day and time.
                           </CardDescription>
                         </div>
                         <Button
@@ -63,7 +62,7 @@ export const BusinessDelivery = withForm({
                           size="icon"
                           type="button"
                           onClick={() => field.removeValue(i)}
-                          className={i <= 0 ? "hidden" : "rounded-2xl"}
+                          className={i <= 0 ? "hidden" : ""}
                         >
                           <Trash2 />
                         </Button>
@@ -76,7 +75,6 @@ export const BusinessDelivery = withForm({
                             label={t["deliveryDay"]}
                             options={DELIVERY_DAYS}
                             placeholder="Select"
-                            className="**:data-[slot=select-trigger]:rounded-2xl"
                           />
                         )}
                       />
@@ -87,7 +85,6 @@ export const BusinessDelivery = withForm({
                             options={DELIVERY_TIME}
                             label={t["deliveryWindow"]}
                             placeholder="Select"
-                            className="**:data-[slot=select-trigger]:rounded-2xl"
                           />
                         )}
                       />
@@ -97,7 +94,6 @@ export const BusinessDelivery = withForm({
                           <field.TextField
                             label={t["receivingName"]}
                             placeholder={"Enter receiving contact name"}
-                            className="**:data-[slot=input]:rounded-2xl"
                           />
                         )}
                       />
@@ -107,37 +103,19 @@ export const BusinessDelivery = withForm({
                           <field.TextField
                             label={t["receivingPhone"]}
                             placeholder={"(555) 222-3344"}
-                            className="**:data-[slot=input]:rounded-2xl"
                           />
                         )}
                       />
-                      <form.Field
+                      <form.AppField
                         name={`deliverySchedule[${i}].instructions`}
                         children={(field) => {
                           const isInvalid =
                             field.state.meta.isTouched &&
                             !field.state.meta.isValid
                           return (
-                            <Field className="col-span-2">
-                              <FieldLabel htmlFor={field.name}>
-                                {t["deliveryInstructions"]}
-                              </FieldLabel>
-                              <Textarea
-                                id={field.name}
-                                name={field.name}
-                                value={field.state.value}
-                                onBlur={field.handleBlur}
-                                placeholder="Instruction..."
-                                onChange={(e) =>
-                                  field.handleChange(e.target.value)
-                                }
-                                aria-invalid={isInvalid}
-                                className="min-h-24 resize-none rounded-2xl"
-                              />
-                              {isInvalid && (
-                                <FieldError errors={field.state.meta.errors} />
-                              )}
-                            </Field>
+                            <field.TextAreaField
+                              label={t["deliveryInstructions"]}
+                            />
                           )
                         }}
                       />
@@ -148,7 +126,7 @@ export const BusinessDelivery = withForm({
                   type="button"
                   variant="outline"
                   size="xl"
-                  className="w-full rounded-2xl border-dashed bg-primary/10 lg:col-span-2"
+                  className="w-full border-dashed bg-primary/10 lg:col-span-2"
                   onClick={() =>
                     field.pushValue({
                       day: "",

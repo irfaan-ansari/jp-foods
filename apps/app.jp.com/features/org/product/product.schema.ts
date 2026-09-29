@@ -77,7 +77,7 @@ export const productFormValues = {
 
   sellingUnits: [
     {
-      name: "case",
+      name: "CS",
       displayLabel: "",
       price: "",
       qtyPerUnit: "",

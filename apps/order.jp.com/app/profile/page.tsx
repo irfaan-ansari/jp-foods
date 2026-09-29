@@ -26,19 +26,18 @@ const ProfilePage = () => {
                   <FieldLabel className="text-base font-semibold">
                     Delete Account
                   </FieldLabel>
+
                   <FieldDescription>
-                    Permanently delete your workspace, custom domain, and all
-                    associated links + their stats. This action cannot be undone
-                    - please proceed with caution.
+                    Permanently delete your account and all associated data.
+                    This action cannot be undone.
                   </FieldDescription>
                 </Field>
               </div>
+
               <div className="border-t border-destructive/50 bg-destructive/10 px-6 py-4 text-right">
-                <Button
-                  className="bg-destructive text-primary-foreground hover:bg-destructive/80"
-                  variant="destructive"
-                >
-                  <TrashBinTrash /> Delete
+                <Button variant="destructive" disabled>
+                  <TrashBinTrash />
+                  Delete Account
                 </Button>
               </div>
             </div>

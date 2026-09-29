@@ -107,7 +107,7 @@ export const ProductCartAction = ({
     <div className={cn("flex items-center rounded-xl border p-1", className)}>
       <Button
         variant="secondary"
-        className="bg-primary/10 hover:bg-primary/40"
+        className="rounded-lg bg-primary/40 hover:bg-primary/50"
         size="icon-xs"
         disabled={!selectedUnit || quantity <= 0}
         onClick={(e) => {
@@ -128,7 +128,7 @@ export const ProductCartAction = ({
       </div>
       <Button
         variant="secondary"
-        className="bg-primary/10 hover:bg-primary/40"
+        className="rounded-lg bg-primary/40 hover:bg-primary/50"
         size="icon-xs"
         disabled={!selectedUnit}
       >

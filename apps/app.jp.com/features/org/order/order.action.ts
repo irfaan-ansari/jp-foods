@@ -3,12 +3,13 @@ import { db, order } from "@jp/db"
 import { orgActionClient } from "@/lib/safe-action"
 import {
   cancelOrderSchema,
-  completeOrderSchema,
+  completeOrderActionSchema,
+  generateInvoiceSchema,
   rescheduleOrderSchema,
   updateOrderSchema,
 } from "./order.schema"
 import { AppError } from "@jp/utils"
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 
 /**
  * update order
@@ -19,7 +20,8 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     const { id, data } = parsedInput
 
     const existing = await db.query.order.findFirst({
-      where: (o, { eq }) => eq(o.id, id),
+      where: (o, { eq, and }) =>
+        and(eq(o.id, id), eq(o.organizationId, ctx.organizationId)),
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
@@ -33,7 +35,13 @@ export const updateOrder = orgActionClient({ order: ["update"] })
       .set({
         ...data,
       })
-      .where(eq(order.id, id))
+      .where(
+        and(
+          eq(order.id, id),
+          eq(order.organizationId, ctx.organizationId),
+          eq(order.status, "in_progress")
+        )
+      )
       .returning({ id: order.id })
     return result
   })
@@ -47,7 +55,8 @@ export const cancelOrder = orgActionClient({ order: ["cancel"] })
     const { id } = parsedInput
 
     const existing = await db.query.order.findFirst({
-      where: (o, { eq }) => eq(o.id, id),
+      where: (o, { eq, and }) =>
+        and(eq(o.id, id), eq(o.organizationId, ctx.organizationId)),
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
@@ -58,7 +67,13 @@ export const cancelOrder = orgActionClient({ order: ["cancel"] })
 
     const [deleted] = await db
       .delete(order)
-      .where(eq(order.id, id))
+      .where(
+        and(
+          eq(order.id, id),
+          eq(order.organizationId, ctx.organizationId),
+          eq(order.status, "in_progress")
+        )
+      )
       .returning({ id: order.id })
 
     return deleted
@@ -68,29 +83,16 @@ export const cancelOrder = orgActionClient({ order: ["cancel"] })
  * complete order
  */
 export const completeOrder = orgActionClient({ order: ["update"] })
-  .inputSchema(completeOrderSchema)
-  .action(async ({ parsedInput }) => {
-    const { id } = parsedInput
+  .inputSchema(completeOrderActionSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    const { id, data } = parsedInput
+    return { id: 1 }
+  })
 
-    const existing = await db.query.order.findFirst({
-      where: (o, { eq }) => eq(o.id, id),
-    })
-
-    if (!existing) throw new AppError("NOT_FOUND")
-
-    if (["cancelled", "completed"].includes(existing.status)) {
-      throw new AppError("CONFLICT")
-    }
-
-    const [result] = await db
-      .update(order)
-      .set({
-        status: "completed",
-      })
-      .where(eq(order.id, id))
-      .returning({ id: order.id })
-
-    return result
+export const generateInvoice = orgActionClient({ order: ["update"] })
+  .inputSchema(generateInvoiceSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    return { id: 1 }
   })
 
 /**
@@ -98,12 +100,13 @@ export const completeOrder = orgActionClient({ order: ["update"] })
  */
 export const rescheduleOrder = orgActionClient({ order: ["update"] })
   .inputSchema(rescheduleOrderSchema)
-  .action(async ({ parsedInput }) => {
+  .action(async ({ parsedInput, ctx }) => {
     const { id, data } = parsedInput
     const { deliveryDate, deliveryWindow } = data
 
     const existing = await db.query.order.findFirst({
-      where: (o, { eq }) => eq(o.id, id),
+      where: (o, { eq, and }) =>
+        and(eq(o.id, id), eq(o.organizationId, ctx.organizationId)),
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
@@ -118,7 +121,13 @@ export const rescheduleOrder = orgActionClient({ order: ["update"] })
         deliveryDate: deliveryDate,
         deliveryWindow,
       })
-      .where(eq(order.id, id))
+      .where(
+        and(
+          eq(order.id, id),
+          eq(order.organizationId, ctx.organizationId),
+          eq(order.status, "in_progress")
+        )
+      )
       .returning({ id: order.id })
 
     return result

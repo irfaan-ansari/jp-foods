@@ -13,10 +13,11 @@ import {
 import {
   InputOTP,
   InputOTPGroup,
+  InputOTPSeparator,
   InputOTPSlot,
+  REGEXP_ONLY_DIGITS,
 } from "@jp/ui/components/input-otp"
-import { phoneSchema } from "@jp/utils"
-import { REGEXP_ONLY_DIGITS } from "input-otp"
+
 import { useStore } from "@tanstack/react-form"
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
@@ -25,7 +26,7 @@ import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
 import { Alert, AlertAction, AlertTitle } from "@jp/ui/components/alert"
 
 const phone = z.object({
-  phoneNumber: phoneSchema,
+  phoneNumber: z.string(),
 })
 
 const schema = z.object({
@@ -215,7 +216,9 @@ export function OTPLoginForm({
                       <InputOTPSlot index={0} />
                       <InputOTPSlot index={1} />
                       <InputOTPSlot index={2} />
-
+                    </InputOTPGroup>
+                    <InputOTPSeparator />
+                    <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:data-[active=true]:ring-2 *:data-[active=true]:ring-border">
                       <InputOTPSlot index={3} />
                       <InputOTPSlot index={4} />
                       <InputOTPSlot index={5} />

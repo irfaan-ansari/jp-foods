@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 
 import { AppError, pluralize } from "@jp/utils"
-import { db, order, team } from "@jp/db"
+import { db, order, team, invoice } from "@jp/db"
 import { sortLineItems } from "./order.utils"
 import { OrderInvoice, PackingSlip } from "@jp/pdf"
 import { renderToStream } from "@react-pdf/renderer"
@@ -126,7 +126,9 @@ const orderApp = app
 
     const transformed = lineItems.map((item) => ({
       ...item,
-      unitName: item.unit?.name ? pluralize(item.unitName, item.quantity) : "",
+      unitName: item.unitName
+        ? pluralize(Number(item.quantity), item.unitName)
+        : "",
     }))
 
     return c.json({
@@ -134,7 +136,6 @@ const orderApp = app
       data: { ...response, lineItems: transformed },
     })
   })
-
   .get("/:id/slip", async (c) => {
     const id = c.req.param("id")
     const organizationId = c.get("organizationId")!
@@ -215,5 +216,24 @@ const orderApp = app
       "Content-Disposition": `inline; filename="order-${id}.pdf"`,
     })
   })
+  .get("/:id/invoice", async (c) => {
+    const id = Number(c.req.param("id"))
+    const organizationId = c.get("organizationId")
 
+    const [issued] = await db
+      .select()
+      .from(invoice)
+      .where(
+        and(eq(invoice.orderId, id), eq(invoice.organizationId, organizationId))
+      )
+    if (!issued) throw new AppError("NOT_FOUND")
+
+    const stream = null
+
+    return c.body(stream, 200, {
+      "Content-Type": "application/pdf",
+      "Cache-Control": "private, no-store",
+      "Content-Disposition": `inline; filename="invoice-${issued.id}.pdf"`,
+    })
+  })
 export const orders: Hono<OrgAppContext> = orderApp

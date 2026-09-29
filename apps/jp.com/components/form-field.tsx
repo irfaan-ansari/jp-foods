@@ -347,7 +347,7 @@ const SignatureField = ({
   return (
     <Field className={cn("gap-2", className)}>
       {label && <FieldLabel>{label}</FieldLabel>}
-      <div className="relative border border-dashed p-2">
+      <div className="relative rounded-xl border-2 border-dashed">
         <SignatureCanvas
           ref={canvasRef}
           canvasProps={{ className: "w-full h-36 bg-secondary block" }}

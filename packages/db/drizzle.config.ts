@@ -8,6 +8,7 @@ export default defineConfig({
     "./src/schema/auth.ts",
     "./src/schema/relations.ts",
     "./src/schema/organization.ts",
+    "./src/schema/invoice.ts",
   ],
   dialect: "postgresql",
   dbCredentials: {

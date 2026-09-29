@@ -284,10 +284,9 @@ export const order = pgTable(
     deliveryInstruction: text("delivery_instruction"),
     status: text("status")
       .notNull()
-      .default("in_progress") /* active | completed */,
-    paymentStatus: text("payment_status").notNull().default("pending"),
-    invoiceStatus: text("invoice_status"),
-    searchText: text("search_text").notNull().default(""),
+      .default("in_progress") /* in_progress | completed | cancelled */,
+    invoiceStatus:
+      text("invoice_status").default("pending") /** pending | invoiced | */,
     deliveredAt: timestamp("delivered_at"),
     cancelledAt: timestamp("cancelled_at"),
     cancelledBy: text("cancelled_by").references(() => user.id, {
@@ -341,11 +340,9 @@ export const lineItem = pgTable(
     catchWeight: boolean("catch_weight").default(false),
     price: text("price").notNull().default("0"),
     calculatedPrice: text("calculated_price").notNull().default("0"),
-
     unitQuantity: text("unit_quantity")
       .notNull()
       .default("0") /** used for inventory */,
-
     quantity: text("quantity").notNull().default("1"),
     subtotal: text("subtotal").default("0"),
     isTaxable: boolean("is_taxable").default(false),

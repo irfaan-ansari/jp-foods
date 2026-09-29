@@ -29,7 +29,7 @@ export const BusinessAdditionalContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl lg:col-span-2"
+              className="lg:col-span-2"
             />
           )}
         />
@@ -39,7 +39,6 @@ export const BusinessAdditionalContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -49,7 +48,6 @@ export const BusinessAdditionalContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -66,7 +64,6 @@ export const BusinessAdditionalContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -78,7 +75,6 @@ export const BusinessAdditionalContact = withForm({
               options={ROLES}
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=select-trigger]:rounded-2xl"
             />
           )}
         />
@@ -89,7 +85,7 @@ export const BusinessAdditionalContact = withForm({
             <field.SelectField
               label={t[field.name]}
               description={t[`${field.name}Desc`]}
-              className="col-span-2 **:data-[slot=select-trigger]:rounded-2xl"
+              className="col-span-2"
               options={SALES_REPRESENTATIVE}
               placeholder={t[`${field.name}Placeholder`]}
             />

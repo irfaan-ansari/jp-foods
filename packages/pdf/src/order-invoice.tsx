@@ -60,7 +60,7 @@ export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
               <Text
                 style={[styles.docTitle, { fontSize: 24, marginBottom: 10 }]}
               >
-                ESTIMATE
+                {"ESTIMATE"}
               </Text>
             </View>
           </View>
@@ -243,7 +243,9 @@ export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
                   <Text
                     style={[styles.tableCellPacking, { textAlign: "center" }]}
                   >
-                    {item.quantity} {item.unitName}
+                    {item.catchWeight
+                      ? `${item.unitQuantity} ${item.uom ?? ""}`
+                      : `${item.quantity} ${item.unitName}`}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>

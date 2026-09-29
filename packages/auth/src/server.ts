@@ -4,6 +4,7 @@ import { waitUntil } from "@vercel/functions"
 import { betterAuth } from "better-auth"
 import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
 import { sendEmail } from "@jp/notifications"
+import { VerificationOtpEmail } from "@jp/notifications/templates"
 import { drizzleAdapter } from "better-auth/adapters/drizzle"
 import {
   organization as organizationPlugin,
@@ -146,39 +147,7 @@ export const auth = betterAuth({
               type === "change-email"
                 ? "Verify your new email"
                 : "Your Jimenez Produce verification code",
-            template: createElement(
-              "div",
-              {
-                style: {
-                  fontFamily: "Arial, sans-serif",
-                  color: "#243027",
-                  padding: "24px",
-                },
-              },
-              createElement("h1", null, "Jimenez Produce verification code"),
-              createElement(
-                "p",
-                null,
-                "Use this one-time code to continue with your account update."
-              ),
-              createElement(
-                "div",
-                {
-                  style: {
-                    fontSize: "32px",
-                    fontWeight: 700,
-                    letterSpacing: "8px",
-                    margin: "24px 0",
-                  },
-                },
-                otp
-              ),
-              createElement(
-                "p",
-                null,
-                "If you did not request this, you can safely ignore this email."
-              )
-            ),
+            template: createElement(VerificationOtpEmail, { otp }),
           })
         )
       },

@@ -28,7 +28,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -38,7 +37,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -50,7 +48,7 @@ export const BusinessContact = withForm({
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
               options={ROLES}
-              className="**:data-[slot=select-trigger]:rounded-2xl lg:col-span-2"
+              className="lg:col-span-2"
             />
           )}
         />
@@ -61,7 +59,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -71,7 +68,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -88,7 +84,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -98,7 +93,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -108,7 +102,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />
@@ -118,7 +111,6 @@ export const BusinessContact = withForm({
             <field.TextField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
-              className="**:data-[slot=input]:rounded-2xl"
             />
           )}
         />

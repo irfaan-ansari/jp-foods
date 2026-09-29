@@ -72,10 +72,10 @@ const sales = ac.newRole({
 const customer = ac.newRole({
   team: ["read", "update"],
   member: ["read"],
-  invitation: ["create", "read"],
+  invitation: ["create", "read", "cancel"],
   product: ["read"],
   order: ["create", "read", "update", "cancel"],
-  orderGuide: ["read"],
+  orderGuide: ["create", "read"],
 })
 
 const orgRoles = {

@@ -5,7 +5,7 @@ import {
   UserSelectType,
 } from "@jp/db"
 
-export type Order = OrderSelectType & {
+export type Order = Omit<OrderSelectType, "lineItemCount"> & {
   lineItemCount: number
   team: Pick<TeamSelectType, "id" | "name" | "phoneNumber" | "email">
   user: Pick<UserSelectType, "id" | "name" | "phoneNumber" | "email">
