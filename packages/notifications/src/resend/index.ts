@@ -7,7 +7,7 @@ const FROM_EMAIL = "Jimenez Produce <no-reply@jimenezproduce.com>"
 const ADMIN_EMAILS = ["info@jimenezproduce.net"]
 
 type SendEmailOptions = {
-  to?: string | string[]
+  to?: string | string[] | undefined
   subject: string
   template: ReactElement
   from?: string

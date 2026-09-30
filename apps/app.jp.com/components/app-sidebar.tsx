@@ -250,7 +250,7 @@ const SidebarIconMenu = ({
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarMenu className="*:text-center">
+          <SidebarMenu className="items-center *:text-center">
             {/* search */}
             <SearchDialog />
 
@@ -338,7 +338,7 @@ const SidebarIconMenu = ({
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <SidebarMenu className="*:text-center">
+        <SidebarMenu className="items-center *:text-center">
           {/* settings */}
           <Tooltip content="Settings">
             <SidebarMenuItem onClick={() => setActivePanel("/settings", false)}>

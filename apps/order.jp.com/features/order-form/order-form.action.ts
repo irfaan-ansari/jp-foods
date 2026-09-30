@@ -38,11 +38,15 @@ export const createOrder = orgActionClient({ order: ["create"] })
     const { data } = clientInput
     const { organizationId, teamId, session, user } = ctx
 
-    const [orderItems, team] = await Promise.all([
+    const [orderItems, team, org] = await Promise.all([
       resolveOrderItems(data.items, organizationId, teamId),
       db.query.team.findFirst({
         where: (team) => eq(team.id, teamId),
         with: { taxRule: true },
+      }),
+      db.query.organization.findFirst({
+        where: (o, { eq }) => eq(o.id, organizationId),
+        columns: { email: true },
       }),
     ])
 
@@ -101,28 +105,18 @@ export const createOrder = orgActionClient({ order: ["create"] })
       total: totals.total.toFixed(2),
     }
 
-    const emailResults = await Promise.allSettled([
+    await Promise.all([
       sendEmail({
         to: Array.from(new Set([user.email, team?.email].filter(isString))),
         subject: `Jimenez Produce - Order #${created.id} Received`,
         template: OrderConfirmationEmail(emailPayload),
       }),
       sendEmail({
+        to: org?.email,
         subject: `New order #${created.id}`,
         template: OrderAdminEmail(emailPayload),
       }),
     ])
-
-    const failedEmails = emailResults.filter(
-      (result) => result.status === "rejected"
-    )
-
-    if (failedEmails.length) {
-      console.error("order.email.failed:", {
-        orderId: created.id,
-        failures: failedEmails.map((result) => result.reason),
-      })
-    }
 
     return { success: true, id: created.id }
   })
