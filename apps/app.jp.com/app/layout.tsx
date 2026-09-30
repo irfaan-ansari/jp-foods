@@ -9,15 +9,7 @@ import { Provider } from "@/components/provider"
 
 import { SidebarInset, SidebarProvider } from "@jp/ui/components/sidebar"
 import { getSession, listDeviceSessions } from "@/features/auth"
-
-// const loraHeading = Plus_Jakarta_Sans({
-//   subsets: ["latin"],
-//   variable: "--font-heading",
-// })
-// const manrope = Plus_Jakarta_Sans({
-//   subsets: ["latin"],
-//   variable: "--font-sans",
-// })
+import ImpersonateStatus from "@/components/impersonate-status"
 
 const loraHeading = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -65,6 +57,7 @@ export default async function RootLayout({
             <SidebarInset className="@container/page-content no-scrollbar md:h-[calc(100svh-16px)] md:overflow-auto">
               {/* render status */}
               {/* <NetworkStatus /> */}
+              <ImpersonateStatus />
               {children}
             </SidebarInset>
           </SidebarProvider>

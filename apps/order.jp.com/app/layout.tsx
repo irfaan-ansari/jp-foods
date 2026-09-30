@@ -8,6 +8,7 @@ import { Provider } from "@/components/provider"
 import { AppSidebar } from "@/components/app-sidebar"
 import { getSession, listDeviceSessions } from "@/features/auth/auth.data"
 import { SidebarInset, SidebarProvider } from "@jp/ui/components/sidebar"
+import ImpersonateStatus from "@/components/impersonate-status"
 
 const loraHeading = Lora({ subsets: ["latin"], variable: "--font-heading" })
 const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
@@ -52,6 +53,7 @@ export default async function RootLayout({
           >
             <AppSidebar session={session!} sessionsList={sessionsList} />
             <SidebarInset className="@container/page-content no-scrollbar md:h-[calc(100svh-16px)] md:overflow-auto md:peer-data-[variant=inset]:peer-data-[state=collapsed]:ml-0">
+              <ImpersonateStatus />
               {children}
             </SidebarInset>
           </SidebarProvider>
