@@ -1,13 +1,15 @@
 import z from "zod"
 
 /** server action schema */
-const phoneNumberSchema = z.string()
+const phoneNumberSchema = z
+  .string()
+  .regex(/^\+[1-9]\d{7,14}$/, "Enter a valid phone number with country code")
 
 export const sendOtpSchema = z.object({ phoneNumber: phoneNumberSchema })
 
 export const verifyOtpSchema = z.object({
   phoneNumber: phoneNumberSchema,
-  code: z.string(),
+  code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
 })
 
 /** form schema */

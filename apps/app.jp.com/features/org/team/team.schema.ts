@@ -29,21 +29,21 @@ export const teamSchema = z.object({
   creditLimit: z.string(),
   taxRule: z
     .object({
-      id: z.number(),
-      name: z.string(),
+      id: z.number().optional(),
+      name: z.string().optional(),
     })
     .nullable(),
   priceLevel: z
     .object({
-      id: z.number(),
-      name: z.string(),
+      id: z.number().optional(),
+      name: z.string().optional(),
     })
     .nullable(),
 
   salesRep: z
     .object({
-      id: z.string(),
-      name: z.string(),
+      id: z.string().optional(),
+      name: z.string().optional(),
     })
     .nullable(),
   privateItems: privateItemSchema.array(),

@@ -104,7 +104,7 @@ export const TeamDetailClient = ({
                 <Inbox className="size-4 text-green-600" />
               </IconTile>
             }
-            value={formatUSD(summary.totalOrders)}
+            value={summary.totalOrders.toString()}
           />
           <StatCard
             title="Total Spend"
@@ -157,10 +157,10 @@ export const TeamDetailClient = ({
                     <span className="line-clamp-1 font-medium">{cat.name}</span>
                   </div>
                   <div className="grid">
-                    <span className="text-right text-muted-foreground">
+                    <span className="font-medium">{formatUSD(cat.total)}</span>
+                    <span className="text-right text-xs text-muted-foreground">
                       Unit {cat.quantity}
                     </span>
-                    <span className="font-medium">{formatUSD(cat.total)}</span>
                   </div>
                 </div>
               ))}
@@ -198,11 +198,11 @@ export const TeamDetailClient = ({
                     </span>
                   </div>
                   <div className="grid">
-                    <span className="text-right text-muted-foreground">
-                      Unit {product.quantity}
-                    </span>
                     <span className="font-medium">
                       {formatUSD(product.total)}
+                    </span>
+                    <span className="text-right text-xs text-muted-foreground">
+                      Unit {product.quantity}
                     </span>
                   </div>
                 </div>

@@ -1,6 +1,5 @@
 "use client"
 
-import z from "zod"
 import React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
@@ -18,51 +17,51 @@ import {
   REGEXP_ONLY_DIGITS,
 } from "@jp/ui/components/input-otp"
 
-import { useStore } from "@tanstack/react-form"
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { AlertCircleIcon, Loader2, X } from "lucide-react"
 import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
 import { Alert, AlertAction, AlertTitle } from "@jp/ui/components/alert"
 
-const phone = z.object({
-  phoneNumber: z.string(),
-})
-
-const schema = z.object({
-  ...phone.shape,
-  step: z.string(),
-  code: z.string().min(6, "Enter valid otp"),
-  error: z.string(),
-  seconds: z.number(),
-  canResend: z.boolean(),
-})
+import { sendOtpSchema, verifyOtpSchema } from "../auth.schema"
+import { formatPhone } from "@jp/utils"
+import { cn } from "@jp/ui/lib/utils"
 
 export function OTPLoginForm({
   className,
   ...props
-}: React.ComponentProps<"div">) {
+}: React.ComponentProps<"form">) {
+  const [step, setStep] = React.useState<"send" | "verify">("verify")
+  const [seconds, setSeconds] = React.useState(0)
+  const [error, setError] = React.useState("")
+  const [isSending, setIsSending] = React.useState(false)
+  const sending = React.useRef(false)
+
+  const canResend = seconds === 0
+
   const form = useAppForm({
     defaultValues: {
       phoneNumber: "",
-      step: "send",
       code: "",
-      error: "",
-      seconds: 60,
-      canResend: false,
     },
     validators: {
-      onChange: ({ formApi, value }) => {
-        if (value.step === "send") {
-          return formApi.parseValuesWithSchema(phone as typeof schema)
+      onChange: ({ value }) => {
+        const phone = sendOtpSchema.shape.phoneNumber.safeParse(
+          value.phoneNumber
+        )
+        const code = verifyOtpSchema.shape.code.safeParse(value.code)
+        const fields = {
+          phoneNumber: phone.success ? undefined : phone.error.issues[0],
+          code:
+            step === "verify" && !code.success
+              ? code.error.issues[0]
+              : undefined,
         }
-        if (value.step === "verify") {
-          return formApi.parseValuesWithSchema(schema)
-        }
+        return fields.phoneNumber || fields.code ? { fields } : undefined
       },
     },
-    onSubmit: async ({ formApi, value }) => {
-      const { step, phoneNumber, code } = value
+    onSubmit: async ({ value }) => {
+      const { phoneNumber, code } = value
 
       // send otp
       if (step == "send") {
@@ -72,244 +71,275 @@ export function OTPLoginForm({
       // verify otp
       if (step === "verify") {
         const toastId = toast.loading("Please wait...")
-        const { serverError } = await verifyOtp({
-          phoneNumber,
-          code,
-        })
-
-        if (serverError) {
-          toast.error(serverError?.message, {
-            id: toastId,
-          })
-          form.setFieldValue("error", serverError?.message)
+        try {
+          const result = await verifyOtp({ phoneNumber, code })
+          if (!result?.data || result.serverError || result.validationErrors) {
+            throw new Error(
+              result?.serverError?.message ??
+                "Unable to verify the code. Please try again."
+            )
+          }
+        } catch (error) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Unable to sign in. Please try again."
+          toast.error(message, { id: toastId })
+          setError(message)
           return
         }
 
         // clear error
-        form.setFieldValue("error", "")
+        setError("")
 
-        toast.success("Login successfull, redirecting...", { id: toastId })
+        toast.success("Login successful, redirecting...", { id: toastId })
         window.location.reload()
       }
     },
   })
 
-  const step = useStore(form.store, (state) => state.values.step)
-  const error = useStore(form.store, (state) => state.values.error)
-
-  const canResend = useStore(form.store, (state) => state.values.canResend)
-  const seconds = useStore(form.store, (state) => state.values.seconds)
-
   /**
    * @description handle send otp
    */
   const handleSendOtp = async () => {
-    const phoneNumber = form.state.values.phoneNumber
+    if (sending.current) return
+    sending.current = true
+    setIsSending(true)
     const toastId = toast.loading("Please wait...")
-
-    const { serverError } = await sendOtp({
-      phoneNumber,
-    })
-
-    if (serverError) {
-      toast.error(serverError?.message, {
-        id: toastId,
+    try {
+      const result = await sendOtp({
+        phoneNumber: form.state.values.phoneNumber,
       })
-      form.setFieldValue("error", serverError?.message)
-      return
+      if (!result?.data || result.serverError || result.validationErrors) {
+        throw new Error(
+          result?.serverError?.message ??
+            "Unable to send the code. Check your phone number and try again."
+        )
+      }
+      setError("")
+      form.setFieldValue("code", "")
+      setSeconds(60)
+      setStep("verify")
+      toast.success("OTP sent successfully!", { id: toastId })
+    } catch (error) {
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Unable to send the code. Please try again."
+      setError(message)
+      toast.error(message, { id: toastId })
+    } finally {
+      sending.current = false
+      setIsSending(false)
     }
-
-    // clear error
-    form.setFieldValue("error", "")
-    // go to next step
-    form.setFieldValue("seconds", 60)
-    form.setFieldValue("step", "verify")
-    form.setFieldValue("canResend", false)
-    form.setFieldMeta
-    toast.success("OTP sent successfully!", {
-      id: toastId,
-    })
   }
 
   React.useEffect(() => {
-    if (seconds === 0) {
-      form.setFieldValue("canResend", true)
-      return
-    }
+    if (step !== "verify") return
+    if (seconds === 0) return
     const timer = setTimeout(() => {
-      form.setFieldValue("seconds", seconds - 1)
+      setSeconds((remaining) => Math.max(0, remaining - 1))
     }, 1000)
 
     return () => clearTimeout(timer)
-  }, [seconds])
+  }, [seconds, step])
 
   return (
     <form
+      {...props}
       onSubmit={(e) => {
         e.preventDefault()
         form.handleSubmit()
       }}
-      className="flex h-full flex-1 flex-col items-start justify-start gap-6 px-6 py-20 lg:px-16"
+      className={cn(
+        "flex h-full flex-1 flex-col items-start justify-start gap-6 px-6 py-20 lg:px-16",
+        className
+      )}
     >
-      {step === "send" && (
-        <FieldGroup>
-          <div className="space-y-2">
-            <h2 className="font-heading text-xl font-bold">
-              Sign in with phone number
-            </h2>
-            <p className="text-sm text-muted-foreground">
-              Enter your phone number and we’ll send you a secure one-time
-              passcode.
-            </p>
-          </div>
+      <form.Subscribe selector={(state) => state.isSubmitting}>
+        {(isSubmitting) => (
+          <>
+            {step === "send" && (
+              <FieldGroup>
+                <div className="space-y-2">
+                  <h2 className="font-heading text-xl font-bold">
+                    Sign in with phone number
+                  </h2>
+                  <p className="text-sm text-muted-foreground">
+                    Enter your phone number and we’ll send you a secure one-time
+                    passcode.
+                  </p>
+                </div>
 
-          <form.AppField
-            name="phoneNumber"
-            children={(field) => (
-              <field.PhoneField
-                label="Phone Number"
-                className="[&_.PhoneInput]:h-12"
-              />
+                <form.AppField
+                  name="phoneNumber"
+                  children={(field) => (
+                    <field.PhoneField
+                      label="Phone Number"
+                      className="[&_.PhoneInput]:h-12"
+                    />
+                  )}
+                />
+              </FieldGroup>
             )}
-          />
-        </FieldGroup>
-      )}
 
-      {step === "verify" && (
-        <FieldGroup>
-          <div className="space-y-2">
-            <h2 className="text-xl font-bold">Verify phone number</h2>
+            {step === "verify" && (
+              <FieldGroup>
+                <div className="space-y-2">
+                  <h2 className="text-xl font-bold">Verify phone number</h2>
 
-            <div className="flex items-center gap-1 text-sm text-muted-foreground">
-              <span>Enter the 6-digit one-time passcode sent to </span>
-              <span> {form.state.values.phoneNumber}.</span>
-              <Button
-                size="sm"
-                variant="link"
-                className="h-4 px-0"
-                onClick={() => form.setFieldValue("step", "send")}
-                type="button"
-              >
-                Change
-              </Button>
-            </div>
-          </div>
+                  <p className="text-sm leading-relaxed text-muted-foreground">
+                    Enter the 6-digit one-time passcode sent to your phone.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+                    <span className="font-medium whitespace-nowrap text-foreground">
+                      {formatPhone(form.state.values.phoneNumber)}
+                    </span>
+                    <Button
+                      size="sm"
+                      variant="link"
+                      className="h-auto shrink-0 p-0 text-sm"
+                      disabled={isSubmitting || isSending}
+                      onClick={() => {
+                        setStep("send")
+                        form.setFieldValue("code", "")
+                        setError("")
+                      }}
+                      type="button"
+                    >
+                      Change
+                    </Button>
+                  </div>
+                </div>
 
-          <form.Field
-            name="code"
-            children={(field) => {
-              const isInvalid =
-                field.state.meta.isTouched && !field.state.meta.isValid
-              return (
-                <Field>
-                  <FieldLabel htmlFor={field.name}>Enter Code</FieldLabel>
-                  <InputOTP
-                    id={field.name}
-                    name={field.name}
-                    value={field.state.value}
-                    onChange={(value) => field.handleChange(value)}
-                    onBlur={field.handleBlur}
-                    maxLength={6}
-                    pattern={REGEXP_ONLY_DIGITS}
+                <form.Field
+                  name="code"
+                  children={(field) => {
+                    const isInvalid =
+                      field.state.meta.isTouched && !field.state.meta.isValid
+                    return (
+                      <Field>
+                        <FieldLabel htmlFor={field.name}>Enter Code</FieldLabel>
+                        <InputOTP
+                          id={field.name}
+                          name={field.name}
+                          value={field.state.value}
+                          onChange={(value) => field.handleChange(value)}
+                          onBlur={field.handleBlur}
+                          autoComplete="one-time-code"
+                          aria-invalid={isInvalid}
+                          disabled={isSubmitting || isSending}
+                          maxLength={6}
+                          pattern={REGEXP_ONLY_DIGITS}
+                        >
+                          <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:data-[active=true]:ring-2 *:data-[active=true]:ring-border">
+                            <InputOTPSlot index={0} />
+                            <InputOTPSlot index={1} />
+                            <InputOTPSlot index={2} />
+                          </InputOTPGroup>
+                          <InputOTPSeparator />
+                          <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:data-[active=true]:ring-2 *:data-[active=true]:ring-border">
+                            <InputOTPSlot index={3} />
+                            <InputOTPSlot index={4} />
+                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                        </InputOTP>
+                        {isInvalid && (
+                          <FieldError errors={field.state.meta.errors} />
+                        )}
+                      </Field>
+                    )
+                  }}
+                />
+                <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm">
+                  <span className="text-muted-foreground">
+                    Didn�t receive a code?
+                  </span>
+                  <Button
+                    variant="link"
+                    size="sm"
+                    type="button"
+                    className="h-auto p-0 text-sm tabular-nums disabled:text-muted-foreground disabled:opacity-100"
+                    disabled={!canResend || isSending || isSubmitting}
+                    onClick={handleSendOtp}
                   >
-                    <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:data-[active=true]:ring-2 *:data-[active=true]:ring-border">
-                      <InputOTPSlot index={0} />
-                      <InputOTPSlot index={1} />
-                      <InputOTPSlot index={2} />
-                    </InputOTPGroup>
-                    <InputOTPSeparator />
-                    <InputOTPGroup className="w-full flex-1 bg-background *:h-11 *:w-auto! *:flex-1! *:data-[active=true]:ring-2 *:data-[active=true]:ring-border">
-                      <InputOTPSlot index={3} />
-                      <InputOTPSlot index={4} />
-                      <InputOTPSlot index={5} />
-                    </InputOTPGroup>
-                  </InputOTP>
-                  {isInvalid && <FieldError errors={field.state.meta.errors} />}
-                </Field>
-              )
-            }}
-          />
-          <div className="flex items-center justify-start text-sm">
-            <span className="text-muted-foreground"> Didn't receive Code?</span>
-            <Button
-              variant="link"
-              size="sm"
-              type="button"
-              disabled={!canResend}
-              onClick={handleSendOtp}
-            >
-              Resend
-            </Button>
-            {!canResend && <span>in {seconds}s</span>}
-          </div>
-        </FieldGroup>
-      )}
-      {/* alert */}
-      {error && (
-        <Alert
-          variant="destructive"
-          className="rounded-xl border-destructive/5 bg-destructive/5 has-data-[slot=alert-action]:pr-8"
-        >
-          <AlertCircleIcon />
-          <AlertTitle>{error}</AlertTitle>
+                    {isSending
+                      ? "Sending"
+                      : canResend
+                        ? "Resend code"
+                        : `Resend in ${seconds}s`}
+                  </Button>
+                </div>
+              </FieldGroup>
+            )}
+            {/* alert */}
+            {error && (
+              <Alert
+                variant="destructive"
+                className="rounded-xl border-destructive/5 bg-destructive/5 has-data-[slot=alert-action]:pr-8"
+              >
+                <AlertCircleIcon />
+                <AlertTitle>{error}</AlertTitle>
 
-          <AlertAction>
-            <Button
-              type="button"
-              size="icon-xs"
-              variant="outline"
-              className="rounded-xl"
-              onClick={() => form.setFieldValue("error", "")}
-            >
-              <X />
-            </Button>
-          </AlertAction>
-        </Alert>
-      )}
-      <Field>
-        <form.Subscribe
-          selector={({ isSubmitting, canSubmit, values }) => ({
-            isSubmitting,
-            canSubmit,
-            step: values.step,
-          })}
-          children={({ isSubmitting, canSubmit, step }) => (
-            <Button
-              type="submit"
-              size="xl"
-              className="bg-sidebar-accent hover:bg-sidebar-accent/80"
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <Loader2 className="animate-spin" />
-              ) : step === "send" ? (
-                "Send Code"
-              ) : (
-                "Verify Code"
-              )}
-            </Button>
-          )}
-        />
-      </Field>
+                <AlertAction>
+                  <Button
+                    type="button"
+                    size="icon-xs"
+                    variant="outline"
+                    className="rounded-xl"
+                    onClick={() => setError("")}
+                  >
+                    <X />
+                  </Button>
+                </AlertAction>
+              </Alert>
+            )}
+            <Field>
+              <form.Subscribe
+                selector={({ isSubmitting, canSubmit }) => ({
+                  isSubmitting,
+                  canSubmit,
+                })}
+                children={({ isSubmitting, canSubmit }) => (
+                  <Button
+                    type="submit"
+                    size="xl"
+                    className="bg-sidebar-accent hover:bg-sidebar-accent/80"
+                    disabled={isSubmitting || isSending || !canSubmit}
+                  >
+                    {isSubmitting ? (
+                      <Loader2 className="animate-spin" />
+                    ) : step === "send" ? (
+                      "Send Code"
+                    ) : (
+                      "Verify Code"
+                    )}
+                  </Button>
+                )}
+              />
+            </Field>
 
-      <div className="flex w-full flex-row items-center justify-center gap-4">
-        <div className="flex-[1_1_0] border-b"></div>
-        <span className="shrink-0 text-xs font-medium text-muted-foreground">
-          OR
-        </span>
-        <span className="flex-[1_1_0] border-b"></span>
-      </div>
+            <div className="flex w-full flex-row items-center justify-center gap-4">
+              <div className="flex-[1_1_0] border-b"></div>
+              <span className="shrink-0 text-xs font-medium text-muted-foreground">
+                OR
+              </span>
+              <span className="flex-[1_1_0] border-b"></span>
+            </div>
 
-      <Field className="text-center">
-        <Button
-          type="button"
-          size="xl"
+            <Field className="text-center">
+              <Button
+                type="button"
+                size="xl"
 
-          asChild
-        >
-          <Link href="/auth/signin-password">Sign in with password</Link>
-        </Button>
-      </Field>
+                asChild
+              >
+                <Link href="/auth/signin-password">Sign in with password</Link>
+              </Button>
+            </Field>
+          </>
+        )}
+      </form.Subscribe>
     </form>
   )
 }

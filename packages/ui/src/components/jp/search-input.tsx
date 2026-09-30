@@ -25,7 +25,7 @@ export function SearchQueryParam({
   const debounced = useDebounce(search)
 
   React.useEffect(() => {
-    queryParams({ set: { q: debounced ?? "" } })
+    queryParams({ set: { q: debounced ?? "", page: "" } })
   }, [debounced])
 
   return (

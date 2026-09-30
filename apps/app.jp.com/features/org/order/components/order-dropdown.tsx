@@ -114,7 +114,11 @@ export const OrderDropdown = ({
           <OrgAccess permission={{ order: ["update"] }}>
             {(disabled) => (
               <OrderInvoiceDialog id={id}>
-                <Button variant="ghost" disabled={disabled}>
+                <Button
+                  variant="ghost"
+                  className="justify-start"
+                  disabled={disabled}
+                >
                   <BillCheck /> Generate Invoice
                 </Button>
               </OrderInvoiceDialog>

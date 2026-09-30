@@ -4,8 +4,6 @@ import { toast } from "sonner"
 import React, { useState } from "react"
 import { Loader2 } from "lucide-react"
 
-import { getAvatarUrl } from "@jp/utils"
-
 import { authClient } from "@jp/auth/client"
 
 import { Button } from "@jp/ui/components/button"
@@ -94,7 +92,7 @@ export const OrganizationForm = ({
       /** create organization */
       else {
         const { error } = await authClient.organization.create({
-          logo: logo ?? getAvatarUrl(name),
+          logo: logo,
           name,
           slug,
           phoneNumber,

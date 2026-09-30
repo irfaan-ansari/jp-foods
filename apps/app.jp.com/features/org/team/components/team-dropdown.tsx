@@ -48,6 +48,7 @@ export const TeamDropdown = ({
                 toast.error(error.message)
                 return
               }
+              toast.success("Account activated successfully.")
               queryClient.invalidateQueries({ queryKey: ["teams"] })
               setIsOpen(false)
             },
@@ -73,6 +74,7 @@ export const TeamDropdown = ({
                 toast.error(error.message)
                 return
               }
+              toast.success("Account deactivated successfully.")
               queryClient.invalidateQueries({ queryKey: ["teams"] })
               setIsOpen(false)
             },

@@ -11,6 +11,7 @@ import {
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { useInfiniteTaxRules } from "../tax-rule.data"
 import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
+import { Badge } from "@jp/ui/components/badge"
 
 type TaxRuleOption = {
   id: number
@@ -77,20 +78,20 @@ export const TaxRuleSelector = ({
               return (
                 <FieldLabel
                   key={item.id}
-                  className="relative w-full rounded-xl px-2.5 py-2 hover:bg-secondary has-data-checked:bg-secondary"
+                  className="relative w-full rounded-xl px-2.5 py-1.5 hover:bg-secondary has-data-checked:bg-secondary"
                 >
                   <FieldContent className="flex-1">
                     <FieldTitle className="line-clamp-1">
                       {item.name}
                     </FieldTitle>
+                    <Badge variant="warning-light" className="font-semibold">
+                      {item.rate}%
+                    </Badge>
                   </FieldContent>
-                  <span className="ml-auto text-sm text-muted-foreground">
-                    {item.rate}%
-                  </span>
                   <Checkbox
                     id={item.id}
                     checked={checked}
-                    className="size-4 rounded-full"
+                    className="size-4 rounded-full border-transparent"
                     onCheckedChange={() => {
                       setSelectedChange({
                         ...item,
