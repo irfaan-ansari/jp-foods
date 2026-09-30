@@ -360,7 +360,7 @@ export const lineItem = pgTable(
     calculatedPrice: numeric("calculated_price", { precision: 12, scale: 2 })
       .notNull()
       .default("0"),
-    unitQuantity: numeric("unit_quantity", { precision: 12, scale: 4 })
+    unitQuantity: numeric("unit_quantity", { precision: 12, scale: 2 })
       .notNull()
       .default("0") /** used for inventory */,
     quantity: numeric("quantity", { precision: 12, scale: 4 })
