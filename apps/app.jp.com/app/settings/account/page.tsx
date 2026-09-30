@@ -7,6 +7,8 @@ import { Field, FieldDescription, FieldLabel } from "@jp/ui/components/field"
 import { authClient } from "@jp/auth/client"
 import { ErrorState } from "@jp/ui/components/jp"
 import { ProfileForm } from "@/features/profile/forms/profile-form"
+import { ChangePasswordForm } from "@/features/profile/forms/change-password-form"
+import { SessionList } from "@/features/profile/forms/session-list"
 
 const GeneralPage = () => {
   const { data, isPending, error } = authClient.useSession()
@@ -20,6 +22,8 @@ const GeneralPage = () => {
         ) : (
           <>
             <ProfileForm user={data?.user!} />
+            <ChangePasswordForm />
+
             <div className="overflow-hidden rounded-2xl border border-destructive/50">
               <div className="p-6">
                 <Field>

@@ -125,7 +125,7 @@ export const UserProfileDropdown = ({
         <Separator />
       </div>
       <Button variant="ghost" className="h-9 w-full justify-start pl-2" asChild>
-        <Link href="#">
+        <Link href={process.env.NEXT_PUBLIC_AUTH_URL + "/auth/select"}>
           <PlusCircle />
           Add Account
         </Link>

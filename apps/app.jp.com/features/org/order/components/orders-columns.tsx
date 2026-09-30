@@ -51,8 +51,8 @@ function OrderFilterLink({
   params.set("page", "1")
 
   return (
-    <Link
-      href={`/org/orders?${params.toString()}`}
+    <span
+      // href={`/org/orders?${params.toString()}`}
       className="block"
       aria-label={`${active ? "Clear" : "Filter by"} ${filter === "customer" ? "customer" : "user"}: ${children}`}
     >
@@ -60,7 +60,7 @@ function OrderFilterLink({
       {description && (
         <div className="text-xs text-muted-foreground">{description}</div>
       )}
-    </Link>
+    </span>
   )
 }
 
@@ -107,23 +107,20 @@ export const orderColumns = column.columns([
       </span>
     ),
   }),
-  column.display({
-    id: "lineItemCount",
-    header: "Items",
-    cell: ({ row }) => (
-      <span className="text-muted-foreground tabular-nums">
-        {pluralize(
-          row.original.lineItemCount,
-          `${row.original.lineItemCount} item`
-        )}
-      </span>
-    ),
-  }),
+
   column.accessor("total", {
     header: () => <div className="text-right">Total</div>,
     cell: ({ row }) => (
-      <div className="text-right font-semibold tabular-nums">
-        {formatUSD(row.original.total)}
+      <div className="grid text-right">
+        <span className="font-semibold tabular-nums">
+          {formatUSD(row.original.total)}
+        </span>
+        <span className="text-xs text-muted-foreground tabular-nums">
+          {pluralize(
+            row.original.lineItemCount,
+            `${row.original.lineItemCount} item`
+          )}
+        </span>
       </div>
     ),
   }),

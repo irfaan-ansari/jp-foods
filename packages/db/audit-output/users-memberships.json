@@ -1,0 +1,741 @@
+{
+  "generatedAt": "2026-09-30T12:51:05.322Z",
+  "notes": [
+    "Read-only database snapshot; no records were modified.",
+    "JSON has no organization/team mappings. Missing specific historical memberships cannot be proved without those exports.",
+    "Email/phone matches are candidates, not proof of identity. No automatic merge or creation is performed.",
+    "No-membership lists cover current users resolved from the JSON; missing users are listed separately. Staff may legitimately have no team.",
+    "Parent-membership check covers all current database team members."
+  ],
+  "counts": {
+    "source": 221,
+    "databaseUsers": 221,
+    "organizationMembers": 305,
+    "teamMembers": 226,
+    "teams": 312
+  },
+  "duplicates": {
+    "sourceIds": [],
+    "sourceEmails": [],
+    "sourcePhones": [
+      {
+        "value": "8888888888",
+        "users": [
+          {
+            "id": "2nzfGbfeQ3UUjCcTAIu38GADLi1gFWt7",
+            "name": "Pedros (Tampa)",
+            "email": "pedros@jimenezproduce.com",
+            "phone": "8888888888",
+            "role": "admin"
+          },
+          {
+            "id": "Gw2cgOJCSCv4knEaeL6IycnSib85FDr0",
+            "name": "Jose Jose",
+            "email": "test@test.com",
+            "phone": "8888888888",
+            "role": "customer"
+          }
+        ]
+      },
+      {
+        "value": "8504852894",
+        "users": [
+          {
+            "id": "Cf07et1xHNt5d2e6dd7hKYHAytFyPDtC",
+            "name": "Robledo",
+            "email": "cynthia@jimenezproduce.com",
+            "phone": "8504852894",
+            "role": "admin"
+          },
+          {
+            "id": "e4w1mB6R2CIMtb6z0i5LxCaiuOUBFoOR",
+            "name": "Cynthia",
+            "email": "leonidestorres87@gmail.com",
+            "phone": "8504852894",
+            "role": "admin"
+          }
+        ]
+      },
+      {
+        "value": "9958367688",
+        "users": [
+          {
+            "id": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+            "name": "Irfan Ansari",
+            "email": "idevirfan@gmail.com",
+            "phone": "9958367688",
+            "role": "admin"
+          },
+          {
+            "id": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+            "name": "Test Customer",
+            "email": "customer@gmail.com",
+            "phone": "9958367688",
+            "role": "customer"
+          }
+        ]
+      },
+      {
+        "value": "2512622607",
+        "users": [
+          {
+            "id": "GRlbVWi6SUkdZBurCmBPa3Fqk9w7vFKT",
+            "name": "Corey",
+            "email": "info@jimenezproduce.com",
+            "phone": "2512622607",
+            "role": "customer"
+          },
+          {
+            "id": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+            "name": "Pedros (Tampa)",
+            "email": "pedros@jimenezproduce.net",
+            "phone": "2512622607",
+            "role": "customer"
+          }
+        ]
+      },
+      {
+        "value": "2517272624",
+        "users": [
+          {
+            "id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+            "name": "Victor Fernandez",
+            "email": "streettacoselpelon@gmail.com",
+            "phone": "2517272624",
+            "role": "customer"
+          },
+          {
+            "id": "mGzCptLnTjgS639WW8JCmX9yqs1ZbMZO",
+            "name": "Víctor Fernández",
+            "email": "karlamichel5406@gmail.com",
+            "phone": "2517272624",
+            "role": "customer"
+          }
+        ]
+      },
+      {
+        "value": "0987654321",
+        "users": [
+          {
+            "id": "QTCG1FniPOn2qquDJKivEizlsjl99cZM",
+            "name": "John",
+            "email": "email@email.com",
+            "phone": "0987654321",
+            "role": "customer"
+          },
+          {
+            "id": "avWPo65ei5DPPZpVEdHPbIvDFlohlppz",
+            "name": "Acme",
+            "email": "customer2@gmail.com",
+            "phone": "0987654321",
+            "role": "customer"
+          }
+        ]
+      },
+      {
+        "value": "3187301925",
+        "users": [
+          {
+            "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+            "name": "Honorio Zepeda",
+            "email": "honoriozepeda@gmail.com",
+            "phone": "3187301925",
+            "role": "customer"
+          },
+          {
+            "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+            "name": "jesus perez",
+            "email": "jj.perez2114@gmail.com",
+            "phone": "3187301925",
+            "role": "customer"
+          }
+        ]
+      }
+    ],
+    "databaseEmails": [],
+    "databasePhones": [
+      {
+        "value": "3187301925",
+        "users": [
+          {
+            "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+            "name": "jesus perez",
+            "email": "jj.perez2114@gmail.com",
+            "phone": "+13187301925",
+            "role": "customer"
+          },
+          {
+            "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+            "name": "Honorio Zepeda",
+            "email": "honoriozepeda@gmail.com",
+            "phone": "+13187301925",
+            "role": "customer"
+          }
+        ]
+      }
+    ]
+  },
+  "missingUsers": [
+    {
+      "id": "QTCG1FniPOn2qquDJKivEizlsjl99cZM",
+      "name": "John",
+      "email": "email@email.com",
+      "phone": "0987654321",
+      "role": "customer"
+    },
+    {
+      "id": "avWPo65ei5DPPZpVEdHPbIvDFlohlppz",
+      "name": "Acme",
+      "email": "customer2@gmail.com",
+      "phone": "0987654321",
+      "role": "customer"
+    }
+  ],
+  "alternateMatches": [
+    {
+      "source": {
+        "id": "UjvJN5kLvnHLIm5sXOg421BDhZTvGlZZ",
+        "name": "Benjamin Chavez ",
+        "email": "benjamin.chavez098@gmail.com",
+        "phone": "2514234011",
+        "role": "admin"
+      },
+      "matches": [
+        {
+          "id": "dv6bG9CpXDxyCoV6aum087YHx4ZOiTNc",
+          "name": "Benjamin Chavez ",
+          "email": "benjamin.chavez098@gmail.com",
+          "phone": "3184735735",
+          "role": "admin",
+          "organizations": [
+            {
+              "id": "BccOWUFPsU5n8d8N7FomjTHW5bmBnyVq",
+              "user_id": "dv6bG9CpXDxyCoV6aum087YHx4ZOiTNc",
+              "organization_id": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+              "role": "customer",
+              "organization": "Lafayette"
+            }
+          ],
+          "teams": [
+            {
+              "id": "4XZ1u1smMWts2TJh3wncivsuOGo5Z7kz",
+              "user_id": "dv6bG9CpXDxyCoV6aum087YHx4ZOiTNc",
+              "team_id": "tR8tirhDFkWFmIyKQ225qUBxPHYqzFjM",
+              "team": "Pedro's - Alexandria"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "e4w1mB6R2CIMtb6z0i5LxCaiuOUBFoOR",
+        "name": "Cynthia",
+        "email": "leonidestorres87@gmail.com",
+        "phone": "8504852894",
+        "role": "admin"
+      },
+      "matches": [
+        {
+          "id": "Cf07et1xHNt5d2e6dd7hKYHAytFyPDtC",
+          "name": "Robledo",
+          "email": "cynthia@jimenezproduce.com",
+          "phone": "+18504852894",
+          "role": "customer",
+          "organizations": [
+            {
+              "id": "x2LwW7A7pbiBLKjBZHWLtw3vuReCp62f",
+              "user_id": "Cf07et1xHNt5d2e6dd7hKYHAytFyPDtC",
+              "organization_id": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+              "role": "customer",
+              "organization": "Robertsdale"
+            },
+            {
+              "id": "8uFFIWxiISTFVgEqWTjkhamvcn6GV60Y",
+              "user_id": "Cf07et1xHNt5d2e6dd7hKYHAytFyPDtC",
+              "organization_id": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+              "role": "manager",
+              "organization": "Lafayette"
+            }
+          ],
+          "teams": [
+            {
+              "id": "iVlou8iCslkGYpQslILhzVu5nm6Dw6Vm",
+              "user_id": "Cf07et1xHNt5d2e6dd7hKYHAytFyPDtC",
+              "team_id": "TZUZj9jmJe268HiOosX2UCX8olIVGg9E",
+              "team": "El Paso - Milton, FL"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "mGzCptLnTjgS639WW8JCmX9yqs1ZbMZO",
+        "name": "Víctor Fernández",
+        "email": "karlamichel5406@gmail.com",
+        "phone": "2517272624",
+        "role": "customer"
+      },
+      "matches": [
+        {
+          "id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+          "name": "Victor Fernandez",
+          "email": "streettacoselpelon@gmail.com",
+          "phone": "+12517272624",
+          "role": "customer",
+          "organizations": [
+            {
+              "id": "Hvfd2pIYqk42v8zbbTPvi9EuijLiHFK3",
+              "user_id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+              "organization_id": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+              "role": "customer",
+              "organization": "Robertsdale"
+            }
+          ],
+          "teams": [
+            {
+              "id": "uQduGWLUMJGbJZi1N2Nh0VqJ6MBTorvN",
+              "user_id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+              "team_id": "lBgn6I7h94sN8mOSeGYhKS8dqRKK8Myi",
+              "team": "Karinas Comida Latina"
+            },
+            {
+              "id": "OhVP0YduMZMRXyW9Szexcv0mDtx5taC6",
+              "user_id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+              "team_id": "RimnIzS9qcBY6GQZAW3QYz808aOb7ITg",
+              "team": "Street Tacos El Chavo - Milton, FL"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "ambiguousMatches": [
+    {
+      "source": {
+        "id": "Gw2cgOJCSCv4knEaeL6IycnSib85FDr0",
+        "name": "Jose Jose",
+        "email": "test@test.com",
+        "phone": "8888888888",
+        "role": "customer"
+      },
+      "exact": {
+        "id": "Gw2cgOJCSCv4knEaeL6IycnSib85FDr0",
+        "name": "Jose Jose",
+        "email": "test@test.com",
+        "phone": "+18888888887",
+        "role": "customer"
+      },
+      "candidates": [
+        {
+          "id": "Gw2cgOJCSCv4knEaeL6IycnSib85FDr0",
+          "name": "Jose Jose",
+          "email": "test@test.com",
+          "phone": "+18888888887",
+          "role": "customer"
+        },
+        {
+          "id": "2nzfGbfeQ3UUjCcTAIu38GADLi1gFWt7",
+          "name": "Pedros (Tampa)",
+          "email": "pedros@jimenezproduce.com",
+          "phone": "+18888888888",
+          "role": "admin"
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+        "name": "Honorio Zepeda",
+        "email": "honoriozepeda@gmail.com",
+        "phone": "3187301925",
+        "role": "customer"
+      },
+      "exact": {
+        "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+        "name": "Honorio Zepeda",
+        "email": "honoriozepeda@gmail.com",
+        "phone": "+13187301925",
+        "role": "customer"
+      },
+      "candidates": [
+        {
+          "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+          "name": "Honorio Zepeda",
+          "email": "honoriozepeda@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer"
+        },
+        {
+          "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+          "name": "jesus perez",
+          "email": "jj.perez2114@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer"
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+        "name": "Test Customer",
+        "email": "customer@gmail.com",
+        "phone": "9958367688",
+        "role": "customer"
+      },
+      "exact": {
+        "id": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+        "name": "Test Customer",
+        "email": "customer@gmail.com",
+        "phone": "+19958367687",
+        "role": "customer"
+      },
+      "candidates": [
+        {
+          "id": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+          "name": "Test Customer",
+          "email": "customer@gmail.com",
+          "phone": "+19958367687",
+          "role": "customer"
+        },
+        {
+          "id": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+          "name": "Irfan Ansari",
+          "email": "idevirfan@gmail.com",
+          "phone": "+19958367688",
+          "role": "admin"
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+        "name": "Pedros (Tampa)",
+        "email": "pedros@jimenezproduce.net",
+        "phone": "2512622607",
+        "role": "customer"
+      },
+      "exact": {
+        "id": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+        "name": "Pedros (Tampa)",
+        "email": "pedros@jimenezproduce.net",
+        "phone": "+12512622608",
+        "role": "customer"
+      },
+      "candidates": [
+        {
+          "id": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+          "name": "Pedros (Tampa)",
+          "email": "pedros@jimenezproduce.net",
+          "phone": "+12512622608",
+          "role": "customer"
+        },
+        {
+          "id": "GRlbVWi6SUkdZBurCmBPa3Fqk9w7vFKT",
+          "name": "Corey",
+          "email": "info@jimenezproduce.com",
+          "phone": "+12512622607",
+          "role": "customer"
+        }
+      ]
+    },
+    {
+      "source": {
+        "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+        "name": "jesus perez",
+        "email": "jj.perez2114@gmail.com",
+        "phone": "3187301925",
+        "role": "customer"
+      },
+      "exact": {
+        "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+        "name": "jesus perez",
+        "email": "jj.perez2114@gmail.com",
+        "phone": "+13187301925",
+        "role": "customer"
+      },
+      "candidates": [
+        {
+          "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+          "name": "jesus perez",
+          "email": "jj.perez2114@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer"
+        },
+        {
+          "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+          "name": "Honorio Zepeda",
+          "email": "honoriozepeda@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer"
+        }
+      ]
+    }
+  ],
+  "noOrganizationMembership": [],
+  "noTeamMembership": [
+    {
+      "id": "1jjtbC9Wq4ti7SzlCmITASeu5qaDlMEz",
+      "name": "sue rodriguez",
+      "email": "pedrosjuban@gmail.com",
+      "phone": "+12256121165",
+      "role": "customer"
+    },
+    {
+      "id": "5A598A2rtRbimRMEXs5HXzjcOJFxzEcn",
+      "name": "Joe",
+      "email": "joe@jimenezproduce.com",
+      "phone": "+19418404440",
+      "role": "admin"
+    },
+    {
+      "id": "Bm8EZBwGT4lwllU71SR8K4s5NMQ4K8Al",
+      "name": "Corey",
+      "email": "info@jimenezproduce.net",
+      "phone": "+17703356619",
+      "role": "admin"
+    },
+    {
+      "id": "CrNARh8QOJQZvv59Z0FsQoLYU6NvEiez",
+      "name": "Andres Barba",
+      "email": "andres@jimenezproduce.com",
+      "phone": "+12512135269",
+      "role": "admin"
+    },
+    {
+      "id": "FscBXhX3D58n6ufKj3WKTNpj999s2hY6",
+      "name": "Maritza Weeks",
+      "email": "elpasomexfoley@gmail.com",
+      "phone": "+12519238117",
+      "role": "customer"
+    },
+    {
+      "id": "GLhDlBmsDMZGWyYV7R6B2essTM7oLG1K",
+      "name": "Jackie",
+      "email": "jackie@jimenezproduce.com",
+      "phone": "+12515975986",
+      "role": "admin"
+    },
+    {
+      "id": "JPT6v3YWmZ4NRa3NFXzqrggzerwYkNHe",
+      "name": "Elizabeth",
+      "email": "elizabeth@jimenezproduce.com",
+      "phone": "+12512409687",
+      "role": "admin"
+    },
+    {
+      "id": "K9xUhWqVoozvyrEgnsPNWoB4Wdw5VT8U",
+      "name": "Luisa Blanco",
+      "email": "luisa@jimenezproduce.com",
+      "phone": "+18136828728",
+      "role": "admin"
+    },
+    {
+      "id": "Sw4w5kwDuhJUbXz8V5Q9YWTqAYmCZzWD",
+      "name": "Yhessenia",
+      "email": "yhessenia@jimenezproduce.com",
+      "phone": "+17866585857",
+      "role": "admin"
+    },
+    {
+      "id": "XVYjD4qIpfxPkh72jTNUd9koiClhdZK7",
+      "name": "Jorge",
+      "email": "jorge@jimenezproduce.com",
+      "phone": "+19392521474",
+      "role": "admin"
+    },
+    {
+      "id": "cgW2FKbwi2IHVWJNVmo2uXAVDOcH9Hxn",
+      "name": "Kenned Hernandez",
+      "email": "needemail@demaizms.com",
+      "phone": "+12516441483",
+      "role": "customer"
+    },
+    {
+      "id": "el9LqrpDMekeE7RymDsQ4eOFQPAnX0KB",
+      "name": "valentin cruz",
+      "email": "cruzsegundo1927@gmail.com",
+      "phone": "+13372504102",
+      "role": "customer"
+    },
+    {
+      "id": "hJh9fLV65CyGk533NcyaPTu9nRXjpm8I",
+      "name": "Francisco Vargas",
+      "email": "francisco@jimenezproduce.com",
+      "phone": "+17866585785",
+      "role": "admin"
+    },
+    {
+      "id": "vVprh4Kf2s4ODzMx2xDtXIJTD2ZP5j8N",
+      "name": "Daniel Mendoza",
+      "email": "needemaildaniel@gautier.com",
+      "phone": "+12513829149",
+      "role": "customer"
+    },
+    {
+      "id": "yFV274s2Wkjfu0fTodtsTT8agon3RYOX",
+      "name": "Jessica Trejo",
+      "email": "jtrejo@innovategr.com",
+      "phone": "+12282810824",
+      "role": "customer"
+    }
+  ],
+  "missingParentMembership": [],
+  "possibleMissingTeamMembership": [
+    {
+      "sourceId": "Bm8EZBwGT4lwllU71SR8K4s5NMQ4K8Al",
+      "userId": "Bm8EZBwGT4lwllU71SR8K4s5NMQ4K8Al",
+      "name": "Corey",
+      "teamId": "6emAqU3tQ0inoc9t2EaD222MdmXM6LHb",
+      "team": "JP Tex Mex - Lafayette",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "Bm8EZBwGT4lwllU71SR8K4s5NMQ4K8Al",
+      "userId": "Bm8EZBwGT4lwllU71SR8K4s5NMQ4K8Al",
+      "name": "Corey",
+      "teamId": "sQ4qlTi6yoNzL9RcOPwKDRpn1eIBkiR4",
+      "team": "Pedros (Arkansas)",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "email"
+    },
+    {
+      "sourceId": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+      "userId": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+      "name": "Irfan Ansari",
+      "teamId": "TglUxCm12sxl9vR0Uv9zQy6Q6gKbkTYZ",
+      "team": "Test accountttt",
+      "organizationId": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+      "userId": "F6niKWOH5r8gly5oT5dfeoBDHXe4mHXA",
+      "name": "Irfan Ansari",
+      "teamId": "FzUopJ5ww1vS7vP7jFk86cnWHu3TTlFI",
+      "team": "Test account lafayette",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "GRlbVWi6SUkdZBurCmBPa3Fqk9w7vFKT",
+      "userId": "GRlbVWi6SUkdZBurCmBPa3Fqk9w7vFKT",
+      "name": "Corey",
+      "teamId": "oU3xGklI0UOwXpJsHhtW9BQiAWRnzB6b",
+      "team": "Pedros (Tampa)",
+      "organizationId": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "userId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "name": "Test Customer",
+      "teamId": "0GZmNfzwPKIT76Rnw08rP9YYVhjwNGa1",
+      "team": "Test Customer",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "email"
+    },
+    {
+      "sourceId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "userId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "name": "Test Customer",
+      "teamId": "TglUxCm12sxl9vR0Uv9zQy6Q6gKbkTYZ",
+      "team": "Test accountttt",
+      "organizationId": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "userId": "noyQp0vrEC3dGooYy2p25WhSZYZyHL8H",
+      "name": "Test Customer",
+      "teamId": "FzUopJ5ww1vS7vP7jFk86cnWHu3TTlFI",
+      "team": "Test account lafayette",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+      "userId": "rA6gKTfWedSa8hgA7GZ4Rqh7lfYDN06x",
+      "name": "Pedros (Tampa)",
+      "teamId": "sQ4qlTi6yoNzL9RcOPwKDRpn1eIBkiR4",
+      "team": "Pedros (Arkansas)",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "u7R1tcrY3HtXRoKe2c36ZuZgeyYGFiHf",
+      "userId": "u7R1tcrY3HtXRoKe2c36ZuZgeyYGFiHf",
+      "name": "Bulmaro Gonzalez",
+      "teamId": "Ja6fXYo4SM7Ue2UhWojB9UeyhT4WgoHT",
+      "team": "Hacienda Real - Breaux Bridge",
+      "organizationId": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+      "evidence": "phone"
+    },
+    {
+      "sourceId": "ya2x29P44VqFJ0qpQ6okxPKTgyVPpECE",
+      "userId": "ya2x29P44VqFJ0qpQ6okxPKTgyVPpECE",
+      "name": "Luis Ortiz",
+      "teamId": "iC5sQ4psD6B3D5oqhXms2zplB3Gzht3u",
+      "team": "El Patron - Pensacola, FL",
+      "organizationId": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+      "evidence": "email"
+    }
+  ],
+  "duplicateMemberships": [
+    {
+      "phone": "3187301925",
+      "users": [
+        {
+          "id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+          "name": "jesus perez",
+          "email": "jj.perez2114@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer",
+          "organizations": [
+            {
+              "id": "7CMy69ay8CZzroMJqDAhu2VQQuHuFr5i",
+              "user_id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+              "organization_id": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+              "role": "customer",
+              "organization": "Lafayette"
+            }
+          ],
+          "teams": [
+            {
+              "id": "DEHvDfuycdenYzD3jbjjUBmqZCspFLw6",
+              "user_id": "zUoRFR55d7chmp5c0uIwbUq0ffyonVdO",
+              "team_id": "4VaMjXL4BXWv6ZQQcjnTBURrNAa3UhoF",
+              "team": "Lagunas Mex Grill - Lake Charles"
+            }
+          ]
+        },
+        {
+          "id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+          "name": "Honorio Zepeda",
+          "email": "honoriozepeda@gmail.com",
+          "phone": "+13187301925",
+          "role": "customer",
+          "organizations": [
+            {
+              "id": "P1kiofT0X0YGz4ZjJ5rZnXeCibUlNGFo",
+              "user_id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+              "organization_id": "knDzquD2nM46AF1WPpKY1EmJZrOOzM2M",
+              "role": "customer",
+              "organization": "Lafayette"
+            }
+          ],
+          "teams": [
+            {
+              "id": "MvyoIdRgiLStMYPmHyDJjxqyW98EEJEI",
+              "user_id": "YtINr04KQ3M5In81BGYmyCwdm30CP2FE",
+              "team_id": "4VaMjXL4BXWv6ZQQcjnTBURrNAa3UhoF",
+              "team": "Lagunas Mex Grill - Lake Charles"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

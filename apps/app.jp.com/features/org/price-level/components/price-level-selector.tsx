@@ -11,6 +11,7 @@ import {
 import { Checkbox } from "@jp/ui/components/checkbox"
 import { useInfinitePriceLevels } from "../price-level.data"
 import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
+import { PriceLevelBadge } from "./price-level-card"
 
 type PriceLevelOption = {
   id: number
@@ -45,6 +46,7 @@ export const PriceLevelSelector = ({
     const priceLevels = data?.pages.flatMap((page) => page.data) ?? []
     return (
       priceLevels.flatMap((t) => ({
+        ...t,
         id: String(t.id),
         name: t.name!,
         adjustmentType: t.adjustmentType!,
@@ -66,7 +68,7 @@ export const PriceLevelSelector = ({
           className="max-w-full"
           onSearch={(value) => setFilters({ ...filters, q: value })}
         />
-        <div className="no-scrollbar flex-1 overflow-y-auto">
+        <div className="no-scrollbar flex-1 space-y-0.5 overflow-y-auto">
           <QueryState
             isPending={isPending}
             isError={isError}
@@ -78,19 +80,20 @@ export const PriceLevelSelector = ({
               return (
                 <FieldLabel
                   key={item.id}
-                  className="relative w-full rounded-xl px-2.5 py-1 hover:bg-secondary has-data-checked:bg-secondary"
+                  className="relative w-full rounded-xl px-2.5 py-1.5 hover:bg-secondary has-data-checked:bg-secondary"
                 >
-                  <FieldContent className="flex-1 gap-0">
+                  <FieldContent className="flex-1 gap-1">
                     <FieldTitle className="line-clamp-1">
                       {item.name}
                     </FieldTitle>
-                    <span className="text-sm text-muted-foreground">
-                      {item.appliesTo}
-                    </span>
+                    <PriceLevelBadge
+                      adjustmentType={item.adjustmentType}
+                      adjustmentValue={item.adjustmentValue ?? 0}
+                      appliesTo={item.appliesTo}
+                      productCount={item.productCount}
+                    />
                   </FieldContent>
-                  <span className="ml-auto text-sm text-muted-foreground">
-                    {item.adjustmentValue}
-                  </span>
+
                   <Checkbox
                     id={item.id}
                     checked={checked}

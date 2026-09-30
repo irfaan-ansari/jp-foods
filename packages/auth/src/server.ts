@@ -32,7 +32,7 @@ export const auth = betterAuth({
     disableColors: false,
     level: "warn",
     log: (level, message, ...args) => {
-      console.log(`[${level}] ${message}`, ...args)
+      console.info(`[${level}] ${message}`, ...args)
     },
   },
   emailAndPassword: {
@@ -43,7 +43,7 @@ export const auth = betterAuth({
   user: {
     changeEmail: {
       enabled: true,
-      updateEmailWithoutVerification: true,
+      updateEmailWithoutVerification: false,
     },
   },
   plugins: [
@@ -58,7 +58,7 @@ export const auth = betterAuth({
         return allowedRoles.includes(user.role)
       },
       async sendInvitationEmail(data) {
-        const inviteLink = `https://example.com/accept-invitation/${data.id}`
+        const inviteLink = `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/accept-invitation/${data.id}`
         console.log("send email:", inviteLink)
       },
       organizationHooks: {

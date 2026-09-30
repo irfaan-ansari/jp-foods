@@ -32,6 +32,7 @@ import { Loader2 } from "lucide-react"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import ProductDeleteAlert from "../components/product-delete-alert"
 import { ProductPricing } from "./product-pricing"
+import { ProductInventory } from "./product-inventory"
 
 interface FormProps {
   data?: ProductFormSchema
@@ -114,7 +115,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
           {/* pricing */}
           <ProductPricing form={form} />
 
-          {/* <ProductInventory form={form} /> */}
+          <ProductInventory form={form} />
 
           {/* delete alert */}
           {id && <ProductDeleteAlert id={id} />}

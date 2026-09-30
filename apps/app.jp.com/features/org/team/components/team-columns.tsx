@@ -16,6 +16,7 @@ import type { Team } from "../team.type"
 import { CreditProgress, TeamBadge } from "./team-card"
 import { TeamDropdown } from "./team-dropdown"
 import { CopyButton, Tooltip } from "@jp/ui/components/jp"
+import { formatPhone } from "@jp/utils"
 
 const column = createColumnHelper<DataTableFeatures, Team>()
 
@@ -57,7 +58,7 @@ export const teamColumns = column.columns([
     cell: ({ row }) => (
       <div className="grid space-y-1">
         <CopyButton value={row.original.email || "—"} />
-        <CopyButton value={row.original.phoneNumber || "—"} />
+        <CopyButton value={formatPhone(row.original.phoneNumber) || "—"} />
       </div>
     ),
   }),

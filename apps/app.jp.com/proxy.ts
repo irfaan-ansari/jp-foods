@@ -13,7 +13,9 @@ export default async function proxy(req: NextRequest) {
   })
 
   if (!authenticated || !authorized) {
-    return NextResponse.redirect(new URL(AUTH_URL, req.nextUrl))
+    return NextResponse.redirect(
+      new URL(AUTH_URL + "/auth/select", req.nextUrl)
+    )
   }
 }
 

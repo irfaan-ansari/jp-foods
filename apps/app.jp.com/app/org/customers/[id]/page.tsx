@@ -3,7 +3,7 @@ import React from "react"
 import { PageContent, PageHeader } from "@/components/page-content"
 import { TeamDetailClient } from "@/features/org/team/components/team-detail-client"
 import { ErrorState, PopDrawer } from "@jp/ui/components/jp"
-import { Calendar, MenuDots, PenNewRound } from "@solar-icons/react"
+import { Calendar, MenuDots } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { useParams } from "next/navigation"
@@ -11,7 +11,7 @@ import { TeamDropdown } from "@/features/org/team/components/team-dropdown"
 import { useTeam, useTeamAnalytics } from "@/features/org/team/team.data"
 import { RANGE_DAYS } from "@/features/org/team/team.const"
 import { ChevronDown } from "lucide-react"
-import Link from "next/link"
+import { Team } from "@/features/org/team/team.type"
 
 const CustomerPage = () => {
   const { id } = useParams<{ id: string }>()
@@ -22,7 +22,7 @@ const CustomerPage = () => {
     id,
     searchParamsObj
   )
-  const { data: team, isPending: teamPending } = useTeam(id)
+  const { data: team, isPending: teamPending, isError: teamError } = useTeam(id)
   const analytics = data?.data!
 
   return (
@@ -56,7 +56,7 @@ const CustomerPage = () => {
             ))}
           </PopDrawer>
 
-          <TeamDropdown data={team?.data!}>
+          <TeamDropdown data={(team?.data ?? {}) as Team}>
             <Button size="icon" variant="outline">
               <MenuDots />
             </Button>
@@ -64,8 +64,11 @@ const CustomerPage = () => {
         </div>
       </PageHeader>
       <PageContent loading={isPending || teamPending}>
-        {isError ? (
-          <ErrorState title={error.message} description={error.description} />
+        {isError || teamError ? (
+          <ErrorState
+            title={error?.message ?? "Unable to load the customer details."}
+            description={error?.description}
+          />
         ) : (
           <TeamDetailClient data={{ analytics, team: team?.data! }} />
         )}

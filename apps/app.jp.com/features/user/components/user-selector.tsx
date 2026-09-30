@@ -109,16 +109,19 @@ export const UserSelector = ({
                         </AvatarFallback>
                       </Avatar>
                       <div className="grid">
-                        <FieldTitle className="mb-0.5 line-clamp-1">
-                          {item.name}
-                        </FieldTitle>
+                        <div className="flex items-start gap-2">
+                          <FieldTitle className="mb-0.5 line-clamp-1">
+                            {item.name}
+                          </FieldTitle>
+                          <UserRoleBadge status={item.role as string} />
+                        </div>
                         <div className="space-x-2 text-xs text-muted-foreground">
                           <span>{item.phoneNumber}</span>
                           <span>{item.email}</span>
                         </div>
                       </div>
                     </FieldContent>
-                    <UserRoleBadge status={item.role as string} />
+
                     <Checkbox
                       id={item.id}
                       checked={checked}

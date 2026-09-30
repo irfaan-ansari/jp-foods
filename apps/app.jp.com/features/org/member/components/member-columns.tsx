@@ -63,11 +63,18 @@ export const memberColumns = column.columns([
     id: "customers",
     header: "Customers",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">
-        {row.original.accounts.length
-          ? row.original.accounts.map((account) => account.name).join(", ")
-          : "—"}
-      </span>
+      <div className="grid">
+        {row.original.accounts.length > 0
+          ? row.original.accounts.map((acc) => (
+              <Link
+                href={`/org/customers/${acc.id}`}
+                className="text-muted-foreground hover:text-foreground hover:underline"
+              >
+                {acc.name}
+              </Link>
+            ))
+          : "-"}
+      </div>
     ),
   }),
   column.display({

@@ -44,9 +44,11 @@ const admin = ac.newRole({
     "impersonate",
     "set-password",
     "set-email",
+    "set-role",
     "get",
     "ban",
     "update",
+    "delete",
   ],
   session: ["list", "revoke"],
 

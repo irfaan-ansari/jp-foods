@@ -5,6 +5,7 @@ import {
   isToday,
   isYesterday,
 } from "date-fns"
+import { parsePhoneNumberFromString } from "libphonenumber-js"
 
 /**
  *
@@ -13,17 +14,11 @@ import {
  */
 export const formatPhone = (value: string) => {
   if (!value) return ""
-  const digits = value.replace(/\D/g, "").slice(0, 10)
+  const trimmed = value.trim()
+  const international = trimmed.startsWith("+") ? trimmed : `+${trimmed}`
+  const phone = parsePhoneNumberFromString(international, { extract: false })
 
-  const match = digits.match(/(\d{0,3})(\d{0,3})(\d{0,4})/)
-
-  if (!match) return value
-
-  const [, a, b, c] = match
-
-  if (b) return `${a}-${b}${c ? `-${c}` : ""}`
-  if (a) return a
-  return ""
+  return phone?.isPossible() ? phone.formatInternational() : value
 }
 
 /**
