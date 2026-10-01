@@ -5,36 +5,36 @@ import type { ColumnDef } from "@tanstack/react-table"
 import { DataTable, type DataTableFeatures } from "@jp/ui/components/data-table"
 import { PageContent, PageHeader } from "@/components/page-content"
 
-type InvoiceRow = {
+type ReturnRow = {
   number: string
+  order: string
   customer: string
-  issuedAt: string
-  dueDate: string
-  total: string
+  createdAt: string
+  amount: string
   status: string
 }
 
-const invoiceColumns: ColumnDef<DataTableFeatures, InvoiceRow>[] = [
-  { accessorKey: "number", header: "Invoice" },
+const returnColumns: ColumnDef<DataTableFeatures, ReturnRow>[] = [
+  { accessorKey: "number", header: "Return" },
+  { accessorKey: "order", header: "Order" },
   { accessorKey: "customer", header: "Customer" },
-  { accessorKey: "issuedAt", header: "Issued" },
-  { accessorKey: "dueDate", header: "Due" },
-  { accessorKey: "total", header: "Total" },
+  { accessorKey: "createdAt", header: "Created" },
+  { accessorKey: "amount", header: "Amount" },
   { accessorKey: "status", header: "Status" },
 ]
 
-const InvoicePage = () => {
+const ReturnsPage = () => {
   return (
     <React.Fragment>
-      <PageHeader title="Invoices" />
+      <PageHeader title="Returns" />
       <PageContent className="space-y-6">
         <DataTable
-          columns={invoiceColumns}
+          columns={returnColumns}
           data={[]}
           empty={{
             isEmpty: true,
-            title: "No invoices found.",
-            description: "Issued invoices will appear here.",
+            title: "No returns found.",
+            description: "Returns will appear here when they are created.",
           }}
         />
       </PageContent>
@@ -42,4 +42,4 @@ const InvoicePage = () => {
   )
 }
 
-export default InvoicePage
+export default ReturnsPage
