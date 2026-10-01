@@ -10,5 +10,5 @@ export type DashboardData = {
   topCustomers: DashboardRanking[]
   frequentlyOrdered: DashboardRanking[]
   topCategories: DashboardRanking[]
-  overview: { month: string; orders: number }[]
+  overview: { month: string; total: number }[]
 }

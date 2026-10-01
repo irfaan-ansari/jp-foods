@@ -70,73 +70,72 @@ export function DataTable<TData extends RowData>({
 
   return (
     <React.Fragment>
-      <div className="h-full">
-        <Table className={className}>
-          <TableHeader className="bg-muted/60">
-            {table.getHeaderGroups().map((group) => (
-              <TableRow key={group.id} className="hover:bg-transparent">
-                {group.headers.map((header) => (
-                  <TableHead
-                    key={header.id}
-                    className="h-11 border-b-2 border-primary/50 px-3 py-5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
-                  >
-                    {header.isPlaceholder ? null : (
-                      <table.FlexRender header={header} />
-                    )}
-                  </TableHead>
+      <Table className={className}>
+        <TableHeader className="bg-muted/60">
+          {table.getHeaderGroups().map((group) => (
+            <TableRow key={group.id} className="hover:bg-transparent">
+              {group.headers.map((header) => (
+                <TableHead
+                  key={header.id}
+                  className="h-11 border-b-2 border-primary/50 px-3 py-5 text-xs font-semibold tracking-wide text-muted-foreground uppercase"
+                >
+                  {header.isPlaceholder ? null : (
+                    <table.FlexRender header={header} />
+                  )}
+                </TableHead>
+              ))}
+            </TableRow>
+          ))}
+        </TableHeader>
+        <TableBody>
+          {isLoading ? (
+            Array.from({ length: 6 }).map((_, index) => (
+              <TableRow key={index} className="hover:transparent">
+                {columns.map((_, columnIndex) => (
+                  <TableCell key={columnIndex} className="py-4">
+                    <Skeleton className="h-5 w-3/4" />
+                  </TableCell>
                 ))}
               </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
-            {isLoading ? (
-              Array.from({ length: 6 }).map((_, index) => (
-                <TableRow key={index} className="hover:transparent">
-                  {columns.map((_, columnIndex) => (
-                    <TableCell key={columnIndex} className="py-4">
-                      <Skeleton className="h-5 w-3/4" />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : error?.isError ? (
-              <TableRow className="hover:bg-transparent">
-                <TableCell colSpan={columns.length} className="p-0">
-                  <ErrorState
-                    title={error.title ?? "Unable to load data"}
-                    description={error.description ?? "Please try again."}
-                  />
-                </TableCell>
+            ))
+          ) : error?.isError ? (
+            <TableRow className="hover:bg-transparent">
+              <TableCell colSpan={columns.length} className="p-0">
+                <ErrorState
+                  title={error.title ?? "Unable to load data"}
+                  description={error.description ?? "Please try again."}
+                />
+              </TableCell>
+            </TableRow>
+          ) : rows.length && !empty?.isEmpty ? (
+            rows.map((row) => (
+              <TableRow key={row.id} className="relative hover:bg-muted/50">
+                {row.getAllCells().map((cell) => (
+                  <TableCell key={cell.id}>
+                    <table.FlexRender cell={cell} />
+                  </TableCell>
+                ))}
               </TableRow>
-            ) : rows.length && !empty?.isEmpty ? (
-              rows.map((row) => (
-                <TableRow key={row.id} className="relative hover:bg-muted/50">
-                  {row.getAllCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      <table.FlexRender cell={cell} />
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow className="hover:bg-transparent">
-                <TableCell
-                  colSpan={columns.length}
-                  className="text-center text-sm text-muted-foreground"
-                >
-                  <EmptyState
-                    title={empty?.title ?? "No results found."}
-                    description={
-                      empty?.description ??
-                      "Try adjusting your search or filters."
-                    }
-                  />
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </div>
+            ))
+          ) : (
+            <TableRow className="hover:bg-transparent">
+              <TableCell
+                colSpan={columns.length}
+                className="text-center text-sm text-muted-foreground"
+              >
+                <EmptyState
+                  title={empty?.title ?? "No results found."}
+                  description={
+                    empty?.description ??
+                    "Try adjusting your search or filters."
+                  }
+                />
+              </TableCell>
+            </TableRow>
+          )}
+        </TableBody>
+      </Table>
+
       {pagination && !isLoading && !error?.isError && (
         <Pagination
           page={pagination.page}
