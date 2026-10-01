@@ -1,15 +1,12 @@
 import { create } from "zustand"
 import { persist, createJSONStorage } from "zustand/middleware"
 import { OrderForm, OrderItem, OrderItemInput } from "./order-form.type"
-import { calculateOrder } from "./order-form.calculate"
+import { calculateOrder, DEFAULT_CHARGE } from "@jp/utils/commerce"
 
 const CART_KEY = "CART"
 const CART_VERSION = 5
 
-export const DEFAULT_CHARGE = {
-  type: "Fuel Charge",
-  amount: 15,
-}
+export { DEFAULT_CHARGE } from "@jp/utils/commerce"
 
 const initialState: OrderForm = {
   subtotal: 0,
@@ -19,7 +16,7 @@ const initialState: OrderForm = {
   lineItemQuantity: 0,
   taxableSubtotal: 0,
   nonTaxableSubtotal: 0,
-  charges: { type: "Fuel Charge", amount: 15 },
+  charges: { ...DEFAULT_CHARGE },
   taxRule: { name: "", rate: 0 },
   po: "",
   deliveryDate: new Date().toISOString().split("T")[0]!,
@@ -67,12 +64,10 @@ export const useOrderFormStore = create<OrderStore>()(
       order: initialState,
       ready: false,
       update: (values) =>
-        set((state) => ({
-          order: {
-            ...state.order,
-            ...values,
-          },
-        })),
+        set((state) => {
+          const order = { ...state.order, ...values }
+          return { order: recalculate(order, stripDerived(order.items)) }
+        }),
 
       addItem: (product) =>
         set((state) => {

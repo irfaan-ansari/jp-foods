@@ -1,24 +1,3 @@
-export type OrderItemInput = {
-  id: string
-  lineItemId?: number | undefined
-  productId: number
-  itemCode: string
-  title: string
-  isTaxable: boolean
-  image: string
-  categories: string[]
-  quantity: number
-  price: number
-  uom: string
-  unitName: string
-  unitLabel: string
-  minOrderQty: number
-  qtyPerUnit: number
-  orderIncrement: number
-  catchWeight: boolean
-  calculatedPrice: number
-}
-
 export type SellingUnitPriceInput = {
   name: string
   displayLabel?: string
@@ -35,4 +14,14 @@ export type PriceLevel = {
   adjustmentType: string
   adjustmentValue: string | number | null
   priceLevelItem: { productId: number; adjustmentValue: string | number }[]
+}
+
+export type CalculationItem = {
+  price: number
+  quantity: number
+  qtyPerUnit: number
+  catchWeight: boolean
+  isTaxable: boolean
+  taxRate?: number
+  actualUnitQuantity?: number
 }

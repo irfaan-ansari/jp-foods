@@ -9,7 +9,7 @@ import {
   updateOrderSchema,
 } from "./order.schema"
 import { AppError } from "@jp/utils"
-import { roundMoney } from "@jp/utils/commerce"
+import { calculateOrder } from "@jp/utils/commerce"
 import { and, eq } from "drizzle-orm"
 import type { BatchItem } from "drizzle-orm/batch"
 
@@ -109,52 +109,32 @@ export const completeOrder = orgActionClient({ order: ["update"] })
       data.map((item) => [item.lineItemId, Number(item.unitQuantity)])
     )
 
-    const charges = Number(existing.charges?.amount ?? 0)
-
-    const totals = {
-      lineItemTotal: 0,
-      subtotal: 0,
-      taxableSubtotal: 0,
-      nonTaxableSubtotal: 0,
-      taxAmount: 0,
-    }
+    const { items, totals } = calculateOrder({
+      items: existing.lineItems.map((item) => ({
+        id: item.id,
+        price: Number(item.price),
+        quantity: Number(item.quantity),
+        qtyPerUnit: item.qtyPerUnit,
+        catchWeight: !!item.catchWeight,
+        isTaxable: !!item.isTaxable,
+        taxRate: Number(item.taxRate ?? 0),
+        actualUnitQuantity:
+          submittedWeights.get(item.id) ?? Number(item.unitQuantity),
+      })),
+      charges: Number(existing.charges?.amount ?? 0),
+    })
 
     const queries: BatchItem<"pg">[] = []
 
-    for (const item of existing.lineItems) {
-      const unitQuantity =
-        submittedWeights.get(item.id) ?? Number(item.unitQuantity)
-
-      const price = Number(item.price)
-
-      const subtotal = item.catchWeight
-        ? roundMoney(price * unitQuantity)
-        : roundMoney(price * Number(item.quantity))
-
-      const taxAmount = item.isTaxable
-        ? roundMoney((subtotal * Number(item.taxRate ?? 0)) / 100)
-        : 0
-
-      const total = roundMoney(subtotal + taxAmount)
-
-      totals.lineItemTotal += subtotal
-      totals.subtotal += subtotal
-      totals.taxAmount += taxAmount
-
-      if (item.isTaxable) {
-        totals.taxableSubtotal += subtotal
-      } else {
-        totals.nonTaxableSubtotal += subtotal
-      }
-
+    for (const item of items) {
       queries.push(
         db
           .update(lineItem)
           .set({
-            unitQuantity: unitQuantity.toFixed(2),
-            subtotal: subtotal.toFixed(2),
-            taxAmount: taxAmount.toFixed(2),
-            total: total.toFixed(2),
+            unitQuantity: item.unitQuantity.toFixed(2),
+            subtotal: item.subtotal.toFixed(2),
+            taxAmount: item.taxAmount.toFixed(2),
+            total: item.total.toFixed(2),
           })
           .where(
             and(
@@ -172,14 +152,12 @@ export const completeOrder = orgActionClient({ order: ["update"] })
         .set({
           status: "completed",
           deliveredAt: new Date(),
-          lineItemTotal: roundMoney(totals.lineItemTotal).toFixed(2),
-          subtotal: roundMoney(totals.subtotal).toFixed(2),
-          taxableSubtotal: roundMoney(totals.taxableSubtotal).toFixed(2),
-          nonTaxableSubtotal: roundMoney(totals.nonTaxableSubtotal).toFixed(2),
+          lineItemTotal: totals.lineItemTotal.toFixed(2),
+          subtotal: totals.subtotal.toFixed(2),
+          taxableSubtotal: totals.taxableSubtotal.toFixed(2),
+          nonTaxableSubtotal: totals.nonTaxableSubtotal.toFixed(2),
           taxAmount: totals.taxAmount.toFixed(2),
-          total: roundMoney(
-            totals.subtotal + totals.taxAmount + charges
-          ).toFixed(2),
+          total: totals.total.toFixed(2),
         })
         .where(
           and(

@@ -64,6 +64,7 @@ export const toOrderItemInput = (
 export const toInsertOrder = ({
   data,
   totals,
+  charges,
   taxRule,
   organizationId,
   teamId,
@@ -85,6 +86,7 @@ export const toInsertOrder = ({
     taxAmount: number
     total: number
   }
+  charges: { type: string; amount: number }
   taxRule?: {
     name: string
     rate: string
@@ -108,7 +110,7 @@ export const toInsertOrder = ({
     total: totals.total.toFixed(2),
 
     taxName: taxRule?.name,
-    charges: { type: "Fuel Charge", amount: "15" },
+    charges: { type: charges.type, amount: charges.amount.toFixed(2) },
     taxRate: String(taxRule?.rate ?? 0),
 
     notes: "",
