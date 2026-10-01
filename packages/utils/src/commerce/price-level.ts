@@ -1,10 +1,4 @@
-type PriceLevel = {
-  status: string
-  appliesTo: string
-  adjustmentType: string
-  adjustmentValue: string | number | null
-  priceLevelItem: { productId: number; adjustmentValue: string | number }[]
-}
+import { PriceLevel } from "./types"
 
 /** Apply customer adjustments to each selling unit's price basis. */
 export function createProductPriceResolver(config?: PriceLevel | null) {

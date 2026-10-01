@@ -40,12 +40,6 @@ export const ORG_NAV = [
       { label: "Returns", icon: UndoLeftSquare, href: "#", items: [] },
       { label: "Invoices", icon: BillCheck, href: "/org/invoices", items: [] },
       {
-        label: "Transactions",
-        icon: CardTransfer,
-        href: "/org/transactions",
-        items: [],
-      },
-      {
         label: "Customers",
         icon: UsersGroupTwoRounded,
         href: "/org/customers",

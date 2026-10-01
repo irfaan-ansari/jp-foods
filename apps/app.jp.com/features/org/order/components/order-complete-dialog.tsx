@@ -3,6 +3,7 @@
 import { toast } from "sonner"
 import { useState, type ReactNode } from "react"
 import { useQueryClient } from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
 import {
   AppDialog,
@@ -18,9 +19,9 @@ import {
   type CompleteOrderFormSchema,
 } from "../order.schema"
 import { useAppForm } from "@/hooks/use-app-form"
-import { Field, FieldGroup } from "@jp/ui/components/field"
-import { Loader2 } from "lucide-react"
 import { completeOrder } from "../order.action"
+import { Field } from "@jp/ui/components/field"
+import { formatUSD } from "@jp/utils"
 
 export function OrderCompleteDialog({
   id,
@@ -33,66 +34,113 @@ export function OrderCompleteDialog({
 }) {
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
+  const hasItems = lineItems.length > 0
 
   const form = useAppForm({
     defaultValues: { lineItems },
-
     validators: { onSubmit: completeOrderSchema },
     onSubmit: async ({ value }) => {
       const result = await completeOrder({ id, data: value.lineItems })
+
       if (result?.serverError || result?.validationErrors || !result?.data) {
         toast.error(
           result?.serverError?.message ??
-            "Check the actual weights and try again."
+            (hasItems
+              ? "Check the weights and try again."
+              : "Couldn't complete the order. Try again.")
         )
         return
       }
+      toast.success(`Order #${id} completed.`)
       queryClient.invalidateQueries({ queryKey: ["orders"] })
+      queryClient.invalidateQueries({ queryKey: ["order", id] })
       setOpen(false)
     },
   })
 
+  const handleOpenChange = (next: boolean) => {
+    setOpen(next)
+    if (!next) form.reset()
+  }
+
   return (
-    <AppDialog open={open} onOpenChange={setOpen}>
+    <AppDialog open={open} onOpenChange={handleOpenChange}>
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
-      <AppDialogContent
-        className={lineItems.length > 0 ? "sm:max-w-2xl" : "sm:max-w-xl"}
-      >
+
+      <AppDialogContent className={hasItems ? "sm:max-w-2xl" : "sm:max-w-xl"}>
         <AppDialogHeader>
-          <AppDialogTitle className="text-base font-bold">
-            Complete order #{id}
+          <AppDialogTitle className="text-base font-semibold">
+            {`Complete order #${id}`}
           </AppDialogTitle>
           <AppDialogDescription>
-            Confirm the actual weights before completing this order. Final
-            totals will be recalculated using the saved prices and tax rates.
+            {hasItems
+              ? "Enter the actual weight for each item."
+              : "This will mark the order as completed."}
           </AppDialogDescription>
         </AppDialogHeader>
 
         <form
-          onSubmit={(event) => {
-            event.preventDefault()
+          onSubmit={(e) => {
+            e.preventDefault()
             void form.handleSubmit()
           }}
-          className="max-h-[80vh] min-h-0 space-y-6 overflow-y-auto"
+          className="flex min-h-0 flex-col"
         >
-          <FieldGroup>
-            {lineItems.map((item, index) => (
-              <form.AppField
-                key={item.lineItemId}
-                name={`lineItems[${index}].unitQuantity`}
-              >
-                {(field) => (
-                  <field.TextField
-                    label={item.title}
-                    inputMode="number"
-                    placeholder="0"
-                  />
-                )}
-              </form.AppField>
-            ))}
-          </FieldGroup>
-          <Field className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:[&>button]:w-28">
-            <Button variant="outline" type="button">
+          {hasItems && (
+            <>
+              <div className="grid grid-cols-[1fr_6rem_5rem] gap-3 text-xs text-muted-foreground">
+                <span>Item</span>
+                <span>Actual weight</span>
+                <span className="text-right">Total</span>
+              </div>
+
+              <div className="max-h-[50vh] divide-y overflow-y-auto">
+                {lineItems.map((item, index) => (
+                  <div
+                    key={item.lineItemId}
+                    className="grid grid-cols-[1fr_6rem_5rem] items-center gap-3 py-2.5"
+                  >
+                    <div className="min-w-0">
+                      <p className="truncate text-sm font-medium">
+                        {item.title}
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        {formatUSD(item.price)} {item.uom && `/ ${item.uom}`}
+                      </p>
+                    </div>
+
+                    <form.AppField name={`lineItems[${index}].unitQuantity`}>
+                      {(field) => (
+                        <field.TextField
+                          label=""
+                          inputMode="decimal"
+                          placeholder="0"
+                          className="h-8 text-right"
+                          suffix={item.uom ? item.uom : ""}
+                        />
+                      )}
+                    </form.AppField>
+
+                    <form.Subscribe
+                      selector={(s) => s.values.lineItems[index]?.unitQuantity}
+                    >
+                      {(qty) => (
+                        <span className="text-right text-sm tabular-nums">
+                          {formatUSD(Number(item.price) * Number(qty))}
+                        </span>
+                      )}
+                    </form.Subscribe>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+          <Field className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end sm:[&>button]:w-32">
+            <Button
+              variant="outline"
+              type="button"
+              onClick={() => handleOpenChange(false)}
+            >
               Cancel
             </Button>
             <form.Subscribe
@@ -100,16 +148,21 @@ export function OrderCompleteDialog({
                 isSubmitting,
                 canSubmit,
               })}
-              children={({ isSubmitting, canSubmit }) => (
-                <Button type="submit" disabled={isSubmitting || !canSubmit}>
+            >
+              {({ isSubmitting, canSubmit }) => (
+                <Button
+                  type="submit"
+                  className="w-24"
+                  disabled={isSubmitting || !canSubmit}
+                >
                   {isSubmitting ? (
                     <Loader2 className="animate-spin" />
                   ) : (
-                    "Complete"
+                    "Complete Order"
                   )}
                 </Button>
               )}
-            />
+            </form.Subscribe>
           </Field>
         </form>
       </AppDialogContent>

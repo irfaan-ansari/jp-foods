@@ -81,7 +81,12 @@ export const PageContent = ({
   loading?: boolean
 }) => {
   return (
-    <div className={cn("w-full flex-1 space-y-6 px-3 py-6 lg:px-6", className)}>
+    <div
+      className={cn(
+        "flex w-full flex-1 flex-col space-y-6 px-3 py-6 lg:px-6",
+        className
+      )}
+    >
       {loading ? <PageContentSkeleton /> : children}
     </div>
   )

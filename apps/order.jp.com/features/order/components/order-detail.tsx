@@ -95,23 +95,18 @@ export const OrderDetail = ({ data }: { data: Order }) => {
                       </TableCell>
                       <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
                         {formatUSD(item.price)}
-                        {item.catchWeight && " " + item.uom}
+                        {item.catchWeight && " /" + item.uom}
                       </TableCell>
                       <TableCell className="px-2 py-1.5 text-right tabular-nums">
-                        {item.unitQuantity} {item.uom}
-                        {/* {item.unitName && (
+                        {item.quantity}
+                        {item.unitName && (
                           <span className="ml-1 text-xs text-muted-foreground">
                             {item.unitName}
                           </span>
-                        )} */}
+                        )}
                       </TableCell>
                       <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
                         <div>{formatUSD(item.taxAmount ?? 0)}</div>
-                        {Number(item.taxRate) > 0 && (
-                          <div className="text-xs text-muted-foreground">
-                            {item.taxRate}%
-                          </div>
-                        )}
                       </TableCell>
                       <TableCell className="py-1.5 pr-2 text-right font-semibold tabular-nums">
                         {formatUSD(item.total ?? 0)}

@@ -60,7 +60,7 @@ const OrderPage = () => {
         backUrl={`/org/orders?${searchParams}`}
       />
 
-      <PageContent loading={isPending} className="mx-auto max-w-7xl">
+      <PageContent loading={isPending} className="">
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : (
@@ -219,22 +219,15 @@ const OrderPage = () => {
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
                               {formatUSD(item.price ?? 0)}
+                              {item.catchWeight && " /" + item.uom}
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right tabular-nums">
-                              {item.quantity}
-                              {item.unitName && (
-                                <span className="ml-1 text-xs text-muted-foreground">
-                                  {item.unitName}
-                                </span>
-                              )}
+                              {item.catchWeight
+                                ? `${item.unitQuantity} ${item.uom}`
+                                : `${item.quantity} ${item.unitName}`}
                             </TableCell>
                             <TableCell className="v text-right text-muted-foreground tabular-nums">
                               <div>{formatUSD(item.taxAmount ?? 0)}</div>
-                              {Number(item.taxRate) > 0 && (
-                                <div className="text-xs text-muted-foreground">
-                                  {item.taxRate}%
-                                </div>
-                              )}
                             </TableCell>
                             <TableCell className="py-1.5 pr-2 text-right font-semibold tabular-nums">
                               {formatUSD(item.total ?? 0)}
@@ -344,6 +337,8 @@ const OrderPage = () => {
                               .map((item) => ({
                                 lineItemId: item.id,
                                 title: item.title ?? "",
+                                price: item.price,
+                                uom: item.uom,
                                 unitQuantity: item.unitQuantity,
                               }))}
                           >

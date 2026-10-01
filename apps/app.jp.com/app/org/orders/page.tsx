@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Plus, X } from "lucide-react"
+import { ListFilter, Plus, X } from "lucide-react"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
 import { PageContent, PageHeader } from "@/components/page-content"
@@ -40,13 +40,12 @@ const Orders = () => {
               queryParams({ set: { customer: selected.id, page: "" } })
             }
           >
-            <Button
-              variant="outline"
-              className="ml-auto min-w-44 justify-start"
-            >
-              <span className="text-muted-foreground">Customer: </span>{" "}
-              <span className="max-w-20 truncate">
-                {searchParamsObj.customer ? searchParamsObj.customer : "All"}
+            <Button variant="outline" className="ml-auto w-44 justify-start">
+              <ListFilter />
+              <span className="truncate">
+                {searchParamsObj.customer
+                  ? searchParamsObj.customer
+                  : "All Customers"}
               </span>
               {searchParamsObj.customer && (
                 <Badge

@@ -12,12 +12,13 @@ import {
   OrderConfirmationEmail,
 } from "@jp/notifications/templates"
 
-import { calculateOrder } from "./order-form.calculate"
+import { calculateOrder, DEFAULT_CHARGE } from "@jp/utils/commerce"
+import type { OrderItem } from "./order-form.type"
 import { createOrderSchema, updateOrderSchema } from "./order-form.schema"
 import { toInsertLineItems, toInsertOrder } from "./order-form.utils"
 import { resolveOrderItems } from "./order-form.resolve"
 
-const toOrderEmailItems = (items: ReturnType<typeof calculateOrder>["items"]) =>
+const toOrderEmailItems = (items: OrderItem[]) =>
   items.map((item) => ({
     id: item.id,
     title: item.title,
@@ -34,10 +35,10 @@ const isString = (value: string | undefined): value is string => !!value
  */
 export const createOrder = orgActionClient({ order: ["create"] })
   .inputSchema(createOrderSchema)
-  .action(async ({ clientInput, ctx }) => {
-    const { data } = clientInput
+  .action(async ({ parsedInput, ctx }) => {
+    const { data } = parsedInput
     const { organizationId, teamId, session, user } = ctx
-
+    console.log(data)
     const [orderItems, team, org] = await Promise.all([
       resolveOrderItems(data.items, organizationId, teamId),
       db.query.team.findFirst({
@@ -50,14 +51,17 @@ export const createOrder = orgActionClient({ order: ["create"] })
       }),
     ])
 
+    const charges = { ...DEFAULT_CHARGE }
     const { items, totals } = calculateOrder({
       items: orderItems,
+      charges: charges.amount,
       taxRate: Number(team?.taxRule?.rate ?? 0),
     })
 
     const values = toInsertOrder({
       data,
       totals,
+      charges,
       taxRule: team?.taxRule,
       organizationId,
       teamId,
@@ -78,7 +82,7 @@ export const createOrder = orgActionClient({ order: ["create"] })
       teamId,
       taxRate: team?.taxRule?.rate,
     })
-
+    console.log(createOrderItems)
     try {
       await db.insert(lineItem).values(createOrderItems)
     } catch (error) {
@@ -101,22 +105,22 @@ export const createOrder = orgActionClient({ order: ["create"] })
       items: toOrderEmailItems(items),
       subtotal: totals.subtotal.toFixed(2),
       taxAmount: totals.taxAmount.toFixed(2),
-      charges: { type: "Fuel Charge", amount: "15" },
+      charges: values.charges,
       total: totals.total.toFixed(2),
     }
 
-    await Promise.all([
-      sendEmail({
-        to: Array.from(new Set([user.email, team?.email].filter(isString))),
-        subject: `Jimenez Produce - Order #${created.id} Received`,
-        template: OrderConfirmationEmail(emailPayload),
-      }),
-      sendEmail({
-        to: org?.email,
-        subject: `New order #${created.id}`,
-        template: OrderAdminEmail(emailPayload),
-      }),
-    ])
+    // await Promise.all([
+    //   sendEmail({
+    //     to: Array.from(new Set([user.email, team?.email].filter(isString))),
+    //     subject: `Jimenez Produce - Order #${created.id} Received`,
+    //     template: OrderConfirmationEmail(emailPayload),
+    //   }),
+    //   sendEmail({
+    //     to: org?.email,
+    //     subject: `New order #${created.id}`,
+    //     template: OrderAdminEmail(emailPayload),
+    //   }),
+    // ])
 
     return { success: true, id: created.id }
   })
@@ -154,13 +158,19 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     if (!existing) throw new AppError("NOT_FOUND")
     if (existing.status !== "in_progress") throw new AppError("INVALID_REQUEST")
 
+    const charges = {
+      type: existing.charges?.type ?? DEFAULT_CHARGE.type,
+      amount: Number(existing.charges?.amount ?? DEFAULT_CHARGE.amount),
+    }
     const { items, totals } = calculateOrder({
       items: orderItems,
+      charges: charges.amount,
       taxRate: Number(team?.taxRule?.rate ?? 0),
     })
     const values = toInsertOrder({
       data,
       totals,
+      charges,
       taxRule: team?.taxRule,
       organizationId,
       teamId,

@@ -1,15 +1,16 @@
 "use client"
 
-import { Area, AreaChart, CartesianGrid, XAxis } from "recharts"
+import { Area, AreaChart, CartesianGrid, XAxis, YAxis } from "recharts"
 import {
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@jp/ui/components/chart"
 import type { DashboardData } from "../dashboard.type"
+import { formatUSD } from "@jp/utils"
 
 export function OverviewChart({ data }: { data: DashboardData["overview"] }) {
-  if (data.every((month) => month.orders === 0))
+  if (data.every((month) => month.total === 0))
     return (
       <p className="py-16 text-center text-sm text-muted-foreground">
         No orders placed in the last six months.
@@ -18,46 +19,39 @@ export function OverviewChart({ data }: { data: DashboardData["overview"] }) {
   return (
     <ChartContainer
       config={{
-        orders: { label: "Orders" },
-        total: { label: "Total" },
+        total: { label: "Total", color: "var(--primary)" },
       }}
       className="h-64 w-full"
     >
-      <AreaChart data={data.map((d) => ({ ...d, total: 50 }))}>
+      <AreaChart data={data} margin={{ left: 8, right: 8, top: 12 }}>
         <defs>
-          <linearGradient id="fillCount" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--chart-3)" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="var(--chart-2)" stopOpacity={0.1} />
-          </linearGradient>
-          <linearGradient id="fillTotal" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--chart-2)" stopOpacity={0.8} />
-            <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.1} />
+          <linearGradient id="orderSpend" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
+            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="month"
+        <XAxis dataKey="month" tickLine={false} axisLine={false} />
+        {/* <YAxis
+          width={64}
           tickLine={false}
           axisLine={false}
-          tickMargin={8}
-          minTickGap={32}
-        />
-
-        <ChartTooltip content={<ChartTooltipContent />} />
-
-        <Area
-          dataKey="orders"
-          type="natural"
-          fill="url(#fillCount)"
-          stroke="var(--chart-1)"
-          stackId="a"
+          tickFormatter={(value) => formatUSD(value)}
+        /> */}
+        <ChartTooltip
+          cursor={false}
+          content={
+            <ChartTooltipContent
+              formatter={(value) => formatUSD(value as number)}
+            />
+          }
         />
         <Area
           dataKey="total"
-          type="natural"
-          fill="url(#fillTotal)"
-          stroke="var(--chart-2)"
-          stackId="a"
+          type="monotone"
+          fill="url(#orderSpend)"
+          stroke="var(--primary)"
+          strokeWidth={2}
         />
       </AreaChart>
     </ChartContainer>

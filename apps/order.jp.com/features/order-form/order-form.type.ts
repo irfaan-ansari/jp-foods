@@ -2,8 +2,8 @@ type TaxRule = { name: string; rate: number }
 type Charges = { type: string; amount: number }
 
 export type OrderItemInput = {
-  id: string /** productId:sellingUnit.name */
-  lineItemId?: number
+  id: string
+  lineItemId?: number | undefined
   productId: number
   itemCode: string
   title: string
@@ -12,7 +12,6 @@ export type OrderItemInput = {
   categories: string[]
   quantity: number
   price: number
-
   uom: string
   unitName: string
   unitLabel: string

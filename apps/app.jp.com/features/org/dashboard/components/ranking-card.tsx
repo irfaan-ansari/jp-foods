@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { formatUSD } from "@jp/utils"
+import { capitalize, formatUSD, pluralize } from "@jp/utils"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import type { DashboardRanking } from "../dashboard.type"
 import { DashboardCard } from "./dashboard-card"
@@ -44,16 +44,14 @@ export function RankingCard({
           {rows?.map((row, index) => {
             const content = (
               <>
-                <span className="w-5 shrink-0 text-xs text-muted-foreground">
+                <span className="w-3.5 shrink-0 text-xs text-muted-foreground">
                   {index + 1}
                 </span>
-                <span className="min-w-0 flex-1 truncate text-sm font-medium">
+                <span className="min-w-0 flex-1 truncate text-sm">
                   {row.name}
                 </span>
-                <span className="shrink-0 text-sm tabular-nums">
-                  {money
-                    ? formatUSD(row.value)
-                    : `${row.value.toLocaleString()} ${row.value === 1 ? "order" : "orders"}`}
+                <span className="shrink-0 text-sm font-medium tabular-nums">
+                  {money ? formatUSD(row.value) : row.value}
                 </span>
               </>
             )

@@ -115,7 +115,7 @@ export function DashboardClient() {
           <div className="@4xl/page-content:col-span-2 @4xl/page-content:*:h-full">
             <DashboardCard
               title="Order overview"
-              description="Orders placed over the last six months · UTC"
+              description="Orders placed over the last six months"
             >
               <div className="p-4">
                 <QueryBoundary
