@@ -19,26 +19,25 @@ export function OverviewChart({ data }: { data: DashboardData["overview"] }) {
   return (
     <ChartContainer
       config={{
-        orders: { label: "Orders" },
-        total: { label: "Total" },
+        total: { label: "Total", color: "var(--primary)" },
       }}
       className="h-64 w-full"
     >
       <AreaChart data={data} margin={{ left: 8, right: 8, top: 12 }}>
         <defs>
           <linearGradient id="orderSpend" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="var(--chart-1)" stopOpacity={0.35} />
-            <stop offset="95%" stopColor="var(--chart-1)" stopOpacity={0.02} />
+            <stop offset="5%" stopColor="var(--primary)" stopOpacity={0.35} />
+            <stop offset="95%" stopColor="var(--primary)" stopOpacity={0.02} />
           </linearGradient>
         </defs>
         <CartesianGrid vertical={false} />
         <XAxis dataKey="month" tickLine={false} axisLine={false} />
-        <YAxis
+        {/* <YAxis
           width={64}
           tickLine={false}
           axisLine={false}
           tickFormatter={(value) => formatUSD(value)}
-        />
+        /> */}
         <ChartTooltip
           cursor={false}
           content={
@@ -51,7 +50,7 @@ export function OverviewChart({ data }: { data: DashboardData["overview"] }) {
           dataKey="total"
           type="monotone"
           fill="url(#orderSpend)"
-          stroke="var(--chart-1)"
+          stroke="var(--primary)"
           strokeWidth={2}
         />
       </AreaChart>

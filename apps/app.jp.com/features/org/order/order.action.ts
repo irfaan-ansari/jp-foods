@@ -98,22 +98,16 @@ export const completeOrder = orgActionClient({ order: ["update"] })
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
-    if (["cancelled", "completed"].includes(existing.status)) {
-      throw new AppError("CONFLICT")
+
+    if (existing.status !== "in_progress") {
+      throw new AppError("CONFLICT", {
+        message: "Only in-progress orders can be marked as complete.",
+      })
     }
 
     const submittedWeights = new Map(
       data.map((item) => [item.lineItemId, Number(item.unitQuantity)])
     )
-
-    for (const [lineItemId, unitQuantity] of submittedWeights) {
-      if (!Number.isFinite(unitQuantity) || unitQuantity < 0) {
-        throw new AppError("INVALID_REQUEST")
-      }
-
-      const item = existing.lineItems.find((item) => item.id === lineItemId)
-      if (!item || !item.catchWeight) throw new AppError("INVALID_REQUEST")
-    }
 
     const charges = Number(existing.charges?.amount ?? 0)
 
@@ -130,59 +124,47 @@ export const completeOrder = orgActionClient({ order: ["update"] })
     for (const item of existing.lineItems) {
       const unitQuantity =
         submittedWeights.get(item.id) ?? Number(item.unitQuantity)
-      const price = Number(item.price)
 
-      if (!Number.isFinite(unitQuantity) || !Number.isFinite(price)) {
-        throw new AppError("INVALID_REQUEST")
-      }
+      const price = Number(item.price)
 
       const subtotal = item.catchWeight
         ? roundMoney(price * unitQuantity)
-        : Number(item.subtotal)
-      const taxAmount = item.catchWeight
-        ? item.isTaxable
-          ? roundMoney((subtotal * Number(item.taxRate)) / 100)
-          : 0
-        : Number(item.taxAmount)
-      const total = roundMoney(subtotal + taxAmount)
+        : roundMoney(price * Number(item.quantity))
 
-      if (!Number.isFinite(subtotal) || !Number.isFinite(taxAmount)) {
-        throw new AppError("INVALID_REQUEST")
-      }
+      const taxAmount = item.isTaxable
+        ? roundMoney((subtotal * Number(item.taxRate ?? 0)) / 100)
+        : 0
+
+      const total = roundMoney(subtotal + taxAmount)
 
       totals.lineItemTotal += subtotal
       totals.subtotal += subtotal
       totals.taxAmount += taxAmount
+
       if (item.isTaxable) {
         totals.taxableSubtotal += subtotal
       } else {
         totals.nonTaxableSubtotal += subtotal
       }
 
-      if (item.catchWeight) {
-        queries.push(
-          db
-            .update(lineItem)
-            .set({
-              unitQuantity: unitQuantity.toFixed(2),
-              subtotal: subtotal.toFixed(2),
-              taxAmount: taxAmount.toFixed(2),
-              total: total.toFixed(2),
-            })
-            .where(
-              and(
-                eq(lineItem.id, item.id),
-                eq(lineItem.orderId, id),
-                eq(lineItem.organizationId, ctx.organizationId)
-              )
-            ) as BatchItem<"pg">
-        )
-      }
+      queries.push(
+        db
+          .update(lineItem)
+          .set({
+            unitQuantity: unitQuantity.toFixed(2),
+            subtotal: subtotal.toFixed(2),
+            taxAmount: taxAmount.toFixed(2),
+            total: total.toFixed(2),
+          })
+          .where(
+            and(
+              eq(lineItem.id, item.id),
+              eq(lineItem.orderId, id),
+              eq(lineItem.organizationId, ctx.organizationId)
+            )
+          ) as BatchItem<"pg">
+      )
     }
-
-    const subtotal = roundMoney(totals.subtotal)
-    const taxAmount = roundMoney(totals.taxAmount)
-    const total = roundMoney(subtotal + taxAmount + charges)
 
     queries.push(
       db
@@ -191,11 +173,13 @@ export const completeOrder = orgActionClient({ order: ["update"] })
           status: "completed",
           deliveredAt: new Date(),
           lineItemTotal: roundMoney(totals.lineItemTotal).toFixed(2),
-          subtotal: subtotal.toFixed(2),
+          subtotal: roundMoney(totals.subtotal).toFixed(2),
           taxableSubtotal: roundMoney(totals.taxableSubtotal).toFixed(2),
           nonTaxableSubtotal: roundMoney(totals.nonTaxableSubtotal).toFixed(2),
-          taxAmount: taxAmount.toFixed(2),
-          total: total.toFixed(2),
+          taxAmount: totals.taxAmount.toFixed(2),
+          total: roundMoney(
+            totals.subtotal + totals.taxAmount + charges
+          ).toFixed(2),
         })
         .where(
           and(

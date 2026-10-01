@@ -1,14 +1,5 @@
+import { SellingUnitPriceInput } from "./types"
 import { MEASURE_UNITS } from "./units"
-
-export type SellingUnitPriceInput = {
-  name: string
-  displayLabel?: string
-  price: string | number
-  qtyPerUnit: string | number
-  minOrderQty: string | number
-  orderIncrement: string | number
-  isDefault: boolean
-}
 
 export type PricedSellingUnit<
   T extends SellingUnitPriceInput = SellingUnitPriceInput,

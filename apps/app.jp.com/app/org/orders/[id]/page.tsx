@@ -230,11 +230,6 @@ const OrderPage = () => {
                             </TableCell>
                             <TableCell className="v text-right text-muted-foreground tabular-nums">
                               <div>{formatUSD(item.taxAmount ?? 0)}</div>
-                              {Number(item.taxRate) > 0 && (
-                                <div className="text-xs text-muted-foreground">
-                                  {item.taxRate}%
-                                </div>
-                              )}
                             </TableCell>
                             <TableCell className="py-1.5 pr-2 text-right font-semibold tabular-nums">
                               {formatUSD(item.total ?? 0)}

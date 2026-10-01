@@ -87,6 +87,7 @@ export function DashboardClient() {
       </div>
 
       <DashboardCard
+        className="h-auto"
         title="Recent orders"
         description="Track your latest orders and delivery dates"
         action={
