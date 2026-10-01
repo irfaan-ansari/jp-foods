@@ -160,7 +160,7 @@ export const toInsertLineItems = ({
     catchWeight: item.catchWeight,
     calculatedPrice: item.calculatedPrice.toFixed(2),
 
-    unitQuantity: item.unitQuantity.toFixed(0),
+    unitQuantity: item.unitQuantity.toFixed(4),
 
     subtotal: item.subtotal.toFixed(2),
     taxAmount: item.taxAmount.toFixed(2),

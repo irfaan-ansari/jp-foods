@@ -344,6 +344,8 @@ const OrderPage = () => {
                               .map((item) => ({
                                 lineItemId: item.id,
                                 title: item.title ?? "",
+                                price: item.price,
+                                uom: item.uom,
                                 unitQuantity: item.unitQuantity,
                               }))}
                           >

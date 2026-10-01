@@ -31,7 +31,11 @@ export const DashboardCard = ({
       <CardHeader className="flex flex-row gap-1 border-b">
         <div className="grid min-w-0 flex-1">
           <CardTitle className="text-base font-semibold">{title}</CardTitle>
-          {description && <CardDescription>{description}</CardDescription>}
+          {description && (
+            <CardDescription className="truncate">
+              {description}
+            </CardDescription>
+          )}
         </div>
         {action && <CardAction>{action}</CardAction>}
       </CardHeader>
