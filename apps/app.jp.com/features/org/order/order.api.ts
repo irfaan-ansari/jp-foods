@@ -5,6 +5,7 @@ import { db, order, invoice } from "@jp/db"
 import { sortLineItems } from "./order.utils"
 import { OrderInvoice, PackingSlip } from "@jp/pdf"
 import { renderToStream } from "@react-pdf/renderer"
+import { get } from "@vercel/blob"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { and, count, eq, ilike, or, sql } from "drizzle-orm"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
@@ -203,14 +204,20 @@ const orderApp = app
       .where(
         and(eq(invoice.orderId, id), eq(invoice.organizationId, organizationId))
       )
-    if (!issued) throw new AppError("NOT_FOUND")
+    if (!issued || issued.status !== "issued" || !issued.pdfPathname)
+      throw new AppError("NOT_FOUND")
+    const pdf = await get(issued.pdfPathname, {
+      access: "private",
+      token: process.env.INVOICE_BLOB_READ_WRITE_TOKEN,
+    })
+    if (!pdf || pdf.statusCode !== 200) throw new AppError("NOT_FOUND")
 
-    const stream = null
-
-    return c.body(stream, 200, {
-      "Content-Type": "application/pdf",
-      "Cache-Control": "private, no-store",
-      "Content-Disposition": `inline; filename="invoice-${issued.id}.pdf"`,
+    return new Response(pdf.stream, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "private, no-store",
+        "Content-Disposition": `inline; filename="invoice-${issued.id}.pdf"`,
+      },
     })
   })
 export const orders: Hono<OrgAppContext> = orderApp

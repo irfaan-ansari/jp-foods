@@ -321,6 +321,11 @@ export const order = pgTable(
     index("order_organizationId_idx").on(table.organizationId),
     index("order_teamId_idx").on(table.teamId),
     index("order_status_idx").on(table.status),
+    index("order_invoice_queue_idx").on(
+      table.status,
+      table.invoiceStatus,
+      table.id
+    ),
     index("order_userId_idx").on(table.userId),
   ]
 )

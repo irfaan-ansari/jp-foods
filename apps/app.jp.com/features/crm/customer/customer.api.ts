@@ -1,4 +1,6 @@
 import { Hono } from "hono"
+import { renderToBuffer } from "@react-pdf/renderer"
+import { CustomerApplicationPDF } from "@jp/pdf"
 import { customer, customerInvite, db } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { AppContext } from "@/lib/hono/middlewares"
@@ -178,4 +180,24 @@ export const customerApplicationRoutes = app
     })
   })
 
+  .get("/:id/pdf", async (c) => {
+    const id = Number(c.req.param("id"))
+    if (!Number.isSafeInteger(id) || id <= 0) throw new AppError("NOT_FOUND")
+
+    const application = await db.query.customer.findFirst({
+      where: (customer, { eq }) => eq(customer.id, id),
+    })
+    if (!application) throw new AppError("NOT_FOUND")
+
+    const buffer = await renderToBuffer(
+      CustomerApplicationPDF({ data: application })
+    )
+    return new Response(new Uint8Array(buffer), {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "private, no-store",
+        "Content-Disposition": `inline; filename="customer-${application.id}.pdf"`,
+      },
+    })
+  })
   .get("/invites/:id", async (c) => {})

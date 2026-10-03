@@ -1,4 +1,4 @@
-import { Resend } from "resend"
+import { type CreateEmailOptions, Resend } from "resend"
 import { ReactElement } from "react"
 
 export const resend = new Resend(process.env.RESEND_API_KEY)
@@ -12,6 +12,7 @@ type SendEmailOptions = {
   template: ReactElement
   from?: string
   replyTo?: string
+  attachments?: CreateEmailOptions["attachments"]
 }
 
 export async function sendEmail({
@@ -20,6 +21,7 @@ export async function sendEmail({
   template,
   from = FROM_EMAIL,
   replyTo,
+  attachments,
 }: SendEmailOptions) {
   if (!process.env.RESEND_API_KEY) {
     throw new Error("RESEND_API_KEY is required to send email")
@@ -31,6 +33,7 @@ export async function sendEmail({
     subject,
     react: template,
     replyTo,
+    attachments,
   })
 
   if (error) {

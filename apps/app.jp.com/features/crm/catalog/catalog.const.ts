@@ -1,6 +1,6 @@
 import { BadgeStatus } from "@/features/shared/shared.type"
 
-export const STATUS: Record<string, BadgeStatus> = {
+export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   all: {
     label: "All",
     value: "",
@@ -9,7 +9,7 @@ export const STATUS: Record<string, BadgeStatus> = {
   new: {
     label: "New",
     value: "new",
-    color: "#F59E0B",
+    color: "#3B82F6",
   },
   approved: {
     label: "Approved",

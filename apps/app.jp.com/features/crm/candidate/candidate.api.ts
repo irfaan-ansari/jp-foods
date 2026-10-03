@@ -4,6 +4,8 @@ import { AppError } from "@jp/utils"
 import { AppContext } from "@/lib/hono/middlewares"
 import { and, count, eq, ilike, or } from "drizzle-orm"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
+import { renderToStream } from "@react-pdf/renderer"
+import { JobApplicationPDF } from "@jp/pdf"
 
 const app = new Hono<AppContext>()
 
@@ -143,5 +145,35 @@ export const jobApplicationRoutes = app
     return c.json({
       success: true,
       data: transformed,
+    })
+  })
+  // get application pdf
+  .get("/:id/pdf", async (c) => {
+    const id = c.req.param("id")
+    const query = c.req.query()
+    const response = await db.query.jobApplication.findFirst({
+      where: (c, { eq }) => eq(c.id, Number(id)),
+    })
+
+    if (!response) throw new AppError("NOT_FOUND")
+
+    const stream = await renderToStream(
+      JobApplicationPDF({
+        data: response,
+        includeSSN: query.includeSSN === `true`,
+      })
+    )
+
+    // @ts-expect-error - Type assertion for Response body
+    // return c.body(stream, 200, {
+    //   "Content-Type": "application/pdf",
+    //   "Content-Disposition": `inline; filename="order-${id}.pdf"`,
+    // })
+    return new Response(stream, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "private, no-store",
+        "Content-Disposition": `inline; filename="candidate-${response.id}.pdf"`,
+      },
     })
   })

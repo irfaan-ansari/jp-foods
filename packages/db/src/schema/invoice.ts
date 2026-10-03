@@ -21,6 +21,7 @@ type InvoiceTo = {
   zip: string
   name: string
   email?: string
+  phone?: string
 }
 
 type ChargeLine = { type: string; amount: number }
@@ -39,6 +40,12 @@ export const invoice = pgTable(
     }),
     number: text("number").notNull(), // "INV-000123"
     status: text("status").notNull().default("issued"),
+    billFrom: jsonb("bill_from").$type<InvoiceTo>(),
+    pdfPathname: text("pdf_pathname"),
+    pdfLeaseToken: text("pdf_lease_token"),
+    pdfNextAttemptAt: timestamp("pdf_next_attempt_at").defaultNow().notNull(),
+    pdfAttempts: integer("pdf_attempts").default(0).notNull(),
+    pdfError: text("pdf_error"),
     billTo: jsonb("bill_to").$type<InvoiceTo>(),
     shipTo: jsonb("ship_to").$type<InvoiceTo>(),
     po: text("po"),
@@ -85,7 +92,8 @@ export const invoice = pgTable(
   },
   (t) => [
     uniqueIndex("invoice_org_number_uq").on(t.organizationId, t.number),
-    index("invoice_orderId_idx").on(t.orderId),
+    uniqueIndex("invoice_orderId_uq").on(t.orderId),
+    index("invoice_pdf_queue_idx").on(t.status, t.pdfNextAttemptAt, t.id),
     index("invoice_teamId_idx").on(t.teamId),
     index("invoice_status_dueDate_idx").on(t.status, t.dueDate),
   ]
@@ -108,12 +116,14 @@ export const invoiceLineItem = pgTable(
     itemCode: text("item_code"),
     title: text("title").notNull(),
     unitName: text("unit_name").notNull().default(""),
-    unitQuantity: integer("unit_quantity"),
-    quantity: numeric("quantity", { precision: 12, scale: 3 }).notNull(),
+    unitQuantity: numeric("unit_quantity", { precision: 12, scale: 2 }),
+    catchWeight: boolean("catch_weight").notNull().default(false),
+    uom: text("uom"),
+    quantity: numeric("quantity", { precision: 12, scale: 4 }).notNull(),
     price: numeric("price", { precision: 12, scale: 4 }).notNull(),
     subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull(),
     isTaxable: boolean("is_taxable").notNull().default(false),
-    taxRate: numeric("tax_rate", { precision: 6, scale: 4 })
+    taxRate: numeric("tax_rate", { precision: 8, scale: 4 })
       .notNull()
       .default("0"),
     taxAmount: numeric("tax_amount", { precision: 12, scale: 2 })

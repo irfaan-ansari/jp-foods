@@ -1,4 +1,4 @@
-import { StyleSheet } from "@react-pdf/renderer";
+import { StyleSheet } from "@react-pdf/renderer"
 
 const COLORS = {
   primary: "#80b83a",
@@ -6,9 +6,9 @@ const COLORS = {
   secondary: "#676767",
   divider: "#e2e8f0",
   bgSubtle: "#f8fafc",
-};
+}
 
-const styles = StyleSheet.create({
+const baseStyles = {
   page: {
     padding: 40,
     fontFamily: "Helvetica",
@@ -166,6 +166,176 @@ const styles = StyleSheet.create({
     right: 0,
     textAlign: "center",
   },
-});
+}
 
-export { styles, COLORS };
+const applicationStyles = {
+  page: {
+    paddingTop: 38,
+    paddingBottom: 108,
+    paddingHorizontal: 36,
+    fontFamily: "Helvetica",
+    fontSize: 9,
+    color: COLORS.main,
+    lineHeight: 1.3,
+  },
+  runningBrand: {
+    position: "absolute",
+    top: 18,
+    left: 36,
+    width: 250,
+    height: 12,
+    fontSize: 7,
+    color: COLORS.secondary,
+    letterSpacing: 0.7,
+  },
+  runningTitle: {
+    position: "absolute",
+    top: 18,
+    left: 330,
+    width: 229,
+    height: 12,
+    textAlign: "right",
+    fontSize: 7,
+    color: COLORS.secondary,
+    letterSpacing: 0.7,
+  },
+  footerRule: {
+    position: "absolute",
+    top: 744,
+    left: 36,
+    width: 523,
+    height: 1,
+    backgroundColor: COLORS.divider,
+  },
+  footerLeft: {
+    position: "absolute",
+    top: 754,
+    left: 36,
+    width: 250,
+    height: 62,
+    fontSize: 7,
+    lineHeight: 1.5,
+    color: COLORS.secondary,
+    flexDirection: "column",
+  },
+  footerRight: {
+    position: "absolute",
+    top: 754,
+    left: 307,
+    width: 252,
+    height: 62,
+    fontSize: 7,
+    lineHeight: 1.5,
+    color: COLORS.secondary,
+    flexDirection: "column",
+  },
+  footerHeading: { fontFamily: "Helvetica-Bold", color: COLORS.main },
+  footerLabel: {
+    position: "absolute",
+    top: 816,
+    left: 36,
+    width: 400,
+    height: 14,
+    fontSize: 6,
+    color: COLORS.secondary,
+  },
+  pageNumber: {
+    position: "absolute",
+    top: 816,
+    left: 469,
+    width: 90,
+    height: 14,
+    textAlign: "right",
+    fontSize: 6,
+    color: COLORS.secondary,
+  },
+  applicationHeader: {
+    borderTopWidth: 3,
+    borderTopColor: COLORS.primary,
+    paddingTop: 10,
+    marginBottom: 10,
+  },
+  eyebrow: {
+    fontSize: 8,
+    color: COLORS.primary,
+    letterSpacing: 1.8,
+    marginBottom: 8,
+  },
+  applicationTitle: {
+    fontSize: 23,
+    fontFamily: "Helvetica-Bold",
+    letterSpacing: -0.8,
+    lineHeight: 1.15,
+  },
+  applicationTagline: { fontSize: 9, color: COLORS.secondary, marginTop: 4 },
+  summary: {
+    flexDirection: "row",
+    gap: 18,
+    backgroundColor: "#F5F5F5",
+    padding: 9,
+    marginTop: 8,
+    borderRadius: 5,
+  },
+  applicationSectionTitle: {
+    fontSize: 10,
+    fontFamily: "Helvetica-Bold",
+    color: COLORS.main,
+    marginTop: 8,
+    marginBottom: 4,
+    paddingBottom: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.divider,
+  },
+  applicationRow: { flexDirection: "row", marginBottom: 4, gap: 18 },
+  applicationFieldGroup: { flex: 1, minWidth: 0 },
+  applicationLabel: {
+    fontSize: 7,
+    color: COLORS.secondary,
+    textTransform: "uppercase",
+    letterSpacing: 0.6,
+    marginBottom: 2,
+  },
+  applicationValue: { fontSize: 9, color: COLORS.main, lineHeight: 1.3 },
+  record: {
+    borderLeftWidth: 2,
+    borderLeftColor: COLORS.primary,
+    paddingLeft: 9,
+    marginBottom: 8,
+  },
+  legal: {
+    fontSize: 8,
+    color: COLORS.secondary,
+    lineHeight: 1.4,
+    marginBottom: 4,
+  },
+  signatureBlock: {
+    flex: 1,
+    borderBottomWidth: 1,
+    borderBottomColor: COLORS.divider,
+    paddingBottom: 8,
+  },
+  signatureImage: {
+    width: 150,
+    height: 42,
+    objectFit: "contain",
+    objectPosition: "left",
+    marginBottom: 8,
+  },
+}
+
+const styles = StyleSheet.create({
+  ...baseStyles,
+  ...applicationStyles,
+  // Application documents use these shared names; keep the legacy templates
+  // working while giving candidate and customer PDFs the compact layout.
+  header: applicationStyles.applicationHeader,
+  docTitle: applicationStyles.applicationTitle,
+  tagline: applicationStyles.applicationTagline,
+  sectionTitle: applicationStyles.applicationSectionTitle,
+  row: applicationStyles.applicationRow,
+  fieldGroup: applicationStyles.applicationFieldGroup,
+  label: applicationStyles.applicationLabel,
+  value: applicationStyles.applicationValue,
+} as any)
+
+export { styles, COLORS }

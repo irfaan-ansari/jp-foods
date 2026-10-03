@@ -18,12 +18,12 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   new: {
     label: "New",
     value: "new",
-    color: "#F59E0B",
+    color: "#3B82F6",
   },
   under_review: {
     label: "Under Review",
     value: "under_review",
-    color: "#8B5CF6",
+    color: "#F59E0B",
   },
   on_hold: {
     label: "On Hold",

@@ -1,39 +1,55 @@
-import { format } from "date-fns"
+import { format, isValid, parseISO } from "date-fns"
+import type { CustomerApplicationSelectType } from "@jp/db"
+import { ApplicationPage } from "./application-layout"
 import { COLORS, styles } from "./styles"
 
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
+import { Document, Text, View, Image } from "@react-pdf/renderer"
 
-export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
+function displayDate(value: Date | string | null | undefined) {
+  if (!value) return "Not provided"
+  const date = typeof value === "string" ? parseISO(value) : value
+  return isValid(date) ? format(date, "MMM d, yyyy") : "Not provided"
+}
+
+export const CustomerApplicationPDF = ({
+  data,
+}: {
+  data: CustomerApplicationSelectType
+}) => {
   return (
-    <Document title={`Customer Application - ${data.companyName}`}>
-      <Page size="A4" style={styles.page}>
-        {/* 1. HEADER */}
-        <View style={styles.header}>
-          <View style={styles.headerLeft}>
-            <Image src={process.env.NEXT_PUBLIC_LOGO_URL} style={styles.logo} />
-            <View>
-              <Text style={[styles.docTitle, { marginBottom: 16 }]}>
-                Jimenez Produce
+    <Document
+      title={`Customer Application - ${data.companyName}`}
+      author="Jimenez Produce"
+    >
+      <ApplicationPage title="Customer application">
+        <View style={styles.header} wrap={false}>
+          <Text style={styles.eyebrow}>CUSTOMER APPLICATION</Text>
+          <Text style={styles.docTitle}>{data.companyName}</Text>
+          <Text style={styles.tagline}>{data.companyType}</Text>
+          <View style={styles.summary}>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Application reference</Text>
+              <Text
+                style={styles.value}
+              >{`CUST-${String(data.id).padStart(6, "0")}`}</Text>
+            </View>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Submitted</Text>
+              <Text style={styles.value}>{displayDate(data.createdAt)}</Text>
+            </View>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Status</Text>
+              <Text style={[styles.value, { textTransform: "capitalize" }]}>
+                {data.status.replaceAll("_", " ")}
               </Text>
-              <Text style={styles.tagline}>Customer application</Text>
             </View>
           </View>
-
-          {/* <View style={styles.headerRight}>
-            {CONTACT_SECTIONS.locations.map((loc, i) => (
-              <View key={i} style={styles.headerContactText}>
-                <Text>{loc.street}</Text>
-                <Text>
-                  {loc.phone} | {loc.email}
-                </Text>
-              </View>
-            ))}
-          </View> */}
         </View>
-
         {/* 2. BUSINESS IDENTITY */}
-        <Text style={styles.sectionTitle}>Business Identity</Text>
-        <View style={styles.row}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
+          Business Identity
+        </Text>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Legal Company Name</Text>
             <Text style={[styles.value, { fontSize: 12 }]}>
@@ -42,13 +58,13 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Application Status</Text>
-            <Text style={[styles.value, { color: COLORS.primary }]}>
-              {data.status}
+            <Text style={[styles.value, { textTransform: "capitalize" }]}>
+              {data.status.replaceAll("_", " ")}
             </Text>
           </View>
         </View>
 
-        <View style={styles.row}>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Doing Business As (DBA)</Text>
             <Text style={styles.value}>{data.companyDBA || "N/A"}</Text>
@@ -59,7 +75,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
         </View>
 
-        <View style={styles.row}>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>EIN / Tax ID</Text>
             <Text style={styles.value}>{data.companyEin}</Text>
@@ -71,7 +87,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
             </Text>
           </View>
         </View>
-        <View style={styles.row}>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Address</Text>
             <Text style={styles.value}>
@@ -82,8 +98,10 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
         </View>
 
         {/* 3. AUTHORIZED OFFICER */}
-        <Text style={styles.sectionTitle}>Authorized Officer</Text>
-        <View style={styles.row}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
+          Authorized Officer
+        </Text>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Full Name</Text>
             <Text style={styles.value}>
@@ -98,7 +116,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
         </View>
 
-        <View style={styles.row}>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Title</Text>
             <Text style={styles.value}>{data.officerRole}</Text>
@@ -112,8 +130,10 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
         </View>
         {/* 4. BILLING & OPERATIONS */}
-        <Text style={styles.sectionTitle}>Operations & Billing</Text>
-        <View style={styles.row}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
+          Operations & Billing
+        </Text>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Guarantor</Text>
             <Text style={styles.value}>
@@ -127,7 +147,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
             </Text>
           </View>
         </View>
-        <View style={styles.row}>
+        <View style={styles.row} wrap={false}>
           <View style={styles.fieldGroup}>
             <Text style={styles.label}>Accounts Payable Email</Text>
             <Text style={styles.value}>
@@ -142,7 +162,9 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
         </View>
         {/* 4. DELIVERY SCHEDULE */}
-        <Text style={styles.sectionTitle}>Delivery Requirements</Text>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
+          Delivery Requirements
+        </Text>
         <Text
           style={[
             styles.label,
@@ -151,7 +173,13 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
         >
           Lockbox: {data.lockboxPermission}
         </Text>
-        <View style={styles.tableHeader}>
+        <View
+          style={{
+            flexDirection: "row",
+            backgroundColor: "#F5F5F5",
+            padding: 7,
+          }}
+        >
           <Text
             style={{
               width: "25%",
@@ -184,8 +212,22 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </Text>
         </View>
 
-        {data.deliverySchedule.map((sch: Record<string, any>, i: number) => (
-          <View key={i} style={styles.tableRow}>
+        {!data.deliverySchedule?.length && (
+          <Text style={[styles.legal, { marginTop: 6 }]}>
+            No delivery schedule provided.
+          </Text>
+        )}
+        {(data.deliverySchedule ?? []).map((sch, i) => (
+          <View
+            key={i}
+            wrap={false}
+            style={{
+              flexDirection: "row",
+              padding: 7,
+              borderBottomWidth: 1,
+              borderBottomColor: COLORS.divider,
+            }}
+          >
             <Text style={{ width: "25%", fontSize: 8 }}>
               {sch.day} ({sch.window})
             </Text>
@@ -201,16 +243,11 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
           </View>
         ))}
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>Acknowledgement</Text>
-          <Text
-            style={{
-              fontSize: 8,
-              color: COLORS.secondary,
-              marginBottom: 10,
-              fontStyle: "italic",
-            }}
-          >
-            <Text style={{ marginBottom: 8 }}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
+            Acknowledgement
+          </Text>
+          <View>
+            <Text style={styles.legal}>
               By submitting this application, I certify that I am the individual
               personally responsible for all payments to Jimenez Produce LLC
               (“the Company”). I understand that no credit will be extended to
@@ -222,7 +259,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
               arising in the future.
             </Text>
 
-            <Text style={{ marginBottom: 8 }}>
+            <Text style={styles.legal}>
               This personal guarantee is a continuing guarantee and remains in
               full force and effect until all balances are paid in full. I
               understand that I may terminate this guarantee only by providing
@@ -234,7 +271,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
               to termination.
             </Text>
 
-            <Text style={{ marginBottom: 8 }}>
+            <Text style={styles.legal}>
               In the event of nonpayment or default, I agree to be personally
               liable for all outstanding balances, accrued interest, returned
               check fees, service charges, and all reasonable costs of
@@ -245,7 +282,7 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
               Florida, and Georgia.
             </Text>
 
-            <Text style={{ marginBottom: 8 }}>
+            <Text style={styles.legal}>
               I waive any requirement that Jimenez Produce LLC first pursue my
               company or any other party before enforcing this guarantee, and I
               waive any right to receive notice of default, nonpayment,
@@ -253,15 +290,15 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
               guaranteed debt.
             </Text>
 
-            <Text style={{ marginBottom: 8 }}>
+            <Text style={styles.legal}>
               By submitting this application, I affirm that I have read,
               understand, and agree to this Personal Guarantee Agreement, and
               that my electronic submission serves as my voluntary and legally
               binding signature under applicable state and federal law.
             </Text>
-          </Text>
+          </View>
 
-          <View style={[styles.row, { marginTop: 50 }]}>
+          <View wrap={false} style={[styles.row, { marginTop: 12 }]}>
             <View style={styles.signatureBlock}>
               {data.signatureUrl && (
                 <Image src={data.signatureUrl} style={styles.signatureImage} />
@@ -284,16 +321,16 @@ export const CustomerPDF = ({ data }: { data: Record<string, any> }) => {
                 }}
               >
                 <Text style={styles.value}>
-                  {data.createdAt
-                    ? format(new Date(data.createdAt), "MMMM dd, yyyy")
-                    : "N/A"}
+                  {data.createdAt ? displayDate(data.createdAt) : "N/A"}
                 </Text>
               </View>
               <Text style={styles.label}>Date Signed</Text>
             </View>
           </View>
         </View>
-      </Page>
+      </ApplicationPage>
     </Document>
   )
 }
+
+export const CustomerPDF = CustomerApplicationPDF

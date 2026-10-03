@@ -16,6 +16,11 @@ export const STATUS: Record<string, BadgeStatus> = {
     value: "completed",
     color: "#22C55E",
   },
+  invoiced: {
+    label: "Invoiced",
+    value: "invoiced",
+    color: "#3B82F6",
+  },
   cancelled: {
     label: "Cancelled",
     value: "cancelled",

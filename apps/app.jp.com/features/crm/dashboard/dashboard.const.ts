@@ -1,7 +1,7 @@
 import { Buildings2, Tag, UsersGroupRounded } from "@solar-icons/react"
 import { APPLICATION_STATUS as customerStatuses } from "../customer/customer.const"
 import { APPLICATION_STATUS as candidateStatuses } from "../candidate/candidate.const"
-import { STATUS as catalogStatuses } from "../catalog/catalog.const"
+import { APPLICATION_STATUS as catalogStatuses } from "../catalog/catalog.const"
 import { CustomerApplicationBadge } from "../customer/components/customer-card"
 import { CandidateApplicationBadge } from "../candidate/components/candidate-card"
 import { CatalogInquiryBadge } from "../catalog/components/catalog-card"

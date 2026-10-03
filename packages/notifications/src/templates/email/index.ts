@@ -1,4 +1,5 @@
 export { EmailLayout } from "./email-layout"
+export { CandidateBackgroundCheckRequestEmail } from "./candidate-background-check-request-email"
 export { CatalogAccessAdminEmail } from "./catalog-access-admin-email"
 export { CatalogAccessRequestReceivedEmail } from "./catalog-access-request-received-email"
 export { CatalogAccessStatusUpdateEmail } from "./catalog-access-status-update-email"
