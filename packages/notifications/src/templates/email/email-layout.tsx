@@ -37,7 +37,7 @@ export function EmailLayout({
         <Head />
         <Body className="bg-canvas text-text m-0 px-3 py-10 font-sans">
           <Container className="border-outline border-t-brand mx-auto w-full max-w-[600px] overflow-hidden rounded-xl border border-t-4 bg-white">
-            <Section className="border-b border-border px-6 pt-7 pb-6 sm:px-8">
+            <Section className="bg-brand/10 border-b border-border px-6 pt-7 pb-6 sm:px-8">
               <Row>
                 <Column className="w-20 align-middle">
                   <Img
