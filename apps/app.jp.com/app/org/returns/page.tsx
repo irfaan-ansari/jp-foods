@@ -1,27 +1,11 @@
 "use client"
 
 import React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { DataTable, type DataTableFeatures } from "@jp/ui/components/data-table"
+import { DataTable } from "@jp/ui/components/data-table"
 import { PageContent, PageHeader } from "@/components/page-content"
 
-type ReturnRow = {
-  number: string
-  order: string
-  customer: string
-  createdAt: string
-  amount: string
-  status: string
-}
-
-const returnColumns: ColumnDef<DataTableFeatures, ReturnRow>[] = [
-  { accessorKey: "number", header: "Return" },
-  { accessorKey: "order", header: "Order" },
-  { accessorKey: "customer", header: "Customer" },
-  { accessorKey: "createdAt", header: "Created" },
-  { accessorKey: "amount", header: "Amount" },
-  { accessorKey: "status", header: "Status" },
-]
+import { returnColumns } from "@/features/org/return/components/return-columns"
+import { DUMMY_RETURNS } from "@/features/org/return/return.const"
 
 const ReturnsPage = () => {
   return (
@@ -30,9 +14,9 @@ const ReturnsPage = () => {
       <PageContent className="space-y-6">
         <DataTable
           columns={returnColumns}
-          data={[]}
+          data={DUMMY_RETURNS}
           empty={{
-            isEmpty: true,
+            isEmpty: DUMMY_RETURNS.length === 0,
             title: "No returns found.",
             description: "Returns will appear here when they are created.",
           }}

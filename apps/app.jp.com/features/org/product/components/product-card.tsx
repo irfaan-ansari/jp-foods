@@ -33,7 +33,7 @@ export const ProductCard = ({ data }: { data: Product }) => {
         {data.isTaxable && (
           <Badge
             variant="warning-light"
-            className="rounded-md backdrop-blur-lg"
+            className="rounded-md backdrop-blur-xl"
           >
             Taxable
           </Badge>
@@ -93,5 +93,5 @@ export const ProductCardSkeleton = () => {
 
 export const ProductBadge = ({ status }: { status: string }) => {
   const map = STATUS[status]! ?? {}
-  return <StatusBadge status={map} className="backdrop-blur-lg" />
+  return <StatusBadge status={map} className="backdrop-blur-xl" />
 }

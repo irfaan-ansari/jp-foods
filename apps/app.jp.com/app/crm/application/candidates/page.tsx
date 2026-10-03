@@ -5,10 +5,10 @@ import { FilterTab } from "@/components/filter-tabs"
 import { SearchQueryParam } from "@jp/ui/components/jp"
 
 import { PageContent, PageHeader } from "@/components/page-content"
-import { APPLICATION_FILTER_STATUS } from "@/features/crm/candidate/candidate.const"
+import { APPLICATION_STATUS } from "@/features/crm/candidate/candidate.const"
 import { CandidateApplicationClient } from "@/features/crm/candidate/components/candidate-client"
 
-const options = Object.values(APPLICATION_FILTER_STATUS)
+const options = Object.values(APPLICATION_STATUS)
 
 const CustomerApplications = () => {
   return (

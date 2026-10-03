@@ -87,7 +87,6 @@ export const OrganizationForm = ({
         }
         toast.success("Updated successfully.", { id: toastId })
         onSuccess?.()
-        form.reset()
       }
       /** create organization */
       else {

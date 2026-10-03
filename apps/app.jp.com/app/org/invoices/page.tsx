@@ -1,27 +1,11 @@
 "use client"
 
 import React from "react"
-import type { ColumnDef } from "@tanstack/react-table"
-import { DataTable, type DataTableFeatures } from "@jp/ui/components/data-table"
+import { DataTable } from "@jp/ui/components/data-table"
 import { PageContent, PageHeader } from "@/components/page-content"
 
-type InvoiceRow = {
-  number: string
-  customer: string
-  issuedAt: string
-  dueDate: string
-  total: string
-  status: string
-}
-
-const invoiceColumns: ColumnDef<DataTableFeatures, InvoiceRow>[] = [
-  { accessorKey: "number", header: "Invoice" },
-  { accessorKey: "customer", header: "Customer" },
-  { accessorKey: "issuedAt", header: "Issued" },
-  { accessorKey: "dueDate", header: "Due" },
-  { accessorKey: "total", header: "Total" },
-  { accessorKey: "status", header: "Status" },
-]
+import { invoiceColumns } from "@/features/org/invoice/components/invoice-columns"
+import { DUMMY_INVOICES } from "@/features/org/invoice/invoice.const"
 
 const InvoicePage = () => {
   return (
@@ -30,9 +14,9 @@ const InvoicePage = () => {
       <PageContent className="space-y-6">
         <DataTable
           columns={invoiceColumns}
-          data={[]}
+          data={DUMMY_INVOICES}
           empty={{
-            isEmpty: true,
+            isEmpty: DUMMY_INVOICES.length === 0,
             title: "No invoices found.",
             description: "Issued invoices will appear here.",
           }}

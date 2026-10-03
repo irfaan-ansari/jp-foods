@@ -9,7 +9,7 @@ import {
 } from "@jp/ui/components/card"
 import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
-import { PenNewSquare } from "@solar-icons/react"
+import { DocumentText, PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { CustomerApplicationNotesDialog } from "./customer-notes-dialog"
 import { CustomerApplicationStatusDialog } from "./customer-status-dialog"
@@ -133,6 +133,18 @@ const CustomerApplicationActions = ({
             </Button>
           ))}
         </div>
+      </CardContent>
+      <CardContent className="grid gap-2 border-t border-dashed pt-4">
+        <CardTitle>PDF</CardTitle>
+        <Button asChild variant="outline">
+          <a
+            href={`/api/v1/crm/customers/${data.id}/pdf`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <DocumentText /> View PDF
+          </a>
+        </Button>
       </CardContent>
       <CustomerApplicationStatusDialog
         id={data.id}

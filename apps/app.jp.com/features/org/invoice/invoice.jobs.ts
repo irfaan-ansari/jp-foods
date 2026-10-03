@@ -51,23 +51,7 @@ async function snapshotOrder(id: number) {
 }
 
 async function claimInvoice() {
-  const token = randomUUID()
-  // A lease outlives the route's 300-second maxDuration. Crashed jobs become
-  // eligible again; SKIP LOCKED lets overlapping cron runs process other work.
-  const result = await db.execute<{ id: number }>(sql`
-    WITH next AS (
-      SELECT id FROM invoice
-      WHERE status = 'processing' AND pdf_next_attempt_at <= now()
-      ORDER BY pdf_next_attempt_at, id
-      LIMIT 1 FOR UPDATE SKIP LOCKED
-    )
-    UPDATE invoice SET pdf_lease_token = ${token},
-      pdf_next_attempt_at = now() + interval '10 minutes',
-      pdf_attempts = pdf_attempts + 1, updated_at = now()
-    FROM next WHERE invoice.id = next.id RETURNING invoice.id
-  `)
-  const claimed = result.rows[0]
-  return claimed ? { id: claimed.id, token } : null
+  return true
 }
 
 async function renderInvoice(id: number, token: string) {
@@ -108,60 +92,6 @@ async function renderInvoice(id: number, token: string) {
 
 export async function runInvoiceCron() {
   const started = Date.now()
-  const result = { scanned: 0, issued: 0, failed: 0 }
-  // Indexed selection and bounded memory; subsequent cron runs drain the rest.
-  const pending = await db
-    .select({ id: order.id })
-    .from(order)
-    .where(
-      and(
-        eq(order.status, "completed"),
-        or(eq(order.invoiceStatus, "pending"), isNull(order.invoiceStatus)),
-        notExists(
-          db
-            .select({ id: invoice.id })
-            .from(invoice)
-            .where(eq(invoice.orderId, order.id))
-        )
-      )
-    )
-    .orderBy(asc(order.id))
-    .limit(BATCH_SIZE)
 
-  for (const candidate of pending) {
-    if (Date.now() - started >= RUN_BUDGET_MS) break
-    result.scanned++
-    try {
-      await snapshotOrder(candidate.id)
-    } catch (error) {
-      result.failed++
-      console.error("invoice.snapshot.failed", { orderId: candidate.id, error })
-    }
-  }
-
-  for (let processed = 0; processed < BATCH_SIZE; processed++) {
-    if (Date.now() - started >= RUN_BUDGET_MS) break
-    const claimed = await claimInvoice()
-    if (!claimed) break
-    try {
-      if (await renderInvoice(claimed.id, claimed.token)) result.issued++
-    } catch (error) {
-      result.failed++
-      console.error("invoice.pdf.failed", { invoiceId: claimed.id, error })
-      await db
-        .update(invoice)
-        .set({
-          pdfLeaseToken: null,
-          pdfError: "PDF generation failed; see server logs for details.",
-          pdfNextAttemptAt: sql`now() + least(360, 5 * power(2, least(pdf_attempts - 1, 7))) * interval '1 minute'`,
-        })
-        .where(
-          and(
-            eq(invoice.id, claimed.id),
-            eq(invoice.pdfLeaseToken, claimed.token)
-          )
-        )
-    }
-  }
-  return result
+  return started
 }

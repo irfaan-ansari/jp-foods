@@ -5,7 +5,7 @@ import { cache } from "react"
 import { auth } from "@jp/auth"
 import { headers } from "next/headers"
 import { actionClient } from "@/lib/safe-action"
-import { sendOtpSchema, verifyOtpSchema } from "./auth.schema"
+import { otpLoginSchema } from "./auth.schema"
 import { AppError } from "@jp/utils"
 
 export const getSession = cache(async () => {
@@ -17,7 +17,7 @@ export const getSession = cache(async () => {
  * @param phoneNumber
  */
 export const sendOtp = actionClient
-  .inputSchema(sendOtpSchema)
+  .inputSchema(otpLoginSchema.pick({ phoneNumber: true }))
   .action(async ({ clientInput }) => {
     const { phoneNumber } = clientInput
     const account = await db.query.user.findFirst({
@@ -37,7 +37,7 @@ export const sendOtp = actionClient
   })
 
 export const verifyOtp = actionClient
-  .inputSchema(verifyOtpSchema)
+  .inputSchema(otpLoginSchema.pick({ phoneNumber: true, code: true }))
   .action(async ({ clientInput }) => {
     const { phoneNumber, code } = clientInput
 

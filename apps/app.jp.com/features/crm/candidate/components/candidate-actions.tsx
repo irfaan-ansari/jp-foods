@@ -9,7 +9,7 @@ import {
 } from "@jp/ui/components/card"
 import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
-import { PenNewSquare } from "@solar-icons/react"
+import { Document2, DocumentText, PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { CandidateApplication } from "../candidate.type"
 import { CandidateApplicationNotesDialog } from "./candidate-notes-dialog"
@@ -108,8 +108,9 @@ export const CandidateApplicationActions = ({
           </CandidateApplicationNotesDialog>
         </div>
       </CardContent>
-      <CardContent className="border-t border-dashed">
-        <div className="mt-4 grid gap-2">
+
+      <CardContent className="border-t border-dashed pt-4">
+        <div className="grid gap-2">
           <Button
             disabled={data.status === "hired"}
             onClick={() => handleAction("hired")}
@@ -134,6 +135,23 @@ export const CandidateApplicationActions = ({
             Reject Candidate
           </Button>
         </div>
+      </CardContent>
+      <CardContent className="grid gap-2 border-t border-dashed pt-4">
+        <CardTitle>PDF</CardTitle>
+        <Button asChild variant="outline">
+          <a
+            href={`/api/v1/crm/candidates/${data.id}/pdf?includeSSN=true`}
+            target="_blank"
+          >
+            <DocumentText /> PDF with SSN
+          </a>
+        </Button>
+        <Button asChild variant="outline">
+          <a href={`/api/v1/crm/candidates/${data.id}/pdf`} target="_blank">
+            <DocumentText />
+            PDF Without SSN
+          </a>
+        </Button>
       </CardContent>
       <CandidateApplicationStatusDialog
         id={data.id}

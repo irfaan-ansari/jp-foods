@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
-import { formatDate } from "@jp/utils"
+import { formatDate, formatPhone } from "@jp/utils"
 import type { CatalogInquiry } from "../catalog.type"
 import { CatalogInquiryBadge } from "./catalog-card"
 import { CatalogDropdown } from "./catalog-dropdown"
@@ -36,9 +36,7 @@ function CatalogInquiryLink({ inquiry }: { inquiry: CatalogInquiry }) {
 export const catalogColumns = column.columns([
   column.accessor("companyName", {
     header: "Company",
-    cell: ({ row }) => (
-      <CatalogInquiryLink inquiry={row.original} />
-    ),
+    cell: ({ row }) => <CatalogInquiryLink inquiry={row.original} />,
   }),
   column.display({
     id: "contact",
@@ -57,7 +55,9 @@ export const catalogColumns = column.columns([
   column.accessor("phone", {
     header: "Phone",
     cell: ({ row }) => (
-      <span className="text-muted-foreground">{row.original.phone || "—"}</span>
+      <span className="text-muted-foreground">
+        {row.original.phone ? formatPhone(row.original.phone) : "—"}
+      </span>
     ),
   }),
   column.display({

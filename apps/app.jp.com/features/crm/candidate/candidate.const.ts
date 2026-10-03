@@ -9,34 +9,6 @@ export const APPLICATION_REJECTION_REASONS = [
   "Other",
 ] as const
 
-export const APPLICATION_FILTER_STATUS: Record<string, BadgeStatus> = {
-  all: {
-    label: "All",
-    value: "",
-    color: "#A1A1AA",
-  },
-  new: {
-    label: "New",
-    value: "new",
-    color: "#F59E0B",
-  },
-  verification_in_progress: {
-    label: "Verification In Progress",
-    value: "verification_in_progress",
-    color: "#F59E0B",
-  },
-  rejected: {
-    label: "Rejected",
-    value: "rejected",
-    color: "#EF4444",
-  },
-  hired: {
-    label: "Hired",
-    value: "hired",
-    color: "#22C55E",
-  },
-}
-
 export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   all: {
     label: "All",
@@ -46,12 +18,25 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   new: {
     label: "New",
     value: "new",
+    color: "#3B82F6",
+  },
+  // under_verification
+  verification_in_progress: {
+    label: "Under Verification",
+    value: "under_verification",
     color: "#F59E0B",
   },
+  // agreement_sent
   pending: {
     label: "Agreement Sent",
     value: "pending",
     color: "#8B5CF6",
+  },
+  // agreement_signed
+  agreement_signed: {
+    label: "Agreement Signed",
+    value: "agreement_signed",
+    color: "#14B8A6",
   },
   hired: {
     label: "Hired",
@@ -61,17 +46,6 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
   rejected: {
     label: "Rejected",
     value: "rejected",
-    color: "#EF4444",
-  },
-  // new status for verified first
-  verification_in_progress: {
-    label: "Verification In Progress",
-    value: "verification_in_progress",
-    color: "#F59E0B",
-  },
-  verification_failed: {
-    label: "Verification Failed",
-    value: "verification_failed",
     color: "#EF4444",
   },
 }

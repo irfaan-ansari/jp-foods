@@ -73,6 +73,7 @@ const GeneralPage = () => {
         ) : (
           <>
             <OrganizationForm
+              organizationId={data?.data?.id}
               defaultValues={{
                 logo: logo as string,
                 name,

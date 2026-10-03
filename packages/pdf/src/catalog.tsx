@@ -23,7 +23,7 @@ export const CatalogPDF = (data: CatalogProps) => {
   return (
     <Document>
       <Page
-        size="A4"
+        size="LETTER"
         style={[
           styles.page,
           {

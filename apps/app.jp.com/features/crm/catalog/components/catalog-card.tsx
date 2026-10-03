@@ -14,12 +14,12 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 
 import { StatusBadge } from "@/components/status-badge"
 import { formatDate } from "@jp/utils"
-import { STATUS } from "../catalog.const"
+import { APPLICATION_STATUS } from "../catalog.const"
 import { CatalogInquiry } from "../catalog.type"
 import { CatalogDropdown } from "./catalog-dropdown"
 
 export const CatalogInquiryCard = ({ data }: { data: CatalogInquiry }) => {
-  const map = STATUS[data.status]! ?? {}
+  const map = APPLICATION_STATUS[data.status]! ?? {}
   return (
     <Card
       size="sm"
@@ -100,7 +100,7 @@ export const CatalogInquiryBadge = ({
   status: string
   className?: string
 }) => {
-  const map = STATUS[status]! ?? STATUS["approved"]
+  const map = APPLICATION_STATUS[status]! ?? APPLICATION_STATUS["approved"]
 
   return <StatusBadge status={map} className={className} />
 }
