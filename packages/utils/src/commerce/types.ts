@@ -1,12 +1,30 @@
-export type SellingUnitPriceInput = {
+export type SplitUnit = {
   name: string
   displayLabel?: string
-  price: string | number
-  qtyPerUnit: string | number
-  minOrderQty: string | number
-  orderIncrement: string | number
+  sellUnitPrice: number | string // premium price of the whole sell unit
+  unitConversion: number | string // how many split units one sell unit breaks into
+}
+
+export type ProductInput = {
+  price: number | string | null
+  packSize: number | string | null
+  sellUOM: string | null
+  stockUOM: string | null
+  displayLabel: string | null
+  pricingBasis: string | null
+  splitUnits: SplitUnit[] | []
+}
+
+export type SellUnit = {
+  name: string
+  displayLabel: string
+  price: number // what one of this unit costs, e.g. 87.5 for a 35 lb case
+  displayPrice: number // the rate shown: per sell unit (fixed) or per stock UOM, e.g. 2.5 / lb
+  packSize: number
   isDefault: boolean
 }
+
+export type PricedSellingUnit = SellUnit
 
 export type PriceLevel = {
   status: string

@@ -1,5 +1,9 @@
 import { withForm } from "@/hooks/use-app-form"
-import { MEASURE_UNITS } from "@jp/utils/commerce"
+import {
+  getUnit,
+  MEASURE_UNITS,
+  withCalculatedPrices,
+} from "@jp/utils/commerce"
 import { ProductFormSchema } from "../product.schema"
 
 import {
@@ -8,243 +12,229 @@ import {
   CardHeader,
   CardTitle,
 } from "@jp/ui/components/card"
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-  FieldTitle,
-} from "@jp/ui/components/field"
-import { Switch } from "@jp/ui/components/switch"
-import { Badge } from "@jp/ui/components/badge"
-import { formatUSD } from "@jp/utils"
+import { FieldError, FieldGroup } from "@jp/ui/components/field"
 import { Button } from "@jp/ui/components/button"
+import { formatUSD } from "@jp/utils"
 import { Plus } from "lucide-react"
-import { TrashBinMinimalistic } from "@solar-icons/react"
-import { getUnit } from "@jp/utils/commerce"
 
 export const ProductPricing = withForm({
   defaultValues: {} as ProductFormSchema,
   render: function Render({ form }) {
-    const handleClick = () => {
-      form.pushFieldValue("sellingUnits", {
-        name: "LB",
-        displayLabel: "",
-        price: "",
-        qtyPerUnit: "1",
-        isDefault: false,
-      })
-    }
-
     return (
-      <Card size="sm" className="bg-linear-to-br from-primary/10 shadow-xs">
+      <Card size="sm" className="bg-linear-to-b from-primary/10 shadow-xs">
         <CardHeader>
           <CardTitle className="font-bold">Units and pricing</CardTitle>
         </CardHeader>
+
         <form.Subscribe selector={(state) => state.values}>
-          {({ uom, catchWeight }) => {
+          {(values) => {
+            const { stockUOM, sellUOM, pricingBasis } = values
+            const sell = getUnit(sellUOM)?.label || sellUOM || "Unit"
+            const isFixed = pricingBasis === "fixed"
+            const isCatchWeight = pricingBasis === "catch-weight"
+            const units = withCalculatedPrices(values)
+
+            const rate = (unit: (typeof units)[number]) =>
+              isFixed ? unit.price / unit.packSize : unit.displayPrice
+
             return (
               <CardContent className="space-y-6">
-                <FieldGroup className="grid items-end lg:grid-cols-3">
-                  <form.AppField
-                    name="uom"
-                    children={(field) => (
+                <FieldGroup className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+                  <form.AppField name="stockUOM">
+                    {(field) => (
                       <field.SelectField
-                        label="Unit of Measure"
+                        className="lg:col-span-2"
+                        label="Stock unit"
                         options={[...MEASURE_UNITS]}
                       />
                     )}
-                  />
-                  <form.AppField
-                    name="weightLb"
-                    children={(field) => (
-                      <field.TextField
-                        label="Weight"
-                        inputMode="decimal"
-                        suffix="LB"
+                  </form.AppField>
+
+                  <form.AppField name="sellUOM">
+                    {(field) => (
+                      <field.SelectField
+                        label="Sold as"
+                        options={[...MEASURE_UNITS]}
                       />
                     )}
-                  />
-                  <form.Field
-                    name="catchWeight"
-                    children={(field) => {
-                      const isInvalid =
-                        field.state.meta.isTouched && !field.state.meta.isValid
+                  </form.AppField>
 
-                      return (
-                        <Field
-                          orientation="horizontal"
-                          data-invalid={isInvalid}
-                        >
-                          <FieldLabel
-                            htmlFor={field.name}
-                            className="h-10 rounded-xl border bg-input/50 p-3 has-data-checked:bg-input/50"
-                          >
-                            <FieldContent>
-                              <FieldTitle>Catch weight</FieldTitle>
-                            </FieldContent>
-                            <Switch
-                              className="self-center"
-                              id={field.name}
-                              name={field.name}
-                              checked={field.state.value}
-                              onCheckedChange={field.handleChange}
-                              aria-invalid={isInvalid}
-                            />
-                          </FieldLabel>
-                        </Field>
-                      )
-                    }}
-                  />
+                  <form.AppField name="packSize">
+                    {(field) => (
+                      <field.TextField
+                        label={`${sell || "Unit"} contains`}
+                        placeholder="35"
+                        className="**:data-[slot=input-group-addon]:uppercase"
+                        inputMode="decimal"
+                        suffix={stockUOM}
+                      />
+                    )}
+                  </form.AppField>
+
+                  <form.AppField name="pricingBasis">
+                    {(field) => (
+                      <field.RadioField
+                        label="Pricing"
+
+                        className="**:data-[slot=field]:py-2.5! **:data-[slot=field-label]:bg-input **:data-[slot=field-label]:has-data-[state=checked]:ring-primary lg:col-span-2"
+                        options={[
+                          {
+                            value: "fixed",
+                            label: `Per ${getUnit(sellUOM)?.label?.toLowerCase()}`,
+                            description: "One flat price for each unit sold.",
+                          },
+                          {
+                            value: "per-unit",
+                            label: `Per ${getUnit(stockUOM)?.label?.toLowerCase()}`,
+                            description:
+                              "Rate per stock unit, multiplied by the pack size.",
+                          },
+                          {
+                            value: "catch-weight",
+                            label: "Catch weight",
+                            description:
+                              "Billed on actual weight. Prices shown are estimates (~).",
+                          },
+                        ]}
+                      />
+                    )}
+                  </form.AppField>
+
+                  <form.AppField name="price">
+                    {(field) => (
+                      <field.TextField
+                        label={`Price per ${getUnit(isFixed ? sellUOM : stockUOM)?.label.toLowerCase()}`}
+                        placeholder="2.50"
+                        className="**:data-[slot=input-group-addon]:uppercase lg:col-span-2"
+                        inputMode="decimal"
+                        prefix="$"
+                        suffix={`/ ${isFixed ? sellUOM : stockUOM}`}
+                      />
+                    )}
+                  </form.AppField>
                 </FieldGroup>
 
-                {/* split items */}
-                <form.Field name="sellingUnits" mode="array">
-                  {(field) => {
-                    return (
-                      <div className="space-y-4">
-                        <FieldError errors={field.state.meta.errors} />
-                        {field.state.value.map((subField, i) => {
-                          return (
-                            <Card
-                              key={i}
-                              size="sm"
-                              className={
-                                subField.isDefault
-                                  ? "ring-2 ring-primary/50"
-                                  : ""
-                              }
-                            >
-                              <CardContent className="relative">
-                                <div className="absolute -top-1 right-4 flex items-center gap-1.5">
-                                  {subField.isDefault ? (
-                                    <Badge variant="primary-light">
-                                      Default
-                                    </Badge>
-                                  ) : (
-                                    <Button
-                                      type="button"
-                                      size="xs"
-                                      variant="outline"
-                                      onClick={() => {
-                                        field.setValue((previous) =>
-                                          previous.map((unit, index) => ({
-                                            ...unit,
-                                            isDefault: index === i,
-                                          }))
-                                        )
-                                      }}
-                                    >
-                                      Make Default
-                                    </Button>
-                                  )}
-                                  {!subField.isDefault &&
-                                    field.state.value.length > 1 && (
-                                      <Button
-                                        type="button"
-                                        aria-label="Remove split option"
-                                        size="icon-xs"
-                                        variant="destructive"
-                                        onClick={() => field.removeValue(i)}
-                                      >
-                                        <TrashBinMinimalistic />
-                                      </Button>
-                                    )}
-                                </div>
+                {/* split options */}
+                <form.Field name="splitUnits" mode="array">
+                  {(field) => (
+                    <div className="space-y-4">
+                      <FieldError errors={field.state.meta.errors} />
 
-                                <FieldGroup className="grid lg:grid-cols-3">
-                                  <form.AppField
-                                    name={`sellingUnits[${i}].name`}
-                                    children={(field) => (
-                                      <field.SelectField
-                                        className="lg:col-span-3"
-                                        label="Sell as"
-                                        options={[...MEASURE_UNITS]}
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellingUnits[${i}].price`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label="Price"
-                                        placeholder="2.00"
-                                        className="**:data-[slot=input-group-addon]:uppercase"
-                                        inputMode="decimal"
-                                        prefix={"$"}
-                                        suffix={
-                                          catchWeight ? uom : subField.name
-                                        }
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellingUnits[${i}].qtyPerUnit`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label="Contains"
-                                        placeholder="60"
-                                        className="**:data-[slot=input-group-addon]:uppercase"
-                                        inputMode="decimal"
-                                        suffix={uom}
-                                      />
-                                    )}
-                                  />
-
-                                  <form.AppField
-                                    name={`sellingUnits[${i}].displayLabel`}
-                                    children={(field) => (
-                                      <field.TextField
-                                        label="Label (optional)"
-                                        placeholder="Case"
-                                      />
-                                    )}
-                                  />
-                                </FieldGroup>
-
-                                {/* preview */}
-                                <div className="mt-6 rounded-xl border border-primary/20 bg-primary/5 p-2.5">
-                                  <div className="flex items-center gap-2">
-                                    <div className="flex-1 space-x-1">
-                                      <span className="font-semibold">
-                                        {subField.displayLabel ||
-                                          getUnit(subField.name)?.label}
-                                      </span>
-                                      <span className="text-muted-foreground">
-                                        • {subField.qtyPerUnit} {uom}{" "}
-                                        {catchWeight && "avg"}
-                                      </span>
-                                    </div>
-                                    <span className="text-base font-bold text-primary">
-                                      {formatUSD(subField.price)}
-                                      {catchWeight && (
-                                        <span className="text-xs font-normal text-muted-foreground">
-                                          {" / "}
-                                          {uom}
-                                        </span>
-                                      )}
-                                    </span>
-                                  </div>
-                                </div>
-                              </CardContent>
-                            </Card>
-                          )
-                        })}
-                        <Button
-                          type="button"
-                          variant="outline"
-                          className="w-full border-dashed"
-                          onClick={handleClick}
+                      {field.state.value.map((_, i) => (
+                        <div
+                          key={i}
+                          className="space-y-4 rounded-xl border p-4"
                         >
-                          <Plus /> Add option
-                        </Button>
-                      </div>
-                    )
-                  }}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm font-medium">
+                              Split option {i + 1}
+                            </span>
+                            <Button
+                              type="button"
+                              size="xs"
+                              variant="ghost"
+                              onClick={() => field.removeValue(i)}
+                            >
+                              Remove
+                            </Button>
+                          </div>
+
+                          <FieldGroup className="grid gap-4 lg:grid-cols-2">
+                            <form.AppField name={`splitUnits[${i}].name`}>
+                              {(sub) => (
+                                <sub.SelectField
+                                  label="Sell as"
+                                  options={[...MEASURE_UNITS]}
+                                />
+                              )}
+                            </form.AppField>
+
+                            <form.AppField
+                              name={`splitUnits[${i}].unitConversion`}
+                            >
+                              {(sub) => (
+                                <sub.TextField
+                                  label="Breaks into"
+                                  placeholder="7"
+                                  inputMode="number"
+                                  suffix={`per ${sell.toLowerCase()}`}
+                                />
+                              )}
+                            </form.AppField>
+
+                            <form.AppField
+                              name={`splitUnits[${i}].sellUnitPrice`}
+                            >
+                              {(sub) => (
+                                <sub.TextField
+                                  label={`${sell} price when split`}
+                                  placeholder="60"
+                                  className="**:data-[slot=input-group-addon]:uppercase"
+                                  inputMode="decimal"
+                                  prefix="$"
+                                  suffix={`/ ${sellUOM}`}
+                                />
+                              )}
+                            </form.AppField>
+
+                            <form.AppField
+                              name={`splitUnits[${i}].displayLabel`}
+                            >
+                              {(sub) => (
+                                <sub.TextField
+                                  label="Label"
+                                  placeholder={units[i + 1]?.displayLabel}
+                                />
+                              )}
+                            </form.AppField>
+                          </FieldGroup>
+                        </div>
+                      ))}
+
+                      <Button
+                        type="button"
+                        variant="outline"
+                        className="w-full border-dashed"
+                        onClick={() =>
+                          field.pushValue({
+                            name: stockUOM,
+                            displayLabel: "",
+                            sellUnitPrice: "",
+                            unitConversion: "",
+                          })
+                        }
+                      >
+                        <Plus />
+                        {field.state.value.length === 0
+                          ? "Split option"
+                          : "Add split option"}
+                      </Button>
+                    </div>
+                  )}
                 </form.Field>
+
+                {/* preview */}
+                <div className="rounded-2xl border-2 border-primary/40 bg-background p-3">
+                  <p className="mb-1 text-sm font-medium text-muted-foreground">
+                    Customers see
+                  </p>
+                  <ul className="divide-y">
+                    {units.map((unit, i) => (
+                      <li key={i} className="flex justify-between gap-3 py-2">
+                        <span>{unit.displayLabel}</span>
+                        <span className="text-right tabular-nums">
+                          <b className="text-primary">
+                            {formatUSD(rate(unit))} / {stockUOM}
+                          </b>
+                          <span className="block text-xs text-muted-foreground">
+                            {isCatchWeight && "~"}
+                            {formatUSD(unit.price)}
+                          </span>
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </CardContent>
             )
           }}

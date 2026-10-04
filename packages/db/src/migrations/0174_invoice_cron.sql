@@ -1,18 +1,18 @@
-DROP INDEX "invoice_orderId_idx";--> statement-breakpoint
-ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DATA TYPE numeric(12, 2);--> statement-breakpoint
-ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DEFAULT '0';--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ALTER COLUMN "unit_quantity" SET DATA TYPE numeric(12, 2);--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ALTER COLUMN "quantity" SET DATA TYPE numeric(12, 4);--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ALTER COLUMN "tax_rate" SET DATA TYPE numeric(8, 4);--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ALTER COLUMN "tax_rate" SET DEFAULT '0';--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "bill_from" jsonb;--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "pdf_pathname" text;--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "pdf_lease_token" text;--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "pdf_next_attempt_at" timestamp DEFAULT now() NOT NULL;--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "pdf_attempts" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
-ALTER TABLE "invoice" ADD COLUMN "pdf_error" text;--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ADD COLUMN "catch_weight" boolean DEFAULT false NOT NULL;--> statement-breakpoint
-ALTER TABLE "invoice_line_item" ADD COLUMN "uom" text;--> statement-breakpoint
-CREATE INDEX "order_invoice_queue_idx" ON "order" USING btree ("status","invoice_status","id");--> statement-breakpoint
-CREATE UNIQUE INDEX "invoice_orderId_uq" ON "invoice" USING btree ("order_id");--> statement-breakpoint
-CREATE INDEX "invoice_pdf_queue_idx" ON "invoice" USING btree ("status","pdf_next_attempt_at","id");
+-- DROP INDEX "invoice_orderId_idx";--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DATA TYPE numeric(12, 2);--> statement-breakpoint
+-- ALTER TABLE "line_item" ALTER COLUMN "unit_quantity" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ALTER COLUMN "unit_quantity" SET DATA TYPE numeric(12, 2);--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ALTER COLUMN "quantity" SET DATA TYPE numeric(12, 4);--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ALTER COLUMN "tax_rate" SET DATA TYPE numeric(8, 4);--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ALTER COLUMN "tax_rate" SET DEFAULT '0';--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "bill_from" jsonb;--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "pdf_pathname" text;--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "pdf_lease_token" text;--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "pdf_next_attempt_at" timestamp DEFAULT now() NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "pdf_attempts" integer DEFAULT 0 NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "invoice" ADD COLUMN "pdf_error" text;--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ADD COLUMN "catch_weight" boolean DEFAULT false NOT NULL;--> statement-breakpoint
+-- ALTER TABLE "invoice_line_item" ADD COLUMN "uom" text;--> statement-breakpoint
+-- CREATE INDEX "order_invoice_queue_idx" ON "order" USING btree ("status","invoice_status","id");--> statement-breakpoint
+-- CREATE UNIQUE INDEX "invoice_orderId_uq" ON "invoice" USING btree ("order_id");--> statement-breakpoint
+-- CREATE INDEX "invoice_pdf_queue_idx" ON "invoice" USING btree ("status","pdf_next_attempt_at","id");

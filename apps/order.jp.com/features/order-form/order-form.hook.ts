@@ -2,7 +2,7 @@
 
 import React from "react"
 import { Product } from "../product/product.type"
-import { withCalculatedPrices } from "@jp/utils/commerce"
+import { normalizeSellingUnitPrices } from "@jp/utils/commerce"
 import { toOrderItemInput } from "./order-form.utils"
 import { initOrderForm, useOrderFormStore } from "./order-form.store"
 import { useActiveTeam } from "../team/team.data"
@@ -30,7 +30,8 @@ export function useOrderItemQuantity(data: Product) {
   const item = useOrderFormStore((state) => state.getItem(itemId))
 
   const sellingUnits = React.useMemo(
-    () => withCalculatedPrices(data.sellingUnits ?? [], !!data.catchWeight),
+    () =>
+      normalizeSellingUnitPrices(data.sellingUnits ?? [], !!data.catchWeight),
     [data.sellingUnits, data.catchWeight]
   )
 

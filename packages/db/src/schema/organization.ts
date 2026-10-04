@@ -26,9 +26,6 @@ export const product = pgTable(
       onDelete: "cascade",
     }),
     itemCode: text("item_code").notNull(),
-    uom: text("uom"),
-    weightLb: numeric("pack_size", { precision: 12, scale: 4 }),
-    catchWeight: boolean("average_weight"),
 
     type: text("type").default(""),
     description: text("description").default(""),
@@ -41,6 +38,27 @@ export const product = pgTable(
     trackInventory: boolean("track_inventory").default(false),
     stock: numeric("stock", { precision: 12, scale: 4 }).default("0"),
     allowBackorder: boolean("allow_backorder").default(true),
+
+    stockUOM: text("stock_uom").default("lb"),
+    packSize: numeric("pack_size", { precision: 12, scale: 4 }).default("1"),
+    sellUOM: text("sell_uom").default("lb"),
+    catchWeight: boolean("catch_weight"),
+    displayLabel: text("display_label").default(""),
+    pricingBasis: text("pricing_basis").default("fixed"),
+    // "fixed" = per sell unit eg: $60 case price
+    //  "per-unit" = per stock unit eg: 2.5 lb
+    //  "catch-weight" = per stock unit eg: 2.5 lb final will be calculated while completing the order
+    price: numeric("price", { precision: 12, scale: 2 }).default("0"),
+    splitUnits: jsonb("split_units")
+      .$type<
+        {
+          name: string
+          displayLabel: string
+          sellUnitPrice: number
+          unitConversion: number
+        }[]
+      >()
+      .default(sql`'[]'::jsonb`),
     sellingUnits: jsonb("selling_units")
       .$type<
         {

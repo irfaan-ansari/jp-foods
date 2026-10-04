@@ -7,7 +7,6 @@ import {
   eq,
   ilike,
   inArray,
-  ne,
   notInArray,
   or,
   sql,
@@ -80,13 +79,12 @@ export const products = app
     })
 
     const resolvedPrices = resolvedProducts.map(({ lineItems, ...product }) => {
-      const sellingUnits = withCalculatedPrices(
-        product.sellingUnits as [],
-        product.catchWeight as boolean
-      )
       return {
         ...product,
-        sellingUnits,
+        sellUnits: withCalculatedPrices({
+          ...product,
+          splitUnits: product.splitUnits ?? [],
+        }),
         lastOrder: lineItems[0],
       }
     })

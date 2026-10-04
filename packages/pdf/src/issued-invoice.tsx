@@ -1,10 +1,7 @@
 import React from "react"
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
-import type { invoice, invoiceLineItem } from "@jp/db"
 
-export type IssuedInvoiceData = typeof invoice.$inferSelect & {
-  lineItems: (typeof invoiceLineItem.$inferSelect)[]
-}
+export type IssuedInvoiceData = any
 
 const money = (value: string | number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(

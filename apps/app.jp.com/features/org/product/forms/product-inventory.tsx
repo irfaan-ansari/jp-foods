@@ -61,9 +61,9 @@ export const ProductInventory = withForm({
             <form.Subscribe
               selector={(state) => ({
                 trackInventory: state.values.trackInventory,
-                unit: state.values.uom,
+                stockUOM: state.values.stockUOM,
               })}
-              children={({ trackInventory, unit }) => {
+              children={({ trackInventory, stockUOM }) => {
                 return (
                   <FieldGroup className={!trackInventory ? "hidden" : ""}>
                     <form.AppField
@@ -72,7 +72,7 @@ export const ProductInventory = withForm({
                         <field.TextField
                           label="Current Stock"
                           inputMode="number"
-                          suffix={getUnit(unit)?.value}
+                          suffix={stockUOM}
                         />
                       )}
                     />

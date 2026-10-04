@@ -1,7 +1,6 @@
 import { auth } from "./server"
 import {
   inferOrgAdditionalFields,
-  inferAdditionalFields,
   adminClient as adminClientPlugin,
   emailOTPClient,
   phoneNumberClient as phoneNumberClientPlugin,

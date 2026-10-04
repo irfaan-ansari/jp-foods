@@ -128,19 +128,19 @@ export const team = pgTable(
     updatedAt: timestamp("updated_at").$onUpdate(
       () => /* @__PURE__ */ new Date()
     ),
-    phoneNumber: text("phone_number").notNull(),
-    email: text("email").notNull(),
     logo: text("logo"),
+    email: text("email").notNull(),
+    taxRuleId: integer("tax_rule_id"),
+    priceLevelId: integer("price_level_id"),
+    creditUsed: text("credit_used").default(""),
+    phoneNumber: text("phone_number").notNull(),
     managerName: text("manager_name").notNull(),
+    creditLimit: text("credit_limit").default(""),
     salesRepId: text("sales_rep_id").references(() => user.id, {
       onDelete: "set null",
     }),
     metadata: jsonb("metadata").$type<{}>().default({}).notNull(),
-    priceLevelId: integer("price_level_id"),
-    taxRuleId: integer("tax_rule_id"),
     creditEnabled: boolean("credit_enabled").default(true),
-    creditLimit: text("credit_limit").default(""),
-    creditUsed: text("credit_used").default(""),
     status:
       text("status").default("active") /** active | suspended | inactive */,
   },

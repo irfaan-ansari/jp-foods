@@ -127,8 +127,8 @@ const generatePDF = async ({
 
   const products = allProducts.map((product) => ({
     ...product,
-    price: (product.sellingUnits ?? []).find((unit) => unit.isDefault)?.price,
-    uom: product.catchWeight ? product.uom : null,
+    price: product.price,
+    uom: product.catchWeight ? product.stockUOM : null,
   }))
 
   const groupedProducts = groupProducts(products)

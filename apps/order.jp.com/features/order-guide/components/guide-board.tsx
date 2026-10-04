@@ -1,5 +1,5 @@
 import React from "react"
-import { withCalculatedPrices } from "@jp/utils/commerce"
+import { normalizeSellingUnitPrices } from "@jp/utils/commerce"
 import { Plus } from "lucide-react"
 import { Guide } from "../guide.type"
 import { Tooltip } from "@jp/ui/components/jp"
@@ -60,7 +60,7 @@ const GuideBoardHeader = ({ data }: { data: Guide }) => {
   const handleAddToCart = () => {
     for (const item of data.items) {
       if (
-        withCalculatedPrices(item.sellingUnits ?? [], !!item.catchWeight)
+        normalizeSellingUnitPrices(item.sellingUnits ?? [], !!item.catchWeight)
           .length === 0
       )
         continue

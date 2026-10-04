@@ -76,15 +76,30 @@ export const ProductPreview = withForm({
         {({
           title,
           image,
-          uom,
-          catchWeight,
           categories,
-          sellingUnits,
           status,
           isTaxable,
+          stockUOM,
+          sellUOM,
+          pricingBasis,
+          price,
+          packSize,
+          displayLabel,
+          splitUnits,
         }) => {
-          // @ts-expect-error
-          const sellUnits = withCalculatedPrices(sellingUnits, catchWeight)
+          const isPerUnit = pricingBasis !== "fixed"
+
+          const sellUnits = withCalculatedPrices({
+            stockUOM,
+            sellUOM,
+            pricingBasis,
+            price,
+            packSize,
+            displayLabel,
+            splitUnits,
+          })
+
+          console.log(sellUnits)
           const defaultUnit =
             sellUnits.find((unit) => unit.isDefault) ?? sellUnits[0]
           return (
@@ -175,7 +190,7 @@ export const ProductPreview = withForm({
                             value={unit.name}
                             className="rounded-lg"
                           >
-                            {unit.displayLabel}
+                            {unit.name}
                           </TabsTrigger>
                         ))}
                       </TabsList>
@@ -183,7 +198,7 @@ export const ProductPreview = withForm({
 
                     {sellUnits.map((unit) => {
                       const quantity = quantities[unit.name] ?? 0
-                      const total = roundMoney(unit.calculatedPrice * quantity)
+                      const total = roundMoney(unit.price * quantity)
 
                       return (
                         <TabsContent
@@ -193,17 +208,16 @@ export const ProductPreview = withForm({
                         >
                           <div className="space-x-1">
                             <span className="text-lg font-bold text-primary">
-                              {formatUSD(unit.price)}
-                              {catchWeight && (
+                              {formatUSD(unit.displayPrice)}
+                              {isPerUnit && (
                                 <span className="text-xs font-normal text-muted-foreground">
                                   {" / "}
-                                  {uom}
+                                  {stockUOM}
                                 </span>
                               )}
                             </span>
                             <span className="text-sm font-medium text-muted-foreground">
-                              • {unit.qtyPerUnit} {uom}
-                              {catchWeight && " avg"}
+                              • {unit.displayLabel}
                             </span>
                           </div>
                           <div className="mt-4">
@@ -253,12 +267,12 @@ export const ProductPreview = withForm({
                               <div className="flex justify-between gap-1">
                                 <span>Items</span>
                                 <span>
-                                  {quantity} x {unit.qtyPerUnit} {uom}
+                                  {quantity} x {unit.displayLabel}
                                 </span>
                               </div>
                               <div className="flex justify-between font-semibold">
                                 <span>
-                                  {catchWeight ? "Est. total" : "Total"}
+                                  {isPerUnit ? "Est. total" : "Total"}
                                 </span>
                                 <span className="text-base text-primary">
                                   {formatUSD(total)}

@@ -1,6 +1,6 @@
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
-import { withCalculatedPrices } from "@jp/utils/commerce"
+import { normalizeSellingUnitPrices } from "@jp/utils/commerce"
 import type { PricedSellingUnit } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
@@ -29,7 +29,7 @@ export const toOrderItemInput = (
   product: OrderItemProduct,
   selectedUnit?: PricedSellingUnit
 ) => {
-  const sellingUnits = withCalculatedPrices(
+  const sellingUnits = normalizeSellingUnitPrices(
     product.sellingUnits ?? [],
     !!product.catchWeight
   )
