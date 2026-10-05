@@ -17,7 +17,7 @@
     "@jp/notifications": "workspace:*",
     "@jp/ui": "workspace:*",
     "@jp/utils": "workspace:*",
-    "@solar-icons/react": "^1.1.1",
+    "@solar-icons/react": "1.1.1",
     "@tanstack/react-form": "^1.28.0",
     "@vercel/blob": "^2.5.0",
     "@vercel/functions": "^3.9.11",
