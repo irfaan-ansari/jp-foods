@@ -1,8 +1,11 @@
 import { db } from "@jp/db"
 
 import type { Product } from "../product/product.type"
-import { withCalculatedPrices } from "@jp/utils/commerce"
-import { createProductPriceResolver } from "@jp/utils/commerce"
+import {
+  createProductPriceResolver,
+  withCalculatedPrices,
+  type ProductInput,
+} from "@jp/utils/commerce"
 
 export const getTeamPriceResolver = async (teamId: string) => {
   const team = await db.query.team.findFirst({
@@ -34,10 +37,11 @@ export const resolveTeamPrice = async ({
 }) => {
   const resolve = await getTeamPriceResolver(teamId)
   const resolvedProduct = resolve(product)
-  return withCalculatedPrices(
-    resolvedProduct.sellingUnits ?? [],
-    !!resolvedProduct.catchWeight
-  ).find(
+  return withCalculatedPrices({
+    ...resolvedProduct,
+    pricingBasis: resolvedProduct.pricingBasis as ProductInput["pricingBasis"],
+    splitUnits: resolvedProduct.splitUnits ?? [],
+  }).find(
     (unit) => unit.name === unitName
   )?.price
 }

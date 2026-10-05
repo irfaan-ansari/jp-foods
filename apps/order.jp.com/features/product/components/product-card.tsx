@@ -187,7 +187,7 @@ const ProductLastOrder = ({
   if (!data.lastOrder?.id) return null
   return (
     <Badge className={cn("h-5 text-[10px] uppercase", className)}>
-      {data.lastOrder.quantity} {data.lastOrder.unitName || "CS"} •{" "}
+      {data.lastOrder.quantity} {data.lastOrder.unit || "CS"} •{" "}
       {format(data.lastOrder.createdAt ?? new Date(), "dd/MM")}
     </Badge>
   )

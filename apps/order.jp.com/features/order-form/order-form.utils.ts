@@ -1,9 +1,9 @@
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
-import { withCalculatedPrices } from "@jp/utils/commerce"
 import type { PricedSellingUnit } from "../product/product.type"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
+import { SellUnit } from "@jp/utils/commerce"
 
 export const LAYOUT_OPTIONS = [
   { label: "List", value: "list", icon: ServerMinimalistic },
@@ -17,47 +17,54 @@ export const ORDER_NAV = [
   { label: "Order Guide", href: "/create/guides", icon: ClipboardList },
 ]
 
-export const toOrderItemInputs = (product: Partial<Product>[]) => {
+export const toOrderItemInputs = (product: Product[]) => {
   return product.map((p) => toOrderItemInput(p))
 }
 
 type OrderItemProduct = Partial<Omit<Product, "sellingUnits">> & {
-  sellingUnits?: Product["sellingUnits"] | null
+  sellUnits: SellUnit[]
 }
 
 export const toOrderItemInput = (
   product: OrderItemProduct,
   selectedUnit?: PricedSellingUnit
 ) => {
-  const sellingUnits = withCalculatedPrices(
-    product.sellingUnits ?? [],
-    !!product.catchWeight
-  )
 
-  const sellUnit = selectedUnit ?? sellingUnits[0]
+  const sellUnit = selectedUnit ?? product.sellUnits[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
 
-  const { id, title, isTaxable, itemCode, image, categories } = product
+  const {
+    id,
+    title,
+    isTaxable,
+    itemCode,
+    image,
+    categories,
+    type,
+    location,
+  } = product
 
   return {
     id: `${id}:${sellUnit.name}`,
     productId: id!,
     title: title!,
     itemCode: itemCode!,
+    type: type ?? "",
+    location: location ?? "",
     isTaxable: !!isTaxable,
     image: image ?? "",
     categories: categories ?? [],
 
     price: Number(sellUnit.price),
-    quantity: Number(sellUnit.minOrderQty),
-    uom: product.uom ?? "",
-    unitName: sellUnit.name,
-    unitLabel: sellUnit.displayLabel || sellUnit.name,
-    minOrderQty: Number(sellUnit.minOrderQty),
-    qtyPerUnit: Number(sellUnit.qtyPerUnit),
-    orderIncrement: Number(sellUnit.orderIncrement),
+    displayPrice: Number(sellUnit.displayPrice),
+    pricingBasis: product.pricingBasis ?? "fixed",
+    quantity: 1,
+    stockUOM: product.stockUOM ?? "",
+    unit: sellUnit.name,
+    displayLabel: sellUnit.displayLabel || sellUnit.name,
+    packSize: Number(sellUnit.packSize),
+    unitQuantity: Number(sellUnit.packSize),
     catchWeight: !!product.catchWeight,
-    calculatedPrice: Number(sellUnit.calculatedPrice),
   }
 }
 
@@ -148,22 +155,21 @@ export const toInsertLineItems = ({
     image: item.image,
     itemCode: item.itemCode,
     categories: item.categories,
+    type: item.type,
+    location: item.location,
     isTaxable: item.isTaxable,
 
+    quantity: item.quantity,
     price: item.price.toFixed(2),
-    quantity: String(item.quantity),
-
-    uom: item.uom ?? "",
-    unitName: item.unitName,
-    unitLabel: item.unitLabel,
-    minOrderQty: item.minOrderQty,
-    orderIncrement: item.orderIncrement,
-    qtyPerUnit: item.qtyPerUnit,
+    stockUOM: item.stockUOM ?? "",
+    unit: item.unit,
+    displayLabel: item.displayLabel,
+    packSize: String(item.packSize),
     catchWeight: item.catchWeight,
-    calculatedPrice: item.calculatedPrice.toFixed(2),
+    displayPrice: item.displayPrice.toFixed(2),
+    pricingBasis: item.pricingBasis,
 
     unitQuantity: String(item.unitQuantity),
-
     subtotal: item.subtotal.toFixed(2),
     taxAmount: item.taxAmount.toFixed(2),
     total: item.total.toFixed(2),

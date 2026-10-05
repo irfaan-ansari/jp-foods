@@ -24,7 +24,7 @@ const toOrderEmailItems = (items: OrderItem[]) =>
     title: item.title,
     itemCode: item.itemCode,
     quantity: item.quantity,
-    unitLabel: item.unitLabel,
+    unitLabel: item.displayLabel,
     subtotal: item.subtotal.toFixed(2),
   }))
 
@@ -38,7 +38,7 @@ export const createOrder = orgActionClient({ order: ["create"] })
   .action(async ({ parsedInput, ctx }) => {
     const { data } = parsedInput
     const { organizationId, teamId, session, user } = ctx
-    console.log(data)
+   
     const [orderItems, team, org] = await Promise.all([
       resolveOrderItems(data.items, organizationId, teamId),
       db.query.team.findFirst({

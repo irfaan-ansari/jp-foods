@@ -8,7 +8,7 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@jp/ui/components/field"
-import { formatUSD, pluralize } from "@jp/utils"
+import { pluralize } from "@jp/utils"
 import {
   ChevronDown,
   ImageOff,
@@ -94,9 +94,9 @@ const OrderGuideForm = ({
   })
   return (
     <React.Fragment>
-      <div className="-mx-px no-scrollbar flex-1 overflow-auto px-px">
+      <div className="flex-1 px-px -mx-px overflow-auto no-scrollbar">
         <FieldGroup>
-          <div className="flex items-center gap-2 rounded-xl bg-neutral-50 p-2">
+          <div className="flex items-center gap-2 p-2 rounded-xl bg-neutral-50">
             <Avatar size="lg" className="rounded-xl **:rounded-xl">
               <AvatarFallback>
                 <Tag className="size-5 text-sky-500" />
@@ -108,7 +108,7 @@ const OrderGuideForm = ({
                 name: state.values.name,
               })}
               children={({ products, name }) => (
-                <div className="grid min-w-0 flex-1 text-sm">
+                <div className="grid flex-1 min-w-0 text-sm">
                   <span>{name || "Order guide"}</span>
                   <span className="text-xs text-muted-foreground">
                     {products.length} {pluralize(products.length, `item`)} in
@@ -155,7 +155,7 @@ const OrderGuideForm = ({
 
                       type="button"
                       id={field.name}
-                      className="w-full justify-start text-muted-foreground"
+                      className="justify-start w-full text-muted-foreground"
                     >
                       <Plus />
                       {field.state.value?.name ? (
@@ -205,7 +205,7 @@ const OrderGuideForm = ({
 
                         type="button"
                         id={field.name}
-                        className="w-full justify-start text-muted-foreground"
+                        className="justify-start w-full text-muted-foreground"
                       >
                         <Plus />
                         <span className="flex-1 text-left">Select...</span>
@@ -253,7 +253,7 @@ const OrderGuideForm = ({
                         </Avatar>
 
                         <div className="flex-1 space-y-0.5">
-                          <p className="text-sm leading-tight font-medium">
+                          <p className="text-sm font-medium leading-tight">
                             {subField.title}
                           </p>
                           <span className="text-xs text-muted-foreground">

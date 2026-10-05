@@ -3,14 +3,44 @@
 import { eq } from "drizzle-orm"
 import { db, product } from "@jp/db"
 import { AppError } from "@jp/utils"
-
 import { orgActionClient } from "@/lib/safe-action"
 
 import {
   createProductSchema,
   deleteProductSchema,
+  ProductFormSchema,
   updateProductSchema,
 } from "./product.schema"
+
+const toProductData = (data: ProductFormSchema) => {
+  const {
+    pricingBasis,
+    packSize,
+    splitUnits,
+    ...values
+  } = data
+
+  const pricedSplitUnits =
+    splitUnits.map((unit) => {
+      return {
+        name: unit.name,
+        displayLabel: unit.displayLabel || '',
+        sellUnitPrice: Number(unit.sellUnitPrice),
+        unitConversion: Number(unit.unitConversion),
+      }
+    }) ?? []
+
+  return {
+    ...values,
+    price: String(data.price),
+    pricingBasis,
+    sellUOM: data.sellUOM,
+    packSize: String(packSize),
+    displayLabel: data.displayLabel,
+    catchWeight: pricingBasis === "catch-weight",
+    splitUnits: pricedSplitUnits,
+  }
+}
 
 /**
  * create product
@@ -20,19 +50,10 @@ export const createProduct = orgActionClient({ product: ["create"] })
   .action(async ({ parsedInput, ctx }) => {
     const { data } = parsedInput
 
-    const hasDefault = data.sellingUnits.some((unit) => unit.isDefault)
-
-    const productData = {
+    const productData = toProductData({
       ...data,
-      sellingUnits: data.sellingUnits.map((unit, index) => ({
-        ...unit,
-        price: Number(unit.price),
-        qtyPerUnit: Number(unit.qtyPerUnit),
-        minOrderQty: Number(unit.minOrderQty ?? 1),
-        orderIncrement: Number(unit.orderIncrement ?? 1),
-        isDefault: unit.isDefault || (!hasDefault && index === 0),
-      })),
-    }
+      splitUnits: data.splitUnits ?? [],
+    })
 
     const orgs = await db.query.organization.findMany({
       columns: {
@@ -54,49 +75,38 @@ export const createProduct = orgActionClient({ product: ["create"] })
         organizationId: true,
       },
     })
+    const existingOrgIds = new Set(existing.map((p) => p.organizationId))
 
-    if (existing.some((item) => item.organizationId === ctx.organizationId)) {
+    if (existingOrgIds.has(ctx.organizationId)) {
       throw new AppError("INVALID_REQUEST", {
         message: "Item code already exists.",
       })
     }
 
-    const existingOrgIds = new Set(existing.map((p) => p.organizationId))
-
     const orgsToInsert = orgs.filter((org) => !existingOrgIds.has(org.id))
+
+    if (!orgsToInsert.some((org) => org.id === ctx.organizationId)) {
+      throw new AppError("INVALID_REQUEST")
+    }
 
     const searchText = Object.values(productData)
       .filter((value) => value != null)
       .map(String)
       .join(" ")
 
-    const createdProducts = orgsToInsert.length
-      ? await db
-          .insert(product)
-          .values(
-            orgsToInsert.map((org) => ({
-              ...productData,
-              status: org.id === ctx.organizationId ? data.status : "draft",
-              searchText,
-              organizationId: org.id,
-            }))
-          )
-          .returning({
-            id: product.id,
-            organizationId: product.organizationId,
-          })
-      : []
+    const created = await db
+      .insert(product)
+      .values(
+        orgsToInsert.map((org) => ({
+          ...productData,
+          searchText,
+          organizationId: org.id,
+          status: org.id === ctx.organizationId ? data.status : "draft",
+        }))
+      )
+      .returning({ id: product.id, organizationId: product.organizationId })
 
-    const currentOrg =
-      createdProducts.find(
-        (product) => product.organizationId === ctx.organizationId
-      ) ?? existing.find((p) => p.organizationId === ctx.organizationId)
-
-    if (!currentOrg) {
-      throw new AppError("INVALID_REQUEST")
-    }
-
-    return currentOrg
+    return created.find((p) => p.organizationId === ctx.organizationId)!
   })
 
 /**
@@ -106,18 +116,11 @@ export const updateProduct = orgActionClient({ product: ["update"] })
   .inputSchema(updateProductSchema)
   .action(async ({ parsedInput, ctx }) => {
     const { id, data } = parsedInput
-    const hasDefault = data.sellingUnits.some((unit) => unit.isDefault)
-    const productData = {
+
+    const productData = toProductData({
       ...data,
-      sellingUnits: data.sellingUnits.map((unit, index) => ({
-        ...unit,
-        price: Number(unit.price),
-        qtyPerUnit: Number(unit.qtyPerUnit),
-        minOrderQty: Number(unit.minOrderQty ?? 1),
-        orderIncrement: Number(unit.orderIncrement ?? 1),
-        isDefault: unit.isDefault || (!hasDefault && index === 0),
-      })),
-    }
+      splitUnits: data.splitUnits ?? [],
+    })
 
     const exist = await db.query.product.findFirst({
       where: (p, { and, eq }) =>

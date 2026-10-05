@@ -2,9 +2,6 @@ import { createProductPriceResolver } from "@jp/utils/commerce"
 import { db } from "@jp/db"
 
 import type { Product } from "../product/product.type"
-import { withCalculatedPrices } from "@jp/utils/commerce"
-
-
 
 async function getPriceLevel(teamId: string) {
   const team = await db.query.team.findFirst({
@@ -41,10 +38,5 @@ export async function resolveTeamPrice({
 }) {
   const resolve = await getTeamPriceResolver(teamId)
   const resolvedProduct = resolve(product)
-  return withCalculatedPrices(
-    resolvedProduct.sellingUnits ?? [],
-    !!resolvedProduct.catchWeight
-  ).find(
-    (unit) => unit.name === unitName
-  )?.price
+  return resolvedProduct
 }

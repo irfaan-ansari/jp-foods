@@ -8,8 +8,8 @@ everything should be ordered as a case with catchweight items but billed as poun
 
 Bottles, Bags, anything we dont physcillay weigh is by bag or jug, or bottle
 but we put weight in description so the customer knows what it is
-if you want with spinach it could show 1 2.5lb bag
-or 2 2.5lb bag
+
+if you want with spinach it could show 1 2.5lb bag or 2 2.5lb bag
 
 Case must be Case
 Bag must be Bag
@@ -17,6 +17,7 @@ Bag must be Bag
 Anything prepackaged which you can see by image we arent breaking it open and weighing it except the carrots because they dont come in a crate it comes in 50lb bag and we sell by 5lb bag or 50lb full bag
 
 but eveyrhting els packaged is sold by bag or jug or case but we use weight aspart of description
+
 Any loose product we can typically sell by the 5lb bag
 Jalepeno 5lb bag or case
 Bell Peppers sometimes half a case

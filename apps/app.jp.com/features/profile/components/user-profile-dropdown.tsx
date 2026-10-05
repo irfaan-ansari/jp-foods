@@ -111,7 +111,7 @@ export const UserProfileDropdown = ({
         )
       })}
 
-      {session.session?.impersonatedBy && (
+      {session?.session?.impersonatedBy && (
         <Button
           variant="ghost"
           className="h-9 w-full justify-start pl-2"

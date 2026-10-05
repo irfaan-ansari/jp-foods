@@ -1,8 +1,6 @@
 import React from "react"
-import type { Product } from "../product.type"
-
 import { formatUSD } from "@jp/utils"
-
+import type { Product } from "../product.type"
 import { Minus, Plus } from "lucide-react"
 import {
   Tabs,
@@ -10,7 +8,6 @@ import {
   TabsList,
   TabsTrigger,
 } from "@jp/ui/components/tabs"
-
 import { useOrderItemQuantity } from "@/features/order-form/order-form.hook"
 import { Button } from "@jp/ui/components/button"
 import { Badge } from "@jp/ui/components/badge"
@@ -26,11 +23,9 @@ export function ProductUnits({
   const {
     selectedUnit,
     setSelectedUnit,
-
-    sellingUnits,
   } = useOrderItemQuantity(data)
 
-  if (!selectedUnit && sellingUnits.length === 0) {
+  if (!selectedUnit && data.sellUnits.length === 0) {
     return (
       <div onClick={(event) => event.stopPropagation()}>
         <p className="text-sm text-muted-foreground">Unavailable</p>
@@ -38,52 +33,55 @@ export function ProductUnits({
     )
   }
 
+  const isPerUnit = data.pricingBasis !== "fixed"
+
   return (
     <Tabs
       value={selectedUnit?.name}
       onValueChange={setSelectedUnit}
       className={className}
     >
-      {sellingUnits.length > 1 && (
+      {data.sellUnits.length > 1 && (
         <TabsList className="w-full rounded-xl p-0.5 group-data-horizontal/tabs:h-auto!">
-          {sellingUnits.map((unit) => (
+          {data.sellUnits.map((unit) => (
             <TabsTrigger
               key={unit.name}
               value={unit.name}
               className="h-6 rounded-lg"
               onClick={(e) => e.stopPropagation()}
             >
-              {unit.displayLabel}
+              {unit.name}
             </TabsTrigger>
           ))}
         </TabsList>
       )}
 
-      {sellingUnits.map((unit) => (
+      {data.sellUnits.map((unit) => {
+        
+        return (
         <TabsContent
           key={unit.name}
           value={unit.name}
           className="space-y-2 rounded-lg"
         >
-          <div className="flex items-center justify-between">
-            <span className="text-base font-bold text-primary">
-              {formatUSD(unit.price)}
-
-              {unit.catchWeight && (
-                <span className="ml-1 text-xs font-normal text-muted-foreground">
-                  {data.uom}
+          <div className="space-x-1">
+              <span className="text-lg font-bold text-primary">
+                {formatUSD(unit.displayPrice)}
+                {isPerUnit && (
+                  <span className="text-xs font-normal text-muted-foreground">
+                    {" / "}
+                    {data.stockUOM}
+                  </span>
+                )}
+              </span>
+              {unit.packSize > 1 && (
+                <span className="text-xs text-muted-foreground">
+                  • {unit.displayLabel}
                 </span>
               )}
-            </span>
-            {!unit.isDefault && (
-              <Badge variant="warning-light">
-                {unit.qtyPerUnit}
-                {data.uom} Increment
-              </Badge>
-            )}
-          </div>
+            </div>
         </TabsContent>
-      ))}
+      )})}
     </Tabs>
   )
 }
@@ -118,12 +116,8 @@ export const ProductCartAction = ({
         <Minus className="size-3.5" />
       </Button>
       <div className="flex min-w-20 flex-1 items-center justify-center gap-1">
-        {/* <span className="text-center text-xs text-muted-foreground">
-            {quantity}x{selectedUnit?.qtyPerUnit} {data.uom}
-          </span>
-          • */}
         <span className="text-center text-sm font-medium">
-          {cartItem?.unitQuantity ?? 0} {data.uom}
+          {cartItem?.quantity ?? 0}
         </span>
       </div>
       <Button

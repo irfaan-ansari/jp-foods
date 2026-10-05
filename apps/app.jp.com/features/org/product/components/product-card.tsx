@@ -16,12 +16,12 @@ import { STATUS } from "../product.const"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import Link from "next/link"
 import { formatUSD } from "@jp/utils"
+import { ProductPrice } from "./product-price"
 
 export const ProductCard = ({ data }: { data: Product }) => {
   const { searchParams } = useRouterStuff()
 
-  const price =
-    data?.sellingUnits?.filter((unit) => unit.isDefault)?.[0]?.price ?? "0"
+  const price = data.price ?? "0"
 
   return (
     <Card
@@ -69,9 +69,7 @@ export const ProductCard = ({ data }: { data: Product }) => {
           {data.title}
         </CardTitle>
 
-        <div className="font-semibold">
-          <div className="text-base text-primary">{formatUSD(price)}</div>
-        </div>
+        <ProductPrice product={data} />
       </CardContent>
     </Card>
   )

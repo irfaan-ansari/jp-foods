@@ -306,9 +306,10 @@ const RadioField = ({
               <Field orientation="horizontal" className="gap-4">
                 <FieldContent>
                   <FieldTitle>{opt.label}</FieldTitle>
-                  <FieldDescription>{opt.description}</FieldDescription>
+                  {opt.description && (
+                    <FieldDescription>{opt.description}</FieldDescription>
+                  )}
                 </FieldContent>
-
                 <RadioGroupItem value={opt.value as string} id={id} />
               </Field>
             </FieldLabel>

@@ -1,80 +1,78 @@
-import { SellingUnitPriceInput } from "./types"
+import { ProductInput, SellUnit } from "./types"
 import { MEASURE_UNITS } from "./units"
-
-export type PricedSellingUnit<
-  T extends SellingUnitPriceInput = SellingUnitPriceInput,
-> = T & {
-  calculatedPrice: number
-}
 
 export const roundMoney = (value: number) =>
   Math.round((value + Number.EPSILON) * 100) / 100
 
-const decimal = (value: unknown) =>
-  value === null || value === undefined || value === "" ? NaN : Number(value)
+const toNumber = (value: unknown) => Number(value ?? 0)
 
 export const getUnit = (value: string | undefined) =>
   MEASURE_UNITS.find((unit) => unit.value === value)
 
-export function withCalculatedPrices<T extends SellingUnitPriceInput>(
-  units: T[],
-  catchWeight: boolean
-) {
-  const names = new Set<string>()
+const label = (
+  name: string,
+  packSize: number,
+  stockUOM: string,
+  catchWeight: boolean,
+  displayLabel?: string | null
+) => {
+  if (displayLabel) {
+    return displayLabel
+  }
 
-  return units.flatMap((unit) => {
-    const name = unit.name.trim()
-    const price = decimal(unit.price)
-    const qtyPerUnit = decimal(unit.qtyPerUnit)
-    const minOrderQty = decimal(unit.minOrderQty ?? 1)
-    const orderIncrement = decimal(unit.orderIncrement ?? 1)
+  if (name === stockUOM) {
+    return getUnit(name)?.label || name
+  }
+  if (packSize <= 0) return ""
 
-    names.add(name)
-    const calculatedPrice = roundMoney(catchWeight ? price * qtyPerUnit : price)
+  return `${catchWeight ? "~" : ""}${packSize} ${stockUOM} ${name}`
+}
 
-    if (!Number.isSafeInteger(Math.round(calculatedPrice * 100))) return []
+export function withCalculatedPrices(product: ProductInput): SellUnit[] {
+  const packSize = toNumber(product.packSize)
+  const rate = toNumber(product.price)
+  const name = product.sellUOM || product.stockUOM || ""
+  const stockUOM = product.stockUOM || ""
+  const catchWeight = product.pricingBasis === "catch-weight"
 
-    return [
-      {
-        ...unit,
-        name,
-        displayLabel: unit.displayLabel || name,
-        minOrderQty,
-        price,
-        calculatedPrice,
+  // "fixed": price is per sell unit. "per-unit" / "catch-weight": price is per stock UOM.
+  const perStockUOM = product.pricingBasis !== "fixed"
+
+  const baseUnit: SellUnit = {
+    name,
+    displayLabel: label(
+      getUnit(name)?.label || name,
+      packSize,
+      stockUOM,
+      catchWeight
+    ),
+    price: perStockUOM ? roundMoney(rate * packSize) : rate,
+    displayPrice: rate,
+    packSize,
+    isDefault: true,
+  }
+
+  const splitUnits = (product.splitUnits ?? []).map((unit): SellUnit => {
+    const unitConversion = toNumber(unit.unitConversion)
+    const sellUnitPrice = toNumber(unit.sellUnitPrice)
+    const splitPackSize = Number((packSize / unitConversion).toFixed(4))
+    const price = roundMoney(sellUnitPrice / unitConversion)
+
+    return {
+      name: unit.name,
+      displayLabel: label(
+        getUnit(unit.name)?.label || unit.name,
+        splitPackSize,
+        stockUOM,
         catchWeight,
-        orderIncrement,
-      },
-    ]
+        unit.displayLabel
+      ),
+      price,
+      displayPrice: perStockUOM ? roundMoney(price / splitPackSize) : price,
+      packSize: splitPackSize,
+      isDefault: false,
+    }
   })
-}
 
-export function isValidOrderQuantity(
-  quantity: number,
-  minimum = 1,
-  increment = 1
-) {
-  const steps = (quantity - minimum) / increment
-  return (
-    Number.isFinite(quantity) &&
-    Number.isFinite(steps) &&
-    minimum > 0 &&
-    increment > 0 &&
-    quantity >= minimum &&
-    Math.abs(steps - Math.round(steps)) < 1e-8
-  )
-}
-
-export function normalizeOrderQuantity(
-  quantity: number,
-  minimum = 1,
-  increment = 1
-) {
-  if (!Number.isFinite(quantity) || quantity <= 0) return 0
-  return Number(
-    (
-      minimum +
-      Math.ceil(Math.max(0, quantity - minimum) / increment) * increment
-    ).toFixed(8)
-  )
+  return [baseUnit, ...splitUnits]
 }

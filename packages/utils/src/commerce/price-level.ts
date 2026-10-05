@@ -1,6 +1,9 @@
 import { PriceLevel } from "./types"
 
-/** Apply customer adjustments to each selling unit's price basis. */
+const roundPrice = (value: number) =>
+  Math.max(0, Math.round((value + Number.EPSILON) * 10000) / 10000)
+
+/** Apply customer adjustments to the product's base and split-unit prices. */
 export function createProductPriceResolver(config?: PriceLevel | null) {
   const adjustments = new Map(
     config?.priceLevelItem.map((item) => [item.productId, item.adjustmentValue])
@@ -8,7 +11,8 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
   return <
     T extends {
       id: number
-      sellingUnits?: { price: string | number }[] | null
+      price?: string | number | null
+      splitUnits?: { sellUnitPrice: string | number }[] | null
     },
   >(
     product: T
@@ -31,6 +35,7 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
       !Number.isFinite(Number(adjustment))
     )
       return product
+
     const adjust = (price: string | number) => {
       const base = Number(price)
       if (String(price).trim() === "" || !Number.isFinite(base)) return price
@@ -40,17 +45,19 @@ export function createProductPriceResolver(config?: PriceLevel | null) {
           ? base * (1 + amount / 100)
           : base + amount
       if (!Number.isFinite(next)) return price
-      return String(
-        Math.max(0, Math.round((next + Number.EPSILON) * 10000) / 10000)
-      )
+      return String(roundPrice(next))
     }
-    if (!product.sellingUnits) return product
+
     return {
       ...product,
-      sellingUnits: product.sellingUnits.map((unit) => ({
-        ...unit,
-        price: adjust(unit.price),
-      })),
+      price: product.price == null ? product.price : adjust(product.price),
+      splitUnits: product.splitUnits?.map((unit) => {
+        const price = adjust(unit.sellUnitPrice)
+        return {
+          ...unit,
+          sellUnitPrice: Number(price),
+        }
+      }),
     } as T
   }
 }

@@ -20,7 +20,7 @@ const ProductPage = () => {
   } = useProduct(params.id as string)
 
   const data = product?.data || ({} as Product)
-  console.log(error)
+
   return (
     <React.Fragment>
       <PageHeader
@@ -36,10 +36,6 @@ const ProductPage = () => {
             key={data.id}
             id={data?.id}
             data={{
-              sellingUnits: data?.sellingUnits ?? [],
-              uom: data.uom ?? "lb",
-              weightLb: data.weightLb ?? "",
-              catchWeight: !!data.catchWeight,
               title: data.title ?? "",
               itemCode: data.itemCode ?? "",
               image: data.image ?? "",
@@ -51,6 +47,13 @@ const ProductPage = () => {
               trackInventory: !!data.trackInventory,
               stock: data?.stock ?? "",
               allowBackorder: !!data.allowBackorder,
+              stockUOM: data.stockUOM ?? "lb",
+              packSize: data.packSize ?? "",
+              sellUOM: data.sellUOM ?? "lb",
+              displayLabel: data.displayLabel ?? "",
+              pricingBasis: (data.pricingBasis ?? "fixed") as any,
+              price: data.price ?? "",
+              splitUnits: data.splitUnits ?? [],
             }}
           />
         ) : null}

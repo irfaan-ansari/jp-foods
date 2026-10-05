@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
 import { getTeamPriceResolver } from "@/features/org/price-level/price-level-resolver"
+import { withCalculatedPrices } from "@jp/utils/commerce"
 
 const app = new Hono<TeamAppContext>()
 
@@ -26,7 +27,7 @@ export const guides = app.get("/", async (c) => {
                     id: true,
                     orderId: true,
                     quantity: true,
-                    unitName: true,
+                    unit: true,
                     createdAt: true,
                   },
                   limit: 1,
@@ -53,8 +54,14 @@ export const guides = app.get("/", async (c) => {
     items: orderGuideItems.map(({ id: itemId, product }) => {
       const { lineItems } = product
 
+      const pricedProduct = resolvePrice(product)
+
       return {
-        ...resolvePrice(product),
+        ...pricedProduct,
+        sellUnits: withCalculatedPrices({
+          ...pricedProduct,
+          splitUnits: pricedProduct.splitUnits ?? [],
+        }),
         itemId,
         lastOrder: lineItems?.[0],
       }

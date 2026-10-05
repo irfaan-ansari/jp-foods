@@ -326,16 +326,14 @@ const applicationStyles = {
 const styles = StyleSheet.create({
   ...baseStyles,
   ...applicationStyles,
-  // Application documents use these shared names; keep the legacy templates
-  // working while giving candidate and customer PDFs the compact layout.
   header: applicationStyles.applicationHeader,
   docTitle: applicationStyles.applicationTitle,
   tagline: applicationStyles.applicationTagline,
   sectionTitle: applicationStyles.applicationSectionTitle,
   row: applicationStyles.applicationRow,
   fieldGroup: applicationStyles.applicationFieldGroup,
-  label: applicationStyles.applicationLabel,
-  value: applicationStyles.applicationValue,
+  label: {...applicationStyles.applicationLabel,marginBottom: 0},
+  value: {...applicationStyles.applicationValue, },
 } as any)
 
 export { styles, COLORS }

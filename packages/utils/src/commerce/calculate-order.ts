@@ -7,27 +7,21 @@ export function calculateLineItem<T extends CalculationItem>(
   item: T,
   taxRate = 0
 ) {
-  const unitQuantity = roundMoney(
-    item.catchWeight
-      ? (item.actualUnitQuantity ?? item.quantity * item.qtyPerUnit)
-      : item.quantity * item.qtyPerUnit
-  )
-  const calculatedPrice = roundMoney(
-    item.catchWeight ? item.price * item.qtyPerUnit : item.price
-  )
-  const subtotal = roundMoney(
-    item.price * (item.catchWeight ? unitQuantity : item.quantity)
-  )
+  const unitQuantity = roundMoney(item.quantity * item.packSize)
+  const billableQuantity = item.quantity
+  const unitPrice = item.price
+  const subtotal = roundMoney(unitPrice * billableQuantity)
+  const catchWeight = item.pricingBasis === "catch-weight"
   const taxAmount = item.isTaxable
     ? roundMoney((subtotal * (item.taxRate ?? taxRate)) / 100)
     : 0
 
   return {
     ...item,
-    calculatedPrice,
     unitQuantity,
     subtotal,
     taxAmount,
+    catchWeight,
     total: roundMoney(subtotal + taxAmount),
   }
 }
@@ -42,6 +36,7 @@ export function calculateOrder<T extends CalculationItem>({
   charges: number
 }) {
   const calculatedItems = items.map((item) => calculateLineItem(item, taxRate))
+
   let subtotal = 0
   let taxableSubtotal = 0
   let nonTaxableSubtotal = 0
@@ -52,6 +47,7 @@ export function calculateOrder<T extends CalculationItem>({
     subtotal += item.subtotal
     taxAmount += item.taxAmount
     lineItemQuantity += item.quantity
+
     if (item.isTaxable) taxableSubtotal += item.subtotal
     else nonTaxableSubtotal += item.subtotal
   }

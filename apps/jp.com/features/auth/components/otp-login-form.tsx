@@ -39,7 +39,7 @@ export function OTPLoginForm({
     defaultValues: {
       phoneNumber: "",
       code: "",
-      step: "verify",
+      step: "send",
       error: "",
     },
     validators: {
@@ -199,8 +199,8 @@ export function OTPLoginForm({
                       }}
                       type="button"
                     >
-                      <Pencil className="size-3" />
-                      Change
+                     
+                      Change Number
                     </Button>
                   </div>
                 </div>
@@ -223,14 +223,28 @@ export function OTPLoginForm({
                           disabled={isSubmitting}
                           maxLength={6}
                           pattern={REGEXP_ONLY_DIGITS}
+                          containerClassName="w-full justify-between"
                         >
                           <InputOTPGroup className="*:h-12 *:w-12">
                             <InputOTPSlot index={0} />
-                            <InputOTPSlot index={1} />
-                            <InputOTPSlot index={2} />
-                            <InputOTPSlot index={3} />
-                            <InputOTPSlot index={4} />
-                            <InputOTPSlot index={5} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={1} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={2} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={3} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={4} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={4} />
+                          </InputOTPGroup>
+                          <InputOTPGroup className="*:h-12 *:w-12">
+                             <InputOTPSlot index={4} />
                           </InputOTPGroup>
                         </InputOTP>
                         {isInvalid && (
@@ -248,7 +262,7 @@ export function OTPLoginForm({
                     variant="link"
                     size="sm"
                     type="button"
-                    className="h-auto p-0 text-sm tabular-nums disabled:text-muted-foreground disabled:opacity-100"
+                    className="h-auto p-0 text-sm tabular-nums disabled:text-muted-foreground text-foreground disabled:opacity-100"
                     disabled={!canResend || isSubmitting}
                     onClick={() => handleSendOtp()}
                   >
@@ -262,17 +276,16 @@ export function OTPLoginForm({
             {error && (
               <Alert
                 variant="destructive"
-                className="rounded-xl border-destructive/5 bg-destructive/5 has-data-[slot=alert-action]:pr-8"
+      
               >
                 <AlertCircleIcon />
-                <AlertTitle>{error}</AlertTitle>
+                <AlertTitle className="line-clamp-2">{error}</AlertTitle>
 
                 <AlertAction>
                   <Button
                     type="button"
                     size="icon-xs"
                     variant="outline"
-                    className="rounded-xl"
                     onClick={() => form.setFieldValue("error", "")}
                   >
                     <X />

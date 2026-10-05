@@ -16,13 +16,11 @@
   "dependencies": {
     "@jp/db": "workspace:*",
     "@jp/notifications": "workspace:*",
-    "better-auth": "^1.6.20",
-    "next-safe-action": "^8.5.5",
-    "server-only": "^0.0.1"
+    "better-auth": "1.6.20",
+    "zod": "4.4.3"
   },
   "peerDependencies": {
-    "@vercel/functions": "^3.7.2",
-    "zod": "^4.4.3"
+    "@vercel/functions": "^3.7.2"
   },
   "devDependencies": {
     "@jp/typescript-config": "workspace:*",

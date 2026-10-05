@@ -1,10 +1,7 @@
 import React from "react"
 import { Document, Page, StyleSheet, Text, View } from "@react-pdf/renderer"
-import type { invoice, invoiceLineItem } from "@jp/db"
 
-export type IssuedInvoiceData = typeof invoice.$inferSelect & {
-  lineItems: (typeof invoiceLineItem.$inferSelect)[]
-}
+export type IssuedInvoiceData = any
 
 const money = (value: string | number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(
@@ -172,7 +169,7 @@ export function IssuedInvoice({ data }: { data: IssuedInvoiceData }) {
           <Text style={styles.tax}>TAX</Text>
           <Text style={styles.amount}>AMOUNT</Text>
         </View>
-        {data.lineItems.map((item) => (
+        {data.lineItems.map((item:any) => (
           <View key={item.id} style={styles.row} wrap={false}>
             <View style={styles.description}>
               <Text>{item.title}</Text>
@@ -201,7 +198,7 @@ export function IssuedInvoice({ data }: { data: IssuedInvoiceData }) {
               <Text>-{money(data.discount)}</Text>
             </View>
           )}
-          {(data.charges ?? []).map((charge, index) => (
+          {(data.charges ?? []).map((charge:any, index:number) => (
             <View key={index} style={styles.totalRow}>
               <Text>{charge.type}</Text>
               <Text>{money(charge.amount)}</Text>

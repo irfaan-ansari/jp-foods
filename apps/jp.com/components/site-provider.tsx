@@ -9,7 +9,7 @@ export function SiteProvider({ children }: { children: ReactNode }) {
   return (
     <TooltipProvider>
       <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
-      <Toaster position="bottom-center" />
+      <Toaster position="top-center" />
     </TooltipProvider>
   )
 }

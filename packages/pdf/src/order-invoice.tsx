@@ -243,16 +243,14 @@ export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
                   <Text
                     style={[styles.tableCellPacking, { textAlign: "center" }]}
                   >
-                    {item.catchWeight
-                      ? `${item.unitQuantity} ${item.uom ?? ""}`
-                      : `${item.quantity} ${item.unitName}`}
+                    { item.quantity}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>
                   <Text
                     style={[styles.tableCellPacking, { textAlign: "right" }]}
                   >
-                    {formatUSD(item.price ?? 0)}
+                    {formatUSD(item.displayPrice ?? 0)}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>

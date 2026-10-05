@@ -218,13 +218,11 @@ const OrderPage = () => {
                               </div>
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
-                              {formatUSD(item.price ?? 0)}
-                              {item.catchWeight && " /" + item.uom}
+                              {formatUSD(item.displayPrice ?? 0)}
+                              {item.pricingBasis!=='fixed'&& " /" + item.stockUOM}
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right tabular-nums">
-                              {item.catchWeight
-                                ? `${item.unitQuantity} ${item.uom}`
-                                : `${item.quantity} ${item.unitName}`}
+                              {item.quantity} {item.displayLabel}
                             </TableCell>
                             <TableCell className="v text-right text-muted-foreground tabular-nums">
                               <div>{formatUSD(item.taxAmount ?? 0)}</div>
@@ -338,7 +336,7 @@ const OrderPage = () => {
                                 lineItemId: item.id,
                                 title: item.title ?? "",
                                 price: item.price,
-                                uom: item.uom,
+                                stockUOM: item.stockUOM,
                                 unitQuantity: item.unitQuantity,
                               }))}
                           >

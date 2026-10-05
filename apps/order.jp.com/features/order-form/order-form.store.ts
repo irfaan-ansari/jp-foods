@@ -46,7 +46,9 @@ function stripDerived(items: OrderItem[]): OrderItemInput[] {
 
 function recalculate(order: OrderForm, items: OrderItemInput[]): OrderForm {
   const { items: lineItems, totals } = calculateOrder({
-    items,
+    items: items.map((item) => ({
+      ...item,
+    })),
     taxRate: order.taxRule?.rate,
     charges: order.charges.amount,
   })

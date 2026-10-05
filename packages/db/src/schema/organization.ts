@@ -26,9 +26,6 @@ export const product = pgTable(
       onDelete: "cascade",
     }),
     itemCode: text("item_code").notNull(),
-    uom: text("uom"),
-    weightLb: numeric("pack_size", { precision: 12, scale: 4 }),
-    catchWeight: boolean("average_weight"),
 
     type: text("type").default(""),
     description: text("description").default(""),
@@ -41,6 +38,29 @@ export const product = pgTable(
     trackInventory: boolean("track_inventory").default(false),
     stock: numeric("stock", { precision: 12, scale: 4 }).default("0"),
     allowBackorder: boolean("allow_backorder").default(true),
+
+    stockUOM: text("stock_uom").default("lb"),
+    packSize: numeric("pack_size", { precision: 12, scale: 4 }).default("1"),
+    sellUOM: text("sell_uom").default("lb"),
+    catchWeight: boolean("catch_weight"),
+    displayLabel: text("display_label").default(""),
+    pricingBasis: text("pricing_basis").default("fixed"),
+    // "fixed" = per sell unit eg: $60 case price
+    //  "per-unit" = per stock unit eg: 2.5 lb
+    //  "catch-weight" = per stock unit eg: 2.5 lb final will be calculated while completing the order
+    price: numeric("price", { precision: 12, scale: 2 }).default(
+      "0"
+    ) /** price level should apply on this */,
+    splitUnits: jsonb("split_units")
+      .$type<
+        {
+          name: string
+          displayLabel: string
+          sellUnitPrice: number /** price level should apply on this */
+          unitConversion: number
+        }[]
+      >()
+      .default(sql`'[]'::jsonb`),
     sellingUnits: jsonb("selling_units")
       .$type<
         {
@@ -88,7 +108,7 @@ export const priceLevel = pgTable("price_level", {
   name: text("name").notNull(),
   adjustmentType: text("adjustment_type").notNull(), // "fixed" | "percentage"
   appliesTo: text("applies_to").default("all").notNull(), // "all" | "per_item"
-  adjustmentValue: text("adjustment_value").notNull(), // +10, -10, 50 etc
+  adjustmentValue: text("adjustment_value").notNull().default("0"), // +10, -10, 50 etc
   status: text("status").default("active").notNull(), // "active" | "inactive"
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at")
@@ -110,10 +130,11 @@ export const priceLevelItem = pgTable(
       .references(() => product.id, {
         onDelete: "cascade",
       }),
-    adjustmentValue:
-      text(
-        "adjustment_value"
-      ).notNull() /** adjustmentType == percentage ? increase or decrease by percent  */,
+    adjustmentValue: text("adjustment_value")
+      .notNull()
+      .default(
+        "0"
+      ) /** adjustmentType == percentage ? increase or decrease by percent  */,
     createdAt: timestamp("created_at").defaultNow(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -356,21 +377,20 @@ export const lineItem = pgTable(
       .$type<string[]>()
       .default(sql`'[]'::jsonb`),
 
-    unitName: text("unit_name").notNull().default(""),
-    unitLabel: text("unit_label").default(""),
-    uom: text("uom"),
-    qtyPerUnit: integer("qty_per_unit").notNull().default(1),
+    unit: text("unit").notNull().default(""),
+    displayLabel: text("display_label").default(""),
+    stockUOM: text("stock_uom"),
+    packSize: numeric("pack_size", { precision: 12, scale: 4 }),
     catchWeight: boolean("catch_weight").default(false),
     price: numeric("price", { precision: 12, scale: 2 }).notNull().default("0"),
-    calculatedPrice: numeric("calculated_price", { precision: 12, scale: 2 })
+    displayPrice: numeric("display_price", { precision: 12, scale: 2 })
       .notNull()
       .default("0"),
+    pricingBasis: text("pricing_basis").notNull().default("fixed"),
     unitQuantity: numeric("unit_quantity", { precision: 12, scale: 2 })
       .notNull()
       .default("0") /** used for inventory */,
-    quantity: numeric("quantity", { precision: 12, scale: 4 })
-      .notNull()
-      .default("1"),
+    quantity: integer("quantity").notNull().default(1),
     subtotal: numeric("subtotal", { precision: 12, scale: 2 }).default("0"),
     isTaxable: boolean("is_taxable").default(false),
     taxRate: numeric("tax_rate", { precision: 8, scale: 4 }).default("0"),

@@ -1,0 +1,2 @@
+-- DROP TABLE "invoice" CASCADE;--> statement-breakpoint
+-- DROP TABLE "invoice_line_item" CASCADE;

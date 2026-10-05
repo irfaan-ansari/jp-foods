@@ -30,7 +30,6 @@ export const OrderAdminEmail = ({
   name,
   orderId,
   company,
-
   items,
   subtotal,
   taxAmount,

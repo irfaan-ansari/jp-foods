@@ -7,14 +7,11 @@ const positiveDecimal = z
     message: "Invalid value",
   })
 
-const sellingUnitSchema = z.object({
+const splitUnitSchema = z.object({
   name: z.string().trim().min(1, "Unit is required"),
   displayLabel: z.string(),
-  price: positiveDecimal,
-  qtyPerUnit: positiveDecimal,
-  orderIncrement: positiveDecimal.optional(),
-  minOrderQty: positiveDecimal.optional(),
-  isDefault: z.boolean(),
+  sellUnitPrice: positiveDecimal,
+  unitConversion: positiveDecimal,
 })
 
 export const productFormSchema = z.object({
@@ -31,25 +28,14 @@ export const productFormSchema = z.object({
   stock: z.string(),
   allowBackorder: z.boolean(),
 
-  uom: z.string().min(1, "Select unit of measure"),
-  weightLb: z.string(),
-  catchWeight: z.boolean(),
+  stockUOM: z.string().min(1, "Select unit of measure"),
+  packSize: positiveDecimal,
+  sellUOM: z.string().min(1, "Select selling unit"),
+  displayLabel: z.string(),
+  pricingBasis: z.enum(["fixed", "per-unit", "catch-weight"]),
+  price: positiveDecimal,
 
-  sellingUnits: z
-    .array(sellingUnitSchema)
-    .min(1, "Add a selling unit")
-    .superRefine((units, ctx) => {
-      const names = new Set<string>()
-      units.forEach((unit, index) => {
-        if (names.has(unit.name))
-          ctx.addIssue({
-            code: "custom",
-            path: [index, "name"],
-            message: "Selling units must be unique",
-          })
-        names.add(unit.name)
-      })
-    }),
+  splitUnits: z.array(splitUnitSchema),
 })
 
 export type ProductFormSchema = z.infer<typeof productFormSchema>
@@ -64,29 +50,22 @@ export const productFormValues = {
   categories: [],
   image: "",
   location: "",
+
   trackInventory: false,
   stock: "",
   allowBackorder: false,
 
-  uom: "lb",
-  weightLb: "",
-  catchWeight: false,
-
-  sellingUnits: [
-    {
-      name: "CS",
-      displayLabel: "",
-      price: "",
-      qtyPerUnit: "",
-      isDefault: true,
-    },
-  ],
+  stockUOM: "LB",
+  sellUOM: "CS",
+  pricingBasis: "fixed",
+  price: "",
+  packSize: "",
+  displayLabel: "",
+  splitUnits: [],
 }
 
 const productActionDataSchema = productFormSchema.extend({
-  sellingUnits: z
-    .array(sellingUnitSchema.extend({ isDefault: z.boolean().default(false) }))
-    .pipe(productFormSchema.shape.sellingUnits),
+  splitUnits: splitUnitSchema.array().optional(),
 })
 
 export const createProductSchema = z.object({

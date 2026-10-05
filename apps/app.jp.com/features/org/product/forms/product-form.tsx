@@ -46,7 +46,7 @@ export const ProductForm = ({ data, id }: FormProps) => {
   const { router } = useRouterStuff()
 
   const form = useAppForm({
-    defaultValues: data ?? productFormValues,
+    defaultValues: (data ?? productFormValues) as ProductFormSchema,
     validators: {
       onChange: productFormSchema,
     },
@@ -70,8 +70,13 @@ export const ProductForm = ({ data, id }: FormProps) => {
         toast.loading("Saving product...", { id: toastId })
 
         const result = id
-          ? await updateProduct({ id, data: values })
-          : await createProduct({ data: values })
+          ? await updateProduct({
+              id,
+              data: { ...values, pricingBasis: values.pricingBasis as any },
+            })
+          : await createProduct({
+              data: { ...values, pricingBasis: values.pricingBasis as any },
+            })
         if (result?.serverError || result?.validationErrors || !result?.data) {
           toast.error(
             result?.serverError?.message ??

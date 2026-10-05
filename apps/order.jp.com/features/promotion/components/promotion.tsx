@@ -9,7 +9,6 @@ import { QueryBoundary } from "@/components/query-boundry"
 import { usePromotions } from "@/features/promotion/promotion.data"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { formatUSD } from "@jp/utils"
-import { withCalculatedPrices } from "@jp/utils/commerce"
 import { Button } from "@jp/ui/components/button"
 import { ImageOff, Plus, X } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
@@ -254,7 +253,7 @@ function PromotionToast({
         <div className="flex items-center justify-between">
           <span className="font-semibold text-primary">
             {formatUSD(selectedUnit?.price ?? 0)}
-            {selectedUnit?.catchWeight && "/" + product?.uom}
+            {product?.catchWeight && "/" + product.stockUOM}
           </span>
         </div>
       </div>
