@@ -56,7 +56,7 @@ import { OrganizationSwitcher } from "@/features/org/components/organization-swi
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { useOrganization } from "@/features/org/organization.data"
 
-type MenuIcon = ComponentType<{ className?: string }>
+type MenuIcon = ComponentType<any>
 
 export function AppSidebar({
   session,
