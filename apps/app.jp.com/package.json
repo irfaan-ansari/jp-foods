@@ -21,7 +21,7 @@
     "@jp/utils": "workspace:*",
     "@omit/react-confirm-dialog": "^2.0.0",
     "@react-pdf/renderer": "^4.5.1",
-    "@solar-icons/react": "^1.1.1",
+    "@solar-icons/react": "1.1.1",
     "@tanstack/react-form": "^1.33.0",
     "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-table": "^9.2.4",

@@ -20,7 +20,7 @@
     "@jp/ui": "workspace:*",
     "@jp/utils": "workspace:*",
     "@react-pdf/renderer": "^4.3.2",
-    "@solar-icons/react": "^1.1.1",
+    "@solar-icons/react": "1.1.1",
     "@tanstack/react-form": "^1.33.2",
     "@tanstack/react-query": "^5.101.1",
     "@tanstack/react-query-devtools": "^5.101.4",

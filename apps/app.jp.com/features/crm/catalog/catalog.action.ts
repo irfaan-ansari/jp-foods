@@ -14,7 +14,7 @@ import { CatalogAccessStatusUpdateEmail } from "@jp/notifications/templates"
 import { waitUntil } from "@vercel/functions"
 
 const getCatalogAccessUrl = (token: string) =>
-  `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.JP_APP_URL}/products`
+  `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.NEXT_PUBLIC_AUTH_URL}/products`
 
 async function sendCatalogAccessEmail({
   inquiry,
