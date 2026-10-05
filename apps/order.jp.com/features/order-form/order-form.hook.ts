@@ -28,7 +28,6 @@ export function useOrderItemQuantity(data: Product) {
   const itemId = `${data.id}:${unitName}`
   const item = useOrderFormStore((state) => state.getItem(itemId))
 
-
   const selectedUnit = data.sellUnits?.find((unit) => unit.name === unitName)!
 
   const cartQuantity = item?.quantity ?? 0
@@ -42,8 +41,7 @@ export function useOrderItemQuantity(data: Product) {
       updateItem({
         ...base,
         id: itemId,
-        pricingBasis: data.pricingBasis ?? 'fixed',
-        displayPrice: selectedUnit.displayPrice,
+        pricingBasis: data.pricingBasis ?? "fixed",
         productId: data.id,
         quantity: numberValue,
       })

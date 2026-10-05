@@ -1,3 +1,4 @@
+export const sendCandidateEmail = () => {}
 export const startVerification = async () => {
   return true
 }

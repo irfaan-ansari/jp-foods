@@ -198,7 +198,11 @@ export const ProductPreview = withForm({
 
                     {sellUnits.map((unit) => {
                       const quantity = quantities[unit.name] ?? 0
-                      const total = roundMoney(unit.price * quantity)
+                      const total =
+                        pricingBasis === "catch-weight" ||
+                        pricingBasis === "per-unit"
+                          ? roundMoney(unit.price * unit.packSize * quantity)
+                          : roundMoney(unit.price * quantity)
 
                       return (
                         <TabsContent
@@ -208,7 +212,7 @@ export const ProductPreview = withForm({
                         >
                           <div className="space-x-1">
                             <span className="text-lg font-bold text-primary">
-                              {formatUSD(unit.displayPrice)}
+                              {formatUSD(unit.price)}
                               {isPerUnit && (
                                 <span className="text-xs font-normal text-muted-foreground">
                                   {" / "}

@@ -36,6 +36,7 @@ export function DashboardClient() {
           title="Open orders"
           value={String(data?.stats?.openOrderCount)}
           loading={isPending}
+          description="Orders that are not yet completed"
           icon={
             <IconTile variant="elevated">
               <Clock3 className="text-amber-500" />
@@ -46,7 +47,7 @@ export function DashboardClient() {
           title="Orders this month"
           value={String(data?.stats?.monthOrderCount)}
           loading={isPending}
-          description={`${data?.stats?.totalOrderCount} orders in total`}
+          description={`${data?.stats?.totalOrderCount ?? 0} orders in total`}
           icon={
             <IconTile variant="elevated">
               <PackageCheck className="text-lime-500" />
@@ -108,12 +109,12 @@ export function DashboardClient() {
               >
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2">
-                    <CardTitle>Order #{order.id}</CardTitle>
+                    <CardTitle>#{order.id}</CardTitle>
                     <StatusBadge status={order.status} />
                   </div>
                   <CardDescription className="text-xs">
-                    Placed {formatDate(order.createdAt)} ·{" "}
-                    {order.lineItemCount ?? 0} items
+                    {formatDate(order.createdAt)} · {order.lineItemCount ?? 0}{" "}
+                    items
                   </CardDescription>
                 </div>
                 <div className="text-right">

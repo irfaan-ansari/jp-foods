@@ -29,20 +29,11 @@ export const toOrderItemInput = (
   product: OrderItemProduct,
   selectedUnit?: PricedSellingUnit
 ) => {
-
   const sellUnit = selectedUnit ?? product.sellUnits[0]
   if (!sellUnit) throw new Error(`Product ${product.id} has no sell unit`)
 
-  const {
-    id,
-    title,
-    isTaxable,
-    itemCode,
-    image,
-    categories,
-    type,
-    location,
-  } = product
+  const { id, title, isTaxable, itemCode, image, categories, type, location } =
+    product
 
   return {
     id: `${id}:${sellUnit.name}`,
@@ -56,7 +47,6 @@ export const toOrderItemInput = (
     categories: categories ?? [],
 
     price: Number(sellUnit.price),
-    displayPrice: Number(sellUnit.displayPrice),
     pricingBasis: product.pricingBasis ?? "fixed",
     quantity: 1,
     stockUOM: product.stockUOM ?? "",
@@ -166,7 +156,6 @@ export const toInsertLineItems = ({
     displayLabel: item.displayLabel,
     packSize: String(item.packSize),
     catchWeight: item.catchWeight,
-    displayPrice: item.displayPrice.toFixed(2),
     pricingBasis: item.pricingBasis,
 
     unitQuantity: String(item.unitQuantity),

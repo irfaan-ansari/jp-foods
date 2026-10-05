@@ -104,48 +104,62 @@ export const completeOrder = orgActionClient({ order: ["update"] })
         message: "Only in-progress orders can be marked as complete.",
       })
     }
-
     const submittedWeights = new Map(
-      data.map((item) => [item.lineItemId, Number(item.unitQuantity)])
+      data.map((d) => [d.lineItemId, Number(d.unitQuantity)])
     )
 
-    const { items, totals } = calculateOrder({
-      items: existing.lineItems.map((item) => ({
+    const lineItems = existing.lineItems.map((item) => {
+      const quantity = Number(item.quantity)
+      const submitted = submittedWeights.get(item.id)
+
+      const base = {
         id: item.id,
-        price: Number(item.price),
         pricingBasis: item.pricingBasis,
-        quantity: Number(item.quantity),
-        packSize: Number(item.packSize),
-        catchWeight: !!item.catchWeight,
+        quantity,
         isTaxable: !!item.isTaxable,
         taxRate: Number(item.taxRate ?? 0),
-        unitQuantity:
-          submittedWeights.get(item.id) ?? Number(item.unitQuantity),
-      })),
+      }
+
+      if (submitted === undefined) {
+        return {
+          ...base,
+          price: Number(item.price),
+          packSize: Number(item.packSize),
+        }
+      }
+
+      return {
+        ...base,
+        price: Number(item.price),
+        packSize: quantity ? submitted / quantity : 0,
+      }
+    })
+
+    const { items, totals } = calculateOrder({
+      items: lineItems,
       charges: Number(existing.charges?.amount ?? 0),
     })
 
-    const queries: BatchItem<"pg">[] = []
-
-    for (const item of items) {
-      queries.push(
-        db
-          .update(lineItem)
-          .set({
-            unitQuantity: item.unitQuantity.toFixed(2),
-            subtotal: item.subtotal.toFixed(2),
-            taxAmount: item.taxAmount.toFixed(2),
-            total: item.total.toFixed(2),
-          })
-          .where(
-            and(
-              eq(lineItem.id, item.id),
-              eq(lineItem.orderId, id),
-              eq(lineItem.organizationId, ctx.organizationId)
-            )
-          ) as BatchItem<"pg">
+    const queries: BatchItem<"pg">[] = items
+      .filter((item) => submittedWeights.has(item.id))
+      .map(
+        (item) =>
+          db
+            .update(lineItem)
+            .set({
+              unitQuantity: item.unitQuantity.toFixed(2),
+              subtotal: item.subtotal.toFixed(2),
+              taxAmount: item.taxAmount.toFixed(2),
+              total: item.total.toFixed(2),
+            })
+            .where(
+              and(
+                eq(lineItem.id, item.id),
+                eq(lineItem.orderId, id),
+                eq(lineItem.organizationId, ctx.organizationId)
+              )
+            ) as BatchItem<"pg">
       )
-    }
 
     queries.push(
       db
@@ -170,7 +184,6 @@ export const completeOrder = orgActionClient({ order: ["update"] })
     )
 
     await db.batch(queries as [BatchItem<"pg">, ...BatchItem<"pg">[]])
-
     return { id }
   })
 

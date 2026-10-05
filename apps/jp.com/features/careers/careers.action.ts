@@ -7,6 +7,7 @@ import {
   JobApplicationReceivedEmail,
 } from "@jp/notifications/templates"
 import { capitalize } from "@jp/utils"
+import { waitUntil } from "@vercel/functions"
 import { headers } from "next/headers"
 
 export const createJobApplication = handleAction(
@@ -29,28 +30,30 @@ export const createJobApplication = handleAction(
 
     const [result] = await db.insert(jobApplication).values(values).returning()
 
-    await Promise.all([
-      sendEmail({
-        to: data.email,
-        subject: `Jimenez Produce - Application Received`,
-        template: JobApplicationReceivedEmail({
-          name: data.firstName,
-          position: data.position,
+    waitUntil(
+      Promise.all([
+        sendEmail({
+          to: data.email,
+          subject: `Jimenez Produce - Application Received`,
+          template: JobApplicationReceivedEmail({
+            name: data.firstName,
+            position: data.position,
+          }),
         }),
-      }),
-      sendEmail({
-        subject: "New candidate application",
-        template: JobApplicationAdminEmail({
-          name: data.firstName,
-          position: data.position,
-          location: data.location ?? "NA",
-          email: data.email,
-          phone: data.phone,
+        sendEmail({
+          subject: "New candidate application",
+          template: JobApplicationAdminEmail({
+            name: data.firstName,
+            position: data.position,
+            location: data.location ?? "NA",
+            email: data.email,
+            phone: data.phone,
 
-          status: "new",
+            status: "new",
+          }),
         }),
-      }),
-    ])
+      ])
+    )
 
     return { id: result?.id }
   }

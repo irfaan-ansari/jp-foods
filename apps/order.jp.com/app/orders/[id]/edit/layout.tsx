@@ -64,7 +64,6 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
         categories: item.categories ?? [],
         quantity: item.quantity,
         price: Number(item.price),
-        displayPrice: Number(item.displayPrice),
         pricingBasis: item.pricingBasis,
         stockUOM: item.stockUOM ?? "",
         unit: item.unit,

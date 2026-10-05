@@ -35,9 +35,7 @@ export function withCalculatedPrices(product: ProductInput): SellUnit[] {
   const stockUOM = product.stockUOM || ""
   const catchWeight = product.pricingBasis === "catch-weight"
 
-  // "fixed": price is per sell unit. "per-unit" / "catch-weight": price is per stock UOM.
-  const perStockUOM = product.pricingBasis !== "fixed"
-
+  // perStockUOM ? roundMoney(rate * packSize) : rate
   const baseUnit: SellUnit = {
     name,
     displayLabel: label(
@@ -46,8 +44,7 @@ export function withCalculatedPrices(product: ProductInput): SellUnit[] {
       stockUOM,
       catchWeight
     ),
-    price: perStockUOM ? roundMoney(rate * packSize) : rate,
-    displayPrice: rate,
+    price: rate,
     packSize,
     isDefault: true,
   }
@@ -68,7 +65,6 @@ export function withCalculatedPrices(product: ProductInput): SellUnit[] {
         unit.displayLabel
       ),
       price,
-      displayPrice: perStockUOM ? roundMoney(price / splitPackSize) : price,
       packSize: splitPackSize,
       isDefault: false,
     }

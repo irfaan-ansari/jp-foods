@@ -65,15 +65,8 @@ export const step4Schema = z.object({
     z.object({
       day: z.string().min(2, "Delivery day is required"),
       window: z.string().min(2, "Delivery time is required"),
-      receivingName: phoneSchema,
-      receivingPhone: z
-        .string()
-        .min(1, "Phone is required")
-        .trim()
-        .regex(
-          /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}$/,
-          "Invalid phone number"
-        ),
+      receivingName: z.string().min(2, "Delivery time is required"),
+      receivingPhone: phoneSchema,
       instructions: z.string().min(2, "Instruction is required"),
     })
   ),

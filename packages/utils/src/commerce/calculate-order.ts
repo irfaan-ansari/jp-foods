@@ -2,16 +2,19 @@ import { roundMoney } from "./selling-units"
 import { CalculationItem } from "./types"
 
 export const DEFAULT_CHARGE = { type: "Fuel Charge", amount: 15 }
+const WEIGHT_BASED = new Set(["per-unit", "catch-weight"])
 
 export function calculateLineItem<T extends CalculationItem>(
   item: T,
   taxRate = 0
 ) {
-  const unitQuantity = roundMoney(item.quantity * item.packSize)
-  const billableQuantity = item.quantity
-  const unitPrice = item.price
-  const subtotal = roundMoney(unitPrice * billableQuantity)
-  const catchWeight = item.pricingBasis === "catch-weight"
+  const weightBased = WEIGHT_BASED.has(item.pricingBasis)
+  const rawUnitQuantity = item.quantity * item.packSize
+
+  const unitQuantity = roundMoney(rawUnitQuantity)
+  const subtotal = roundMoney(
+    item.price * (weightBased ? rawUnitQuantity : item.quantity)
+  )
   const taxAmount = item.isTaxable
     ? roundMoney((subtotal * (item.taxRate ?? taxRate)) / 100)
     : 0
@@ -21,7 +24,7 @@ export function calculateLineItem<T extends CalculationItem>(
     unitQuantity,
     subtotal,
     taxAmount,
-    catchWeight,
+    catchWeight: item.pricingBasis === "catch-weight",
     total: roundMoney(subtotal + taxAmount),
   }
 }

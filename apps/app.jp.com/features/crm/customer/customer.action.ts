@@ -9,6 +9,7 @@ import {
 } from "./customer.schema"
 import { authActionClient } from "@/lib/safe-action"
 import { triggerNotification } from "./customer.utils"
+import { waitUntil } from "@vercel/functions"
 
 // update fields
 export const updateCustomerApplication = authActionClient({
@@ -34,13 +35,15 @@ export const updateCustomerApplication = authActionClient({
       .where(eq(customer.id, id))
 
     if (exist.status !== data.status) {
-      await triggerNotification({
-        application: exist,
-        status: data.status!,
-        statusReason: data.statusReason,
-        statusDetails: data.statusDetails,
-        internalNotes: data.internalNotes,
-      })
+      waitUntil(
+        triggerNotification({
+          application: exist,
+          status: data.status!,
+          statusReason: data.statusReason,
+          statusDetails: data.statusDetails,
+          internalNotes: data.internalNotes,
+        })
+      )
     }
 
     return { id: 1 }

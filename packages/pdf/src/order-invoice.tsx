@@ -22,7 +22,7 @@ export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
 
   return (
     <Document title={`Estimate - ${data.id}`}>
-      <Page size="A4" style={[{ padding: 20 }]}>
+      <Page size="LETTER" style={[{ padding: 20 }]}>
         <View style={[{ borderWidth: 1, flex: 1 }]}>
           <View
             style={[
@@ -243,14 +243,14 @@ export const OrderInvoice = ({ data }: { data: OrderInvoiceProps }) => {
                   <Text
                     style={[styles.tableCellPacking, { textAlign: "center" }]}
                   >
-                    { item.quantity}
+                    {item.quantity} {item.unit}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>
                   <Text
                     style={[styles.tableCellPacking, { textAlign: "right" }]}
                   >
-                    {formatUSD(item.displayPrice ?? 0)}
+                    {formatUSD(item.price ?? 0)}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>

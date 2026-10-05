@@ -218,11 +218,20 @@ const OrderPage = () => {
                               </div>
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
-                              {formatUSD(item.displayPrice ?? 0)}
-                              {item.pricingBasis!=='fixed'&& " /" + item.stockUOM}
+                              {formatUSD(item.price ?? 0)}
+
+                              {item.pricingBasis !== "fixed" &&
+                                " /" + item.stockUOM}
                             </TableCell>
                             <TableCell className="px-2 py-1.5 text-right tabular-nums">
-                              {item.quantity} {item.displayLabel}
+                              {item.quantity}
+
+                              <div className="text-xs text-muted-foreground">
+                                {data.status !== "in_progress"
+                                  ? `${item.unitQuantity} ${item.stockUOM} ${item.unit}`
+                                  : Number(item.packSize) > 1 &&
+                                    (item.displayLabel || item.unit)}
+                              </div>
                             </TableCell>
                             <TableCell className="v text-right text-muted-foreground tabular-nums">
                               <div>{formatUSD(item.taxAmount ?? 0)}</div>
@@ -337,6 +346,8 @@ const OrderPage = () => {
                                 title: item.title ?? "",
                                 price: item.price,
                                 stockUOM: item.stockUOM,
+                                quantity: item.quantity,
+                                unit: item.unit,
                                 unitQuantity: item.unitQuantity,
                               }))}
                           >

@@ -18,8 +18,7 @@ export type ProductInput = {
 export type SellUnit = {
   name: string
   displayLabel: string
-  price: number // what one of this unit costs, e.g. 87.5 for a 35 lb case
-  displayPrice: number // the rate shown: per sell unit (fixed) or per stock UOM, e.g. 2.5 / lb
+  price: number // the rate shown: per sell unit (fixed) or per stock UOM, e.g. 2.5 / lb
   packSize: number
   isDefault: boolean
 }

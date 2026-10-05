@@ -59,6 +59,7 @@ export const triggerNotification = async ({
   const reason = statusReason ?? ""
   const reasonDetails = statusDetails ?? ""
   const customerName = getCustomerName(application)
+
   const adminEmail = sendEmail({
     subject: "Customer Application Status Update",
     template: getAdminTemplate({

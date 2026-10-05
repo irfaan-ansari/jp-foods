@@ -28,7 +28,7 @@ export const ProductPrice = ({ product }: { product: Product }) => {
       className="gap-2"
     >
       {sellUnits.length > 1 && (
-        <TabsList className="w-full rounded-xl p-0.5 gap-0.5 relative z-1 h-8!">
+        <TabsList className="relative z-1 h-8! w-full gap-0.5 rounded-xl p-0.5">
           {sellUnits.map((unit) => (
             <TabsTrigger
               key={unit.name}
@@ -50,7 +50,7 @@ export const ProductPrice = ({ product }: { product: Product }) => {
           >
             <div className="space-x-1">
               <span className="text-lg font-bold text-primary">
-                {formatUSD(unit.displayPrice)}
+                {formatUSD(unit.price)}
                 {isPerUnit && (
                   <span className="text-xs font-normal text-muted-foreground">
                     {" / "}
