@@ -37,9 +37,8 @@ export type PriceLevel = {
 export type CalculationItem = {
   price: number
   quantity: number
-  qtyPerUnit: number
-  catchWeight: boolean
+  packSize: number
   isTaxable: boolean
   taxRate?: number
-  actualUnitQuantity?: number
+  pricingBasis: string
 }

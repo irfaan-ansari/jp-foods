@@ -12,7 +12,7 @@ import { Button } from "@jp/ui/components/button"
 import { ChevronUp, ImageOff, Minus, Plus, X } from "lucide-react"
 import { useOrderFormUI } from "../order-form-ui.store"
 import { useOrderFormStore } from "../order-form.store"
-import { BagCheck, TrashBinMinimalistic } from "@solar-icons/react"
+import { BagCheck,  } from "@solar-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import {
   Collapsible,
@@ -32,7 +32,6 @@ export const Cart = () => {
   const removecartItem = useOrderFormStore((state) => state.removeItem)
   const updateCartItem = useOrderFormStore((state) => state.updateItem)
   const { items } = cart
-
   return (
     <Drawer direction="right" open={isCartOpen} onOpenChange={setCartOpen}>
       <DrawerContent className="gap-2 data-[vaul-drawer-direction=right]:sm:max-w-lg">
@@ -57,7 +56,7 @@ export const Cart = () => {
           {items.map((item) => (
             <div
               className="flex items-start gap-2 not-first:pt-2 not-last:pb-2"
-              key={`${item.id}:${item.unitName}`}
+              key={`${item.id}:${item.unit}`}
             >
               <Avatar
                 className="relative size-12! rounded-xl bg-secondary **:rounded-xl"
@@ -81,23 +80,19 @@ export const Cart = () => {
               <div className="grid min-w-0 flex-1 gap-0.5">
                 <p className="truncate text-sm font-medium">{item.title}</p>
 
-                <p className="truncate text-sm font-medium text-muted-foreground">
-                  {formatUSD(item.price)} {item.catchWeight && "/" + item.uom}
-                  {" • "}
-                  {item.qtyPerUnit} {item.uom} {item.catchWeight && "avg"}
-                </p>
-
+               
+            <div className="flex gap-3 items-center">
+                
                 <div className="mt-1 flex max-w-28 items-center justify-between gap-1 self-center rounded-xl border p-0.5">
                   <Button
                     size="icon-xs"
                     variant="secondary"
                     className="rounded-lg bg-primary/30 hover:bg-primary/50"
                     onClick={() => {
-                      const next = item.quantity - item.orderIncrement
-                      if (next < item.minOrderQty) {
+                      if ( item.quantity<1) {
                         removecartItem(item.id)
                       } else {
-                        updateCartItem({ ...item, quantity: next })
+                        updateCartItem({ ...item, quantity: item.quantity-1 })
                       }
                     }}
                   >
@@ -113,27 +108,33 @@ export const Cart = () => {
                     onClick={() =>
                       updateCartItem({
                         ...item,
-                        quantity: item.quantity + item.orderIncrement,
+                        quantity: item.quantity + 1,
                       })
                     }
                   >
                     <Plus />
                   </Button>
-                </div>
+                  </div>
+                   <Button
+                  size="xs"
+                    variant="link"
+                    className="px-0 text-destructive"
+                  onClick={() => removecartItem(item.id)}
+                >
+                 Remove
+                </Button>
+                  </div>
               </div>
 
-              <div className="grid h-full min-w-0 gap-3 text-right">
+              <div className="grid h-full min-w-0 text-right">
                 <p className="text-base font-bold text-primary">
                   {formatUSD(item.subtotal)}
                 </p>
-                <Button
-                  size="xs"
-                  variant="link"
-                  className="mt-auto ml-auto px-0 text-destructive"
-                  onClick={() => removecartItem(item.id)}
-                >
-                  Remove
-                </Button>
+                {item.quantity>1 && (
+                <p className="truncate text-xs font-medium text-muted-foreground">
+                  {item.quantity} {item.unit} @ {formatUSD(item.displayPrice)} { item.pricingBasis !== "fixed" ? item.stockUOM : "" }
+                  </p>
+                )}
               </div>
             </div>
           ))}

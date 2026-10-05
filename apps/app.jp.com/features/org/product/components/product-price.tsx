@@ -28,7 +28,7 @@ export const ProductPrice = ({ product }: { product: Product }) => {
       className="gap-2"
     >
       {sellUnits.length > 1 && (
-        <TabsList className="w-full rounded-xl p-0.5">
+        <TabsList className="w-full rounded-xl p-0.5 gap-0.5 relative z-1 h-8!">
           {sellUnits.map((unit) => (
             <TabsTrigger
               key={unit.name}

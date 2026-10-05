@@ -14,10 +14,8 @@ import {
 
 const toProductData = (data: ProductFormSchema) => {
   const {
-    sellUOM,
     pricingBasis,
     packSize,
-    displayLabel,
     splitUnits,
     ...values
   } = data
@@ -26,7 +24,7 @@ const toProductData = (data: ProductFormSchema) => {
     splitUnits.map((unit) => {
       return {
         name: unit.name,
-        displayLabel: unit.displayLabel || unit.name,
+        displayLabel: unit.displayLabel || '',
         sellUnitPrice: Number(unit.sellUnitPrice),
         unitConversion: Number(unit.unitConversion),
       }
@@ -36,8 +34,9 @@ const toProductData = (data: ProductFormSchema) => {
     ...values,
     price: String(data.price),
     pricingBasis,
+    sellUOM: data.sellUOM,
     packSize: String(packSize),
-    displayLabel: sellUOM,
+    displayLabel: data.displayLabel,
     catchWeight: pricingBasis === "catch-weight",
     splitUnits: pricedSplitUnits,
   }

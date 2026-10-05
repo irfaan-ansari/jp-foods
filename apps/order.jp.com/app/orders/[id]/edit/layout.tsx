@@ -16,7 +16,6 @@ import { Button } from "@jp/ui/components/button"
 import { useOrder } from "@/features/order/order.data"
 import { BagCheck, BagCross } from "@solar-icons/react"
 import { PageContent } from "@/components/page-content"
-import { toOrderItemInput } from "@/features/order-form/order-form.utils"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
 import { ErrorState } from "@jp/ui/components/jp"
@@ -46,38 +45,41 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
       },
       charges: {
         type: order.charges?.type ?? "",
-        amount: Number(order.charges?.amount),
+        amount: Number(order.charges?.amount ?? 0),
       },
+      po: order.po ?? "",
+      deliveryDate: order.deliveryDate ?? new Date().toISOString().slice(0, 10),
+      deliveryWindow: order.deliveryWindow ?? "",
+      deliveryInstruction: order.deliveryInstruction ?? "",
+      items: lineItems.map((item) => ({
+        id: `${item.productId}:${item.unit}`,
+        lineItemId: item.id,
+        productId: item.productId,
+        title: item.title ?? "",
+        itemCode: item.itemCode ?? "",
+        type: item.type ?? "",
+        location: item.location ?? "",
+        isTaxable: !!item.isTaxable,
+        image: item.image ?? "",
+        categories: item.categories ?? [],
+        quantity: item.quantity,
+        price: Number(item.price),
+        displayPrice: Number(item.displayPrice),
+        pricingBasis: item.pricingBasis,
+        stockUOM: item.stockUOM ?? "",
+        unit: item.unit,
+        displayLabel: item.displayLabel ?? item.unit,
+        packSize: Number(item.packSize),
+        unitQuantity: Number(item.unitQuantity),
+        catchWeight: !!item.catchWeight,
+        subtotal: Number(item.subtotal),
+        taxAmount: Number(item.taxAmount),
+        total: Number(item.total),
+      })),
       lineItemCount: Number(order.lineItemCount),
       lineItemQuantity: Number(order.lineItemQuantity),
       subtotal: Number(order.subtotal),
       total: Number(order.total),
-      items: lineItems.map((item) => {
-        const inputOrder = toOrderItemInput({
-          ...item,
-          id: item.productId,
-          sellingUnits: [
-            {
-              price: Number(item.price),
-              name: item.unitName,
-              displayLabel: item.unitLabel || item.unitName,
-              minOrderQty: 1,
-              qtyPerUnit: Number(item.qtyPerUnit ?? 0),
-              orderIncrement: 1,
-              isDefault: true,
-            },
-          ],
-        })
-        return {
-          ...inputOrder,
-          lineItemId: item.id,
-          quantity: Number(item.quantity),
-          unitQuantity: Number(item.unitQuantity),
-          subtotal: Number(item.subtotal),
-          taxAmount: Number(item.taxAmount),
-          total: Number(item.total),
-        }
-      }),
     })
 
     initializedRef.current = true

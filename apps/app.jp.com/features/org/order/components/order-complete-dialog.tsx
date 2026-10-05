@@ -105,7 +105,7 @@ export function OrderCompleteDialog({
                         {item.title}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {formatUSD(item.price)} {item.uom && `/ ${item.uom}`}
+                        {formatUSD(item.price)}
                       </p>
                     </div>
 
@@ -116,7 +116,7 @@ export function OrderCompleteDialog({
                           inputMode="decimal"
                           placeholder="0"
                           className="h-8 text-right"
-                          suffix={item.uom ? item.uom : ""}
+                          suffix={item.stockUOM ? item.stockUOM : ""}
                         />
                       )}
                     </form.AppField>

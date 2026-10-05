@@ -15,11 +15,18 @@ const label = (
   stockUOM: string,
   catchWeight: boolean,
   displayLabel?: string | null
-) =>
-  displayLabel ||
-  (name === stockUOM
-    ? getUnit(name)?.label || name
-    : `${catchWeight ? "~" : ""}${packSize} ${stockUOM} ${name}`)
+) => {
+  if (displayLabel) {
+    return displayLabel
+  }
+
+  if (name === stockUOM) {
+    return getUnit(name)?.label || name
+  }
+  if (packSize <= 0) return ""
+
+  return `${catchWeight ? "~" : ""}${packSize} ${stockUOM} ${name}`
+}
 
 export function withCalculatedPrices(product: ProductInput): SellUnit[] {
   const packSize = toNumber(product.packSize)

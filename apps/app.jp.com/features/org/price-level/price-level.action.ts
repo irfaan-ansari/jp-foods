@@ -121,7 +121,7 @@ export const updatePriceLevel = orgActionClient({
           .onConflictDoUpdate({
             target: [priceLevelItem.priceLevelId, priceLevelItem.productId],
             set: {
-              adjustmentValue: sql`excluded.adjustmentValue`,
+              adjustmentValue: sql`excluded.adjustment_value`,
             },
           })
       )

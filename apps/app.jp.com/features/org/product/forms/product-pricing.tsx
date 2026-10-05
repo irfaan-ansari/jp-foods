@@ -34,9 +34,6 @@ export const ProductPricing = withForm({
             const isCatchWeight = pricingBasis === "catch-weight"
             const units = withCalculatedPrices(values)
 
-            const rate = (unit: (typeof units)[number]) =>
-              isFixed ? unit.price / unit.packSize : unit.displayPrice
-
             return (
               <CardContent className="space-y-6">
                 <FieldGroup className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -105,10 +102,20 @@ export const ProductPricing = withForm({
                       <field.TextField
                         label={`Price per ${getUnit(isFixed ? sellUOM : stockUOM)?.label.toLowerCase()}`}
                         placeholder="2.50"
-                        className="**:data-[slot=input-group-addon]:uppercase lg:col-span-2"
+                        className="**:data-[slot=input-group-addon]:uppercase"
                         inputMode="decimal"
                         prefix="$"
                         suffix={`/ ${isFixed ? sellUOM : stockUOM}`}
+                      />
+                    )}
+                  </form.AppField>
+                  <form.AppField name="displayLabel">
+                    {(field) => (
+                      <field.TextField
+                        label="Label (optional)"
+                        placeholder="5LB Case"
+                        className="**:data-[slot=input-group-addon]:uppercase"
+                        inputMode="decimal"
                       />
                     )}
                   </form.AppField>
@@ -195,6 +202,7 @@ export const ProductPricing = withForm({
                         type="button"
                         variant="outline"
                         className="w-full border-dashed"
+                        disabled={values.pricingBasis !== "fixed"}
                         onClick={() =>
                           field.pushValue({
                             name: stockUOM,
@@ -224,12 +232,17 @@ export const ProductPricing = withForm({
                         <span>{unit.displayLabel}</span>
                         <span className="text-right tabular-nums">
                           <b className="text-primary">
-                            {formatUSD(rate(unit))} / {stockUOM}
+                            {formatUSD(unit.displayPrice)}{" "}
+                            {values.pricingBasis !== "fixed"
+                              ? `/ ${stockUOM}`
+                              : ""}
                           </b>
-                          <span className="block text-xs text-muted-foreground">
-                            {isCatchWeight && "~"}
-                            {formatUSD(unit.price)}
-                          </span>
+                          {values.pricingBasis !== "fixed" && (
+                            <span className="block text-xs text-muted-foreground">
+                              {isCatchWeight && "~"}
+                              {formatUSD(unit.price)}
+                            </span>
+                          )}
                         </span>
                       </li>
                     ))}

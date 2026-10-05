@@ -1,8 +1,8 @@
-import { OrganizationSelectType, ProductSelectType } from "@jp/db"
 import { styles } from "./styles"
-import { formatPhone, formatUSD } from "@jp/utils"
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
 import { format } from "date-fns"
+import { formatPhone, formatUSD } from "@jp/utils"
+import { OrganizationSelectType, ProductSelectType } from "@jp/db"
+import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
 
 const colors = {
   background: "#13360c",
@@ -39,6 +39,9 @@ export const CatalogPDF = (data: CatalogProps) => {
             styles.header,
             {
               borderBottom: 0,
+              display: "flex",
+              flexDirection: "row",
+              alignItems: "center",
               padding: 12,
               justifyContent: "space-between",
               backgroundColor: colors.background,
@@ -64,13 +67,12 @@ export const CatalogPDF = (data: CatalogProps) => {
                 style={{ ...styles.logo, width: 50 }}
               />
             </View>
-            <View>
+            <View style={{display: "flex", flexDirection: "column", justifyContent: 'flex-start', gap: 4}}>
               <Text
                 style={[
                   styles.docTitle,
                   {
                     color: "#fff",
-                    marginBottom: 18,
                     textTransform: "uppercase",
                   },
                 ]}
@@ -83,7 +85,6 @@ export const CatalogPDF = (data: CatalogProps) => {
                   {
                     color: "#fff",
                     fontSize: 9,
-
                     fontWeight: 500,
                   },
                 ]}
@@ -192,8 +193,8 @@ export const CatalogPDF = (data: CatalogProps) => {
                     { color: colors.background, fontWeight: "bold" },
                   ]}
                 >
-                  {/* @ts-ignore */}
-                  {formatUSD(product.price)} / {product.uom}
+                  
+                  {formatUSD(product.price??0)} / {product.stockUOM}
                 </Text>
               </View>
             ))}
@@ -240,7 +241,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                           width: "48.5%",
                           flexDirection: "row",
                           paddingHorizontal: 12,
-                          paddingTop: 4,
+                          paddingTop: 2,
                           paddingBottom: 2,
                           justifyContent: "space-between",
                           alignItems: "flex-start",
@@ -248,7 +249,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                       >
                         <Text
                           style={[
-                            styles.label,
+                           styles.tagline,
                             {
                               fontSize: 8,
                               textTransform: "none",
@@ -274,7 +275,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                           ]}
                         >
                           {formatUSD(product.price)}
-                          {product.uom ? ` / ${product.uom}` : ""}
+                          {product.pricingBasis !=='fixed' ? ` / ${product.stockUOM}` : ""}
                         </Text>
                       </View>
                     ))}

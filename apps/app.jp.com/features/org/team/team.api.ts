@@ -58,7 +58,7 @@ export const teamRoutes = app
         },
         limit,
         offset,
-        orderBy: (t, { desc }) => [desc(t.createdAt), desc(t.id)],
+        orderBy: (t, { desc }) => [desc(t.createdAt)],
       }),
       db.$count(team, and(...conditions)),
     ])

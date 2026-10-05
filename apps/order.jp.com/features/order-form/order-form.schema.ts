@@ -3,8 +3,8 @@ import z from "zod"
 const lineItemSchema = z.object({
   productId: z.number().positive(),
   lineItemId: z.number().optional(),
-  unitName: z.string().min(1),
-  quantity: z.number().positive(),
+  unit: z.string().min(1),
+  quantity: z.number().int().positive(),
 })
 
 export const orderSchema = z.object({

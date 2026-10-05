@@ -166,7 +166,7 @@ export const PackingSlip = ({ data }: { data: OrderInvoiceProps }) => {
               >
                 <View style={{ width: "15%" }}>
                   <Text style={styles.tableCellPacking}>
-                    {item.quantity} {item.unitName}
+                    {item.quantity} {item.unit}
                   </Text>
                 </View>
                 <View style={{ width: "15%" }}>

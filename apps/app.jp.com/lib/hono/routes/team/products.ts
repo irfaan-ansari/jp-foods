@@ -58,7 +58,7 @@ export const products = app
               id: true,
               orderId: true,
               quantity: true,
-              unitName: true,
+              unit: true,
               createdAt: true,
             },
             limit: 1,

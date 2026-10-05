@@ -113,12 +113,13 @@ export const completeOrder = orgActionClient({ order: ["update"] })
       items: existing.lineItems.map((item) => ({
         id: item.id,
         price: Number(item.price),
+        pricingBasis: item.pricingBasis,
         quantity: Number(item.quantity),
-        qtyPerUnit: item.qtyPerUnit,
+        packSize: Number(item.packSize),
         catchWeight: !!item.catchWeight,
         isTaxable: !!item.isTaxable,
         taxRate: Number(item.taxRate ?? 0),
-        actualUnitQuantity:
+        unitQuantity:
           submittedWeights.get(item.id) ?? Number(item.unitQuantity),
       })),
       charges: Number(existing.charges?.amount ?? 0),

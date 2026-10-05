@@ -22,7 +22,7 @@ export const completeOrderSchema = z.object({
     .object({
       lineItemId: z.number().int().positive(),
       title: z.string(),
-      uom: z.string().nullable(),
+      stockUOM: z.string().nullable(),
       price: z.string(),
       unitQuantity: unitQuantitySchema,
     })

@@ -30,6 +30,7 @@ import {
   InputGroupButton,
   InputGroupInput,
 } from "@jp/ui/components/input-group"
+import { Button } from "@jp/ui/components/button"
 
 export const ProductPreview = withForm({
   defaultValues: {} as ProductFormSchema,
@@ -99,7 +100,6 @@ export const ProductPreview = withForm({
             splitUnits,
           })
 
-          console.log(sellUnits)
           const defaultUnit =
             sellUnits.find((unit) => unit.isDefault) ?? sellUnits[0]
           return (
@@ -216,64 +216,52 @@ export const ProductPreview = withForm({
                                 </span>
                               )}
                             </span>
-                            <span className="text-sm font-medium text-muted-foreground">
-                              • {unit.displayLabel}
-                            </span>
+                            {unit.packSize > 1 && (
+                              <span className="text-sm font-medium text-muted-foreground">
+                                • {unit.displayLabel}
+                              </span>
+                            )}
                           </div>
                           <div className="mt-4">
-                            <InputGroup>
-                              <InputGroupAddon>
-                                <InputGroupButton
-                                  type="button"
-                                  variant="default"
-                                  disabled={quantity === 0}
-                                  onClick={() =>
-                                    setQuantity(unit.name, quantity - 1)
-                                  }
-                                >
-                                  <Minus />
-                                </InputGroupButton>
-                              </InputGroupAddon>
-                              <InputGroupAddon align="inline-end">
-                                <InputGroupButton
-                                  type="button"
-                                  variant="default"
-                                  onClick={() =>
-                                    setQuantity(unit.name, quantity + 1)
-                                  }
-                                >
-                                  <Plus />
-                                </InputGroupButton>
-                              </InputGroupAddon>
-                              <InputGroupInput
-                                className="text-center"
-                                type="number"
-                                inputMode="decimal"
-                                min={0}
-                                aria-label={`Quantity in ${unit.name}`}
-                                value={quantity}
-                                onChange={(event) => {
-                                  const parsed = Number(event.target.value)
-                                  setQuantity(
-                                    unit.name,
-                                    Number.isFinite(parsed) ? parsed : 0
-                                  )
-                                }}
-                              />
-                            </InputGroup>
+                            <div className="flex items-center justify-between gap-1 rounded-2xl border p-1">
+                              <Button
+                                type="button"
+                                size="icon-sm"
+                                variant="secondary"
+                                className="bg-primary/20"
+                                disabled={quantity === 0}
+                                onClick={() =>
+                                  setQuantity(unit.name, quantity - 1)
+                                }
+                              >
+                                <Minus />
+                              </Button>
+                              <span className="flex-1 text-center font-medium">
+                                {quantity}
+                              </span>
+                              <Button
+                                type="button"
+                                size="icon-sm"
+                                className="bg-primary/20"
+                                variant="secondary"
+                                onClick={() =>
+                                  setQuantity(unit.name, quantity + 1)
+                                }
+                              >
+                                <Plus />
+                              </Button>
+                            </div>
                           </div>
                           {quantity > 0 && (
                             <div className="space-y-1.5 rounded-xl bg-secondary p-3">
                               <div className="flex justify-between gap-1">
                                 <span>Items</span>
                                 <span>
-                                  {quantity} x {unit.displayLabel}
+                                  {quantity} {unit.name}
                                 </span>
                               </div>
                               <div className="flex justify-between font-semibold">
-                                <span>
-                                  {isPerUnit ? "Est. total" : "Total"}
-                                </span>
+                                <span>Total</span>
                                 <span className="text-base text-primary">
                                   {formatUSD(total)}
                                 </span>

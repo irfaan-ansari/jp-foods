@@ -253,7 +253,7 @@ function PromotionToast({
         <div className="flex items-center justify-between">
           <span className="font-semibold text-primary">
             {formatUSD(selectedUnit?.price ?? 0)}
-            {selectedUnit?.catchWeight && "/" + product?.uom}
+            {product?.catchWeight && "/" + product.stockUOM}
           </span>
         </div>
       </div>

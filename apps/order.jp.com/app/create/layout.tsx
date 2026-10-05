@@ -34,7 +34,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
     init()
   }, [init, ready])
 
-  console.log(ready, cartReady)
+
   return (
     <React.Fragment>
       <OrderPageHeader>

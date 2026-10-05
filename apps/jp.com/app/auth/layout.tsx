@@ -6,7 +6,7 @@ import { Avatar, AvatarImage } from "@jp/ui/components/avatar"
 
 const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
-    <div className="grid min-h-svh grid-cols-1 bg-linear-to-br from-primary to-lime-900 lg:grid-cols-[1fr_600px]">
+    <div className="grid min-h-svh grid-cols-1 bg-linear-to-br from-primary to-lime-900 lg:grid-cols-[1fr_540px]">
       <div className="relative hidden flex-col pb-64 md:flex">
         <div className="w-full px-6 lg:px-16">
           <header className="flex gap-4 py-6">

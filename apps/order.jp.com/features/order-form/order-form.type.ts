@@ -6,24 +6,25 @@ export type OrderItemInput = {
   lineItemId?: number | undefined
   productId: number
   itemCode: string
+  type: string
+  location: string
   title: string
   isTaxable: boolean
   image: string
   categories: string[]
   quantity: number
   price: number
-  uom: string
-  unitName: string
-  unitLabel: string
-  minOrderQty: number
-  qtyPerUnit: number
-  orderIncrement: number
-  catchWeight: boolean
-  calculatedPrice: number
+  displayPrice: number
+  pricingBasis: string
+  stockUOM: string
+  unit: string
+  displayLabel: string
+  packSize: number
 }
 
 export type OrderItem = OrderItemInput & {
   unitQuantity: number
+  catchWeight: boolean
   subtotal: number
   taxAmount: number
   total: number
