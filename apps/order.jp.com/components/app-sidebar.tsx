@@ -33,7 +33,7 @@ import { TeamSwitcher } from "@/features/team/components"
 import { Sparkles } from "lucide-react"
 import AiDrawer from "@/features/ai/components/ai-drawer"
 
-type MenuIcon = ComponentType<{ className?: string }>
+type MenuIcon = ComponentType<any>
 
 export function AppSidebar({
   session,
