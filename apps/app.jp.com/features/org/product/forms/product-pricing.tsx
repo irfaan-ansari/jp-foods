@@ -115,7 +115,6 @@ export const ProductPricing = withForm({
                         label="Label (optional)"
                         placeholder="5LB Case"
                         className="**:data-[slot=input-group-addon]:uppercase"
-                        inputMode="decimal"
                       />
                     )}
                   </form.AppField>
@@ -189,7 +188,7 @@ export const ProductPricing = withForm({
                             >
                               {(sub) => (
                                 <sub.TextField
-                                  label="Label"
+                                  label="Label (optional)"
                                   placeholder={units[i + 1]?.displayLabel}
                                 />
                               )}
@@ -232,7 +231,7 @@ export const ProductPricing = withForm({
                         <span>{unit.displayLabel}</span>
                         <span className="text-right tabular-nums">
                           <b className="text-primary">
-                            {formatUSD(unit.displayPrice)}{" "}
+                            {formatUSD(unit.price)}{" "}
                             {values.pricingBasis !== "fixed"
                               ? `/ ${stockUOM}`
                               : ""}

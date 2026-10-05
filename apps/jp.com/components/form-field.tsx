@@ -412,7 +412,6 @@ const PhoneField = ({
 }: FieldProps) => {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-  const displayValue = formatPhone(field.state.value ?? "")
 
   return (
     <Field className={cn("gap-2", className)} {...props}>

@@ -14,7 +14,6 @@ export type OrderItemInput = {
   categories: string[]
   quantity: number
   price: number
-  displayPrice: number
   pricingBasis: string
   stockUOM: string
   unit: string

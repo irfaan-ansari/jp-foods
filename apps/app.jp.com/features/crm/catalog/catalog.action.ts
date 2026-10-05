@@ -11,6 +11,7 @@ import { AppError } from "@jp/utils"
 import { eq } from "drizzle-orm"
 import { sendEmail } from "@jp/notifications"
 import { CatalogAccessStatusUpdateEmail } from "@jp/notifications/templates"
+import { waitUntil } from "@vercel/functions"
 
 const getCatalogAccessUrl = (token: string) =>
   `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.JP_APP_URL}/products`
@@ -66,11 +67,13 @@ export const updateCatalogInquiry = authActionClient({
       .where(eq(customerInvite.id, id))
 
     if (exist.status !== data.status) {
-      await sendCatalogAccessEmail({
-        inquiry: exist,
-        status: data.status,
-        token,
-      })
+      waitUntil(
+        sendCatalogAccessEmail({
+          inquiry: exist,
+          status: data.status,
+          token,
+        })
+      )
     }
 
     return { id }
@@ -102,11 +105,13 @@ export const sendCatalogInquiryLink = authActionClient({
         .where(eq(customerInvite.id, id))
     }
 
-    await sendCatalogAccessEmail({
-      inquiry,
-      status: "approved",
-      token,
-    })
+    waitUntil(
+      sendCatalogAccessEmail({
+        inquiry,
+        status: "approved",
+        token,
+      })
+    )
 
     return { id }
   })
@@ -127,6 +132,5 @@ export const deleteCatalogInquiry = authActionClient({
 
     await db.delete(customerInvite).where(eq(customerInvite.id, id))
 
-    // enquee email
     return { id }
   })

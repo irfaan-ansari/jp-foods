@@ -62,7 +62,7 @@ export function OrderCompleteDialog({
     setOpen(next)
     if (!next) form.reset()
   }
-
+  console.log(lineItems)
   return (
     <AppDialog open={open} onOpenChange={handleOpenChange}>
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>
@@ -104,8 +104,9 @@ export function OrderCompleteDialog({
                       <p className="truncate text-sm font-medium">
                         {item.title}
                       </p>
-                      <p className="text-xs text-muted-foreground">
-                        {formatUSD(item.price)}
+                      <p className="text-sm font-medium text-muted-foreground">
+                        {item.quantity} {item.unit} @{formatUSD(item.price)} /
+                        {item.stockUOM}
                       </p>
                     </div>
 
@@ -125,7 +126,7 @@ export function OrderCompleteDialog({
                       selector={(s) => s.values.lineItems[index]?.unitQuantity}
                     >
                       {(qty) => (
-                        <span className="text-right text-sm tabular-nums">
+                        <span className="text-right font-semibold tabular-nums">
                           {formatUSD(Number(item.price) * Number(qty))}
                         </span>
                       )}

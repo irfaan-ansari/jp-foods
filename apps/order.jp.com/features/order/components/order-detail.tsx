@@ -94,13 +94,13 @@ export const OrderDetail = ({ data }: { data: Order }) => {
                         </div>
                       </TableCell>
                       <TableCell className="px-2 py-1.5 text-right text-muted-foreground tabular-nums">
-                        {formatUSD(item.displayPrice)}
+                        {formatUSD(item.price)}
                         {item.pricingBasis !== "fixed" && " /" + item.stockUOM}
                       </TableCell>
                       <TableCell className="px-2 py-1.5 text-right tabular-nums">
                         {item.quantity}
 
-                        {Number(item.packSize) >1&& (
+                        {Number(item.packSize) > 1 && (
                           <div className="text-xs text-muted-foreground">
                             {item.displayLabel || item.unit}
                           </div>

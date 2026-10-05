@@ -20,6 +20,7 @@ import {
 } from "@jp/notifications/templates"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { JobApplicationPDF } from "@jp/pdf"
+import { waitUntil } from "@vercel/functions"
 
 // update fields
 export const updateCandidateApplication = authActionClient({
@@ -48,28 +49,30 @@ export const updateCandidateApplication = authActionClient({
       .where(eq(jobApplication.id, id))
 
     if (status === "rejected") {
-      await Promise.all([
-        sendEmail({
-          to: exist.email,
-          subject: "Jimenez Produce - Application Status Update",
-          template: JobApplicationDeclinedEmail({
-            name: exist.firstName,
-            position: exist.position,
-            reason: rest.statusReason ?? "",
-            detailedReason: rest.statusDetails ?? "",
+      waitUntil(
+        Promise.all([
+          sendEmail({
+            to: exist.email,
+            subject: "Jimenez Produce - Application Status Update",
+            template: JobApplicationDeclinedEmail({
+              name: exist.firstName,
+              position: exist.position,
+              reason: rest.statusReason ?? "",
+              detailedReason: rest.statusDetails ?? "",
+            }),
           }),
-        }),
-        sendEmail({
-          subject: "Candidate Application Status Update",
-          template: CandidateBackgroundCheckRequestEmail({
-            name: exist.firstName,
-            position: exist.position,
-            email: exist.email,
-            phone: exist.phone,
-            reference: `CAND-${exist.id}`,
+          sendEmail({
+            subject: "Candidate Application Status Update",
+            template: CandidateBackgroundCheckRequestEmail({
+              name: exist.firstName,
+              position: exist.position,
+              email: exist.email,
+              phone: exist.phone,
+              reference: `CAND-${exist.id}`,
+            }),
           }),
-        }),
-      ])
+        ])
+      )
     }
     if (status === "under_verification") {
       const PDFBuffer = await renderToBuffer(
@@ -81,21 +84,26 @@ export const updateCandidateApplication = authActionClient({
         { path: exist.dotFrontUrl, filename: "DOT" },
         { path: exist.dotBackUrl, filename: "DOT" },
       ]
-      sendEmail({
-        subject: "Candidate Application Status Update",
-        template: JobApplicationAdminEmail({
-          name: exist.firstName,
-          location: exist.location ?? "",
-          email: exist.email,
-          phone: exist.phone,
-          position: exist.position,
-          status: "under_verification",
-        }),
-        attachments: [
-          ...files.filter((file) => file.path),
-          { content: PDFBuffer.toString("base64"), filename: "Candidate PDF" },
-        ],
-      })
+      waitUntil(
+        sendEmail({
+          subject: "Candidate Application Status Update",
+          template: JobApplicationAdminEmail({
+            name: exist.firstName,
+            location: exist.location ?? "",
+            email: exist.email,
+            phone: exist.phone,
+            position: exist.position,
+            status: "under_verification",
+          }),
+          attachments: [
+            ...files.filter((file) => file.path),
+            {
+              content: PDFBuffer.toString("base64"),
+              filename: "Candidate PDF",
+            },
+          ],
+        })
+      )
     }
 
     return { id: 1 }

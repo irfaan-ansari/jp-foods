@@ -133,17 +133,17 @@ export const PriceListDialog = ({
             </InputGroupAddon>
             <InputGroupAddon align="inline-end">
               <InputGroupButton
-                disabled={listState.sending}
+                disabled={listState.sending || !listState.email}
                 onClick={handleSend}
                 variant="default"
                 className="h-8 bg-sidebar-accent px-3 hover:bg-sidebar-accent/80"
               >
-                Send <ArrowRight />
+                Send
               </InputGroupButton>
             </InputGroupAddon>
             <InputGroupInput
               placeholder="name@email.com"
-              disabled={listState.sending || !listState.email}
+              disabled={listState.sending}
               value={listState.email}
               onChange={(e) =>
                 setListState({ ...listState, email: e.target.value })

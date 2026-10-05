@@ -15,7 +15,7 @@ import {
 
 import { userAc, UserRole, userRoles } from "./permissions/user"
 import { orgAc, orgRoles } from "./permissions/organization"
-import { createAuthMiddleware } from "better-auth/api"
+import { APIError, createAuthMiddleware } from "better-auth/api"
 import { getActiveAccount, getRootDomain } from "./utils"
 import { PORTAL_URLS } from "./permissions"
 
@@ -126,8 +126,14 @@ export const auth = betterAuth({
     }),
     phoneNumberPlugin({
       allowedAttempts: 3,
-      sendOTP: ({ phoneNumber, code }, ctx) => {
-        waitUntil(twilioSendOTP({ phoneNumber }))
+      sendOTP: async({ phoneNumber, code }, ctx) => {
+      try {
+          await twilioSendOTP({ phoneNumber });
+        } catch (error) {
+          throw new APIError("BAD_REQUEST", {
+            message:"Failed to send OTP",
+          });
+        }
       },
       verifyOTP: async ({ phoneNumber, code }, ctx) => {
         const isValid = await twilioVerifyOTP({ phoneNumber, code })

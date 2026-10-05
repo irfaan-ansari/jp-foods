@@ -9,6 +9,7 @@ import {
 import { headers } from "next/headers"
 import { handleAction } from "@/lib/action"
 import { CONTACT_SCHEMA } from "./contact.schema"
+import { waitUntil } from "@vercel/functions"
 
 export const createInvite = handleAction(async (input: unknown) => {
   const data = CONTACT_SCHEMA.parse(input)
@@ -39,29 +40,31 @@ export const createInvite = handleAction(async (input: unknown) => {
     .values(values)
     .returning({ id: customerInvite.id })
 
-  await Promise.all([
-    sendEmail({
-      to: data.email,
-      subject: "Jimenez Produce - Catalog Access Request Received",
-      template: CatalogAccessRequestReceivedEmail({
-        name: data.name,
-        company: data.companyName,
-        message: data.message,
+  waitUntil(
+    Promise.all([
+      sendEmail({
+        to: data.email,
+        subject: "Jimenez Produce - Catalog Access Request Received",
+        template: CatalogAccessRequestReceivedEmail({
+          name: data.name,
+          company: data.companyName,
+          message: data.message,
+        }),
       }),
-    }),
-    sendEmail({
-      subject: "New catalog access request",
-      template: CatalogAccessAdminEmail({
-        name: data.name,
-        company: data.companyName,
-        companyType: data.companyType,
-        email: data.email,
-        phone: data.phone,
-        message: data.message,
-        status: "new",
+      sendEmail({
+        subject: "New catalog access request",
+        template: CatalogAccessAdminEmail({
+          name: data.name,
+          company: data.companyName,
+          companyType: data.companyType,
+          email: data.email,
+          phone: data.phone,
+          message: data.message,
+          status: "new",
+        }),
       }),
-    }),
-  ])
+    ])
+  )
 
   return { id: result?.id }
 })

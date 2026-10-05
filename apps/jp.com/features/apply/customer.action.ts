@@ -8,6 +8,7 @@ import { sendEmail } from "@jp/notifications"
 import { CustomerApplicationInsertType } from "@jp/db"
 import CustomerApplicationReceivedEmail from "@jp/notifications/templates/customer-application-received-email"
 import { CustomerApplicationAdminEmail } from "@jp/notifications/templates"
+import { waitUntil } from "@vercel/functions"
 
 export const createCustomer = handleAction(
   async (data: CustomerApplicationInsertType) => {
@@ -33,34 +34,36 @@ export const createCustomer = handleAction(
       .values(values)
       .returning({ id: customer.id })
 
-    await Promise.all([
-      sendEmail({
-        to: data.companyEmail,
-        subject: `Jimenez Produce - Application Received`,
-        template: CustomerApplicationReceivedEmail({
-          name: data.officerFirst,
-          company: data.companyName,
+    waitUntil(
+      Promise.all([
+        sendEmail({
+          to: data.companyEmail,
+          subject: `Jimenez Produce - Application Received`,
+          template: CustomerApplicationReceivedEmail({
+            name: data.officerFirst,
+            company: data.companyName,
+          }),
         }),
-      }),
-      sendEmail({
-        subject: "New customer application",
-        template: CustomerApplicationAdminEmail({
-          name: data.companyName,
-          phone: data.companyPhone,
-          email: data.companyEmail,
-          address: [
-            data.companyStreet,
-            data.companyCity,
-            data.companyState,
-            data.companyZip,
-          ].join(" "),
-          primaryContact: data.officerFirst,
-          primaryPhone: data.officerMobile,
-          primaryEmail: data.officerEmail,
-          status: "new",
+        sendEmail({
+          subject: "New customer application",
+          template: CustomerApplicationAdminEmail({
+            name: data.companyName,
+            phone: data.companyPhone,
+            email: data.companyEmail,
+            address: [
+              data.companyStreet,
+              data.companyCity,
+              data.companyState,
+              data.companyZip,
+            ].join(" "),
+            primaryContact: data.officerFirst,
+            primaryPhone: data.officerMobile,
+            primaryEmail: data.officerEmail,
+            status: "new",
+          }),
         }),
-      }),
-    ])
+      ])
+    )
 
     return { id: result?.id }
   }

@@ -20,10 +20,7 @@ export function ProductUnits({
   data: Product
   className?: string
 }) {
-  const {
-    selectedUnit,
-    setSelectedUnit,
-  } = useOrderItemQuantity(data)
+  const { selectedUnit, setSelectedUnit } = useOrderItemQuantity(data)
 
   if (!selectedUnit && data.sellUnits.length === 0) {
     return (
@@ -57,16 +54,15 @@ export function ProductUnits({
       )}
 
       {data.sellUnits.map((unit) => {
-        
         return (
-        <TabsContent
-          key={unit.name}
-          value={unit.name}
-          className="space-y-2 rounded-lg"
-        >
-          <div className="space-x-1">
+          <TabsContent
+            key={unit.name}
+            value={unit.name}
+            className="space-y-2 rounded-lg"
+          >
+            <div className="space-x-1">
               <span className="text-lg font-bold text-primary">
-                {formatUSD(unit.displayPrice)}
+                {formatUSD(unit.price)}
                 {isPerUnit && (
                   <span className="text-xs font-normal text-muted-foreground">
                     {" / "}
@@ -80,8 +76,9 @@ export function ProductUnits({
                 </span>
               )}
             </div>
-        </TabsContent>
-      )})}
+          </TabsContent>
+        )
+      })}
     </Tabs>
   )
 }

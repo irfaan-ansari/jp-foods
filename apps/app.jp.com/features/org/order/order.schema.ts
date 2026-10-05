@@ -12,19 +12,16 @@ export const orderSchema = z.object({
 
 export const cancelOrderSchema = orderIdSchema
 
-const unitQuantitySchema = z
-  .string()
-  .regex(/^\d{1,10}(\.\d{1,2})?$/, "Enter a weight with up to 2 decimal places")
-  .refine((value) => Number(value) > 0, "Weight must be greater than zero")
-
 export const completeOrderSchema = z.object({
   lineItems: z
     .object({
       lineItemId: z.number().int().positive(),
       title: z.string(),
+      quantity: z.number(),
       stockUOM: z.string().nullable(),
+      unit: z.string().nullable(),
       price: z.string(),
-      unitQuantity: unitQuantitySchema,
+      unitQuantity: z.string(),
     })
     .array(),
 })
@@ -39,7 +36,7 @@ export const completeOrderActionSchema = orderIdSchema.extend({
   data: z
     .object({
       lineItemId: z.number().int().positive(),
-      unitQuantity: unitQuantitySchema,
+      unitQuantity: z.string(),
     })
     .array(),
 })

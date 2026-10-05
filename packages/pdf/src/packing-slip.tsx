@@ -20,7 +20,7 @@ export const PackingSlip = ({ data }: { data: OrderInvoiceProps }) => {
 
   return (
     <Document title={`Packing Slip - ${data.id}`}>
-      <Page size="A4" style={[{ padding: 20 }]}>
+      <Page size="LETTER" style={[{ padding: 20 }]}>
         <View style={[{ borderWidth: 1 }]}>
           <View
             style={[
