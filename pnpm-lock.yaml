@@ -4,6 +4,8 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+packageExtensionsChecksum: sha256-RZteJzGlTOvnepgMj7nIyiUAdBp3a0Bwq6zbk1nJ3Ec=
+
 importers:
 
   .:
@@ -9671,6 +9673,7 @@ snapshots:
 
   '@solar-icons/react@1.1.1(react-dom@19.2.4(react@19.2.4))(react@19.2.4)':
     dependencies:
+      '@types/react': 19.2.7
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
 

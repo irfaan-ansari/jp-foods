@@ -6,3 +6,9 @@ allowBuilds:
   sharp: true
   unrs-resolver: true
   msw: false
+
+# Solar Icons imports React SVG types without declaring the type dependency.
+packageExtensions:
+  "@solar-icons/react@1.1.1":
+    dependencies:
+      "@types/react": "19.2.7"

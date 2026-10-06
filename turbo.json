@@ -9,7 +9,15 @@
         "DATABASE_URL",
         "BETTER_AUTH_URL",
         "BETTER_AUTH_ORIGINS",
-        "RESEND_API_KEY"
+        "RESEND_API_KEY",
+        "JP_APP_URL",
+        "JP_PORTAL_URL_ADMIN",
+        "JP_PORTAL_URL_CUSTOMER",
+        "TWILIO_ACCOUNT_SID",
+        "TWILIO_AUTH_TOKEN",
+        "TWILIO_SID",
+        "TWILIO_MESSAGING_SERVICE_SID",
+        "TWILIO_FROM_NUMBER"
       ],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**"]
