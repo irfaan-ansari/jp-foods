@@ -1,10 +1,20 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@jp/ui/components/card"
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+} from "@jp/ui/components/card"
 import { CopyButton } from "@jp/ui/components/jp"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { formatDate, formatPhone } from "@jp/utils"
-import { Calendar, Letter, Smartphone, User as UserIcon } from "@solar-icons/react"
+import {
+  Calendar,
+  Letter,
+  Smartphone,
+  User as UserIcon,
+} from "@solar-icons/react"
 import type { User } from "../user.type"
 import { UserDropdown } from "./user-dropdown"
 import { UserRoleBadge, UserStatusBadge } from "./user-card"
@@ -24,14 +34,32 @@ const USER_ROLE_PERMISSIONS: Record<string, Record<string, string[]>> = {
   },
   admin: {
     Portal: ["Organization", "CRM"],
-    Users: ["Create", "List", "Impersonate", "Set password", "Set email", "Set role", "Get", "Ban", "Update"],
+    Users: [
+      "Create",
+      "List",
+      "Impersonate",
+      "Set password",
+      "Set email",
+      "Set role",
+      "Get",
+      "Ban",
+      "Update",
+    ],
     Sessions: ["List", "Revoke"],
-    CRM: ["Create/read customer and candidate invites", "Read/update applications", "Read/update catalog inquiries"],
+    CRM: [
+      "Create/read customer and candidate invites",
+      "Read/update applications",
+      "Read/update catalog inquiries",
+    ],
   },
   reviewer: {
     Portal: ["CRM"],
     Users: ["List", "Set email"],
-    CRM: ["Create/read invites", "Read/update applications", "Read/update catalog inquiries"],
+    CRM: [
+      "Create/read invites",
+      "Read/update applications",
+      "Read/update catalog inquiries",
+    ],
   },
   user: {
     Portal: ["Organization"],
@@ -83,19 +111,24 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
                 className="*:data-[slot=copy-value]:text-foreground"
               />
             </div>
-            <Detail label="Email Verified" value={data.emailVerified ? "Yes" : "No"} />
+            <Detail
+              label="Email Verified"
+              value={data.emailVerified ? "Yes" : "No"}
+            />
             <Detail
               label="Phone Verified"
               value={data.phoneNumberVerified ? "Yes" : "No"}
             />
-            <Detail label="Country Code" value={data.countryCode} />
+
             <Detail label="User ID" value={data.id} />
             {data.banned && (
               <>
                 <Detail label="Ban Reason" value={data.banReason || "—"} />
                 <Detail
                   label="Ban Expires"
-                  value={data.banExpires ? formatDate(data.banExpires) : "Never"}
+                  value={
+                    data.banExpires ? formatDate(data.banExpires) : "Never"
+                  }
                 />
               </>
             )}
@@ -126,7 +159,9 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
             <CardContent className="grid gap-3">
               <Detail
                 label="Last Active"
-                value={data.lastSession ? formatDate(data.lastSession) : "Never"}
+                value={
+                  data.lastSession ? formatDate(data.lastSession) : "Never"
+                }
                 icon={<Calendar className="size-4" />}
               />
               <Detail label="Created At" value={formatDate(data.createdAt)} />

@@ -16,7 +16,7 @@ const COOKIE_NAME = `JP_product_access`
 
 const cookieOptions = {
   secure: true,
-  sameSite: "none",
+  sameSite: "None" as const,
   httpOnly: true,
 }
 
