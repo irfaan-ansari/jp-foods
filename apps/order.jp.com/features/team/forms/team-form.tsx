@@ -28,11 +28,24 @@ export const TeamForm = ({
 }) => {
   const [file, setFile] = useState<null | File>(null)
   const queryClient = useQueryClient()
-  const { name, phoneNumber, email, logo, street, city, state, zip } =
-    defaultValues
+
+  const {
+    name,
+    phoneNumber,
+    managerName,
+    email,
+    logo,
+    street,
+    city,
+    state,
+    zip,
+    receivingName,
+    receivingPhone,
+  } = defaultValues
   const form = useAppForm({
     defaultValues: {
       name,
+      managerName,
       phoneNumber,
       email,
       logo,
@@ -40,12 +53,14 @@ export const TeamForm = ({
       city,
       state,
       zip,
+      receivingName,
+      receivingPhone,
     },
     validators: {
       onSubmit: teamFormSchema,
     },
     onSubmit: async ({ value }) => {
-      const { name, phoneNumber, logo, email, ...metadata } = value
+      const { name, phoneNumber, logo, email, managerName, ...metadata } = value
 
       /** upload logo */
       if (file && file instanceof File) {
@@ -61,9 +76,11 @@ export const TeamForm = ({
         teamId: id,
         data: {
           name,
+          managerName,
           phoneNumber,
           logo,
           email,
+          metadata,
         },
       })
       if (error) toast.error(error?.message)
@@ -136,6 +153,16 @@ export const TeamForm = ({
           )}
         />
         <form.AppField
+          name="managerName"
+          children={(field) => (
+            <field.TextField
+              label="Manager Name"
+              placeholder="Manager name"
+              className="col-span-2"
+            />
+          )}
+        />
+        <form.AppField
           name="phoneNumber"
           children={(field) => (
             <field.PhoneField
@@ -190,6 +217,26 @@ export const TeamForm = ({
           children={(field) => (
             <field.TextField
               label="Zip"
+              placeholder="xxxx"
+              className="col-span-2 lg:col-span-1"
+            />
+          )}
+        />
+        <form.AppField
+          name="receivingName"
+          children={(field) => (
+            <field.TextField
+              label="Receiving Contact Name"
+              placeholder="xxxx"
+              className="col-span-2 lg:col-span-1"
+            />
+          )}
+        />
+        <form.AppField
+          name="receivingPhone"
+          children={(field) => (
+            <field.PhoneField
+              label="Receiving Contact Phone"
               placeholder="xxxx"
               className="col-span-2 lg:col-span-1"
             />

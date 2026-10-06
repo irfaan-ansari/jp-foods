@@ -17,7 +17,7 @@ import {
   PriceLevel,
   type PriceLevelBadge as PriceLevelBadgeProps,
 } from "../price-level.type"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { PriceLevelDropdown } from "./price-level-dropdown"
 import { STATUS } from "../price-level.const"
 import { formatPriceLevelAdjustment } from "../price-level.utils"

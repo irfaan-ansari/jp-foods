@@ -304,6 +304,9 @@ importers:
       '@vercel/blob':
         specifier: ^2.5.0
         version: 2.8.0
+      '@vercel/functions':
+        specifier: ^3.9.11
+        version: 3.9.11(ws@8.21.3)
       date-fns:
         specifier: ^4.4.0
         version: 4.4.0

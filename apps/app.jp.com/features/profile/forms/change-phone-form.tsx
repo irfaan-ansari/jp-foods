@@ -6,7 +6,6 @@ import { toast } from "sonner"
 import { Loader2, Pencil } from "lucide-react"
 import { authClient } from "@jp/auth/client"
 import { useAppForm } from "@/hooks/use-app-form"
-import { phoneSchema } from "@jp/utils"
 import { Button } from "@jp/ui/components/button"
 import {
   Field,

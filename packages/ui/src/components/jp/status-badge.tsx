@@ -1,7 +1,12 @@
 import React from "react"
 import { cn } from "@jp/ui/lib/utils"
 import { Badge } from "@jp/ui/components/badge"
-import { BadgeStatus } from "@/features/shared/shared.type"
+
+export type BadgeStatus = {
+  label: string
+  value: string
+  color: string
+}
 
 export const StatusBadge = ({
   status,

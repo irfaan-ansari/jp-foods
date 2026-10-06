@@ -11,7 +11,7 @@ import {
 } from "@jp/ui/components/card"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { formatDate } from "@jp/utils"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { MESSAGE_STATUS } from "../messaging.const"
 import type { MessageCampaign } from "../messaging.type"
 

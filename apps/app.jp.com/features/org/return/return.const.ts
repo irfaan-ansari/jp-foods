@@ -1,4 +1,5 @@
-import type { BadgeStatus } from "@/features/shared/shared.type"
+import type { BadgeStatus } from "@jp/ui/components/jp/status-badge"
+
 import type { ReturnRow } from "./return.type"
 
 export const STATUS: Record<ReturnRow["status"], BadgeStatus> = {

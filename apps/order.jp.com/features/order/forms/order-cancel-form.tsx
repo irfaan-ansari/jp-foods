@@ -8,7 +8,7 @@ import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@/hooks/use-app-form"
 import { orderCancelSchema } from "../order.schema"
 import { Field, FieldGroup } from "@jp/ui/components/field"
-import { ORDER_CANCEL_REASONS } from "../order.data"
+import { ORDER_CANCEL_REASONS } from "../order.const"
 import { useQueryClient } from "@tanstack/react-query"
 
 export const OrderCancelForm = ({

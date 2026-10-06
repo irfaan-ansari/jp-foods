@@ -3,7 +3,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate, formatUSD } from "@jp/utils"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { STATUS } from "../invoice.const"
 import type { InvoiceRow } from "../invoice.type"
 

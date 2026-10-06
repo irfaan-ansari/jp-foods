@@ -6,9 +6,10 @@ import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { Badge } from "@jp/ui/components/badge"
 import { formatDate, formatUSD, pluralize } from "@jp/utils"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import type { Orders } from "../order.type"
 import { OrderDropdown } from "./order-dropdown"
+import { STATUS } from "../order.const"
 
 const column = createColumnHelper<DataTableFeatures, Orders>()
 
@@ -19,6 +20,7 @@ export const getOrderColumns = (currentUserId?: string) =>
       cell: ({ row }) => {
         const searchParams = useSearchParams()
         const query = searchParams.toString()
+        console.log(row.original.status)
         return (
           <Link
             href={`/orders/${row.original.id}${query ? `?${query}` : ""}`}
@@ -28,7 +30,15 @@ export const getOrderColumns = (currentUserId?: string) =>
               <span className="font-semibold text-foreground hover:underline">
                 #{row.original.id}
               </span>
-              <StatusBadge status={row.original.status} />
+              <StatusBadge
+                status={
+                  STATUS[
+                    row.original.status === "in_progress"
+                      ? "processing"
+                      : row.original.status
+                  ] ?? STATUS.all!
+                }
+              />
             </div>
             <div className="text-xs text-muted-foreground">
               {formatDate(row.original.createdAt)}

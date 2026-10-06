@@ -8,13 +8,7 @@ import { FilterTab } from "@/components/filter-tabs"
 import { OrderClient } from "@/features/order/components/order-client"
 import { SearchQueryParam } from "@jp/ui/components/jp"
 import Link from "next/link"
-
-const OPTIONS = [
-  { label: "All", value: "" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
-  { label: "Cancelled", value: "cancelled" },
-]
+import { STATUS } from "@/features/order/order.const"
 
 const Orders = async () => {
   return (
@@ -29,7 +23,11 @@ const Orders = async () => {
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
-          <FilterTab queryKey="status" tabs={OPTIONS} path="/orders/count" />
+          <FilterTab
+            queryKey="status"
+            tabs={Object.values(STATUS)}
+            path="/orders/count"
+          />
 
           <SearchQueryParam />
         </div>

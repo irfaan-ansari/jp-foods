@@ -15,8 +15,9 @@ import { IconTile } from "@jp/ui/components/icon-tile"
 
 import { formatDate, formatUSD } from "@jp/utils"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { useOrderDashboard } from "@/features/order/order.data"
+import { STATUS } from "@/features/order/order.const"
 
 import { DashboardCard } from "./dashboard-card"
 import { OrderGuides } from "./order-guides"
@@ -110,7 +111,15 @@ export function DashboardClient() {
                 <div className="min-w-0 flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <CardTitle>#{order.id}</CardTitle>
-                    <StatusBadge status={order.status} />
+                    <StatusBadge
+                      status={
+                        STATUS[
+                          order.status === "in_progress"
+                            ? "processing"
+                            : order.status
+                        ] ?? STATUS.all!
+                      }
+                    />
                   </div>
                   <CardDescription className="text-xs">
                     {formatDate(order.createdAt)} · {order.lineItemCount ?? 0}{" "}

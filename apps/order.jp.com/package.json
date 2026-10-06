@@ -26,6 +26,7 @@
     "@tanstack/react-query-devtools": "^5.101.4",
     "@tanstack/react-table": "^9.2.4",
     "@vercel/blob": "^2.5.0",
+    "@vercel/functions": "^3.9.11",
     "date-fns": "^4.4.0",
     "drizzle-orm": "^0.45.2",
     "hono": "^4.12.27",

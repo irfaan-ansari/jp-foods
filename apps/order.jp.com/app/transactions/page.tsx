@@ -8,11 +8,7 @@ import { SearchQueryParam } from "@jp/ui/components/jp"
 
 import { TransactionCard } from "@/features/transaction/components/transaction-card"
 
-const OPTIONS = [
-  { label: "All", value: "" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
-]
+import { STATUS } from "@/features/transaction/transaction.const"
 
 const TransactionsPage = async () => {
   return (
@@ -20,7 +16,11 @@ const TransactionsPage = async () => {
       <PageHeader title="Transactions" />
       <PageContent className="space-y-6">
         <div className="flex items-center justify-between gap-3">
-          <FilterTab queryKey="role" tabs={OPTIONS} path="/team/orders/count" />
+          <FilterTab
+            queryKey="role"
+            tabs={Object.values(STATUS)}
+            path="/team/orders/count"
+          />
 
           <SearchQueryParam />
         </div>

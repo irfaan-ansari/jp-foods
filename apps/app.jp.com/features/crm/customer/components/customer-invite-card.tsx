@@ -15,7 +15,7 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 
 import { CustomerInvite } from "../customer.type"
 import { INVITE_STATUS } from "../customer.const"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { formatDate } from "@jp/utils"
 
 export const CustomerInviteCard = ({ data }: { data: CustomerInvite }) => {

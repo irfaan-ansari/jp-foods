@@ -3,7 +3,7 @@
 import React from "react"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { QueryBoundary } from "@/components/query-boundry"
 import {
   Card,

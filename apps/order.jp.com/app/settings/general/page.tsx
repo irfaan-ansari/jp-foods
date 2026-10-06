@@ -14,11 +14,19 @@ const GeneralPage = () => {
     name = "",
     logo = "",
     phoneNumber = "",
+    managerName = "",
     email = "",
     metadata = {},
   } = data?.data || {}
 
-  const { street = "", city = "", state = "", zip = "" } = metadata || {}
+  const {
+    street = "",
+    city = "",
+    state = "",
+    zip = "",
+    receivingName = "",
+    receivingPhone = "",
+  } = metadata || {}
 
   if (isPending) return <PageContentSkeleton />
 
@@ -31,12 +39,15 @@ const GeneralPage = () => {
       defaultValues={{
         logo: logo as string,
         name,
+        managerName,
         phoneNumber,
         email,
         street,
         city,
         state,
         zip,
+        receivingName,
+        receivingPhone,
       }}
     />
   )

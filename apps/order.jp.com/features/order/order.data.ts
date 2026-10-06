@@ -32,37 +32,3 @@ export const useOrderDashboard = () => {
     refetchOnWindowFocus: false,
   })
 }
-
-export const ORDER_STATUS = {
-  in_progress: {
-    label: "In Progress",
-    color: "#F59E0B",
-  },
-  delayed: {
-    label: "Delayed",
-    color: "#EF4444",
-  },
-  completed: {
-    label: "Completed",
-    color: "#22C55E",
-  },
-  cancelled: {
-    label: "Cancelled",
-    color: "#EF4444",
-  },
-}
-
-export const ORDER_CANCEL_REASONS = [
-  { value: "Ordered in error", label: "Ordered in error" },
-  { value: "Duplicate order", label: "Duplicate order" },
-  { value: "Need to modify the order", label: "Need to modify the order" },
-  {
-    value: "Incorrect products or quantities",
-    label: "Incorrect products or quantities",
-  },
-  {
-    value: "Business needs have changed",
-    label: "Business needs have changed",
-  },
-  { value: "Other", label: "Other" },
-]

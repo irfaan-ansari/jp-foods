@@ -14,7 +14,7 @@ import { CopyButton } from "@jp/ui/components/jp"
 import { IconTile } from "@jp/ui/components/icon-tile"
 import { Skeleton } from "@jp/ui/components/skeleton"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { CandidateApplication } from "../candidate.type"
 import { APPLICATION_STATUS } from "../candidate.const"
 

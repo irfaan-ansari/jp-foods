@@ -99,6 +99,11 @@ export const auth = betterAuth({
               required: true,
               input: true,
             },
+            managerName: {
+              type: "string",
+              required: true,
+              input: true,
+            },
             email: {
               type: "string",
               required: true,
@@ -126,13 +131,13 @@ export const auth = betterAuth({
     }),
     phoneNumberPlugin({
       allowedAttempts: 3,
-      sendOTP: async({ phoneNumber, code }, ctx) => {
-      try {
-          await twilioSendOTP({ phoneNumber });
+      sendOTP: async ({ phoneNumber, code }, ctx) => {
+        try {
+          await twilioSendOTP({ phoneNumber })
         } catch (error) {
           throw new APIError("BAD_REQUEST", {
-            message:"Failed to send OTP",
-          });
+            message: "Failed to send OTP",
+          })
         }
       },
       verifyOTP: async ({ phoneNumber, code }, ctx) => {

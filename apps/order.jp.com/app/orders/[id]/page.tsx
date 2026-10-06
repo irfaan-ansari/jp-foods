@@ -3,7 +3,8 @@ import React from "react"
 import { useParams } from "next/navigation"
 import { ErrorState } from "@jp/ui/components/jp"
 import { useOrder } from "@/features/order/order.data"
-import { StatusBadge } from "@/components/status-badge"
+import { STATUS } from "@/features/order/order.const"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { PageContent, PageHeader } from "@/components/page-content"
 import { OrderDropdown } from "@/features/order/components/order-dropdown"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
@@ -23,7 +24,15 @@ const OrderPage = () => {
         loading={isPending}
         backUrl={`/orders${queryString}`}
       >
-        <StatusBadge status={data?.data?.status || ""} />
+        <StatusBadge
+          status={
+            STATUS[
+              data?.data?.status === "in_progress"
+                ? "processing"
+                : (data?.data?.status ?? "")
+            ] ?? STATUS.all!
+          }
+        />
         {data?.data && <OrderDropdown data={data.data} />}
       </PageHeader>
       <PageContent loading={isPending}>

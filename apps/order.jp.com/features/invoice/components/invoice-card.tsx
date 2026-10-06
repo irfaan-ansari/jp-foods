@@ -14,15 +14,11 @@ import {
 
 import { formatDate, formatUSD } from "@jp/utils"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { StatusBadge } from "@/components/status-badge"
-import { STATUS_MAP } from "@/lib/constant/status"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
+import { STATUS } from "../invoice.const"
 
 export const InvoiceCard = () => {
   const { searchParams } = useRouterStuff()
-  const statuses = Object.keys(STATUS_MAP) as (keyof typeof STATUS_MAP)[]
-
-  const randomStatus =
-    statuses[Math.floor(Math.random() * statuses.length)] ?? "pending"
 
   return (
     <Card
@@ -44,7 +40,7 @@ export const InvoiceCard = () => {
           </CardDescription>
         </div>
         <CardAction className="flex items-center gap-2">
-          <StatusBadge status={randomStatus} />
+          <StatusBadge status={STATUS.issued!} />
         </CardAction>
       </CardHeader>
 

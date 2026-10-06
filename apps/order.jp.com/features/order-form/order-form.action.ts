@@ -17,6 +17,7 @@ import type { OrderItem } from "./order-form.type"
 import { createOrderSchema, updateOrderSchema } from "./order-form.schema"
 import { toInsertLineItems, toInsertOrder } from "./order-form.utils"
 import { resolveOrderItems } from "./order-form.resolve"
+import { waitUntil } from "@vercel/functions"
 
 const toOrderEmailItems = (items: OrderItem[]) =>
   items.map((item) => ({
@@ -38,7 +39,7 @@ export const createOrder = orgActionClient({ order: ["create"] })
   .action(async ({ parsedInput, ctx }) => {
     const { data } = parsedInput
     const { organizationId, teamId, session, user } = ctx
-   
+
     const [orderItems, team, org] = await Promise.all([
       resolveOrderItems(data.items, organizationId, teamId),
       db.query.team.findFirst({
@@ -82,7 +83,7 @@ export const createOrder = orgActionClient({ order: ["create"] })
       teamId,
       taxRate: team?.taxRule?.rate,
     })
-    console.log(createOrderItems)
+
     try {
       await db.insert(lineItem).values(createOrderItems)
     } catch (error) {
@@ -109,18 +110,20 @@ export const createOrder = orgActionClient({ order: ["create"] })
       total: totals.total.toFixed(2),
     }
 
-    // await Promise.all([
-    //   sendEmail({
-    //     to: Array.from(new Set([user.email, team?.email].filter(isString))),
-    //     subject: `Jimenez Produce - Order #${created.id} Received`,
-    //     template: OrderConfirmationEmail(emailPayload),
-    //   }),
-    //   sendEmail({
-    //     to: org?.email,
-    //     subject: `New order #${created.id}`,
-    //     template: OrderAdminEmail(emailPayload),
-    //   }),
-    // ])
+    waitUntil(
+      Promise.all([
+        sendEmail({
+          to: Array.from(new Set([user.email, team?.email].filter(isString))),
+          subject: `Jimenez Produce - Order #${created.id} Received`,
+          template: OrderConfirmationEmail(emailPayload),
+        }),
+        sendEmail({
+          to: org?.email,
+          subject: `New order #${created.id}`,
+          template: OrderAdminEmail(emailPayload),
+        }),
+      ])
+    )
 
     return { success: true, id: created.id }
   })

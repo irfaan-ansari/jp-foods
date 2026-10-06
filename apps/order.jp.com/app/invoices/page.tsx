@@ -1,19 +1,12 @@
 import React from "react"
 
 import { GridWrapper, PageContent, PageHeader } from "@/components/page-content"
-import { Button } from "@jp/ui/components/button"
-import { Plus } from "lucide-react"
 import { FilterTab } from "@/components/filter-tabs"
 
-import { OrderClient } from "@/features/order/components/order-client"
 import { SearchQueryParam } from "@jp/ui/components/jp"
 import { InvoiceCard } from "@/features/invoice/components/invoice-card"
 
-const OPTIONS = [
-  { label: "All", value: "" },
-  { label: "In Progress", value: "in_progress" },
-  { label: "Completed", value: "completed" },
-]
+import { STATUS } from "@/features/invoice/invoice.const"
 
 const InvoicePage = async () => {
   return (
@@ -21,7 +14,11 @@ const InvoicePage = async () => {
       <PageHeader title="Invoices" />
       <PageContent className="space-y-6">
         <div className="flex items-center justify-between gap-3">
-          <FilterTab queryKey="role" tabs={OPTIONS} path="/orders/count" />
+          <FilterTab
+            queryKey="role"
+            tabs={Object.values(STATUS)}
+            path="/orders/count"
+          />
 
           <SearchQueryParam />
         </div>

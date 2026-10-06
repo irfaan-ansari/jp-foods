@@ -14,7 +14,7 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 
 import { CustomerApplication } from "../customer.type"
 import { APPLICATION_STATUS } from "../customer.const"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { formatDate } from "@jp/utils"
 
 export const CustomerApplicationCard = ({

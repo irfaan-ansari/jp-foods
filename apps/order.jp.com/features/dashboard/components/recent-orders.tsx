@@ -1,6 +1,7 @@
 "use client"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { useOrders } from "@/features/order/order.data"
+import { STATUS } from "@/features/order/order.const"
 import { CardDescription, CardTitle } from "@jp/ui/components/card"
 import { formatDate, formatUSD } from "@jp/utils"
 import React from "react"
@@ -21,13 +22,21 @@ export const RecentOrders = () => {
                 <div className="flex-1 space-y-1">
                   <div className="flex items-center gap-2">
                     <CardTitle>#{order.id}</CardTitle>
-                    <StatusBadge status={order.status} />
+                    <StatusBadge
+                      status={
+                        STATUS[
+                          order.status === "in_progress"
+                            ? "processing"
+                            : order.status
+                        ] ?? STATUS.all!
+                      }
+                    />
                   </div>
                   <CardDescription className="text-xs">
                     {formatDate(order.createdAt)}
                   </CardDescription>
                 </div>
-                <div className="text-base font-semibold text-right">
+                <div className="text-right text-base font-semibold">
                   {formatUSD(order.total)}
                 </div>
               </div>

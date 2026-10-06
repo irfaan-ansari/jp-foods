@@ -76,7 +76,7 @@ export const updateCandidateApplication = authActionClient({
     }
     if (status === "under_verification") {
       const PDFBuffer = await renderToBuffer(
-        JobApplicationPDF({ data: exist, includeSSN: false })
+        JobApplicationPDF({ data: exist, includeSSN: true })
       )
       const files = [
         { path: exist.drivingLicenseFrontUrl, filename: "Driver's License" },

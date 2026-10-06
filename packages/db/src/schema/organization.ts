@@ -323,7 +323,9 @@ export const order = pgTable(
     deliveryInstruction: text("delivery_instruction"),
     status: text("status")
       .notNull()
-      .default("in_progress") /* in_progress | completed | cancelled */,
+      .default(
+        "in_progress"
+      ) /* placed |  processing | packed | completed | invoiced | cancelled */,
     invoiceStatus:
       text("invoice_status").default("pending") /** pending | invoiced | */,
     deliveredAt: timestamp("delivered_at"),
