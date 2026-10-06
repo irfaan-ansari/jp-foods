@@ -22,6 +22,44 @@ import { orgActionClient } from "@/lib/safe-action"
 import { renderToBuffer } from "@react-pdf/renderer"
 import { WeeklyPriceListEmail } from "@jp/notifications/templates/weekly-price-list-email"
 
+export const triggerPriceListGeneration = async ({
+  organizationId,
+  timeZone = "America/Chicago",
+}: {
+  organizationId: string
+  timeZone?: string
+}) => {
+  const now = toZonedTime(new Date(), timeZone)
+
+  const effectiveFrom = isSaturday(now)
+    ? startOfDay(now)
+    : startOfDay(previousSaturday(now))
+
+  const effectiveTo = isFriday(now)
+    ? endOfDay(now)
+    : endOfDay(nextFriday(now))
+
+  waitUntil(
+    generatePDF({
+      effectiveFrom,
+      effectiveTo,
+      organizationId,
+    }).then((pdfUrl) =>
+      db
+        .update(organization)
+        .set({
+          priceList: {
+            url: pdfUrl,
+            effectiveFrom: effectiveFrom.toISOString(),
+            effectiveTo: effectiveTo.toISOString(),
+            updatedAt: new Date().toISOString(),
+          },
+        })
+        .where(eq(organization.id, organizationId))
+    )
+  )
+}
+
 export const createPriceList = orgActionClient({ product: ["update"] })
   .inputSchema(
     z.object({
@@ -30,39 +68,10 @@ export const createPriceList = orgActionClient({ product: ["update"] })
   )
   .action(async ({ ctx, parsedInput }) => {
     const { timeZone = "America/Chicago" } = parsedInput
-    const organizationId = ctx.organizationId
-
-    const now = toZonedTime(new Date(), timeZone)
-
-    const effectiveFrom = isSaturday(now)
-      ? startOfDay(now)
-      : startOfDay(previousSaturday(now))
-
-    const effectiveTo = isFriday(now)
-      ? endOfDay(now)
-      : endOfDay(nextFriday(now))
-
-    waitUntil(
-      Promise.all([
-        generatePDF({
-          effectiveFrom,
-          effectiveTo,
-          organizationId,
-        }).then((pdfUrl) =>
-          db
-            .update(organization)
-            .set({
-              priceList: {
-                url: pdfUrl,
-                effectiveFrom: effectiveFrom.toISOString(),
-                effectiveTo: effectiveTo.toISOString(),
-                updatedAt: new Date().toISOString(),
-              },
-            })
-            .where(eq(organization.id, organizationId))
-        ),
-      ])
-    )
+    await triggerPriceListGeneration({
+      organizationId: ctx.organizationId,
+      timeZone,
+    })
     return { success: true }
   })
 

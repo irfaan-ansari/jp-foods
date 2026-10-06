@@ -80,3 +80,31 @@ export const updateProductSchema = z.object({
 export const deleteProductSchema = z.object({
   id: z.number(),
 })
+
+const optionalImportDecimal = z
+  .string()
+  .trim()
+  .optional()
+  .refine(
+    (value) =>
+      value === undefined ||
+      value === "" ||
+      (Number.isFinite(Number(value)) && Number(value) >= 0),
+    {
+      message: "Invalid number",
+    }
+  )
+
+export const productPriceImportRowSchema = z.object({
+  itemCode: z.string().trim().min(1, "Item code is required"),
+  price: optionalImportDecimal,
+  stock: optionalImportDecimal,
+  stockUOM: z.string().trim().optional(),
+  sellUOM: z.string().trim().optional(),
+})
+
+export const productPriceImportSchema = z.object({
+  rows: z.array(productPriceImportRowSchema).min(1, "Import at least one row"),
+})
+
+export type ProductPriceImportRow = z.infer<typeof productPriceImportRowSchema>

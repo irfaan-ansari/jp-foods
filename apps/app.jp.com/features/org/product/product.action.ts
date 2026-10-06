@@ -1,6 +1,6 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { and, eq } from "drizzle-orm"
 import { db, product } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { orgActionClient } from "@/lib/safe-action"
@@ -8,9 +8,11 @@ import { orgActionClient } from "@/lib/safe-action"
 import {
   createProductSchema,
   deleteProductSchema,
+  productPriceImportSchema,
   ProductFormSchema,
   updateProductSchema,
 } from "./product.schema"
+import { triggerPriceListGeneration } from "./price-list.action"
 
 const toProductData = (data: ProductFormSchema) => {
   const {
@@ -167,9 +169,59 @@ export const deleteProduct = orgActionClient({ product: ["delete"] })
       .returning({ id: product.id })
   })
 
-export const importProduct = orgActionClient({ product: ["delete"] }).action(
-  async ({ ctx }) => {
-    const organizationId = ctx.organizationId
-    // TODO: implement import product
-  }
-)
+export const importProductPrices = orgActionClient({ product: ["update"] })
+  .inputSchema(productPriceImportSchema)
+  .action(async ({ parsedInput, ctx }) => {
+    const result = {
+      total: parsedInput.rows.length,
+      updated: 0,
+      notFound: [] as string[],
+      skipped: 0,
+    }
+
+    for (const row of parsedInput.rows) {
+      const data: Partial<{
+        price: string
+        stock: string
+        stockUOM: string
+        sellUOM: string
+      }> = {}
+
+      if (row.price !== undefined && row.price !== "") data.price = row.price
+      if (row.stock !== undefined && row.stock !== "") data.stock = row.stock
+      if (row.stockUOM !== undefined && row.stockUOM !== "") {
+        data.stockUOM = row.stockUOM
+      }
+      if (row.sellUOM !== undefined && row.sellUOM !== "") {
+        data.sellUOM = row.sellUOM
+      }
+
+      if (Object.keys(data).length === 0) {
+        result.skipped += 1
+        continue
+      }
+
+      const updated = await db
+        .update(product)
+        .set(data)
+        .where(
+          and(
+            eq(product.organizationId, ctx.organizationId),
+            eq(product.itemCode, row.itemCode)
+          )
+        )
+        .returning({ id: product.id })
+
+      if (updated.length === 0) {
+        result.notFound.push(row.itemCode)
+      } else {
+        result.updated += 1
+      }
+    }
+
+    if (result.updated > 0) {
+      await triggerPriceListGeneration({ organizationId: ctx.organizationId })
+    }
+
+    return result
+  })
