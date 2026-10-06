@@ -27,7 +27,7 @@ import {
 } from "@jp/ui/components/table"
 
 import { formatUSD } from "@jp/utils"
-import { Buildings, MenuDots, User } from "@solar-icons/react"
+import { Buildings, MenuDots, Restart, User } from "@solar-icons/react"
 import {
   CheckCircle,
   ChevronLeft,
@@ -43,14 +43,43 @@ import React from "react"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { OrderStatusBadge } from "@/features/org/order/components/order-card"
 
-import { Tooltip } from "@jp/ui/components/jp"
+import { Tooltip, useConfirm } from "@jp/ui/components/jp"
+import { updateOrder } from "@/features/org/order/order.action"
+import { toast } from "sonner"
+import { useQueryClient } from "@tanstack/react-query"
 
 const OrderPage = () => {
   const { id } = useParams()
-
+  const { open } = useConfirm()
   const { searchParams } = useRouterStuff()
   const { data: order, isPending, isError, error } = useOrder(id as string)
   const data = order?.data! ?? {}
+  const queryClient = useQueryClient()
+
+  const hanldeProecssing = () => {
+    open({
+      title: "Move to Processing?",
+      description:
+        "This order will be moved to processing and can no longer be canceled or edited.",
+      action: {
+        action: async () => {
+          const { serverError, validationErrors } = await updateOrder({
+            id: Number(id),
+            data: { status: "processing" },
+          })
+          console.log(validationErrors)
+          if (serverError) {
+            toast.error(serverError.message)
+          } else {
+            toast.success("Order updated successfully.")
+            queryClient.invalidateQueries({
+              queryKey: ["orders"],
+            })
+          }
+        },
+      },
+    })
+  }
 
   return (
     <React.Fragment>
@@ -310,6 +339,23 @@ const OrderPage = () => {
                   </div>
 
                   <div className="grid gap-2 px-6">
+                    {/* placed */}
+                    {data.status === "placed" && (
+                      <OrgAccess permission={{ order: ["update"] }}>
+                        {(disabled) => (
+                          <Button
+                            className="w-full"
+                            disabled={disabled}
+                            onClick={hanldeProecssing}
+                          >
+                            <Restart />
+                            Move to Processing
+                          </Button>
+                        )}
+                      </OrgAccess>
+                    )}
+
+                    {/* completed */}
                     {data.status === "completed" &&
                       (data.invoiceStatus === "issued" ? (
                         <Button className="w-full" asChild>
@@ -334,7 +380,9 @@ const OrderPage = () => {
                           )}
                         </OrgAccess>
                       ))}
-                    {data.status === "in_progress" && (
+
+                    {/* processing */}
+                    {data.status === "processing" && (
                       <OrgAccess permission={{ order: ["update"] }}>
                         {(disabled) => (
                           <OrderCompleteDialog

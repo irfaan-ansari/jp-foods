@@ -17,11 +17,6 @@ export const OrderDropdown = ({
 
   const [open, setOpen] = useState(false)
 
-  const cancelDeadline = data.createdAt
-    ? new Date(data.createdAt).getTime() + 15 * 60 * 1000
-    : 0
-  const cancelDisabled = Date.now() > cancelDeadline
-
   return (
     <PopDrawer
       open={open}
@@ -31,24 +26,26 @@ export const OrderDropdown = ({
           size="icon-sm"
           variant="outline"
           className="relative z-1"
-          disabled={data.status !== "in_progress"}
+          disabled={data.status !== "placed"}
         >
           <MenuDots />
         </Button>
       }
       className="*:data-[slot=button]:justify-start"
     >
-      <Button variant="ghost" asChild>
-        <Link href={`/orders/${id}/edit/all`}>
-          <PenNewSquare /> Edit
-        </Link>
-      </Button>
+      {data.status === "placed" && (
+        <Button variant="ghost" asChild>
+          <Link href={`/orders/${id}/edit/all`}>
+            <PenNewSquare /> Edit
+          </Link>
+        </Button>
+      )}
 
       <OrderCancelDialog id={data.id}>
         <Button
           variant="destructive"
           className="justify-start bg-background"
-          disabled={cancelDisabled}
+          disabled={data.status !== "placed"}
         >
           <CloseCircle /> Cancel
         </Button>

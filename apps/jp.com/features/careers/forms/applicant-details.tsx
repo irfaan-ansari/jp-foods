@@ -20,13 +20,13 @@ export const ApplicantDetails = withForm({
         <form.AppField
           name="phone"
           children={(field) => {
-            return <field.TextField label="Phone" />
+            return <field.PhoneField label="Phone number" />
           }}
         />
         <form.AppField
           name="email"
           children={(field) => {
-            return <field.TextField label="Email" />
+            return <field.TextField label="Email address" />
           }}
         />
         <form.AppField

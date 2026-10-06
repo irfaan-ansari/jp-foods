@@ -20,7 +20,7 @@ export const getOrderColumns = (currentUserId?: string) =>
       cell: ({ row }) => {
         const searchParams = useSearchParams()
         const query = searchParams.toString()
-        console.log(row.original.status)
+
         return (
           <Link
             href={`/orders/${row.original.id}${query ? `?${query}` : ""}`}

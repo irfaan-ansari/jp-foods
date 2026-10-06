@@ -8,8 +8,14 @@ import { useQueryClient } from "@tanstack/react-query"
 import type { Order } from "@/features/org/order/order.type"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
-import { cancelOrder } from "@/features/org/order/order.action"
-import { Bill, BillCheck, CalendarMark, CloseCircle } from "@solar-icons/react"
+import { cancelOrder, updateOrder } from "@/features/org/order/order.action"
+import {
+  Bill,
+  BillCheck,
+  CalendarMark,
+  CloseCircle,
+  Restart,
+} from "@solar-icons/react"
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
 import { OrderInvoiceDialog } from "./order-invoice-dialog"
@@ -28,6 +34,29 @@ export const OrderDropdown = ({
 
   const handleAction = (action: string) => {
     switch (action) {
+      case "processing":
+        open({
+          title: "Move to Processing?",
+          description:
+            "This order will be moved to processing and can no longer be canceled or edited.",
+          action: {
+            action: async () => {
+              const { serverError } = await updateOrder({
+                id,
+                data: { status: "processing" },
+              })
+              if (serverError) {
+                toast.error(serverError.message)
+              } else {
+                toast.success("Order updated successfully.")
+                queryClient.invalidateQueries({
+                  queryKey: ["orders"],
+                })
+              }
+            },
+          },
+        })
+        break
       case "cancel":
         open({
           variant: "warning",
@@ -40,6 +69,7 @@ export const OrderDropdown = ({
               if (serverError) {
                 toast.error(serverError.message)
               } else {
+                toast.success("Order cancelled successfully.")
                 queryClient.invalidateQueries({
                   queryKey: ["orders"],
                 })
@@ -70,8 +100,20 @@ export const OrderDropdown = ({
         </a>
       </Button>
 
-      {status === "in_progress" && (
+      {status === "placed" && (
         <>
+          <OrgAccess permission={{ order: ["update"] }}>
+            {(disabled) => (
+              <Button
+                variant="ghost"
+                onClick={() => handleAction("processing")}
+                disabled={disabled}
+              >
+                <Restart /> Move to Processing
+              </Button>
+            )}
+          </OrgAccess>
+
           <OrderScheduleDialog
             id={id}
             defaultValues={{
@@ -84,14 +126,14 @@ export const OrderDropdown = ({
             </Button>
           </OrderScheduleDialog>
 
-          <div className="-mx-4 my-1 border-t md:-mx-2" />
+          <div className="-mx-4 my-1 border-t md:-mx-1" />
           <OrgAccess permission={{ order: ["cancel"] }}>
             {(disabled) => (
               <Button
                 variant="ghost"
                 className="hover:bg-destructive/10 hover:text-destructive"
                 onClick={() => handleAction("cancel")}
-                disabled={disabled || data.status !== "in_progress"}
+                disabled={disabled || data.status !== "placed"}
               >
                 <CloseCircle /> Cancel
               </Button>
@@ -99,6 +141,7 @@ export const OrderDropdown = ({
           </OrgAccess>
         </>
       )}
+
       {status === "completed" &&
         (data.invoiceStatus === "issued" ? (
           <Button variant="ghost" asChild>

@@ -18,7 +18,7 @@ export const ApplicantEducation = withForm({
   render: function Render({ form }) {
     return (
       <FieldGroup className="grid grid-cols-1 @2xl:grid-cols-2">
-        <div className="border-l-4 border-blue-500 bg-secondary p-4 text-base font-medium @2xl:col-span-2">
+        <div className="rounded-xl border bg-secondary/40 p-4 text-sm font-semibold @2xl:col-span-2">
           High School
         </div>
         <form.AppField
@@ -59,7 +59,7 @@ export const ApplicantEducation = withForm({
             )
           }}
         />
-        <div className="border-l-4 border-blue-500 bg-secondary p-4 text-base font-medium @2xl:col-span-2">
+        <div className="rounded-xl border bg-secondary/40 p-4 text-sm font-semibold @2xl:col-span-2">
           College
         </div>
         <form.AppField
@@ -109,7 +109,7 @@ export const ApplicantEducation = withForm({
                 {field.state.value.map((subField, i) => {
                   return (
                     <React.Fragment key={i}>
-                      <div className="flex items-center justify-between border-l-4 border-blue-500 bg-secondary p-4 text-base font-medium @2xl:col-span-2">
+                      <div className="flex items-center justify-between rounded-xl border bg-secondary/40 p-4 text-sm font-semibold @2xl:col-span-2">
                         Other Education
                         <Button
                           variant="outline"

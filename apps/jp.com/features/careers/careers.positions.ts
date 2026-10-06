@@ -3,6 +3,7 @@ import { TerritoryManagerForm } from "./forms/territory-manager-form"
 
 export const OPEN_POSITIONS = [
   {
+    department: "Administration",
     title: "Office Administrator",
     location: "Alabama / Louisiana",
     tags: [],
@@ -29,6 +30,7 @@ export const OPEN_POSITIONS = [
     form: TerritoryManagerForm,
   },
   {
+    department: "Sales",
     title: "Territory Manager (Sales)",
     location: "Alabama / Louisiana",
     tags: ["Bilingual (English/Spanish)"],
@@ -53,6 +55,7 @@ export const OPEN_POSITIONS = [
     form: TerritoryManagerForm,
   },
   {
+    department: "Operations",
     title: "Operations Manager",
     location: "Alabama / Louisiana",
     tags: ["Bilingual (English/Spanish)"],
@@ -78,6 +81,7 @@ export const OPEN_POSITIONS = [
     form: TerritoryManagerForm,
   },
   {
+    department: "Warehouse",
     title: "Warehouse Associate",
     location: "Alabama / Louisiana",
     tags: [],
@@ -102,6 +106,7 @@ export const OPEN_POSITIONS = [
     form: TerritoryManagerForm,
   },
   {
+    department: "Transportation",
     title: "Route Driver (Non-CDL)",
     location: "",
     tags: [],
@@ -128,6 +133,7 @@ export const OPEN_POSITIONS = [
     form: DriverForm,
   },
   {
+    department: "Transportation",
     title: "Route Driver (CDL Class B)",
     location: "",
     tags: [],

@@ -24,7 +24,11 @@ import {
 import type { AuthType, DeviceSessions } from "@jp/auth"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
-import { AltArrowRight, QuestionCircle, Settings } from "@solar-icons/react"
+import {
+  AltArrowRight,
+  HeadphonesRoundSound,
+  Settings,
+} from "@solar-icons/react"
 import { ComponentType } from "react"
 import { SIDEBAR_NAV } from "@/lib/constant/nav"
 import { UserProfileDropdown } from "@/features/profile/components"
@@ -57,7 +61,7 @@ export function AppSidebar({
         <SidebarMenu>
           <SidebarMenuItem>
             <AiDrawer>
-              <SidebarMenuButton className="w-full justify-start">
+              <SidebarMenuButton className="w-full justify-start" disabled>
                 <Sparkles className="size-3.5 text-fuchsia-500" />
                 <span className="bg-linear-to-r from-fuchsia-500 via-blue-500 to-purple-500 bg-clip-text text-transparent">
                   AI Assistant
@@ -96,13 +100,12 @@ export function AppSidebar({
       <SidebarFooter className="p-0">
         <SidebarGroup>
           <SidebarMenu>
-            <MenuLink icon={Settings} label="Settings" href="/settings" />
             <MenuLink
-              icon={QuestionCircle}
-              label="Help & Support"
-              href="/help"
-              disabled={true}
+              icon={HeadphonesRoundSound}
+              label="Support"
+              href="/support"
             />
+            <MenuLink icon={Settings} label="Settings" href="/settings" />
           </SidebarMenu>
         </SidebarGroup>
         <SidebarGroup>

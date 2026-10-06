@@ -21,7 +21,7 @@ export const ApplicantExperience = withForm({
                   return (
                     <React.Fragment key={i}>
                       {i > 0 && (
-                        <div className="flex items-center justify-between border-l-4 border-blue-500 bg-secondary p-4 text-base font-medium @2xl:col-span-2">
+                        <div className="flex items-center justify-between rounded-xl border bg-secondary/40 p-4 text-sm font-semibold @2xl:col-span-2">
                           <Button
                             variant="outline"
                             size="icon"
@@ -42,7 +42,7 @@ export const ApplicantExperience = withForm({
                       <form.AppField
                         name={`experience[${i}].phone`}
                         children={(field) => (
-                          <field.TextField label="Employer Phone" />
+                          <field.PhoneField label="Employer phone number" />
                         )}
                       />
                       <form.AppField

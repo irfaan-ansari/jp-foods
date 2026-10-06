@@ -159,7 +159,10 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     ])
 
     if (!existing) throw new AppError("NOT_FOUND")
-    if (existing.status !== "in_progress") throw new AppError("INVALID_REQUEST")
+    if (existing.status !== "placed")
+      throw new AppError("INVALID_REQUEST", {
+        message: "Order cannot be edited.",
+      })
 
     const charges = {
       type: existing.charges?.type ?? DEFAULT_CHARGE.type,

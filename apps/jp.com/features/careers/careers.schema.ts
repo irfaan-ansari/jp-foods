@@ -4,14 +4,7 @@ import { fileSchema } from "@/features/apply/customer.schema"
 const applicantSchema = z.object({
   firstName: z.string().min(1, "First name is required"),
   lastName: z.string().min(1, "Last name is required"),
-  phone: z
-    .string()
-    .min(1, "Phone is required")
-    .trim()
-    .regex(
-      /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}$/,
-      "Invalid phone number"
-    ),
+  phone: z.string(),
   email: z.email("Email is required"),
   dob: z.string().min(1, "DOB is required"),
   socialSecurity: z.string().min(1, "Social security is required"),
@@ -99,7 +92,7 @@ const employementSchema = z.object({
   experience: z.array(
     z.object({
       employerName: z.string().min(1, "Employer name is required"),
-      phone: z.string().min(1, "Employer phone is required"),
+      phone: z.string(),
       address: z.string().min(1, "Employer address is required"),
       position: z.string().min(1, "Position held is required"),
       fromDate: z.string().min(1, "From date is required"),

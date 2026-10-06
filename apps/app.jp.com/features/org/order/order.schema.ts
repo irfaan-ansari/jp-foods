@@ -5,7 +5,7 @@ const orderIdSchema = z.object({
 })
 
 export const orderSchema = z.object({
-  status: z.enum(["completed"]),
+  status: z.enum(["completed", "processing"]),
   deliveryDate: z.string(),
   deliveryWindow: z.string(),
 })
@@ -47,5 +47,5 @@ export const rescheduleOrderSchema = orderIdSchema.extend({
   data: orderSchema.omit({ status: true }),
 })
 export const updateOrderSchema = orderIdSchema.extend({
-  data: orderSchema.omit({ status: true }),
+  data: orderSchema.omit({ deliveryDate: true, deliveryWindow: true }),
 })

@@ -5,11 +5,13 @@ import { MobileNav } from "@/components/mobile-nav"
 import { SITE_CONFIG } from "@/lib/config"
 import { usePathname } from "next/navigation"
 import { Button } from "@jp/ui/components/button"
-import { ArrowRight } from "lucide-react"
 import { Login2 } from "@solar-icons/react"
+import { authClient } from "@jp/auth/client"
 
 export const Header = () => {
   const pathname = usePathname()
+
+  const { data: session } = authClient.useSession()
 
   const isActive = (href: string) => {
     return pathname === href || (pathname.startsWith(href) && href !== "/")

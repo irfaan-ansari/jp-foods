@@ -28,7 +28,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
 
     if (!existing) throw new AppError("NOT_FOUND")
 
-    if (["cancelled", "completed"].includes(existing.status)) {
+    if (["cancelled", "completed", "processing"].includes(existing.status)) {
       throw new AppError("CONFLICT")
     }
 
@@ -38,13 +38,10 @@ export const updateOrder = orgActionClient({ order: ["update"] })
         ...data,
       })
       .where(
-        and(
-          eq(order.id, id),
-          eq(order.organizationId, ctx.organizationId),
-          eq(order.status, "in_progress")
-        )
+        and(eq(order.id, id), eq(order.organizationId, ctx.organizationId))
       )
       .returning({ id: order.id })
+
     return result
   })
 
