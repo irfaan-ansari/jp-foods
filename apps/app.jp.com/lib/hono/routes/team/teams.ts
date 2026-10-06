@@ -34,11 +34,22 @@ export const teams = app
 
     const response = await db.query.team.findFirst({
       where: (team, { eq }) => eq(team.id, teamId!),
+      with: {
+        organization: {
+          columns: {
+            id: true,
+            name: true,
+            phoneNumber: true,
+            email: true,
+          },
+        },
+        taxRule: true,
+      },
     })
 
-    const tax = await db.query.taxRule.findFirst({
-      where: (tr, { eq }) => eq(tr.id, response?.taxRuleId!),
-    })
+    // const tax = await db.query.taxRule.findFirst({
+    //   where: (tr, { eq }) => eq(tr.id, response?.taxRuleId!),
+    // })
 
-    return c.json({ success: true, data: { ...response, taxRule: tax } }, 200)
+    return c.json({ success: true, data: { ...response } }, 200)
   })

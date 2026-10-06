@@ -57,7 +57,7 @@ export const MobileNav = ({
           <Button
             asChild
             size="xl"
-            className="w-full justify-start border-primary text-primary"
+            className="w-full justify-start border-primary/50 text-primary"
             onClick={() => setOpen(false)}
             variant="outline"
           >
@@ -73,7 +73,7 @@ export const MobileNav = ({
             onClick={() => setOpen(false)}
           >
             <Link href="/apply">
-              Apply for an Account
+              Become a Customer
               <ArrowRight className="ml-auto" />
             </Link>
           </Button>

@@ -1,15 +1,14 @@
 import React from "react"
-import Image from "next/image"
 import {
-  ABOUT_SECTIONS,
-  CONTACT_SECTIONS,
-  COVERAGE_LOCATIONS,
-} from "@/data/web"
+  HowWeWork,
+  Warehouses,
+} from "@/features/about/components/about-sections"
+import Image from "next/image"
+import { MapPin } from "lucide-react"
+import { COVERAGE_LOCATIONS } from "@/data/web"
 import { CTA } from "@/components/cta"
-import Markdown from "@/components/markdown"
 import { Container } from "@/components/container"
 import { Marquee } from "@jp/ui/components/marquee"
-import { AtSign, MapPin, MapPinned, Smartphone } from "lucide-react"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 import { OrbitingCircles } from "@jp/ui/components/orbiting-circles"
 import {
@@ -236,107 +235,8 @@ const AboutPage = () => {
           </Map>
         </div>
       </section>
-      {/* how we work */}
-      <section className="mt-16">
-        <Container>
-          <div className="space-y-8">
-            <div className="max-w-xl space-y-4">
-              <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
-                How We Work
-              </h2>
-              <p className="text-base/normal opacity-80">
-                We don’t promise perfection — we promise responsiveness,
-                consistency, and a focus on long-term relationships. Our
-                approach is simple, reliable, and built around supporting your
-                day-to-day operations.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-              {ABOUT_SECTIONS.howWeWork.map((item, i) => (
-                <div
-                  key={i}
-                  className="flex flex-col gap-4 rounded-2xl border p-6 shadow-sm"
-                >
-                  <h4 className="font-heading text-3xl font-semibold">
-                    {item.title}
-                  </h4>
-                  <p className="text-muted-foreground">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* warehouses and story */}
-      <section className="mt-16">
-        <Container>
-          <div className="grid grid-cols-1 gap-16 md:grid-cols-2">
-            <div className="space-y-8">
-              <div className="max-w-xl space-y-4">
-                <h2 className="flex-1 font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-7xl/tight">
-                  Warehouses
-                </h2>
-                <p className="text-muted-foregorund">
-                  Our Robertsdale and Lafayette warehouses allow us to structure
-                  AM-focused routes along the I-10 corridor and surrounding
-                  markets.
-                </p>
-              </div>
-              <div className="flex flex-col gap-6">
-                {CONTACT_SECTIONS.locations.map((loc) => (
-                  <div className="space-y-2" key={loc.name}>
-                    <h5 className="text-lg font-semibold">{loc.name}</h5>
-                    <div className="space-y-1">
-                      {loc.phone && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
-                            <Smartphone className="size-4" />
-                          </span>
-                          <a
-                            href={`tel:${loc.phone}`}
-                            className="text-muted-foreground transition ease-out hover:text-foreground hover:underline"
-                          >
-                            {loc.phone}
-                          </a>
-                        </div>
-                      )}
-                      {loc.email && (
-                        <div className="flex items-center gap-2">
-                          <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
-                            <AtSign className="size-4" />
-                          </span>
-                          <a
-                            href={`mailto:${loc.email}`}
-                            className="text-muted-foreground transition ease-out hover:text-foreground hover:underline"
-                          >
-                            {loc.email}
-                          </a>
-                        </div>
-                      )}
-                      <div className="flex items-center gap-2">
-                        <span className="inline-flex size-8 items-center justify-center rounded-full bg-invert text-invert-foreground shadow-sm">
-                          <MapPinned className="size-4" />
-                        </span>
-                        <p className="text-muted-foreground">{loc.street}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-            <div className="space-y-8 rounded-2xl border bg-linear-to-br from-secondary via-lime-50 to-background p-8">
-              <div className="space-y-4">
-                <h2 className="font-heading text-4xl/tight font-semibold sm:text-5xl/tight md:text-6xl/tight">
-                  Built to grow
-                </h2>
-              </div>
-              <Markdown content={ABOUT_SECTIONS.story} />
-            </div>
-          </div>
-        </Container>
-      </section>
+      <HowWeWork />
+      <Warehouses />
 
       {/* cta */}
       <CTA />

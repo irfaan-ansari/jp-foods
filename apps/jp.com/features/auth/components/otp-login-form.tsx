@@ -199,7 +199,6 @@ export function OTPLoginForm({
                       }}
                       type="button"
                     >
-                     
                       Change Number
                     </Button>
                   </div>
@@ -229,22 +228,22 @@ export function OTPLoginForm({
                             <InputOTPSlot index={0} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={1} />
+                            <InputOTPSlot index={1} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={2} />
+                            <InputOTPSlot index={2} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={3} />
+                            <InputOTPSlot index={3} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={4} />
+                            <InputOTPSlot index={4} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={4} />
+                            <InputOTPSlot index={4} />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                             <InputOTPSlot index={4} />
+                            <InputOTPSlot index={4} />
                           </InputOTPGroup>
                         </InputOTP>
                         {isInvalid && (
@@ -262,7 +261,7 @@ export function OTPLoginForm({
                     variant="link"
                     size="sm"
                     type="button"
-                    className="h-auto p-0 text-sm tabular-nums disabled:text-muted-foreground text-foreground disabled:opacity-100"
+                    className="h-auto p-0 text-sm text-foreground tabular-nums disabled:text-muted-foreground disabled:opacity-100"
                     disabled={!canResend || isSubmitting}
                     onClick={() => handleSendOtp()}
                   >
@@ -274,10 +273,7 @@ export function OTPLoginForm({
 
             {/* alert */}
             {error && (
-              <Alert
-                variant="destructive"
-      
-              >
+              <Alert variant="destructive">
                 <AlertCircleIcon />
                 <AlertTitle className="line-clamp-2">{error}</AlertTitle>
 
@@ -327,6 +323,12 @@ export function OTPLoginForm({
           <Link href="/auth/signin-password">Sign in with password</Link>
         </Button>
       </Field>
+      <div className="flex items-center justify-start gap-2">
+        <span className="text-muted-foreground">Dont have an account?</span>
+        <Link href="/apply" className="hover:text-primary hover:underline">
+          Request an account
+        </Link>
+      </div>
     </form>
   )
 }

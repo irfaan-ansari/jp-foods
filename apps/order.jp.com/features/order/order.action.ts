@@ -21,10 +21,9 @@ export const cancelOrder = orgActionClient({ order: ["cancel"] })
     })
 
     if (!existing) throw new AppError("NOT_FOUND")
-    if (existing.status !== "in_progress")
+    if (existing.status !== "placed")
       throw new AppError("INVALID_REQUEST", {
         message: "Order cannot be cancelled.",
-        description: "Only orders in progress can be cancelled.",
       })
 
     await db

@@ -20,7 +20,7 @@ export const ApplicantAccidentHistory = withForm({
                 {field.state.value.map((subField, i) => {
                   return (
                     <React.Fragment key={i}>
-                      <div className="flex items-center justify-between border-l-4 border-blue-500 bg-secondary p-4 text-base font-medium @2xl:col-span-2">
+                      <div className="flex items-center justify-between rounded-xl border bg-secondary/40 p-4 text-sm font-semibold @2xl:col-span-2">
                         Accident
                         <Button
                           variant="outline"

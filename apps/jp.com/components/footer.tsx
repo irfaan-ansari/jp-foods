@@ -3,12 +3,12 @@ import Image from "next/image"
 
 import { Container } from "@/components/container"
 import { SITE_CONFIG } from "@/lib/config"
-import { AtSign, MapPinned, Phone, Smartphone } from "lucide-react"
+import { AtSign, MapPinned, Smartphone } from "lucide-react"
 import { CONTACT_SECTIONS, COVERAGE_LOCATIONS, HOME_SECTIONS } from "@/data/web"
 
 export const Footer = () => {
   return (
-    <footer className="py-16">
+    <footer className="border-t py-16">
       <Container>
         <div className="grid grid-cols-9 gap-8">
           {/* branding */}

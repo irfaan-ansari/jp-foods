@@ -174,6 +174,12 @@ export function LoginForm({
             <Link href="/auth/signin">Sign in with OTP</Link>
           </Button>
         </Field>
+        <div className="flex items-center justify-start gap-2">
+          <span className="text-muted-foreground">Dont have an account?</span>
+          <Link href="/apply" className="hover:text-primary hover:underline">
+            Request an account
+          </Link>
+        </div>
       </FieldGroup>
     </form>
   )
