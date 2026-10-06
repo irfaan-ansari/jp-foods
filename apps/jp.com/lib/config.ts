@@ -26,5 +26,9 @@ export const SITE_CONFIG = {
       label: "Careers",
       href: "/careers",
     },
+    {
+      label: "Track Application",
+      href: "/track",
+    },
   ],
 }
