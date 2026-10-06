@@ -1,0 +1,1 @@
+ALTER TABLE "line_item" DROP COLUMN "display_price";

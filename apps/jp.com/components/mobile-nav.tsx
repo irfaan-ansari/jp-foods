@@ -34,7 +34,7 @@ export const MobileNav = ({
       <PopoverContent
         side="bottom"
         align="center"
-        sideOffset={0}
+        sideOffset={20}
         className="h-(--radix-popper-available-height) w-svw! rounded-none ring-0"
       >
         <PopoverTitle className="sr-only">Menu</PopoverTitle>

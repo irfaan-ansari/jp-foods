@@ -31,7 +31,7 @@ export const DEFAULT_VALUES: CustomerFormType = {
   guarantorRole: "",
   salesRepresentative: "",
 
-  lockboxPermission: "",
+  lockboxPermission: "yes",
   deliverySchedule: [
     {
       day: "",
@@ -74,13 +74,7 @@ export const ROLES = [
   "VP",
   "Other",
 ]
-export const SALES_REPRESENTATIVE = [
-  "Elizabeth",
-  "Jorge",
-  "Yhessenia",
-  "Luisa",
-  "Other",
-]
+export const SALES_REPRESENTATIVE = ["Elizabeth", "Jorge", "Yhessenia", "Other"]
 
 export const SALES_REPS = {
   Elizabeth: "elizabeth@jimenezproduce.com",

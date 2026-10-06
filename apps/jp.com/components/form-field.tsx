@@ -10,7 +10,6 @@ import { Input } from "@jp/ui/components/input"
 import { Button } from "@jp/ui/components/button"
 import { Calendar } from "@jp/ui/components/calendar"
 import { useFieldContext } from "@/hooks/use-app-form"
-import { formatPhone } from "@jp/utils"
 import { PhoneInput } from "@jp/ui/components/phone-input"
 import {
   Field,
@@ -283,7 +282,9 @@ const RadioField = ({
               <Field orientation="horizontal" className="gap-4">
                 <FieldContent>
                   <FieldTitle>{opt.label}</FieldTitle>
-                  <FieldDescription>{opt.description}</FieldDescription>
+                  {opt.description && (
+                    <FieldDescription>{opt.description}</FieldDescription>
+                  )}
                 </FieldContent>
 
                 <RadioGroupItem value={opt.value as string} id={id} />
@@ -423,6 +424,7 @@ const PhoneField = ({
         value={field.state.value}
         aria-invalid={isInvalid}
         placeholder="123-123-1234"
+        className="h-12"
         onChange={(value) => field.handleChange(value)}
       />
 

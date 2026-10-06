@@ -49,20 +49,11 @@ const HomePage = () => {
                   </h2>
                   <p className="text-base italic">{hero.badge}</p>
                   <div className="flex flex-wrap gap-4">
-                    <Button
-                      asChild
-                      variant="outline"
-                      size="xl"
-                      className="text-foreground"
-                    >
-                      <Link href="/products">
-                        View Products <ArrowRight />{" "}
-                      </Link>
-                    </Button>
                     <Button asChild size="xl">
-                      <Link href="/apply">
-                        Apply for an Account <ArrowRight />
-                      </Link>
+                      <Link href="/apply">Become a Customer</Link>
+                    </Button>
+                    <Button asChild size="xl" variant="secondary">
+                      <Link href="/products">Browse Catalog</Link>
                     </Button>
                   </div>
                 </div>

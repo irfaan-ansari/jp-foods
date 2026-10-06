@@ -36,7 +36,7 @@ export const BusinessAdditionalContact = withForm({
         <form.AppField
           name="orderingPhone"
           children={(field) => (
-            <field.TextField
+            <field.PhoneField
               label={t[field.name]}
               placeholder={t[`${field.name}Placeholder`]}
             />

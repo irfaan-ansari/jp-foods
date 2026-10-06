@@ -6,6 +6,7 @@ import { SITE_CONFIG } from "@/lib/config"
 import { usePathname } from "next/navigation"
 import { Button } from "@jp/ui/components/button"
 import { ArrowRight } from "lucide-react"
+import { Login2 } from "@solar-icons/react"
 
 export const Header = () => {
   const pathname = usePathname()
@@ -44,25 +45,28 @@ export const Header = () => {
               ))}
             </ul>
           </nav>
-          <Button asChild size="xl" className="lg:hidden">
-            <a href="/auth/signin" target="_blank">
-              Place Order
-            </a>
+          <Button
+            asChild
+            size="xl"
+            className="bg-sidebar-accent hover:bg-sidebar-accent/90 lg:hidden"
+          >
+            <Link href="/auth/select">
+              <Login2 />
+              Login
+            </Link>
           </Button>
           <div className="hidden flex-[1_1_0] justify-end gap-4 lg:flex">
             <Button asChild size="xl">
-              <Link href="/auth/select">
-                Place Order
-                <ArrowRight />
-              </Link>
+              <Link href="/apply">Become a Customer</Link>
             </Button>
             <Button
               asChild
               size="xl"
               className="bg-sidebar-accent hover:bg-sidebar-accent/90"
             >
-              <Link href="/apply">
-                Apply for an Account <ArrowRight />
+              <Link href="/auth/select">
+                <Login2 />
+                Login
               </Link>
             </Button>
           </div>

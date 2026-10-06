@@ -15,7 +15,7 @@ import {
   ArrowLeft,
   ArrowRight,
   CircleCheck,
-  Loader,
+  Loader2,
   ShieldCheck,
 } from "lucide-react"
 import { uploadFile } from "@/lib/upload"
@@ -88,9 +88,8 @@ export const CustomerForm = () => {
 
         if (success) {
           open({
-            title: "Application Submitted Successfully",
-            description: `Your application has been successfully submitted and is now under review. 
-            If additional information is required, our team will contact you.`,
+            title: "Application Submitted",
+            description: `Your application has been successfully submitted.`,
 
             action: {
               label: "Back to home",
@@ -121,9 +120,9 @@ export const CustomerForm = () => {
   return (
     <div
       dir={dir}
-      className="grid items-start gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10"
+      className="grid items-start gap-8 lg:grid-cols-[320px_minmax(0,1fr)] lg:gap-10"
     >
-      <aside className="lg:sticky lg:top-28">
+      <aside className="lg:sticky lg:top-30">
         <div className="mb-6 flex items-center justify-between lg:block">
           <div>
             <p className="text-xs font-semibold tracking-widest text-primary uppercase">
@@ -139,7 +138,7 @@ export const CustomerForm = () => {
         </div>
         <ol
           aria-label={t.applicationSteps}
-          className="hidden space-y-2 lg:block"
+          className="-mx-3 hidden space-y-2 lg:block"
         >
           {steps.map((item, index) => {
             const Icon = item.icon
@@ -159,8 +158,8 @@ export const CustomerForm = () => {
                   )}
                 </span>
                 <div>
-                  <p className="text-sm font-semibold">{labels[index]}</p>
-                  <p className="mt-0.5 text-xs leading-5 text-muted-foreground">
+                  <p className="font-medium">{labels[index]}</p>
+                  <p className="mt-0.5 text-sm leading-5 text-muted-foreground">
                     {descriptions[index]}
                   </p>
                 </div>
@@ -194,7 +193,7 @@ export const CustomerForm = () => {
               <LanguageSelector
                 value={language}
                 onValueChange={setLanguage}
-                className="gap-0.5 rounded-xl border bg-secondary/50 p-1"
+                className="gap-0.5 rounded-xl bg-secondary p-0.5"
               />
             </div>
             <div aria-live="polite">
@@ -246,10 +245,9 @@ export const CustomerForm = () => {
             <div className="flex flex-wrap gap-2 sm:gap-3">
               {step > 0 && step < steps.length && (
                 <Button
-                  size="lg"
-                  className="rounded-lg"
+                  size="xl"
                   type="button"
-                  variant="outline"
+                  variant="secondary"
                   onClick={() => form.setFieldValue("step", step - 1)}
                 >
                   <ArrowLeft />
@@ -258,13 +256,8 @@ export const CustomerForm = () => {
               )}
               <form.Subscribe selector={(state) => state.isSubmitting}>
                 {(isSubmitting) => (
-                  <Button
-                    size="lg"
-                    className="rounded-lg px-5 sm:min-w-36"
-                    type="submit"
-                    disabled={isSubmitting}
-                  >
-                    {isSubmitting && <Loader className="animate-spin" />}
+                  <Button size="xl" type="submit" disabled={isSubmitting}>
+                    {isSubmitting && <Loader2 className="animate-spin" />}
                     {step < steps.length - 1
                       ? t.applicationContinue
                       : t.applicationSubmit}

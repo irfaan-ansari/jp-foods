@@ -64,7 +64,7 @@ export const BusinessDetails = withForm({
           <form.AppField
             name="companyPhone"
             children={(field) => (
-              <field.TextField
+              <field.PhoneField
                 label={t[field.name]}
                 placeholder={t[`${field.name}Placeholder`]}
               />
