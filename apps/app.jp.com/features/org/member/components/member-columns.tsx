@@ -4,12 +4,18 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import { User } from "@solar-icons/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@jp/ui/components/avatar"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate, formatPhone } from "@jp/utils"
 import type { Member } from "../member.type"
 import { MemberRoleBadge } from "./member-card"
 import { MemberDropdown } from "./member-dropdown"
+import { isUserActive } from "@/features/shared/shared.utils"
 
 const column = createColumnHelper<DataTableFeatures, Member>()
 
@@ -27,6 +33,7 @@ function MemberLink({ member }: { member: Member }) {
         <AvatarFallback>
           <User className="size-4" />
         </AvatarFallback>
+        {isUserActive(member.user?.lastSeenAt) && <AvatarBadge />}
       </Avatar>
       <div className="min-w-0">
         <div className="flex items-center gap-2">

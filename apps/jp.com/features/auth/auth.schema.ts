@@ -13,8 +13,13 @@ export const otpLoginSchema = z.object({
 export const loginFormSchema = z.object({
   username: z.union(
     [
-      z.string().regex(/^[6-9]\d{9}$/, "Enter a valid phone number"),
-      z.email("Enter valid email"),
+      z
+        .string()
+        .regex(
+          /^\+[1-9]\d{7,14}$/,
+          "Enter a valid phone number with country code"
+        ),
+      z.email("Enter a valid email"),
     ],
     "Enter valid email or phone number"
   ),

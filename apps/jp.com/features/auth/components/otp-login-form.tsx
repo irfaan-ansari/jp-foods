@@ -43,7 +43,7 @@ export function OTPLoginForm({
       error: "",
     },
     validators: {
-      onChange: ({ value }) => {
+      onBlur: ({ value }) => {
         const phone = otpLoginSchema.shape.phoneNumber.safeParse(
           value.phoneNumber
         )
@@ -60,8 +60,6 @@ export function OTPLoginForm({
     },
     onSubmit: async ({ value }) => {
       const { phoneNumber, code } = value
-      console.log(phoneNumber, code)
-      form.setFieldValue("step", "verify")
 
       // send otp
       if (value.step === "send") {
@@ -108,15 +106,13 @@ export function OTPLoginForm({
     })
 
     if (serverError || validationErrors) {
-      toast.error(
-        serverError?.message ??
-          "Unable to send the code. Check your phone number and try again.",
-        { id: toastId }
-      )
+      toast.error(serverError?.message ?? "Unable to send the code.", {
+        id: toastId,
+      })
+
       form.setFieldValue(
         "error",
-        serverError?.message ??
-          "Unable to send the code. Check your phone number and try again."
+        serverError?.message ?? "Unable to send the code."
       )
       return
     }
@@ -225,25 +221,40 @@ export function OTPLoginForm({
                           containerClassName="w-full justify-between"
                         >
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={0} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={0}
+                            />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={1} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={1}
+                            />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={2} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={2}
+                            />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={3} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={3}
+                            />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={4} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={4}
+                            />
                           </InputOTPGroup>
                           <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={4} />
-                          </InputOTPGroup>
-                          <InputOTPGroup className="*:h-12 *:w-12">
-                            <InputOTPSlot index={4} />
+                            <InputOTPSlot
+                              className="data-[active=true]:ring-1 data-[active=true]:ring-ring"
+                              index={5}
+                            />
                           </InputOTPGroup>
                         </InputOTP>
                         {isInvalid && (
@@ -325,9 +336,17 @@ export function OTPLoginForm({
       </Field>
       <div className="flex items-center justify-start gap-2">
         <span className="text-muted-foreground">Dont have an account?</span>
-        <Link href="/apply" className="hover:text-primary hover:underline">
-          Request an account
-        </Link>
+        <Button
+          asChild
+          variant="link"
+          size="sm"
+          type="button"
+          className="h-auto p-0 text-sm text-foreground tabular-nums disabled:text-muted-foreground disabled:opacity-100"
+        >
+          <Link href="/apply" className="hover:underline">
+            Request an account
+          </Link>
+        </Button>
       </div>
     </form>
   )

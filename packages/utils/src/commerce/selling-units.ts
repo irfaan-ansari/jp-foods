@@ -42,7 +42,8 @@ export function withCalculatedPrices(product: ProductInput): SellUnit[] {
       getUnit(name)?.label || name,
       packSize,
       stockUOM,
-      catchWeight
+      catchWeight,
+      product.displayLabel
     ),
     price: rate,
     packSize,

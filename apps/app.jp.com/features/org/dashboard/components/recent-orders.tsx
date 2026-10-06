@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { formatUSD } from "@jp/utils"
+import { formatDate, formatUSD, pluralize } from "@jp/utils"
 import { Skeleton } from "@jp/ui/components/skeleton"
 import { OrderStatusBadge } from "@/features/org/order/components/order-card"
 import type { Order } from "../../order/order.type"
@@ -45,21 +45,18 @@ export function RecentOrders({
           >
             <div className="min-w-0 flex-1 space-y-1">
               <p className="truncate text-sm font-medium">
-                #{order.id} · {order.team?.name ?? "Deleted customer"}
+                #{order.id} <OrderStatusBadge status={order.status} />
               </p>
               <p className="text-xs text-muted-foreground">
-                {order.createdAt
-                  ? new Date(order.createdAt).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  : "Date unavailable"}
+                {formatDate(order.createdAt)} •
+                {order.team?.name ?? "Deleted customer"}
               </p>
             </div>
             <div className="shrink-0 space-y-1 text-right">
               <p className="text-sm font-semibold">{formatUSD(order.total)}</p>
-              <OrderStatusBadge status={order.status} />
+              <p className="text-xs text-muted-foreground">
+                {pluralize(order.lineItemCount, `${order.lineItemCount} item`)}
+              </p>
             </div>
           </Link>
         </li>

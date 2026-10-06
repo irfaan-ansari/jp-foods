@@ -5,11 +5,8 @@ import { and, count, eq, ilike, inArray, max, or } from "drizzle-orm"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { AppContext, authMiddleware } from "@/lib/hono/middlewares"
 
-const app = new Hono<AppContext>()
-
-app.use("*", authMiddleware({ user: ["list"] }))
-
-export const userRoutes = app
+export const userRoutes = new Hono<AppContext>()
+  .use("*", authMiddleware({ user: ["list"] }))
   .get("/", async (c) => {
     const { q, status, role, ...rest } = c.req.query()
     const { page, limit, offset } = parsePagination(rest)

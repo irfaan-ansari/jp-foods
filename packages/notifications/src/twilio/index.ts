@@ -31,7 +31,7 @@ export const twilioVerifyOTP = async ({
   return await twilioClient.verify.v2
     .services(serviceId!)
     .verificationChecks.create({
-      to: `${phoneNumber}`,
+      to: phoneNumber,
       code,
     })
 }

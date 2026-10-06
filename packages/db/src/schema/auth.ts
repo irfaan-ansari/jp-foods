@@ -26,10 +26,10 @@ export const user = pgTable("user", {
   banReason: text("ban_reason"),
   banExpires: timestamp("ban_expires"),
   phoneNumber: text("phone_number").unique().notNull(),
-  countryCode: text("country_code").default("+1").notNull(),
   phoneNumberVerified: boolean("phone_number_verified"),
   defaultOrganizationId: text("default_organization_id"),
   defaultTeamId: text("default_team_id"),
+  lastSeenAt: timestamp("last_seen_at"),
 })
 
 export const session = pgTable(

@@ -1,11 +1,39 @@
 "use client"
-import React, { useState } from "react"
+import React, { useEffect, useState } from "react"
+import { authClient } from "@jp/auth/client"
 import { Toaster } from "@jp/ui/components/sonner"
 import { TooltipProvider } from "@jp/ui/components/tooltip"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ConfirmDialogProvider } from "@jp/ui/components/jp"
 import { teamQueryOptions } from "@/features/team/team.data"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
+import { presenceApiClient } from "@/lib/api-client"
+
+const HEARTBEAT_INTERVAL = 30 * 1000
+
+const postPresence = async () => {
+  await presenceApiClient.post<{ success: boolean }>("/")
+}
+
+const PresenceHeartbeat = () => {
+  const { data, isPending } = authClient.useSession()
+
+  useEffect(() => {
+    if (isPending || !data?.session) return
+
+    const heartbeat = () => {
+      void postPresence().catch(() => undefined)
+    }
+
+    heartbeat()
+    const intervalId = window.setInterval(heartbeat, HEARTBEAT_INTERVAL)
+
+    return () => window.clearInterval(intervalId)
+  }, [data?.session?.id, isPending])
+
+  return null
+}
+
 export const Provider = ({
   children,
 }: {
@@ -34,6 +62,7 @@ export const Provider = ({
 
   return (
     <QueryClientProvider client={queryClient}>
+      <PresenceHeartbeat />
       <TooltipProvider>
         <ConfirmDialogProvider>{children}</ConfirmDialogProvider>
         <ReactQueryDevtools initialIsOpen={false} />

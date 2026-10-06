@@ -4,6 +4,12 @@ export type GetOptions = {
   signal?: AbortSignal
 }
 
+export type PostOptions<TBody = unknown> = {
+  body?: TBody
+  headers?: HeadersInit
+  signal?: AbortSignal
+}
+
 export type ApiClientOptions = {
   baseURL: string
   basePath?: string

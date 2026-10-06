@@ -15,10 +15,9 @@ import {
 const COOKIE_NAME = `JP_product_access`
 
 const cookieOptions = {
+  secure: true,
+  sameSite: "None" as const,
   httpOnly: true,
-  secure: process.env.NODE_ENV === "production",
-  sameSite: "Lax" as const,
-  path: "/",
 }
 
 async function validateToken(token: string) {
