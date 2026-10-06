@@ -2,7 +2,9 @@
 
 import type { OrganizationPermission, UserPermission } from "@jp/auth"
 import { authClient } from "@jp/auth/client"
-import { useQuery } from "@tanstack/react-query"
+import { apiClient } from "@/lib/api-client"
+import { useMutation, useQuery } from "@tanstack/react-query"
+import type { PresenceResponse, UpdatePresenceResponse } from "./auth.type"
 
 export const useUserPermission = ({ ...permissions }: UserPermission) => {
   const { data, isPending, error } = authClient.useSession()
@@ -32,5 +34,20 @@ export const useOrgPermission = (permission: OrganizationPermission) => {
       return data
     },
     staleTime: 60 * 60 * 1000,
+  })
+}
+
+export const usePresence = () => {
+  return useQuery({
+    queryKey: ["presence"],
+    queryFn: () => apiClient.get<PresenceResponse>("/presence"),
+    refetchInterval: 30 * 1000,
+    staleTime: 30 * 1000,
+  })
+}
+
+export const usePostPresence = () => {
+  return useMutation({
+    mutationFn: () => apiClient.post<UpdatePresenceResponse>("/presence"),
   })
 }

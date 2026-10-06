@@ -1,12 +1,6 @@
 import React from "react"
-import {
-  Card,
-  CardAction,
-  CardContent,
-  CardHeader,
-  CardTitle,
-} from "@jp/ui/components/card"
-import { TrashBinMinimalistic, User } from "@solar-icons/react"
+import { Card, CardContent, CardHeader, CardTitle } from "@jp/ui/components/card"
+import { User } from "@solar-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { CopyButton } from "@jp/ui/components/jp/copy-button"
 import { formatPhone, formatDate } from "@jp/utils"
@@ -15,30 +9,11 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 import type { Member } from "../member.type"
 import { authClient } from "@jp/auth/client"
 import { Badge } from "@jp/ui/components/badge"
-import { Button } from "@jp/ui/components/button"
-import { Tooltip, useConfirm } from "@jp/ui/components/jp"
 
 export const MemberCard = ({ data }: { data: Member }) => {
-  const { open } = useConfirm()
-
   const { data: session } = authClient.useSession()
   const isCurrent = session?.user?.id === data.id
-  const { user, teamId, userId } = data
-
-  const handleRemove = () => {
-    open({
-      variant: "destructive",
-      title: "Remove member?",
-      action: {
-        action: async () => {
-          const { error } = await authClient.organization.removeTeamMember({
-            teamId,
-            userId,
-          })
-        },
-      },
-    })
-  }
+  const { user } = data
 
   return (
     <Card
@@ -46,22 +21,6 @@ export const MemberCard = ({ data }: { data: Member }) => {
       size="sm"
     >
       <CardHeader className="relative">
-        <CardAction className="absolute top-0 right-4 flex items-center gap-2">
-          {/* <StatusBadge status={data.role} /> */}
-          {/* <MemberDropdown data={data} />  */}
-          {user.banned}
-          {!isCurrent && (
-            <Tooltip content="Remove">
-              <Button
-                size="icon-sm"
-                variant="destructive"
-                onClick={handleRemove}
-              >
-                <TrashBinMinimalistic />
-              </Button>
-            </Tooltip>
-          )}
-        </CardAction>
         <div className="flex items-center gap-2">
           <Avatar size="lg" className="overflow-hidden rounded-xl *:rounded-md">
             <AvatarImage src={user.image ?? ""} />

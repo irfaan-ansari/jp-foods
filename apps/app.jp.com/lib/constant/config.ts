@@ -101,12 +101,6 @@ export const SETTINGS_NAV = [
         items: [],
       },
       {
-        label: "Invitations",
-        href: "/org/settings/invitations",
-        icon: Letter,
-        items: [],
-      },
-      {
         label: "Tax Rules",
         href: "/org/settings/tax-rules",
         icon: Dollar,

@@ -176,9 +176,17 @@ export function LoginForm({
         </Field>
         <div className="flex items-center justify-start gap-2">
           <span className="text-muted-foreground">Dont have an account?</span>
-          <Link href="/apply" className="hover:text-primary hover:underline">
-            Request an account
-          </Link>
+          <Button
+            asChild
+            variant="link"
+            size="sm"
+            type="button"
+            className="h-auto p-0 text-sm text-foreground tabular-nums disabled:text-muted-foreground disabled:opacity-100"
+          >
+            <Link href="/apply" className="hover:underline">
+              Request an account
+            </Link>
+          </Button>
         </div>
       </FieldGroup>
     </form>

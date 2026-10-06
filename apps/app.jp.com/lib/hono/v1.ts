@@ -6,6 +6,7 @@ import { orgRoutes } from "./routes/org"
 import { teamRoutes } from "./routes/team"
 import { driverRoutes } from "./routes/driver"
 import { uploadRoutes } from "./routes/uploads"
+import { presenceRoutes } from "./routes/presence"
 
 export const v1 = new Hono()
   // public routes
@@ -13,6 +14,7 @@ export const v1 = new Hono()
   .route("/products", productRoutes)
 
   // admin routes
+  .route("/presence", presenceRoutes)
   .route("/users", userRoutes)
   .route("/crm", crmRoutes)
   .route("/org", orgRoutes)

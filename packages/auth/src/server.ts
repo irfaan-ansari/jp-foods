@@ -45,6 +45,23 @@ export const auth = betterAuth({
       enabled: true,
       updateEmailWithoutVerification: false,
     },
+    additionalFields: {
+      defaultOrganizationId: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      defaultTeamId: {
+        type: "string",
+        required: false,
+        input: true,
+      },
+      lastSeenAt: {
+        type: "date",
+        required: false,
+        input: false,
+      },
+    },
   },
   plugins: [
     multiSession(),
@@ -134,15 +151,21 @@ export const auth = betterAuth({
       sendOTP: async ({ phoneNumber, code }, ctx) => {
         try {
           await twilioSendOTP({ phoneNumber })
-        } catch (error) {
+        } catch {
           throw new APIError("BAD_REQUEST", {
-            message: "Failed to send OTP",
+            message: "Failed to send OTP, please try again.",
           })
         }
       },
       verifyOTP: async ({ phoneNumber, code }, ctx) => {
-        const isValid = await twilioVerifyOTP({ phoneNumber, code })
-        return isValid.status === "approved"
+        try {
+          const result = await twilioVerifyOTP({ phoneNumber, code })
+          return result.status === "approved"
+        } catch {
+          throw new APIError("BAD_REQUEST", {
+            message: "Unable to verify OTP, please try again.",
+          })
+        }
       },
     }),
     emailOTP({
@@ -194,7 +217,11 @@ export const auth = betterAuth({
 
   hooks: {
     after: createAuthMiddleware(async (ctx) => {
-      const paths = ["/sign-in", "/multi-session/set-active"]
+      const paths = [
+        "/sign-in",
+        "/multi-session/set-active",
+        "/phone-number/verify",
+      ]
       if (!paths.some((path) => ctx.path.startsWith(path))) return
 
       const newSession = ctx.context.newSession

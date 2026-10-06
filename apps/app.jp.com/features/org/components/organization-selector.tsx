@@ -5,12 +5,7 @@ import { Image } from "lucide-react"
 import { authClient } from "@jp/auth/client"
 import { QueryState } from "@jp/ui/components/jp"
 import { Checkbox } from "@jp/ui/components/checkbox"
-import {
-  FieldContent,
-  FieldDescription,
-  FieldLabel,
-  FieldTitle,
-} from "@jp/ui/components/field"
+import { FieldContent, FieldLabel, FieldTitle } from "@jp/ui/components/field"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 
 type OrganizationSelectorProps = {

@@ -4,12 +4,18 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import { User as UserIcon } from "@solar-icons/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@jp/ui/components/avatar"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate, formatPhone } from "@jp/utils"
 import type { User } from "../user.type"
 import { UserRoleBadge, UserStatusBadge } from "./user-card"
 import { UserDropdown } from "./user-dropdown"
+import { isUserActive } from "@/features/shared/shared.utils"
 
 const column = createColumnHelper<DataTableFeatures, User>()
 
@@ -27,6 +33,7 @@ function UserLink({ user }: { user: User }) {
         <AvatarFallback>
           <UserIcon className="size-4" />
         </AvatarFallback>
+        {isUserActive(user.lastSeenAt) && <AvatarBadge />}
       </Avatar>
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2">

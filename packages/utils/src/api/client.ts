@@ -1,6 +1,6 @@
 import { AppError } from "../error"
 import { buildUrl } from "./build-url"
-import { ApiClientOptions, GetOptions } from "./types"
+import { ApiClientOptions, GetOptions, PostOptions } from "./types"
 
 export function createApiClient({ baseURL, basePath = "" }: ApiClientOptions) {
   async function get<T>(path: string, options?: GetOptions): Promise<T> {
@@ -28,7 +28,40 @@ export function createApiClient({ baseURL, basePath = "" }: ApiClientOptions) {
     return data as T
   }
 
+  async function post<T, TBody = unknown>(
+    path: string,
+    options?: PostOptions<TBody>
+  ): Promise<T> {
+    const fullPath = `${basePath}${path}`
+
+    const url = buildUrl(baseURL, fullPath)
+
+    const response = await fetch(url, {
+      method: "POST",
+      credentials: "include",
+      headers: {
+        ...(options?.body ? { "content-type": "application/json" } : {}),
+        ...options?.headers,
+      },
+      body: options?.body ? JSON.stringify(options.body) : undefined,
+      signal: options?.signal,
+    })
+
+    const contentType = response.headers.get("content-type")
+
+    const data = contentType?.includes("application/json")
+      ? await response.json().catch(() => null)
+      : await response.text()
+
+    if (!response.ok) {
+      throw new AppError(data?.code || "INTERNAL_SERVER_ERROR")
+    }
+
+    return data as T
+  }
+
   return {
     get,
+    post,
   }
 }

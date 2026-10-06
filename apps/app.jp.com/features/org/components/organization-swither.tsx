@@ -107,12 +107,6 @@ export const OrganizationSwitcher = ({
                 Settings
               </Link>
             </Button>
-            <Button variant="outline" asChild size="sm" className="h-7 px-2">
-              <Link href="/org/settings/members">
-                <UserPlus className="size-3.5" />
-                Invite members
-              </Link>
-            </Button>
           </div>
         </div>
         <OrganizationSelector

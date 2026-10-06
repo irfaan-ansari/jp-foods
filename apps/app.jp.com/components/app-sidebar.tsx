@@ -55,6 +55,7 @@ import { UserProfileDropdown } from "@/features/profile/components/user-profile-
 import { OrganizationSwitcher } from "@/features/org/components/organization-swither"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { useOrganization } from "@/features/org/organization.data"
+import { PresenceUsers } from "./presence-users"
 
 type MenuIcon = ComponentType<any>
 
@@ -334,6 +335,11 @@ const SidebarIconMenu = ({
                 </Button>
               </SidebarMenuItem>
             </Tooltip>
+          </SidebarMenu>
+        </SidebarGroup>
+        <SidebarGroup className="mt-auto">
+          <SidebarMenu className="items-center *:text-center">
+            <PresenceUsers />
           </SidebarMenu>
         </SidebarGroup>
       </SidebarContent>
