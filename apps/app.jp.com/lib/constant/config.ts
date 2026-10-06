@@ -38,6 +38,12 @@ export const ORG_NAV = [
     items: [
       { label: "Orders", icon: InboxLine, href: "/org/orders", items: [] },
       {
+        label: "Live Orders",
+        icon: ClipboardAdd,
+        href: "/org/live-orders",
+        items: [],
+      },
+      {
         label: "Returns",
         icon: UndoLeftSquare,
         href: "/org/returns",
