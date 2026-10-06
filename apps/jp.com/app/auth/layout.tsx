@@ -11,17 +11,17 @@ const AuthLayout = async ({ children }: { children: React.ReactNode }) => {
         <div className="w-full px-6 lg:px-16">
           <header className="flex gap-4 py-6">
             <Link href="/">
-              <Avatar className="size-16 rounded-xl bg-secondary p-1">
+              <Avatar className="size-24 rounded-3xl bg-secondary p-1">
                 <AvatarImage
                   className="object-contain"
-                  width={40}
-                  height={40}
+                  width={80}
+                  height={80}
                   src={SITE_CONFIG.logo}
                   asChild
                 >
                   <Image
-                    width={40}
-                    height={40}
+                    width={80}
+                    height={80}
                     src={SITE_CONFIG.logo}
                     alt="Jimenez Produce"
                   />

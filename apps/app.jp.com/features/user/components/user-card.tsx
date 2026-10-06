@@ -10,7 +10,7 @@ import {
 
 import { formatPhone, formatDate } from "@jp/utils"
 import { Skeleton } from "@jp/ui/components/skeleton"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { CopyButton } from "@jp/ui/components/jp/copy-button"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 

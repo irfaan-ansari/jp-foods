@@ -1,4 +1,3 @@
-import { phoneSchema } from "@jp/utils"
 import { z } from "zod"
 export const MAX_UPLOAD_SIZE = 10 * 1024 * 1024 // 10MB
 
@@ -18,7 +17,7 @@ export const step1Schema = z.object({
   companyCity: z.string().min(2, "City is required"),
   companyState: z.string().min(2, "State is required"),
   companyZip: z.string().min(2, "Zip code is required"),
-  companyPhone: phoneSchema,
+  companyPhone: z.string().min(2, "Phone is required"),
   // new field
   companyType: z.string().min(2, "Business type is required"),
   companyEmail: z.string().min(2, "Email is required"),
@@ -28,14 +27,7 @@ export const step2Schema = z.object({
   officerFirst: z.string().min(2, "First name is required"),
   officerLast: z.string().min(2, "Last name is required"),
   officerRole: z.string().min(2, "Title is required"),
-  officerMobile: z
-    .string()
-    .min(1, "Phone is required")
-    .trim()
-    .regex(
-      /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}$/,
-      "Invalid phone number"
-    ),
+  officerMobile: z.string().min(2, "Phone is required"),
   officerEmail: z.email("Email is required"),
   officerStreet: z.string().min(2, "Street address is required"),
   officerCity: z.string().min(2, "City is required"),
@@ -45,14 +37,7 @@ export const step2Schema = z.object({
 
 export const step3Schema = z.object({
   orderingName: z.string().min(2, "Name is required"),
-  orderingPhone: z
-    .string()
-    .min(1, "Phone is required")
-    .trim()
-    .regex(
-      /^(\+1\s?)?(\(?\d{3}\)?[\s.-]?)\d{3}[\s.-]?\d{4}$/,
-      "Invalid phone number"
-    ),
+  orderingPhone: z.string().min(2, "Phone is required"),
   accountPayableEmail: z.email("Email is required"),
   guarantorName: z.string().min(2, "Name is required"),
   guarantorRole: z.string().min(2, "Title is required"),
@@ -65,9 +50,9 @@ export const step4Schema = z.object({
     z.object({
       day: z.string().min(2, "Delivery day is required"),
       window: z.string().min(2, "Delivery time is required"),
-      receivingName: z.string().min(2, "Delivery time is required"),
-      receivingPhone: phoneSchema,
-      instructions: z.string().min(2, "Instruction is required"),
+      receivingName: z.string().min(2, "Name is required"),
+      receivingPhone: z.string().min(2, "Phone is required"),
+      instructions: z.string(),
     })
   ),
 })

@@ -89,6 +89,13 @@ export function SearchBar({
           onSearch(e.target.value)
         }}
       />
+      {search && (
+        <InputGroupAddon align="inline-end">
+          <InputGroupButton size="icon-xs" onClick={() => setSearch("")}>
+            <X />
+          </InputGroupButton>
+        </InputGroupAddon>
+      )}
     </InputGroup>
   )
 }

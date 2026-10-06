@@ -3,7 +3,7 @@
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate } from "@jp/utils"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import type { PriceLevel } from "../price-level.type"
 import { STATUS } from "../price-level.const"
 import { PriceLevelBadge } from "./price-level-card"

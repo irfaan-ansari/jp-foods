@@ -9,8 +9,7 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 import { Card, CardContent, CardTitle } from "@jp/ui/components/card"
 
 import type { Product } from "@/features/org/product/product.type"
-
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { STATUS } from "../product.const"
 
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"

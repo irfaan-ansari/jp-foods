@@ -100,7 +100,7 @@ export const BusinessDelivery = withForm({
                       <form.AppField
                         name={`deliverySchedule[${i}].receivingPhone`}
                         children={(field) => (
-                          <field.TextField
+                          <field.PhoneField
                             label={t["receivingPhone"]}
                             placeholder={"(555) 222-3344"}
                           />

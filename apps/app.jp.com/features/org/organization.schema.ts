@@ -1,5 +1,4 @@
 import z from "zod"
-import { phoneSchema } from "@jp/utils"
 
 export const organizationFormSchema = z.object({
   name: z.string().min(1, "Name is required"),

@@ -9,9 +9,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@jp/ui/components/card"
-import type { BadgeStatus } from "@/features/shared/shared.type"
+
 import type { Status } from "@/features/shared/shared.data"
 import { getDashboardCount } from "../dashboard.utils"
+import type { BadgeStatus } from "@jp/ui/components/jp/status-badge"
 
 interface DashboardCardProps {
   title: string

@@ -17,7 +17,7 @@ import {
 import { CopyButton } from "@jp/ui/components/jp/copy-button"
 import { formatPhone, formatDate } from "@jp/utils"
 import { Skeleton } from "@jp/ui/components/skeleton"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import type { Member } from "../member.type"
 import { Tooltip } from "@jp/ui/components/jp/tooltip"
 import { MemberDropdown } from "./member-dropdown"

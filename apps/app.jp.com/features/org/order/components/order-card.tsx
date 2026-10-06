@@ -9,8 +9,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@jp/ui/components/card"
-import { StatusBadge } from "@/components/status-badge"
-import { MenuDots, Phone, Smartphone } from "@solar-icons/react"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
+import { MenuDots, Smartphone } from "@solar-icons/react"
 import { CopyButton } from "@jp/ui/components/jp"
 import { formatDate, formatPhone, formatUSD } from "@jp/utils"
 import { OrderDropdown } from "./order-dropdown"

@@ -1,4 +1,4 @@
-import { BadgeStatus } from "@/features/shared/shared.type"
+import { BadgeStatus } from "@jp/ui/components/jp/status-badge"
 
 export const APPLICATION_REJECTION_REASONS = [
   "Incomplete application",

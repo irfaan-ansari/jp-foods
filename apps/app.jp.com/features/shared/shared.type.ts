@@ -14,9 +14,3 @@ export interface ApiResponse<T> {
 export interface PaginatedResponse<T> extends ApiResponse<T[]> {
   pagination: Pagination
 }
-
-export type BadgeStatus = {
-  label: string
-  value: string
-  color: string
-}

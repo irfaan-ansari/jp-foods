@@ -12,7 +12,7 @@ import { CopyButton } from "@jp/ui/components/jp"
 import { IconTile } from "@jp/ui/components/icon-tile"
 import { Skeleton } from "@jp/ui/components/skeleton"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { formatDate } from "@jp/utils"
 import { APPLICATION_STATUS } from "../catalog.const"
 import { CatalogInquiry } from "../catalog.type"

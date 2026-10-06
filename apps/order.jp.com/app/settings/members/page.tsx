@@ -7,7 +7,7 @@ import { MemberClient } from "@/features/members/components"
 import { SearchQueryParam } from "@jp/ui/components/jp"
 import { InvitationDialog } from "@/features/invitations/components/invitation-dialog"
 
-const OPTIONS = [{ label: "All", value: "" }]
+import { STATUS } from "@/features/members/member.const"
 
 const MembersPage = () => {
   return (
@@ -15,7 +15,7 @@ const MembersPage = () => {
       <div className="flex items-center gap-3">
         <FilterTab
           queryKey="team-members"
-          tabs={OPTIONS}
+          tabs={Object.values(STATUS)}
           path="/members/count"
         />
 

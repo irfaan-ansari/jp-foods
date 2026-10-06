@@ -1,4 +1,5 @@
 import React from "react"
+import { STATUS } from "../order.const"
 import { Orders } from "../order.type"
 import {
   Card,
@@ -11,10 +12,11 @@ import {
 import { formatDate, formatUSD } from "@jp/utils"
 import Link from "next/link"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { StatusBadge } from "@/components/status-badge"
+
 import { ArrowRight } from "lucide-react"
 import { OrderDropdown } from "./order-dropdown"
 import { Skeleton } from "@jp/ui/components/skeleton"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 
 export const OrderCard = ({ data }: { data: Orders }) => {
   const { searchParams } = useRouterStuff()
@@ -32,7 +34,13 @@ export const OrderCard = ({ data }: { data: Orders }) => {
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <CardTitle>#{data.id}</CardTitle>
-            <StatusBadge status={data.status} />
+            <StatusBadge
+              status={
+                STATUS[
+                  data.status === "in_progress" ? "processing" : data.status
+                ] ?? STATUS.all!
+              }
+            />
           </div>
           <CardDescription className="text-xs">
             {formatDate(data.createdAt)}

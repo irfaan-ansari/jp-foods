@@ -15,7 +15,7 @@ import { Skeleton } from "@jp/ui/components/skeleton"
 import { Tooltip } from "@jp/ui/components/jp"
 import { pluralize } from "@jp/utils"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import type { Promotion } from "../promotion.type"
 import { PLACEMENT, STATUS } from "../promotion.const"
 import { PromotionDropdown } from "./promotion-dropdown"

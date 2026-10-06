@@ -96,12 +96,11 @@ export function LanguageSelector({
     >
       {languageOptions.map((lang) => (
         <ToggleGroupItem
-          variant="outline"
           size="sm"
           key={lang.value}
           value={lang.value}
           data-name="language-selector"
-          className="rounded-lg text-xs uppercase data-[state=on]:bg-primary/20"
+          className="rounded-lg bg-transparent text-xs uppercase data-[state=on]:bg-background data-[state=on]:shadow-sm"
         >
           {lang.label}
         </ToggleGroupItem>

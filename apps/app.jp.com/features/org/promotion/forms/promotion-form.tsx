@@ -41,7 +41,7 @@ import {
 import { formatUSD } from "@jp/utils"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import { ProductSelector } from "../../product/components/product-selector"
 import { TeamSelector } from "../../team/components/team-selector"
 import { createPromotion, updatePromotion } from "../promotion.action"

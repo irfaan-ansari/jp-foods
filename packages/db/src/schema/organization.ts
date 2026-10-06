@@ -323,7 +323,9 @@ export const order = pgTable(
     deliveryInstruction: text("delivery_instruction"),
     status: text("status")
       .notNull()
-      .default("in_progress") /* in_progress | completed | cancelled */,
+      .default(
+        "in_progress"
+      ) /* placed |  processing | packed | completed | invoiced | cancelled */,
     invoiceStatus:
       text("invoice_status").default("pending") /** pending | invoiced | */,
     deliveredAt: timestamp("delivered_at"),
@@ -383,9 +385,6 @@ export const lineItem = pgTable(
     packSize: numeric("pack_size", { precision: 12, scale: 4 }),
     catchWeight: boolean("catch_weight").default(false),
     price: numeric("price", { precision: 12, scale: 2 }).notNull().default("0"),
-    displayPrice: numeric("display_price", { precision: 12, scale: 2 })
-      .notNull()
-      .default("0"),
     pricingBasis: text("pricing_basis").notNull().default("fixed"),
     unitQuantity: numeric("unit_quantity", { precision: 12, scale: 2 })
       .notNull()

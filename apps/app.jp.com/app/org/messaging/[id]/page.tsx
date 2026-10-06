@@ -6,7 +6,7 @@ import { ErrorState } from "@jp/ui/components/jp"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 
 import { PageContent, PageHeader } from "@/components/page-content"
-import { StatusBadge } from "@/components/status-badge"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 import {
   Card,
   CardContent,

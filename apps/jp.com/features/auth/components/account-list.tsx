@@ -7,8 +7,9 @@ import { authClient } from "@jp/auth/client"
 import { type DeviceSessions } from "@jp/auth"
 import { Button } from "@jp/ui/components/button"
 import { FieldGroup } from "@jp/ui/components/field"
-import { ArrowRight, Loader2, UserPlus } from "lucide-react"
+import { ArrowRight, Loader2 } from "lucide-react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import { UserPlus } from "@solar-icons/react"
 
 export const AccountList = ({ data }: { data: DeviceSessions }) => {
   const [loading, setLoading] = React.useState("")

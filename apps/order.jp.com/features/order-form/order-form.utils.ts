@@ -117,8 +117,7 @@ export const toInsertOrder = ({
       state: "",
       street: "",
     },
-
-    status: "in_progress",
+    status: "placed",
     invoiceStatus: "pending",
     organizationId,
     teamId,

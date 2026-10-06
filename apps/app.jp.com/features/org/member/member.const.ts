@@ -1,4 +1,4 @@
-import { BadgeStatus } from "@/features/shared/shared.type"
+import type { BadgeStatus } from "@jp/ui/components/jp/status-badge"
 
 export const MEMBER_ROLES: Record<string, BadgeStatus> = {
   owner: { label: "Owner", value: "owner", color: "#8B5CF6" },

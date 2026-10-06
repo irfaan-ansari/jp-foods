@@ -1,5 +1,4 @@
 import z from "zod"
-import { phoneSchema } from "@jp/utils"
 
 export const profileSchema = z.object({
   image: z.string(),
@@ -7,7 +6,7 @@ export const profileSchema = z.object({
 })
 
 export const userSchema = profileSchema.extend({
-  phoneNumber: phoneSchema,
+  phoneNumber: z.string(),
   email: z.email("Invalid email"),
   role: z.enum([
     "superAdmin",

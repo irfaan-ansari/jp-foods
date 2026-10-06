@@ -4,7 +4,7 @@ export const promotionStatusSchema = z.enum(["active", "inactive"])
 export const promotionPlacementSchema = z.enum([
   "sidebar",
   "banner",
-  "dashbaord",
+  "dashboard",
   "new-order",
   "cart",
 ])

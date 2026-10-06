@@ -4,3 +4,8 @@
   --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);
 }
+
+
+  [data-slot="button"][data-size="xl"] {
+    @apply text-sm uppercase
+  }
