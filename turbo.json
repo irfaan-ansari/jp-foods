@@ -8,6 +8,8 @@
       "env": [
         "DATABASE_URL",
         "BETTER_AUTH_URL",
+        "BETTER_AUTH_SECRET",
+        "BLOB_READ_WRITE_TOKEN",
         "BETTER_AUTH_ORIGINS",
         "RESEND_API_KEY",
         "JP_APP_URL",

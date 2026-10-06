@@ -13,6 +13,8 @@
   "devDependencies": {
     "@jp/eslint-config": "workspace:*",
     "@jp/typescript-config": "workspace:*",
+    "@types/react": "19.2.7",
+    "@types/react-dom": "19.2.3",
     "prettier": "^3.8.3",
     "prettier-plugin-tailwindcss": "^0.8.0",
     "turbo": "^2.9.15",
