@@ -1,6 +1,6 @@
 "use server"
 
-import { and, eq, or } from "drizzle-orm"
+import { and, eq, or } from "@jp/db/query"
 import { customer, db, jobApplication } from "@jp/db"
 
 export type TrackingType = "customer" | "job"

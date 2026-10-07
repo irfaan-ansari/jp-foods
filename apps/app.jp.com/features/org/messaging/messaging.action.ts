@@ -1,7 +1,7 @@
 "use server"
 
-import { eq } from "drizzle-orm"
-import { waitUntil } from "@vercel/functions"
+import { eq } from "@jp/db/query"
+import { waitUntil } from "@jp/utils/functions"
 import { db, messageCampaign } from "@jp/db"
 import { AppError } from "@jp/utils"
 

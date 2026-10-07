@@ -5,7 +5,7 @@ import { ChevronDown, Loader2, Plus, Send } from "lucide-react"
 import { toast } from "sonner"
 import { useQueryClient } from "@tanstack/react-query"
 
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Button } from "@jp/ui/components/button"
 import { Badge } from "@jp/ui/components/badge"
 

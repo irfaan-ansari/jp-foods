@@ -10,7 +10,7 @@ interface OrderAdminEmailProps {
     title: string
     itemCode?: string | null
     quantity: string | number
-    unitLabel?: string | null
+    unit?: string | null
     subtotal: string | number
   }[]
   subtotal: string | number
@@ -75,7 +75,7 @@ export const OrderAdminEmail = ({
               </Text>
               <Text className="m-0 mt-1 text-xs leading-5 text-muted">
                 {item.itemCode && <>{item.itemCode} · </>}
-                {item.quantity} {item.unitLabel}
+                {item.quantity} {item.unit}
               </Text>
             </Column>
             <Column
@@ -152,7 +152,7 @@ OrderAdminEmail.PreviewProps = {
       title: "Roma Tomatoes",
       itemCode: "PRD-101",
       quantity: 2,
-      unitLabel: "cases",
+      unit: "CS",
       subtotal: "48.00",
     },
     {
@@ -160,7 +160,7 @@ OrderAdminEmail.PreviewProps = {
       title: "Beef Brisket",
       itemCode: "PRD-205",
       quantity: 1,
-      unitLabel: "case",
+      unit: "CS",
       subtotal: "120.00",
     },
   ],

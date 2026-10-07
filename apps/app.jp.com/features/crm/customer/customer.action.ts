@@ -1,6 +1,6 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { AppError } from "@jp/utils"
 import { customer, db } from "@jp/db"
 import {
@@ -9,7 +9,7 @@ import {
 } from "./customer.schema"
 import { authActionClient } from "@/lib/safe-action"
 import { triggerNotification } from "./customer.utils"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 
 // update fields
 export const updateCustomerApplication = authActionClient({

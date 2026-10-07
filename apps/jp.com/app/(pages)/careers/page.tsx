@@ -1,15 +1,7 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import Image from "next/image"
-import {
-  ArrowDown,
-  ArrowUpRight,
-  Check,
-  MapPin,
-  PackageCheck,
-  Truck,
-  Users,
-} from "lucide-react"
+import { ArrowDown, ArrowUpRight, Check, MapPin } from "lucide-react"
 import { OPEN_POSITIONS } from "@/features/careers/careers.positions"
 import { Button } from "@jp/ui/components/button"
 import { Container } from "@/components/container"
@@ -77,39 +69,7 @@ const CareersPage = () => (
         </div>
       </Container>
     </section>
-    <section className="border-b">
-      <Container className="grid max-w-7xl gap-8 py-10 md:grid-cols-3 md:gap-12">
-        {[
-          {
-            icon: Users,
-            title: "People make the difference",
-            text: "Work alongside people who value teamwork and show up for one another.",
-          },
-          {
-            icon: PackageCheck,
-            title: "Quality in every detail",
-            text: "Take pride in work that brings dependable products and service to our customers.",
-          },
-          {
-            icon: Truck,
-            title: "Make a local impact",
-            text: "Support the restaurants and communities we serve across the Gulf Coast.",
-          },
-        ].map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-start gap-4">
-            <span className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
-              <Icon className="size-5" />
-            </span>
-            <div>
-              <h2 className="font-semibold">{title}</h2>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                {text}
-              </p>
-            </div>
-          </div>
-        ))}
-      </Container>
-    </section>
+
     <section id="open-positions" className="scroll-mt-32 py-14 sm:py-20">
       <Container className="max-w-7xl">
         <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
@@ -136,7 +96,7 @@ const CareersPage = () => (
               className="group flex flex-col rounded-2xl border bg-background p-6 transition hover:border-primary/40 hover:shadow-md focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-primary sm:p-8"
             >
               <div className="flex items-center justify-between gap-4">
-                <span className="rounded-full bg-secondary px-3 py-1 text-xs font-medium text-muted-foreground">
+                <span className="rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground">
                   {position.department}
                 </span>
                 <ArrowUpRight className="size-5 text-muted-foreground transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-primary" />
@@ -148,14 +108,12 @@ const CareersPage = () => (
                 <MapPin className="size-3.5 shrink-0" />
                 {position.location || "Select your location when applying"}
               </p>
-              <p className="mt-5 text-sm leading-relaxed text-muted-foreground">
-                {position.description}
-              </p>
+              <p className="mt-5 leading-relaxed">{position.description}</p>
               <div className="mt-auto pt-6">
                 {position.tags.map((tag) => (
                   <p
                     key={tag}
-                    className="mb-4 flex items-center gap-2 text-xs text-muted-foreground"
+                    className="mb-4 flex items-center gap-2 text-sm text-muted-foreground"
                   >
                     <Check className="size-3.5 text-primary" />
                     {tag}

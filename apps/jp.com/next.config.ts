@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
     "@jp/auth",
     "@jp/utils",
     "@jp/notifications",
+    "@jp/pdf",
   ],
   images: {
     remotePatterns: [

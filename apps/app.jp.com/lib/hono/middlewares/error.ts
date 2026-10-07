@@ -1,4 +1,4 @@
-import { DrizzleQueryError } from "drizzle-orm/errors"
+import { DrizzleQueryError } from "@jp/db/query/errors"
 import type { Context } from "hono"
 
 import { AppError } from "@jp/utils"

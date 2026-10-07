@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import { db, user } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { and, count, eq, ilike, or } from "drizzle-orm"
+import { and, count, eq, ilike, or } from "@jp/db/query"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { AppContext, authMiddleware } from "@/lib/hono/middlewares"
 

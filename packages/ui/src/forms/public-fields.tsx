@@ -9,8 +9,8 @@ import {
 import { Input } from "@jp/ui/components/input"
 import { Button } from "@jp/ui/components/button"
 import { Calendar } from "@jp/ui/components/calendar"
+import { useFieldContext } from "./context"
 import { PhoneInput } from "@jp/ui/components/phone-input"
-import { formatPhone, formatUSD } from "@jp/utils"
 import {
   Field,
   FieldContent,
@@ -23,11 +23,13 @@ import {
 import {
   ChevronDownIcon,
   Calendar as CalendarIcon,
+  Eraser,
   Paperclip,
   Trash2,
   Upload,
   EyeOff,
   Eye,
+  CloudUpload,
 } from "lucide-react"
 import { cn } from "@jp/ui/lib/utils"
 import {
@@ -38,8 +40,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@jp/ui/components/select"
+import { useRef } from "react"
 import { RadioGroup, RadioGroupItem } from "@jp/ui/components/radio-group"
-import { addYears, format } from "date-fns"
+import SignatureCanvas from "react-signature-canvas"
+import { addYears, format } from "@jp/utils/date"
 import {
   InputGroup,
   InputGroupAddon,
@@ -47,8 +51,6 @@ import {
   InputGroupInput,
 } from "@jp/ui/components/input-group"
 import { Textarea } from "@jp/ui/components/textarea"
-import { Badge } from "@jp/ui/components/badge"
-import { useFieldContext } from "@/hooks/use-app-form"
 
 export interface FieldProps {
   label?: string
@@ -81,6 +83,9 @@ const TextField = ({
         onChange={(e) => field.handleChange(e.target.value)}
         aria-invalid={isInvalid}
         placeholder={placeholder}
+        className="h-12"
+        // @ts-ignore
+        type={props?.type ? props.type : "text"}
       />
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
@@ -158,7 +163,6 @@ const PasswordField = ({
           </InputGroupButton>
         </InputGroupAddon>
       </InputGroup>
-      {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>
   )
@@ -182,8 +186,9 @@ const DateField = ({
         <PopoverTrigger asChild aria-invalid={isInvalid}>
           <Button
             variant="outline"
+            size="xl"
             data-empty={!field.state.value}
-            className="justify-start text-sm font-normal aria-invalid:ring-0 data-[empty=true]:text-muted-foreground"
+            className="justify-start px-2.5 text-sm font-normal aria-invalid:ring-0 data-[empty=true]:text-muted-foreground"
           >
             <CalendarIcon />
             {field.state.value || placeholder}
@@ -217,7 +222,7 @@ const SelectField = ({
   placeholder,
   className,
   options,
-}: FieldProps & { options: { label: string; value: string }[] }) => {
+}: FieldProps & { options: string[] }) => {
   const field = useFieldContext<string>()
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
@@ -229,14 +234,14 @@ const SelectField = ({
         value={field.state.value as string}
         onValueChange={field.handleChange}
       >
-        <SelectTrigger aria-invalid={isInvalid}>
+        <SelectTrigger aria-invalid={isInvalid} className="h-12!">
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>
-            {options.map((item, i) => (
-              <SelectItem key={item.value + i} value={item.value}>
-                {item.label}
+            {options.map((item) => (
+              <SelectItem key={item} value={item}>
+                {item}
               </SelectItem>
             ))}
           </SelectGroup>
@@ -277,7 +282,9 @@ const RadioField = ({
               <Field orientation="horizontal" className="gap-4">
                 <FieldContent>
                   <FieldTitle>{opt.label}</FieldTitle>
-                  <FieldDescription>{opt.description}</FieldDescription>
+                  {opt.description && (
+                    <FieldDescription>{opt.description}</FieldDescription>
+                  )}
                 </FieldContent>
 
                 <RadioGroupItem value={opt.value as string} id={id} />
@@ -287,6 +294,77 @@ const RadioField = ({
         })}
       </RadioGroup>
 
+      {description && <FieldDescription>{description}</FieldDescription>}
+      {isInvalid && <FieldError errors={field.state.meta.errors} />}
+    </Field>
+  )
+}
+
+const SignatureField = ({
+  label,
+  description,
+
+  className,
+}: FieldProps) => {
+  const field = useFieldContext()
+  const canvasRef = useRef<SignatureCanvas>(null)
+
+  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
+
+  const clear = async () => {
+    if (!canvasRef.current) return
+    canvasRef.current.clear()
+    field.handleChange(undefined)
+    field.validate("blur")
+  }
+
+  const handleChange = async () => {
+    const file = await canvasToFile(
+      canvasRef.current?.getTrimmedCanvas() as HTMLCanvasElement
+    )
+
+    field.handleChange(file)
+    field.validate("blur")
+  }
+
+  /**
+   * convert canvas to file
+   * @param canvas
+   * @returns
+   */
+  function canvasToFile(canvas: HTMLCanvasElement): Promise<File> {
+    return new Promise((resolve, reject) => {
+      canvas.toBlob((blob) => {
+        if (!blob) {
+          reject("Not a blob")
+          return
+        }
+
+        resolve(new File([blob], "signature.png", { type: "image/png" }))
+      })
+    })
+  }
+
+  return (
+    <Field className={cn("gap-2", className)}>
+      {label && <FieldLabel>{label}</FieldLabel>}
+      <div className="relative rounded-xl border-2 border-dashed">
+        <SignatureCanvas
+          ref={canvasRef}
+          canvasProps={{ className: "w-full h-36 bg-secondary block" }}
+          onEnd={handleChange}
+        />
+        <Button
+          size="sm"
+          variant="outline"
+          className="absolute top-4 right-4"
+          onClick={clear}
+          type="button"
+        >
+          <Eraser />
+          Clear
+        </Button>
+      </div>
       {description && <FieldDescription>{description}</FieldDescription>}
       {isInvalid && <FieldError errors={field.state.meta.errors} />}
     </Field>
@@ -304,31 +382,13 @@ const FileField = ({ label, description, className }: FieldProps) => {
       </FieldLegend>
       <FieldLabel
         htmlFor={field.name}
-        className={`h-11 border border-dashed border-primary bg-primary/20 px-4`}
+        className={`group/label flex h-28 flex-col rounded-2xl border border-dashed p-4 hover:bg-secondary ${field.state.value ? "bg-secondary" : ""}`}
       >
-        {field.state.value ? (
-          <>
-            <Paperclip className="size-4 shrink-0" />
-            <span className="truncate">{field.state.value?.name}</span>
-            <Button
-              variant="outline"
-              type="button"
-              size="icon-sm"
-              className="ml-auto"
-              onClick={(e) => {
-                e.preventDefault()
-                field.handleChange(undefined as any)
-              }}
-            >
-              <Trash2 />
-            </Button>
-          </>
-        ) : (
-          <>
-            <Upload className="size-4" /> Upload
-          </>
+        <CloudUpload className="size-6 text-muted-foreground transition-transform group-hover/label:-translate-y-0.5" />
+        <span className="text-muted-foreground">Click to upload/replace</span>
+        {field.state.value && (
+          <span className="truncate">{field.state.value?.name}</span>
         )}
-
         <Input
           type="file"
           id={field.name}
@@ -344,7 +404,6 @@ const FileField = ({ label, description, className }: FieldProps) => {
     </Field>
   )
 }
-
 const PhoneField = ({
   label,
   description,
@@ -354,7 +413,6 @@ const PhoneField = ({
 }: FieldProps) => {
   const field = useFieldContext<string>()
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-  const displayValue = formatPhone(field.state.value ?? "")
 
   return (
     <Field className={cn("gap-2", className)} {...props}>
@@ -364,9 +422,9 @@ const PhoneField = ({
         id={field.name}
         name={field.name}
         value={field.state.value}
-
         aria-invalid={isInvalid}
         placeholder="123-123-1234"
+        className="h-12"
         onChange={(value) => field.handleChange(value)}
       />
 
@@ -375,48 +433,14 @@ const PhoneField = ({
     </Field>
   )
 }
-
-const CurrencyField = ({
-  label,
-  description,
-  placeholder,
-  className,
-  ...props
-}: FieldProps) => {
-  const field = useFieldContext<string>()
-  const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
-
-  const displayValue = formatUSD(field.state.value)
-
-  return (
-    <Field className={cn("gap-2", className)} {...props}>
-      {label && <FieldLabel htmlFor={field.name}>{label}</FieldLabel>}
-
-      <Input
-        id={field.name}
-        name={field.name}
-        value={displayValue}
-        onBlur={field.handleBlur}
-        onChange={(e) => {
-          field.handleChange(e.target.value)
-        }}
-        aria-invalid={isInvalid}
-        placeholder={placeholder}
-      />
-      {description && <FieldDescription>{description}</FieldDescription>}
-      {isInvalid && <FieldError errors={field.state.meta.errors} />}
-    </Field>
-  )
-}
-
 export {
   TextAreaField,
   TextField,
   DateField,
   SelectField,
+  SignatureField,
   RadioField,
   FileField,
   PhoneField,
   PasswordField,
-  CurrencyField,
 }

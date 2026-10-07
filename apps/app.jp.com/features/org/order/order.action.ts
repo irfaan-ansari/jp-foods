@@ -10,8 +10,8 @@ import {
 } from "./order.schema"
 import { AppError } from "@jp/utils"
 import { calculateOrder } from "@jp/utils/commerce"
-import { and, eq } from "drizzle-orm"
-import type { BatchItem } from "drizzle-orm/batch"
+import { and, eq } from "@jp/db/query"
+import type { BatchItem } from "@jp/db/query/batch"
 
 /**
  * update order

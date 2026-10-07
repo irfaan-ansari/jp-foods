@@ -3,7 +3,7 @@ import Image from "next/image"
 import type { Product } from "../product.type"
 
 import { cn } from "@jp/ui/lib/utils"
-import { format } from "date-fns/format"
+import { format } from "@jp/utils/date"
 
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"

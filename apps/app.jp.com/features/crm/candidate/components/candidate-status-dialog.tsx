@@ -3,7 +3,7 @@ import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 
 import { Button } from "@jp/ui/components/button"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Field, FieldGroup } from "@jp/ui/components/field"
 import { useQueryClient } from "@tanstack/react-query"
 import { updateCandidateApplication } from "../candidate.action"

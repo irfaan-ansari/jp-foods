@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { and, eq, or, exists, ilike, inArray, max, ne } from "drizzle-orm"
+import { and, eq, or, exists, ilike, inArray, max, ne } from "@jp/db/query"
 import { db, member, session, team, teamMember, user } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"

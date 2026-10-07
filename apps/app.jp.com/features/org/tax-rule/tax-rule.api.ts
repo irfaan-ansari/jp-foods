@@ -2,7 +2,7 @@ import { Hono } from "hono"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { db, taxRule, team } from "@jp/db"
 import { parsePagination } from "@/lib/hono/lib"
-import { and, count, eq, ilike, inArray, or, SQL } from "drizzle-orm"
+import { and, count, eq, ilike, inArray, or, SQL } from "@jp/db/query"
 
 const app = new Hono<OrgAppContext>()
 

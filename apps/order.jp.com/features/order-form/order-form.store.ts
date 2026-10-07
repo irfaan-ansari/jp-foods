@@ -6,7 +6,6 @@ import { calculateOrder, DEFAULT_CHARGE } from "@jp/utils/commerce"
 const CART_KEY = "CART"
 const CART_VERSION = 5
 
-export { DEFAULT_CHARGE } from "@jp/utils/commerce"
 
 const initialState: OrderForm = {
   subtotal: 0,

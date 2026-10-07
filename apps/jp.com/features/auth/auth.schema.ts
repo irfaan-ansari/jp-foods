@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const otpLoginSchema = z.object({
   phoneNumber: z

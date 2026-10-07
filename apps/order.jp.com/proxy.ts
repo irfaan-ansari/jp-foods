@@ -1,11 +1,11 @@
 import { checkAuth } from "./lib/check-auth"
 import { NextRequest, NextResponse } from "next/server"
 
-const AUTH_URL = process.env.NEXT_PUBLIC_AUTH_URL
+const AUTH_URL = process.env.NEXT_PUBLIC_PUBLIC_URL
 
 export default async function proxy(req: NextRequest) {
   if (!AUTH_URL) {
-    throw new Error("NEXT_PUBLIC_AUTH_URL is not configured")
+    throw new Error("NEXT_PUBLIC_PUBLIC_URL is not configured")
   }
 
   const { authenticated, authorized } = await checkAuth({

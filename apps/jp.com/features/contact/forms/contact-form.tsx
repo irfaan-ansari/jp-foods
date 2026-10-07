@@ -11,7 +11,7 @@ import { toast } from "sonner"
 import { createInvite } from "@/features/contact/contact.action"
 
 import { CONTACT_SCHEMA } from "../contact.schema"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms/public"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { BUSINESS_TYPES } from "@/features/apply/customer.const"
 

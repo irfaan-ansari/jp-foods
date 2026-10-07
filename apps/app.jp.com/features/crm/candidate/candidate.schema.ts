@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const candidateApplicationSchema = z.object({
   status: z.string(),

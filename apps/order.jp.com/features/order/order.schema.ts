@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const orderCancelSchema = z.object({
   cancelReason: z.string().min(1),

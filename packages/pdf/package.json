@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "exports": {
-    ".": "./src/index.ts"
+    ".": "./src/index.ts",
+    "./server": "./src/server.ts"
   },
   "scripts": {
     "lint": "eslint",
@@ -16,9 +17,6 @@
     "@types/node": "^20.19.43",
     "@types/react": "19.2.7",
     "@types/react-dom": "19.2.3"
-  },
-  "peerDependencies": {
-    "date-fns": "^4.4.0"
   },
   "dependencies": {
     "@jp/db": "workspace:*",

@@ -2,8 +2,8 @@
 
 import { db, lineItem, order } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { and, eq, inArray } from "drizzle-orm"
-import type { BatchItem } from "drizzle-orm/batch"
+import { and, eq, inArray } from "@jp/db/query"
+import type { BatchItem } from "@jp/db/query/batch"
 
 import { orgActionClient } from "@/lib/safe-action"
 import { sendEmail } from "@jp/notifications"
@@ -17,7 +17,7 @@ import type { OrderItem } from "./order-form.type"
 import { createOrderSchema, updateOrderSchema } from "./order-form.schema"
 import { toInsertLineItems, toInsertOrder } from "./order-form.utils"
 import { resolveOrderItems } from "./order-form.resolve"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 
 const toOrderEmailItems = (items: OrderItem[]) =>
   items.map((item) => ({
@@ -25,7 +25,7 @@ const toOrderEmailItems = (items: OrderItem[]) =>
     title: item.title,
     itemCode: item.itemCode,
     quantity: item.quantity,
-    unitLabel: item.displayLabel,
+    unit: item.unit,
     subtotal: item.subtotal.toFixed(2),
   }))
 

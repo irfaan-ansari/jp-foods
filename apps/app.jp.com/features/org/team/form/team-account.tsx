@@ -13,7 +13,7 @@ import {
   FieldLabel,
   FieldTitle,
 } from "@jp/ui/components/field"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms"
 import { TeamFormValues } from "../team.schema"
 import { Button } from "@jp/ui/components/button"
 import { Switch } from "@jp/ui/components/switch"

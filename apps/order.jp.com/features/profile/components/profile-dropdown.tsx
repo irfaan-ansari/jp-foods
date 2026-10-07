@@ -14,7 +14,7 @@ import { SidebarMenuButton } from "@jp/ui/components/sidebar"
 
 import { authClient } from "@jp/auth/client"
 import { useLoader } from "@jp/ui/components/jp"
-import { set } from "zod"
+import { set } from "@jp/utils/validation"
 import { Separator } from "@jp/ui/components/separator"
 
 export const UserProfileDropdown = ({
@@ -114,7 +114,7 @@ export const UserProfileDropdown = ({
         <Separator />
       </div>
       <Button variant="ghost" className="h-9 w-full justify-start pl-2" asChild>
-        <Link href={process.env.NEXT_PUBLIC_AUTH_URL + "/auth/select"}>
+        <Link href={process.env.NEXT_PUBLIC_PUBLIC_URL + "/auth/select"}>
           <PlusCircle />
           Add Account
         </Link>

@@ -12,7 +12,7 @@ import {
 } from "@jp/ui/components/jp/app-dialog"
 import { ChevronDown, Loader2, Plus } from "lucide-react"
 
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Button } from "@jp/ui/components/button"
 import {
   Field,

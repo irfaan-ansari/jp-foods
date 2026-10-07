@@ -9,7 +9,7 @@ import {
 import { headers } from "next/headers"
 import { handleAction } from "@/lib/action"
 import { CONTACT_SCHEMA } from "./contact.schema"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 
 export const createInvite = handleAction(async (input: unknown) => {
   const data = CONTACT_SCHEMA.parse(input)

@@ -1,4 +1,4 @@
-import { z } from "zod"
+import { z } from "@jp/utils/validation"
 import { fileSchema } from "@/features/apply/customer.schema"
 
 const applicantSchema = z.object({

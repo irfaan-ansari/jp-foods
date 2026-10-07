@@ -2,8 +2,9 @@ import { Hono } from "hono"
 import { customerInvite, db } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { AppContext } from "@/lib/hono/middlewares"
-import { and, count, eq, ilike, or } from "drizzle-orm"
+import { and, count, eq, ilike, or } from "@jp/db/query"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
+import { getCatalogAccessUrl } from "./catalog.utils"
 
 const app = new Hono<AppContext>()
 
@@ -42,10 +43,9 @@ export const catalogInquiryRoutes = app
 
     const withLink = response.map((item) => ({
       ...item,
-      url: item.token
-        ? `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${item.token}&redirect=${process.env.JP_APP_URL}/products`
-        : "",
+      url: getCatalogAccessUrl(item.token),
     }))
+
     return c.json({
       success: true,
       data: withLink,

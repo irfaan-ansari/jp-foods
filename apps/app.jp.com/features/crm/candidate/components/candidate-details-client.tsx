@@ -175,6 +175,7 @@ export const CandidateDetailsClient = ({
             >
               {data.experience?.map((exp) => (
                 <AccordionItem
+                  key={exp.employerName}
                   value={exp.employerName}
                   className="**:data-[slot=accordion-content]:px-0 data-open:bg-muted/0"
                 >
@@ -292,7 +293,10 @@ export const CandidateDetailsClient = ({
             <CardTitle>License</CardTitle>
           </CardHeader>
           {[data.currentLicense, ...(data.licenses ?? [])].map((lic) => (
-            <CardContent className="flex items-start gap-2 not-last:border-b not-last:pb-4">
+            <CardContent
+              key={lic?.licenseNumber}
+              className="flex items-start gap-2 not-last:border-b not-last:pb-4"
+            >
               <IconTile variant="elevated">
                 <UserId className="size-4" />
               </IconTile>
@@ -321,7 +325,10 @@ export const CandidateDetailsClient = ({
             <CardTitle>Education</CardTitle>
           </CardHeader>
           {educations.map((edu) => (
-            <CardContent className="grid gap-3 not-last:border-b not-last:pb-4">
+            <CardContent
+              className="grid gap-3 not-last:border-b not-last:pb-4"
+              key={edu.institutionName}
+            >
               <div className="flex items-start gap-3">
                 <IconTile variant="elevated">
                   <SquareAcademicCap className="size-4" />

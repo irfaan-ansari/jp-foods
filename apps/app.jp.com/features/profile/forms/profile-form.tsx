@@ -1,5 +1,5 @@
 "use client"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { profileSchema } from "../profile.schema"
 import React from "react"
 import { toast } from "sonner"

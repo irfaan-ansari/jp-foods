@@ -7,7 +7,7 @@ import {
   JobApplicationReceivedEmail,
 } from "@jp/notifications/templates"
 import { capitalize } from "@jp/utils"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 import { headers } from "next/headers"
 
 export const createJobApplication = handleAction(

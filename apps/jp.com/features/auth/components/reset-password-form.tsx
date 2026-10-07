@@ -1,17 +1,17 @@
 "use client"
 
-import z from "zod"
+import z from "@jp/utils/validation"
 import React from "react"
 import Link from "next/link"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
 import { useRouter } from "next/navigation"
-import { useStore } from "@tanstack/react-form"
+import { useStore } from "@jp/ui/forms/public"
 
 import { authClient } from "@jp/auth/client"
 
 import { Button } from "@jp/ui/components/button"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms/public"
 import { Field, FieldGroup } from "@jp/ui/components/field"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 

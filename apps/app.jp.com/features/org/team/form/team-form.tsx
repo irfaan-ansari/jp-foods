@@ -3,7 +3,7 @@
 import React from "react"
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Button } from "@jp/ui/components/button"
 import { TeamGeneral } from "./team-general"
 import { TeamAccount } from "./team-account"

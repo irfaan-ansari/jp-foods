@@ -14,7 +14,7 @@ import {
   FieldLabel,
 } from "@jp/ui/components/field"
 
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import {
   organizationFormSchema,
   OrganizationFormSchema,
@@ -22,7 +22,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { Buildings2, CloudUpload } from "@solar-icons/react"
 import { Label } from "@jp/ui/components/label"
-import { upload } from "@vercel/blob/client"
+import { upload } from "@jp/utils/blob/client"
 
 export const OrganizationForm = ({
   defaultValues,

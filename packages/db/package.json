@@ -5,7 +5,10 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
-    "./*": "./src/*.ts"
+    "./*": "./src/*.ts",
+    "./query": "./src/query.ts",
+    "./query/errors": "./src/query/errors.ts",
+    "./query/batch": "./src/query/batch.ts"
   },
   "scripts": {
     "generate": "drizzle-kit generate",
@@ -19,9 +22,6 @@
     "@neondatabase/serverless": "^1.1.0",
     "dotenv": "^17.4.2",
     "server-only": "^0.0.1",
-    "drizzle-orm": "^0.45.2"
-  },
-  "peerDependencies": {
     "drizzle-orm": "^0.45.2"
   },
   "devDependencies": {

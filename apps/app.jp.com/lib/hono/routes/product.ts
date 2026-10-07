@@ -10,7 +10,7 @@ import {
   ilike,
   like,
   sql,
-} from "drizzle-orm"
+} from "@jp/db/query"
 
 const COOKIE_NAME = `JP_product_access`
 
@@ -61,6 +61,7 @@ export const productRoutes = new Hono()
 
   .get("/", async (c) => {
     const token = getCookie(c, COOKIE_NAME)
+    console.log(token)
     const valid = token ? await validateToken(token) : null
 
     const { q, cat, ...rest } = c.req.query()

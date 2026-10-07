@@ -9,7 +9,7 @@ import {
   AppDialogTrigger,
 } from "@jp/ui/components/jp/app-dialog"
 import { toast } from "sonner"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { type TaxRuleFormValues, taxRuleSchema } from "../tax-rule.schema"
 import { Field, FieldGroup } from "@jp/ui/components/field"
 import { Button } from "@jp/ui/components/button"

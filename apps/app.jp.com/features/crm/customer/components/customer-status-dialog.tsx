@@ -9,7 +9,7 @@ import {
   AppDialogTitle,
 } from "@jp/ui/components/jp/app-dialog"
 import { Button } from "@jp/ui/components/button"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Field, FieldGroup } from "@jp/ui/components/field"
 import { useQueryClient } from "@tanstack/react-query"
 import { APPLICATION_REJECTION_REASONS } from "../customer.const"

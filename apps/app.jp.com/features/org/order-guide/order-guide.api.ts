@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { db, orderGuide } from "@jp/db"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"

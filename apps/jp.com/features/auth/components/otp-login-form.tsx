@@ -12,7 +12,7 @@ import {
 } from "@jp/ui/components/input-otp"
 
 import { Button } from "@jp/ui/components/button"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms/public"
 import { AlertCircleIcon, Loader2, Pencil, X } from "lucide-react"
 import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
 import { Alert, AlertAction, AlertTitle } from "@jp/ui/components/alert"

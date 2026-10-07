@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 const orderIdSchema = z.object({
   id: z.number().int().positive(),

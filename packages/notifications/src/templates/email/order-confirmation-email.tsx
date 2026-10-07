@@ -10,7 +10,7 @@ interface OrderConfirmationEmailProps {
     title: string
     itemCode?: string | null
     quantity: string | number
-    unitLabel?: string | null
+    unit?: string | null
     subtotal: string | number
   }[]
   subtotal: string | number
@@ -74,7 +74,7 @@ export const OrderConfirmationEmail = ({
               </Text>
               <Text className="m-0 mt-1 text-xs leading-5 text-muted">
                 {item.itemCode && <>{item.itemCode} · </>}
-                {item.quantity} {item.unitLabel}
+                {item.quantity} {item.unit}
               </Text>
             </Column>
             <Column
@@ -151,7 +151,7 @@ OrderConfirmationEmail.PreviewProps = {
       title: "Roma Tomatoes",
       itemCode: "PRD-101",
       quantity: 2,
-      unitLabel: "cases",
+      unit: "CS",
       subtotal: "48.00",
     },
     {
@@ -159,7 +159,7 @@ OrderConfirmationEmail.PreviewProps = {
       title: "Beef Brisket",
       itemCode: "PRD-205",
       quantity: 1,
-      unitLabel: "case",
+      unit: "CS",
       subtotal: "120.00",
     },
   ],

@@ -6,7 +6,7 @@ import {
   updateOdrerGuideSchema,
 } from "./order-guide.schema"
 import { AppError } from "@jp/utils"
-import { eq, inArray, sql } from "drizzle-orm"
+import { eq, inArray, sql } from "@jp/db/query"
 import { orgActionClient } from "@/lib/safe-action"
 import { db, orderGuide, orderGuideItem } from "@jp/db"
 

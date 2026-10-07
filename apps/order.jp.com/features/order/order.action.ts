@@ -3,7 +3,7 @@ import { orgActionClient } from "@/lib/safe-action"
 import { db, order } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { cancelOrderActionSchema } from "./order.schema"
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 
 export const cancelOrder = orgActionClient({ order: ["cancel"] })
   .inputSchema(cancelOrderActionSchema)

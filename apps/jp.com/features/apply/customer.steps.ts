@@ -11,7 +11,7 @@ import { BusinessContact } from "@/features/apply/forms/business-contact"
 import { BusinessAdditionalContact } from "@/features/apply/forms/additional-contact"
 import { BusinessDelivery } from "@/features/apply/forms/business-delivery"
 import { Authorization } from "@/features/apply/forms/business-authorization"
-import z from "zod"
+import z from "@jp/utils/validation"
 import {
   Building2,
   FileText,

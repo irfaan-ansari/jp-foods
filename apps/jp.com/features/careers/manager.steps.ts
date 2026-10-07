@@ -13,7 +13,7 @@ import { ApplicantExperience } from "@/features/careers/forms/applicant-experien
 import { ApplicantLicense } from "@/features/careers/forms/applicant-license"
 import { ApplicantAddress } from "@/features/careers/forms/applicant-address"
 import { ApplicantDetails } from "@/features/careers/forms/applicant-details"
-import z from "zod"
+import z from "@jp/utils/validation"
 
 type StepsType = {
   title: string

@@ -8,7 +8,7 @@ import { sendEmail } from "@jp/notifications"
 import { CustomerApplicationInsertType } from "@jp/db"
 import CustomerApplicationReceivedEmail from "@jp/notifications/templates/customer-application-received-email"
 import { CustomerApplicationAdminEmail } from "@jp/notifications/templates"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 
 export const createCustomer = handleAction(
   async (data: CustomerApplicationInsertType) => {

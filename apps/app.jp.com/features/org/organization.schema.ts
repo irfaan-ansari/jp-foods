@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const organizationFormSchema = z.object({
   name: z.string().min(1, "Name is required"),

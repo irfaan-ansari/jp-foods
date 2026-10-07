@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 
 import { db, session, teamMember } from "@jp/db"
-import { eq, inArray, max } from "drizzle-orm"
+import { eq, inArray, max } from "@jp/db/query"
 import { TeamAppContext, teamPermission } from "@/lib/hono/middlewares"
 
 const app = new Hono<TeamAppContext>()

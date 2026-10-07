@@ -1,6 +1,5 @@
 import type { ProductSelectType } from "@jp/db"
 import { SellUnit } from "@jp/utils/commerce"
-export type { PricedSellingUnit } from "@jp/utils/commerce"
 
 
 

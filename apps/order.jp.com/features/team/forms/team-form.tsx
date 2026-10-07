@@ -12,9 +12,9 @@ import {
   FieldLabel,
 } from "@jp/ui/components/field"
 import { teamFormSchema, type TeamFormSchema } from "../team.schema"
-import { upload } from "@vercel/blob/client"
+import { upload } from "@jp/utils/blob/client"
 import { Label } from "@jp/ui/components/label"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Buildings2, CloudUpload } from "@solar-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { useQueryClient } from "@tanstack/react-query"

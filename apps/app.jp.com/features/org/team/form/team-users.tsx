@@ -5,7 +5,7 @@ import {
   CardTitle,
 } from "@jp/ui/components/card"
 import { TeamFormValues } from "../team.schema"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms"
 
 import { Button } from "@jp/ui/components/button"
 import { ChevronDown, ImageOff, Plus } from "lucide-react"

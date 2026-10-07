@@ -5,7 +5,7 @@ import { Button } from "@jp/ui/components/button"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import React from "react"
-import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
+import { CatalogSearch } from "@/features/catalog/components/catalog-search"
 import { Pagination } from "@/features/catalog/components/pagination"
 import { Metadata } from "next"
 
@@ -44,15 +44,32 @@ const ProductsPages = async ({ searchParams }: { searchParams: any }) => {
           </div>
         </Container>
       </section>
-      <section className="my-16">
-        <Container className="space-y-16">
-          <div className="flex items-center justify-between gap-6">
-            <span className="font-heading font-medium">
-              Products {pagination.total}
-            </span>
-            <SearchQueryParam />
+      <section className="my-10 sm:my-14">
+        <Container className="space-y-8">
+          <div className="flex flex-col gap-5 border-b pb-6 md:flex-row md:items-center md:justify-between">
+            <div>
+              <h2 className="font-heading text-2xl font-semibold tracking-tight">
+                {params.q ? "Search results" : "Explore our products"}
+              </h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                {params.q
+                  ? `${pagination.total.toLocaleString()} products matching "${params.q}"`
+                  : `${pagination.total.toLocaleString()} products in our catalog`}
+              </p>
+            </div>
+            <CatalogSearch />
           </div>
-          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 2xl:grid-cols-6">
+          {products.length === 0 && (
+            <div className="rounded-2xl border border-dashed bg-secondary/30 px-6 py-16 text-center">
+              <h3 className="font-heading text-xl font-semibold">
+                No products found
+              </h3>
+              <p className="mt-3 text-base text-muted-foreground">
+                Try a different product name or clear your search.
+              </p>
+            </div>
+          )}
+          <div className="grid grid-cols-2 gap-4 md:grid-cols-3 md:gap-6 lg:grid-cols-4 2xl:grid-cols-5">
             {products.map((product, i) => (
               <ProductCard key={product.id} data={product} priority={i <= 10} />
             ))}

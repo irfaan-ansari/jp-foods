@@ -1,5 +1,5 @@
 import { db } from "@jp/db"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 import { betterAuth } from "better-auth"
 import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
 import { sendEmail } from "@jp/notifications"
@@ -73,10 +73,6 @@ export const auth = betterAuth({
       allowUserToCreateOrganization: async (user) => {
         const allowedRoles = ["admin", "superAdmin"]
         return allowedRoles.includes(user.role)
-      },
-      async sendInvitationEmail(data) {
-        const inviteLink = `${process.env.NEXT_PUBLIC_AUTH_URL}/auth/accept-invitation/${data.id}`
-        console.log("send email:", inviteLink)
       },
       organizationHooks: {
         beforeCreateTeam: async ({ team }) => {

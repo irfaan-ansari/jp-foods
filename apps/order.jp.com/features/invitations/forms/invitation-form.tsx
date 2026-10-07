@@ -1,6 +1,6 @@
 "use client"
 import React from "react"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 
 import { toast } from "sonner"
 import { Loader2 } from "lucide-react"

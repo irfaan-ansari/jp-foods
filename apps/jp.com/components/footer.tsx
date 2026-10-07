@@ -124,6 +124,12 @@ export const Footer = () => {
                     {page.label}
                   </Link>
                 ))}
+                <Link
+                  href="/track"
+                  className="py-1 transition ease-out hover:text-primary hover:underline"
+                >
+                  Track Application
+                </Link>
               </div>
             </div>
           </div>

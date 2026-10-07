@@ -1,6 +1,6 @@
 import { auth } from "@jp/auth"
 import { db, teamMember, teamProduct } from "@jp/db"
-import { and, eq, inArray } from "drizzle-orm"
+import { and, eq, inArray } from "@jp/db/query"
 
 export const syncTeamPrivateItems = async ({
   teamId,

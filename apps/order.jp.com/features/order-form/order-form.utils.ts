@@ -1,6 +1,6 @@
 import { OrderItem } from "./order-form.type"
 import { Product } from "../product/product.type"
-import type { PricedSellingUnit } from "../product/product.type"
+import type { PricedSellingUnit } from "@jp/utils/commerce"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
 import { SellUnit } from "@jp/utils/commerce"

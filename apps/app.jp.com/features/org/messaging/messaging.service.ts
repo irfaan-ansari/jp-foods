@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { twilioSendSms } from "@jp/notifications"
 import { db, messageCampaign, messageRecipient } from "@jp/db"
 
