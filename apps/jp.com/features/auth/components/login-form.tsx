@@ -8,13 +8,8 @@ import { authClient } from "@jp/auth/client"
 import { useAppForm } from "@jp/ui/forms/public"
 import { Button } from "@jp/ui/components/button"
 import { Field, FieldGroup } from "@jp/ui/components/field"
-import { AlertCircleIcon, Loader2, X } from "lucide-react"
-import {
-  Alert,
-  AlertAction,
-  AlertDescription,
-  AlertTitle,
-} from "@jp/ui/components/alert"
+import { Loader2 } from "lucide-react"
+
 import { loginFormSchema } from "../auth.schema"
 
 export function LoginForm({
@@ -25,41 +20,42 @@ export function LoginForm({
     defaultValues: {
       username: "",
       password: "",
-      error: "",
     },
     validators: {
       onChange: loginFormSchema,
-    },
-    onSubmit: async ({ value }) => {
-      const { username, password } = value
+      onSubmitAsync: async ({ value }) => {
+        const { username, password } = value
 
-      const toastId = toast.loading("Logging in...")
+        const toastId = toast.loading("Logging in...")
 
-      let response
-      if (username.includes("@")) {
-        response = await authClient.signIn.email({
-          email: username,
-          password,
+        let response
+
+        if (username.includes("@")) {
+          response = await authClient.signIn.email({
+            email: username,
+            password,
+          })
+        } else {
+          response = await authClient.signIn.phoneNumber({
+            phoneNumber: username,
+            password,
+          })
+        }
+
+        if (response?.error) {
+          const message =
+            response.error.message ?? "Unable to sign in. Please try again."
+          toast.error(message, { id: toastId })
+          return { fields: { username: { message }, password: { message } } }
+        }
+
+        toast.success("Signed in successfully. Redirecting...", {
+          id: toastId,
         })
-      } else {
-        response = await authClient.signIn.phoneNumber({
-          phoneNumber: username,
-          password,
-        })
-      }
-
-      if (response?.error) {
-        const message =
-          response.error.message ?? "Unable to sign in. Please try again."
-
-        toast.error(message, { id: toastId })
-        form.setFieldValue("error", message)
-        return
-      }
-      toast.success("Signed in successfully. Redirecting...", {
-        id: toastId,
-      })
+      },
     },
+
+    onSubmit: async ({ value }) => {},
   })
 
   return (
@@ -85,7 +81,6 @@ export function LoginForm({
             <field.TextField
               label="Email or phone"
               placeholder="email or phone"
-
               className="*:data-[slot=input]:h-12"
             />
           )}
@@ -109,34 +104,6 @@ export function LoginForm({
             Forgot Password?
           </Link>
         </div>
-
-        <form.Subscribe
-          selector={(state) => state.values.error}
-          children={(error) => {
-            if (error) {
-              return (
-                <Alert
-                  variant="destructive"
-                  className="border-destructive/10 bg-destructive/5"
-                >
-                  <AlertCircleIcon />
-                  <AlertTitle>Authentication failed</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                  <AlertAction>
-                    <Button
-                      size="icon-xs"
-                      variant="outline"
-                      onClick={() => form.setFieldValue("error", "")}
-                    >
-                      <X />
-                    </Button>
-                  </AlertAction>
-                </Alert>
-              )
-            }
-            return null
-          }}
-        />
 
         <Field>
           <form.Subscribe
