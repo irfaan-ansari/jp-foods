@@ -2,12 +2,13 @@
 
 import {
   Card,
+  CardAction,
   CardContent,
   CardHeader,
   CardTitle,
 } from "@jp/ui/components/card"
-import { CopyButton } from "@jp/ui/components/jp"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import { CopyButton } from "@jp/ui/components/jp"
 import { formatDate, formatPhone } from "@jp/utils"
 import {
   Calendar,
@@ -18,7 +19,7 @@ import {
 import type { User } from "../user.type"
 import { UserDropdown } from "./user-dropdown"
 import { UserRoleBadge, UserStatusBadge } from "./user-card"
-
+import { UserOrganizationsCard } from "./user-organizations-card"
 const USER_ROLE_PERMISSIONS: Record<string, Record<string, string[]>> = {
   superAdmin: {
     Portal: ["Organization", "CRM"],
@@ -72,7 +73,6 @@ const USER_ROLE_PERMISSIONS: Record<string, Record<string, string[]>> = {
 
 export const UserDetailsClient = ({ data }: { data: User }) => {
   const role = data.role ?? "user"
-
   return (
     <div className="grid grid-cols-1 gap-6 @5xl:grid-cols-3">
       <div className="space-y-6 @5xl:col-span-2">
@@ -93,6 +93,9 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
                 </div>
               </div>
             </div>
+            <CardAction>
+              <UserDropdown data={data} />
+            </CardAction>
           </CardHeader>
           <CardContent className="grid gap-3 md:grid-cols-2">
             <div className="grid gap-1">
@@ -119,7 +122,6 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
               label="Phone Verified"
               value={data.phoneNumberVerified ? "Yes" : "No"}
             />
-
             <Detail label="User ID" value={data.id} />
             {data.banned && (
               <>
@@ -134,24 +136,39 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
             )}
           </CardContent>
         </Card>
-
-        <PermissionsCard
-          title="Permissions"
-          permissions={USER_ROLE_PERMISSIONS[role] ?? {}}
-        />
+        <UserOrganizationsCard />
+        <Card size="sm">
+          <CardHeader className="border-b border-dashed">
+            <CardTitle>Permissions</CardTitle>
+          </CardHeader>
+          <CardContent className="grid gap-4 md:grid-cols-2">
+            {Object.entries(USER_ROLE_PERMISSIONS[role] ?? {}).map(
+              ([resource, actions]) => (
+                <div key={resource} className="grid gap-2">
+                  <div className="font-medium">{resource}</div>
+                  <div className="flex flex-wrap gap-2">
+                    {actions.map((action) => (
+                      <span
+                        key={action}
+                        className="rounded-md bg-secondary px-2 py-1 text-xs text-muted-foreground"
+                      >
+                        {action}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )
+            )}
+            {Object.keys(USER_ROLE_PERMISSIONS[role] ?? {}).length === 0 && (
+              <div className="text-sm text-muted-foreground">
+                No permissions configured for this role.
+              </div>
+            )}
+          </CardContent>
+        </Card>
       </div>
-
       <div>
         <div className="sticky top-20 space-y-6">
-          <Card size="sm">
-            <CardHeader className="border-b border-dashed">
-              <CardTitle>Actions</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <UserDropdown data={data} />
-            </CardContent>
-          </Card>
-
           <Card size="sm" className="bg-secondary/40">
             <CardHeader className="border-b border-dashed">
               <CardTitle>Activity</CardTitle>
@@ -159,9 +176,7 @@ export const UserDetailsClient = ({ data }: { data: User }) => {
             <CardContent className="grid gap-3">
               <Detail
                 label="Last Active"
-                value={
-                  data.lastSession ? formatDate(data.lastSession) : "Never"
-                }
+                value={data.lastSeenAt ? formatDate(data.lastSeenAt) : "Never"}
                 icon={<Calendar className="size-4" />}
               />
               <Detail label="Created At" value={formatDate(data.createdAt)} />
@@ -195,41 +210,4 @@ const Detail = ({
       {value}
     </div>
   </div>
-)
-
-const PermissionsCard = ({
-  title,
-  permissions,
-}: {
-  title: string
-  permissions: Record<string, string[]>
-}) => (
-  <Card size="sm">
-    <CardHeader className="border-b border-dashed">
-      <CardTitle>{title}</CardTitle>
-    </CardHeader>
-    <CardContent className="grid gap-4 md:grid-cols-2">
-      {Object.entries(permissions).length ? (
-        Object.entries(permissions).map(([resource, actions]) => (
-          <div key={resource} className="grid gap-2">
-            <div className="font-medium">{resource}</div>
-            <div className="flex flex-wrap gap-2">
-              {actions.map((action) => (
-                <span
-                  key={action}
-                  className="rounded-md bg-secondary px-2 py-1 text-xs text-muted-foreground"
-                >
-                  {action}
-                </span>
-              ))}
-            </div>
-          </div>
-        ))
-      ) : (
-        <div className="text-sm text-muted-foreground">
-          No permissions configured for this role.
-        </div>
-      )}
-    </CardContent>
-  </Card>
 )

@@ -69,8 +69,8 @@ export const userColumns = column.columns([
     header: "Last active",
     cell: ({ row }) => (
       <div className="text-muted-foreground">
-        {row.original.lastSession
-          ? formatDate(row.original.lastSession)
+        {row.original.lastSeenAt
+          ? formatDate(row.original.lastSeenAt)
           : "Never"}
       </div>
     ),

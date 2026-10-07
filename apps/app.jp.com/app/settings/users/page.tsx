@@ -1,7 +1,7 @@
 "use client"
 
 import React from "react"
-import { Plus } from "lucide-react"
+import { ChevronDown, Plus, X } from "lucide-react"
 import { Sort } from "@solar-icons/react"
 import { Button } from "@jp/ui/components/button"
 import { FilterTab } from "@/components/filter-tabs"
@@ -12,21 +12,7 @@ import { UserDialog } from "@/features/user/components/user-dialog"
 import { UserAccess } from "@/features/auth/components/user-permission"
 import { SearchQueryParam } from "@jp/ui/components/jp/search-input"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
-import { USER_ROLES } from "@/features/user/user.const"
-
-const OPTIONS = [
-  { label: "All", value: "", color: "#A1A1AA" },
-  {
-    label: "Active",
-    value: "active",
-    color: "#22C55E",
-  },
-  {
-    label: "Banned",
-    value: "banned",
-    color: "#F59E0B",
-  },
-]
+import { STATUS, USER_ROLES } from "@/features/user/user.const"
 
 const UsersPage = () => {
   const { searchParamsObj, queryParams } = useRouterStuff()
@@ -50,11 +36,15 @@ const UsersPage = () => {
 
       <PageContent className="space-y-3 lg:space-y-6">
         <div className="flex flex-col gap-3 lg:flex-row lg:items-center">
-          <FilterTab queryKey="status" tabs={OPTIONS} path="/users/count" />
+          <FilterTab
+            queryKey="status"
+            tabs={Object.values(STATUS)}
+            path="/users/count"
+          />
           <UserRoleSelector
             selected={searchParamsObj.role || "All"}
             onChange={(value) => {
-              queryParams({ set: { role: value.value } })
+              queryParams({ set: { role: value.value }, del: "q" })
             }}
           >
             <Button
@@ -64,8 +54,21 @@ const UsersPage = () => {
               <Sort />
               Role:
               <span className="truncate">
-                {USER_ROLES[searchParamsObj.role || "all"]?.label}
+                {USER_ROLES[searchParamsObj.role!]?.label ?? "All"}
               </span>
+              {searchParamsObj.role ? (
+                <span
+                  onClick={(e) => {
+                    e.preventDefault()
+                    queryParams({ del: "role" })
+                  }}
+                  className="ml-auto hover:text-destructive"
+                >
+                  <X />
+                </span>
+              ) : (
+                <ChevronDown className="ml-auto" />
+              )}
             </Button>
           </UserRoleSelector>
           <SearchQueryParam

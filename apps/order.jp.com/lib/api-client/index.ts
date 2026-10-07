@@ -7,5 +7,5 @@ export const apiClient = createApiClient({
 
 export const presenceApiClient = createApiClient({
   baseURL: process.env.NEXT_PUBLIC_API_URL!,
-  basePath: "/api/v1/presence",
+  basePath: "/api/v1",
 })

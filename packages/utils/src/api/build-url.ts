@@ -1,5 +1,4 @@
 import { GetOptions } from "./types"
-
 export function buildUrl(
   baseURL: string,
   path: string,
@@ -11,8 +10,11 @@ export function buildUrl(
 
   const url = new URL(
     path.replace(/^\/+/, ""),
-    baseURL.endsWith("/") ? baseURL : `${baseURL}/`
+    `${baseURL.replace(/\/+$/, "")}/`
   )
+
+  // collapse any repeated slashes in the final path
+  url.pathname = url.pathname.replace(/\/{2,}/g, "/")
 
   if (params) {
     for (const [key, value] of Object.entries(params)) {

@@ -12,9 +12,14 @@ import {
 } from "@jp/ui/components/avatar"
 import { Tooltip } from "@jp/ui/components/jp/tooltip"
 import { usePostPresence, usePresence } from "@/features/auth/auth.data"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@jp/ui/components/hover-card"
 
 const HEARTBEAT_INTERVAL = 30 * 1000
-const MAX_VISIBLE_USERS = 4
+const MAX_VISIBLE_USERS = 5
 
 export const PresenceUsers = () => {
   const { data: sessionData, isPending } = authClient.useSession()
@@ -41,22 +46,43 @@ export const PresenceUsers = () => {
   }
 
   return (
-    <AvatarGroup className="flex-col -space-y-2 -space-x-0">
-      {visibleUsers.map((user) => (
-        <Tooltip key={user.id} content={user.name} side="right">
-          <Avatar>
-            {user.image && <AvatarImage src={user.image} alt={user.name} />}
-            <AvatarFallback>
-              <UserRounded />
-            </AvatarFallback>
-          </Avatar>
-        </Tooltip>
-      ))}
-      {hiddenCount > 0 && (
-        <AvatarGroupCount className="size-8 text-xs">
-          +{hiddenCount}
-        </AvatarGroupCount>
-      )}
-    </AvatarGroup>
+    <div>
+      <p className="mb-2 text-xs font-medium text-green-600">Online</p>
+      <AvatarGroup className="flex-col items-center justify-center -space-y-2 -space-x-0">
+        {visibleUsers.map((user) => (
+          <Tooltip key={user.id} content={user.name} side="right">
+            <Avatar>
+              {user.image && <AvatarImage src={user.image} alt={user.name} />}
+              <AvatarFallback>
+                <UserRounded />
+              </AvatarFallback>
+            </Avatar>
+          </Tooltip>
+        ))}
+        {hiddenCount > 0 && (
+          <HoverCard>
+            <HoverCardTrigger asChild>
+              <AvatarGroupCount className="size-7 text-xs">
+                +{hiddenCount}
+              </AvatarGroupCount>
+            </HoverCardTrigger>
+            <HoverCardContent className="w-auto max-w-64 p-2" align="start">
+              <AvatarGroup>
+                {users.slice(0, MAX_VISIBLE_USERS).map((user) => (
+                  <Tooltip key={user.id} content={user.name} side="right">
+                    <Avatar>
+                      <AvatarImage src={user.image ?? ""} alt={user.name} />
+                      <AvatarFallback>
+                        <UserRounded />
+                      </AvatarFallback>
+                    </Avatar>
+                  </Tooltip>
+                ))}
+              </AvatarGroup>
+            </HoverCardContent>
+          </HoverCard>
+        )}
+      </AvatarGroup>
+    </div>
   )
 }

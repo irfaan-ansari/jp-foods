@@ -28,12 +28,11 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
 
   const { init, ready } = useOrderForm()
-  const cartReady = useOrderFormStore((state) => state.ready)
 
   React.useEffect(() => {
+    if (!ready) return
     init()
   }, [init, ready])
-
 
   return (
     <React.Fragment>
@@ -55,7 +54,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
         </Button>
       </OrderPageHeader>
 
-      <PageContent className="space-y-6" loading={!ready || !cartReady}>
+      <PageContent className="space-y-6" loading={!ready}>
         <OrderFormToolbar />
         {children}
       </PageContent>

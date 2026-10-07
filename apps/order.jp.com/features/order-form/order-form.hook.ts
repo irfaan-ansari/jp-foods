@@ -7,6 +7,7 @@ import { initOrderForm, useOrderFormStore } from "./order-form.store"
 import { useActiveTeam } from "../team/team.data"
 import { OrderForm } from "./order-form.type"
 import { useOrderFormUI } from "./order-form-ui.store"
+import { authClient } from "@jp/auth/client"
 
 export function useOrderItemQuantity(data: Product) {
   const defaultUnit =
@@ -60,25 +61,29 @@ export function useOrderItemQuantity(data: Product) {
 
 export function useOrderForm() {
   const { data: team, isPending } = useActiveTeam()
+  const { data: session, isPending: sessionPending } = authClient.useSession()
 
   const initialize = React.useCallback(
     (initialData?: Partial<OrderForm>) => {
       const activeTeam = team?.data
       if (isPending || !activeTeam) return
 
-      initOrderForm(activeTeam.id, {
-        ...initialData,
-        taxRule: {
-          name: activeTeam.taxRule?.name ?? "",
-          rate: Number(activeTeam.taxRule?.rate ?? 0),
-        },
+      initOrderForm(session?.session.userId!, activeTeam.id, {
+        ...(initialData
+          ? initialData
+          : {
+              taxRule: {
+                name: activeTeam.taxRule?.name ?? "",
+                rate: Number(activeTeam.taxRule?.rate ?? 0),
+              },
+            }),
       })
     },
-    [team, isPending]
+    [team, isPending, session, sessionPending]
   )
 
   return {
     init: initialize,
-    ready: !isPending && !!team?.data,
+    ready: !isPending && !!team?.data && !sessionPending && !!session,
   }
 }

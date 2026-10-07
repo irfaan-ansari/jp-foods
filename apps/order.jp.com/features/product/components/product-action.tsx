@@ -112,7 +112,7 @@ export const ProductCartAction = ({
       >
         <Minus className="size-3.5" />
       </Button>
-      <div className="flex min-w-20 flex-1 items-center justify-center gap-1">
+      <div className="flex min-w-16 flex-1 items-center justify-center gap-1">
         <span className="text-center text-sm font-medium">
           {cartItem?.quantity ?? 0}
         </span>
