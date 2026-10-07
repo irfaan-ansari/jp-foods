@@ -6,7 +6,6 @@ export const otpLoginSchema = z.object({
     .min(5, "Enter a valid phone number with country code"),
   code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
   step: z.enum(["send", "verify"]),
-  error: z.string(),
 })
 
 /** form schema */
@@ -19,5 +18,4 @@ export const loginFormSchema = z.object({
     "Enter valid email or phone number"
   ),
   password: z.string().min(2, "Enter password"),
-  error: z.string(),
 })
