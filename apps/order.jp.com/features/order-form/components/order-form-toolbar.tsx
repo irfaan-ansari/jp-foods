@@ -31,9 +31,9 @@ export function OrderFormToolbar() {
       <ToggleGroup
         type="single"
         value={layout}
-        variant="outline"
+        variant="default"
         spacing={0}
-        className="rounded-lg border px-px"
+        className="rounded-xl border bg-secondary px-px"
         onValueChange={(newLayout) => setLayout(newLayout)}
       >
         {LAYOUT_OPTIONS.map((layout) => (
@@ -41,7 +41,7 @@ export function OrderFormToolbar() {
             <ToggleGroupItem
               key={layout.value}
               value={layout.value}
-              className="aria-checked:bg-secondary"
+              className="aria-checked:bg-background"
             >
               <layout.icon />
             </ToggleGroupItem>

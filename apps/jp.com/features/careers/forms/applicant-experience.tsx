@@ -3,7 +3,7 @@ import { Button } from "@jp/ui/components/button"
 import { Plus, Trash2 } from "lucide-react"
 import { FieldGroup } from "@jp/ui/components/field"
 
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantExperience = withForm({

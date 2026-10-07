@@ -1,4 +1,4 @@
-import { DrizzleQueryError } from "drizzle-orm"
+import { DrizzleQueryError } from "@jp/db/query"
 
 type ActionSuccess<T> = {
   success: true

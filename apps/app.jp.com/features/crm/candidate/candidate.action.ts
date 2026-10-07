@@ -1,6 +1,6 @@
 "use server"
 
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { AppError } from "@jp/utils"
 import { db, jobApplication } from "@jp/db"
 
@@ -18,9 +18,9 @@ import {
   JobApplicationAdminEmail,
   JobApplicationDeclinedEmail,
 } from "@jp/notifications/templates"
-import { renderToBuffer } from "@react-pdf/renderer"
+import { renderToBuffer } from "@jp/pdf/server"
 import { JobApplicationPDF } from "@jp/pdf"
-import { waitUntil } from "@vercel/functions"
+import { waitUntil } from "@jp/utils/functions"
 
 // update fields
 export const updateCandidateApplication = authActionClient({

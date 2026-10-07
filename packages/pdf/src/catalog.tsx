@@ -1,5 +1,5 @@
 import { styles } from "./styles"
-import { format } from "date-fns"
+import { format } from "@jp/utils/date"
 import { formatPhone, formatUSD } from "@jp/utils"
 import { OrganizationSelectType, ProductSelectType } from "@jp/db"
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
@@ -89,7 +89,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                   },
                 ]}
               >
-                Weekly Price List •{" "}
+                Weekly Price List â€¢{" "}
                 <Text
                   style={[styles.label, { color: colors.border, fontSize: 9 }]}
                 >
@@ -116,7 +116,7 @@ export const CatalogPDF = (data: CatalogProps) => {
                   marginRight: 4,
                 }}
               >
-                Week of &nbsp;•
+                Week of &nbsp;â€¢
               </Text>
               <Text
                 style={{

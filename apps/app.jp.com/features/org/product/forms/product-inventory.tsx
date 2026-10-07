@@ -11,7 +11,7 @@ import {
   FieldTitle,
 } from "@jp/ui/components/field"
 import { getUnit } from "@jp/utils/commerce"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms"
 import { Switch } from "@jp/ui/components/switch"
 import { ProductFormSchema } from "../product.schema"
 import {

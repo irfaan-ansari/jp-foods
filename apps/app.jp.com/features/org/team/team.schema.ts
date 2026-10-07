@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 const privateItemSchema = z.object({
   id: z.number(),

@@ -1,6 +1,6 @@
 "use server"
 
-import { del, head } from "@vercel/blob"
+import { del, head } from "@jp/utils/blob/server"
 
 export const deleteBlob = async (url: string) => {
   return await del(url)

@@ -1,21 +1,39 @@
-import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
-import { format } from "date-fns"
+import { Document, Text, View, Image } from "@react-pdf/renderer"
+import { format } from "@jp/utils/date"
 import { COLORS, styles } from "./styles"
+import { ApplicationPage } from "./application-layout"
 
 export const JobAgreementPDF = ({ data }: { data: any }) => {
   return (
-    <Document title={`Employment Agreement - ${data.name}`}>
-      <Page size="A4" style={styles.page}>
+    <Document
+      title={`Employment Agreement - ${data.applicantName || data.name}`}
+      author="Jimenez Produce"
+    >
+      <ApplicationPage title="Employment agreement">
         {/* header */}
-        <View style={[styles.header]}>
-          <View style={styles.headerLeft}>
-            <Image src={process.env.NEXT_PUBLIC_LOGO_URL} style={styles.logo} />
-            <View>
-              <Text style={[styles.docTitle, { marginBottom: 16 }]}>
-                Jimenez Produce LLC
+        <View style={styles.header} wrap={false}>
+          <Text style={styles.eyebrow}>EMPLOYMENT AGREEMENT</Text>
+          <Text style={styles.docTitle}>{data.applicantName || data.name}</Text>
+          <Text style={styles.tagline}>
+            Employee onboarding & policy acknowledgment
+          </Text>
+          <View style={styles.summary}>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Position</Text>
+              <Text style={styles.value}>
+                {data.position || "Not provided"}
               </Text>
-              <Text style={styles.tagline}>
-                Employment Agreement & Policy Acknowledgment
+            </View>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Facility</Text>
+              <Text style={styles.value}>
+                {data.location || "Not provided"}
+              </Text>
+            </View>
+            <View style={styles.fieldGroup}>
+              <Text style={styles.label}>Agreement date</Text>
+              <Text style={styles.value}>
+                {format(new Date(data.agreementDate), "MMM d, yyyy")}
               </Text>
             </View>
           </View>
@@ -23,16 +41,18 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
 
         {/* 2. MAIN CONTENT CARD (Will flow across 4-5 pages) */}
 
-        <Text style={styles.sectionTitle}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
           Employee Onboarding & Policy Acknowledgment Packet
         </Text>
-        <Text style={styles.contentText}>
+        <Text style={styles.legal}>
           This document outlines employment terms, safety requirements,
           compliance obligations, equipment accountability standards, and
           workplace expectations for all employees of Jimenez Produce LLC.
         </Text>
-        <Text style={styles.sectionTitle}>1. Employment Relationship</Text>
-        <Text style={styles.contentText}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
+          1. Employment Relationship
+        </Text>
+        <Text style={styles.legal}>
           Employment with Jimenez Produce LLC is at-will. Either the employee or
           the company may terminate employment at any time, with or without
           cause or notice, subject to applicable law. Nothing in this document
@@ -41,10 +61,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
           adherence to company policies will be evaluated.
         </Text>
 
-        <Text style={styles.sectionTitle}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
           2. Drug, Alcohol & Screening Authorization
         </Text>
-        <Text style={styles.contentText}>
+        <Text style={styles.legal}>
           Employees consent to pre-employment, post-accident, reasonable
           suspicion, and when applicable, random drug and alcohol testing. By
           signing this document, you authorize Jimenez Produce LLC to conduct
@@ -53,10 +73,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
           Alcohol Clearinghouse queries as required by law.
         </Text>
 
-        <Text style={styles.sectionTitle}>
+        <Text style={styles.sectionTitle} minPresenceAhead={45}>
           3. FMCSA Clearinghouse (CDL Drivers)
         </Text>
-        <Text style={styles.contentText}>
+        <Text style={styles.legal}>
           CDL drivers authorize annual limited queries of the FMCSA Drug &
           Alcohol Clearinghouse. If a record exists, the driver must provide
           electronic consent for a full query within 24 hours in accordance with
@@ -65,10 +85,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
         </Text>
 
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
             4. Equipment Responsibility & Big Joe Policy
           </Text>
-          <Text style={styles.contentText}>
+          <Text style={styles.legal}>
             Employees are responsible for the proper care and protection of all
             assigned company equipment, including but not limited to pallet
             jacks, ramps, hand trucks, trucks, liftgates, and accessories. Big
@@ -81,10 +101,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
           </Text>
         </View>
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
             5. GPS & Vehicle Monitoring Consent
           </Text>
-          <Text style={styles.contentText}>
+          <Text style={styles.legal}>
             All company vehicles are subject to GPS tracking, telematics
             systems, safety monitoring, and route oversight. Employees
             acknowledge there is no expectation of privacy while operating
@@ -93,8 +113,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
         </View>
 
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>6. Safety & Cell Phone Policy</Text>
-          <Text style={styles.contentText}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
+            6. Safety & Cell Phone Policy
+          </Text>
+          <Text style={styles.legal}>
             Cell phone use is strictly prohibited while operating a company
             vehicle. This includes calls, texting, social media, or any handheld
             device usage. Cell phone use is not permitted while working inside
@@ -102,10 +124,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
           </Text>
         </View>
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
             7. Training & Uniform Repayment Agreement
           </Text>
-          <Text style={styles.contentText}>
+          <Text style={styles.legal}>
             If Jimenez Produce pays for CDL training, CDL testing fees, or DOT
             Medical Card costs, the employee agrees to remain employed for at
             least one (1) year from the date the CDL is obtained and training is
@@ -118,10 +140,10 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
           </Text>
         </View>
         <View wrap={false}>
-          <Text style={styles.sectionTitle}>
+          <Text style={styles.sectionTitle} minPresenceAhead={45}>
             8. Confidentiality & Non-Solicitation
           </Text>
-          <Text style={styles.contentText}>
+          <Text style={styles.legal}>
             Employees may not disclose pricing information, customer lists,
             internal systems, alarm codes, lockbox codes, or other confidential
             company information. Sales employees agree not to solicit company
@@ -135,32 +157,25 @@ export const JobAgreementPDF = ({ data }: { data: any }) => {
             EMPLOYEE ACKNOWLEDGMENT & CONSENT
           </Text>
 
-          <View style={{ marginTop: 10 }}>
-            <Text style={styles.label}>Employee Full Legal Name</Text>
-            <Text style={styles.value}>{data.applicantName}</Text>
-          </View>
-          <View style={{ marginTop: 10 }}>
-            <Text style={styles.label}>Position</Text>
-            <Text style={styles.value}>{data.position}</Text>
-          </View>
-          <View style={{ marginTop: 10 }}>
-            <Text style={styles.label}>Facility</Text>
-            <Text style={styles.value}>{data.location}</Text>
-          </View>
-
-          <View style={{ marginTop: 10 }}>
-            <Text style={styles.label}>Date Signed</Text>
-            <Text style={styles.value}>
-              {format(data.agreementDate, "MMMM dd, yyyy")}
-            </Text>
-          </View>
-          <View>
-            {data.signatureUrl && (
-              <Image src={data.signatureUrl} style={styles.signatureImage} />
-            )}
+          <View style={[styles.row, { marginTop: 12, alignItems: "flex-end" }]}>
+            <View style={styles.signatureBlock}>
+              {data.signatureUrl && (
+                <Image src={data.signatureUrl} style={styles.signatureImage} />
+              )}
+              <Text style={styles.label}>Authorized signature</Text>
+              <Text style={styles.value}>
+                {data.applicantName || data.name}
+              </Text>
+            </View>
+            <View style={styles.signatureBlock}>
+              <Text style={styles.label}>Date signed</Text>
+              <Text style={styles.value}>
+                {format(new Date(data.agreementDate), "MMM d, yyyy")}
+              </Text>
+            </View>
           </View>
         </View>
-      </Page>
+      </ApplicationPage>
     </Document>
   )
 }

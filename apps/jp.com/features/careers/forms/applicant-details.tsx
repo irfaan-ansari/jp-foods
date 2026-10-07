@@ -1,4 +1,4 @@
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { FieldGroup } from "@jp/ui/components/field"
 import { DriverFormValues } from "../careers.schema"
 

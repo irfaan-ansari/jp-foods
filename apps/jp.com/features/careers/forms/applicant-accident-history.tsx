@@ -1,6 +1,6 @@
 import React from "react"
 import { Plus, Trash2 } from "lucide-react"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 
 import { Button } from "@jp/ui/components/button"
 import { FieldGroup } from "@jp/ui/components/field"

@@ -4,6 +4,8 @@ import { DataTable } from "@jp/ui/components/data-table"
 import { useRouterStuff } from "@jp/ui/hooks/use-router-stuff"
 import { useMembers } from "../member.data"
 import { memberColumns } from "./member-columns"
+import { MEMBER_ROLES } from "../member.const"
+import { StatusBadge } from "@jp/ui/components/jp/status-badge"
 
 export const MemberClient = () => {
   const { searchParamsObj } = useRouterStuff()
@@ -27,4 +29,9 @@ export const MemberClient = () => {
       pagination={members.data?.pagination}
     />
   )
+}
+
+export const MemberRoleBadge = ({ status }: { status: string }) => {
+  const map = MEMBER_ROLES[status]! ?? {}
+  return <StatusBadge status={map} className="backdrop-blur-lg" />
 }

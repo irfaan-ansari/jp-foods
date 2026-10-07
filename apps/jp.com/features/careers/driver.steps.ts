@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 import { ApplicantConfirmation } from "@/features/careers/forms/applicant-confirmation"
 import {
   accidentHistorySchema,

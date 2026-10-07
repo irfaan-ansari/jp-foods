@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const profileSchema = z.object({
   image: z.string(),

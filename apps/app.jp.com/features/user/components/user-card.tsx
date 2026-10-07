@@ -60,7 +60,7 @@ export const UserCard = ({ data }: { data: UserType }) => {
         <div className="border-t border-dashed" />
         <div className="flex items-center gap-3 overflow-hidden">
           <span className="line-clamp-1 flex-1 space-x-4 text-sm text-muted-foreground">
-            Last active • {formatDate(data.lastSession)}
+            Last active • {formatDate(data.lastSeenAt)}
           </span>
         </div>
       </CardContent>

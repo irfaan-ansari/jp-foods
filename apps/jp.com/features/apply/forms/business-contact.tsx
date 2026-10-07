@@ -1,5 +1,5 @@
 import { FieldGroup } from "@jp/ui/components/field"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { ROLES } from "@/features/apply/customer.const"
 import translations from "@/features/apply/customer.translations.json"
 import {

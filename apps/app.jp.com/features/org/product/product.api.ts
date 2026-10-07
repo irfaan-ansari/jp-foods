@@ -11,7 +11,7 @@ import {
   eq,
   ilike,
   sql,
-} from "drizzle-orm"
+} from "@jp/db/query"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 import { AppError } from "@jp/utils"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"

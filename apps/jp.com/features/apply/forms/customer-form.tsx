@@ -18,10 +18,10 @@ import {
   Loader2,
   ShieldCheck,
 } from "lucide-react"
-import { uploadFile } from "@/lib/upload"
-import { useAppForm } from "@/hooks/use-app-form"
+import { uploadFile } from "@jp/utils/blob/client"
+import { useAppForm } from "@jp/ui/forms/public"
 import translations from "@/features/apply/customer.translations.json"
-import { formOptions, useStore } from "@tanstack/react-form"
+import { formOptions, useStore } from "@jp/ui/forms/public"
 import { customerSchema } from "@/features/apply/customer.schema"
 
 import { Card, CardFooter, CardHeader } from "@jp/ui/components/card"

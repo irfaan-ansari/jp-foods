@@ -2,9 +2,9 @@
 
 import { toast } from "sonner"
 import React, { useState } from "react"
-import { upload } from "@vercel/blob/client"
+import { upload } from "@jp/utils/blob/client"
 
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 
 import { ProductPreview } from "./product-preview"
 

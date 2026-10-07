@@ -7,7 +7,7 @@ import {
 } from "./price-level.schema"
 import { db, priceLevel, priceLevelItem } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { and, eq, inArray, sql } from "drizzle-orm"
+import { and, eq, inArray, sql } from "@jp/db/query"
 
 /**
  * create

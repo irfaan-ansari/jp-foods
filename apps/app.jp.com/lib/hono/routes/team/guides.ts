@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 
 import { db, orderGuide } from "@jp/db"
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination } from "@/lib/hono/lib"
 import { getTeamPriceResolver } from "@/features/org/price-level/price-level-resolver"

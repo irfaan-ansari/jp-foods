@@ -6,7 +6,7 @@ import {
   useTranslation,
 } from "@/components/language-selector"
 import { CardDescription, CardTitle } from "@jp/ui/components/card"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { CustomerFormType } from "../customer.schema"
 
 export const BusinessDetails = withForm({

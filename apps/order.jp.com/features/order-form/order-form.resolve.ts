@@ -1,7 +1,7 @@
 import { db } from "@jp/db"
 import { AppError } from "@jp/utils"
 import { withCalculatedPrices } from "@jp/utils/commerce"
-import { and, eq, inArray } from "drizzle-orm"
+import { and, eq, inArray } from "@jp/db/query"
 
 
 import { getTeamPriceResolver } from "../team/team.price-resolver"

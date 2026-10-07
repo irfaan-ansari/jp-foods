@@ -2,7 +2,7 @@ import React from "react"
 import { Button } from "@jp/ui/components/button"
 import { Textarea } from "@jp/ui/components/textarea"
 import { Plus, Trash2 } from "lucide-react"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import translations from "@/features/apply/customer.translations.json"
 import { DELIVERY_DAYS, DELIVERY_TIME } from "@/features/apply/customer.const"
 import {

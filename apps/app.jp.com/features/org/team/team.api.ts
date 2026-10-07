@@ -3,7 +3,7 @@ import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
 
 import { Hono } from "hono"
-import { and, count, eq, gte, sql, desc, ilike, or } from "drizzle-orm"
+import { and, count, eq, gte, sql, desc, ilike, or } from "@jp/db/query"
 import { AppError } from "@jp/utils"
 import { RANGE_DAYS } from "./team.const"
 

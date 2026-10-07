@@ -56,10 +56,26 @@ export const promotions = app.get("/", async (c) => {
       .filter(Boolean),
   }))
 
+  const byPlacement = response.reduce<
+    Record<string, (typeof response)[number][]>
+  >((acc, promotion) => {
+    const placements = promotion.placement?.length
+      ? promotion.placement
+      : ["sidebar"]
+
+    for (const placement of new Set(placements)) {
+      const group = (acc[placement] ??= [])
+      // Scope each copy so placement filters don't render duplicates.
+      group.push({ ...promotion, placement: [placement] })
+    }
+
+    return acc
+  }, {})
+
   return c.json(
     {
       success: true,
-      data: response,
+      data: Object.values(byPlacement).flat(),
     },
     200
   )

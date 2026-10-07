@@ -1,11 +1,11 @@
 "use client"
 
 import React from "react"
-import z from "zod"
+import z from "@jp/utils/validation"
 import { toast } from "sonner"
 import { Loader2, Pencil } from "lucide-react"
 import { authClient } from "@jp/auth/client"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Button } from "@jp/ui/components/button"
 import {
   Field,

@@ -3,7 +3,7 @@ import React from "react"
 import { FieldGroup } from "@jp/ui/components/field"
 
 import { US_STATES } from "@/features/careers/careers.const"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { DriverFormValues } from "../careers.schema"
 
 export const ApplicantAddress = withForm({

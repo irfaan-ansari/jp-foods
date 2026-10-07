@@ -2,7 +2,7 @@
 
 import React from "react"
 import { ChevronDown, X } from "lucide-react"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms"
 
 import {
   Card,

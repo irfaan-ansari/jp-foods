@@ -6,23 +6,30 @@
   "exports": {
     ".": "./src/index.ts",
     "./error": "./src/error/index.ts",
-    "./commerce": "./src/commerce/index.ts"
+    "./commerce": "./src/commerce/index.ts",
+    "./date": "./src/date/index.ts",
+    "./date/timezone": "./src/date/timezone.ts",
+    "./validation": "./src/validation/index.ts",
+    "./blob/client": "./src/blob/client.ts",
+    "./blob/server": "./src/blob/server.ts",
+    "./blob/types": "./src/blob/types.ts",
+    "./functions": "./src/functions/index.ts"
   },
   "scripts": {
     "lint": "eslint",
     "format": "prettier --write \"**/*.ts\"",
     "typecheck": "tsc --noEmit"
   },
-  "peerDependencies": {
-    "date-fns": "^4.0.0",
-    "drizzle-orm": "^0.45.2",
-    "zod": "^4.4.3"
-  },
   "devDependencies": {
     "@jp/typescript-config": "workspace:*",
     "@types/node": "^20.19.43"
   },
   "dependencies": {
-    "libphonenumber-js": "^1.13.12"
+    "libphonenumber-js": "^1.13.12",
+    "date-fns": "^4.4.0",
+    "date-fns-tz": "^3.2.0",
+    "zod": "^4.4.3",
+    "@vercel/blob": "^2.5.0",
+    "@vercel/functions": "^3.9.11"
   }
 }

@@ -1,7 +1,7 @@
 import React from "react"
 
 import { ExternalLink } from "lucide-react"
-import { HeadBlobResult } from "@vercel/blob"
+import type { HeadBlobResult } from "@jp/utils/blob/types"
 import { Button } from "@jp/ui/components/button"
 import { FileText, PenNewRound } from "@solar-icons/react"
 import { Document } from "@/features/crm/candidate/candidate.type"

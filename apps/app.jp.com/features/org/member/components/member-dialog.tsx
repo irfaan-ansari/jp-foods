@@ -12,7 +12,7 @@ import {
 } from "@jp/ui/components/jp/app-dialog"
 import { ChevronDown, Loader2, Plus } from "lucide-react"
 
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Button } from "@jp/ui/components/button"
 import {
   Field,
@@ -21,11 +21,12 @@ import {
   FieldGroup,
   FieldLabel,
 } from "@jp/ui/components/field"
-import { MemberRoleBadge } from "./member-card"
+
 import { createMember, updateMember } from "../member.action"
 import { MemberRoleSelector } from "../components/member-role-selector"
 import { UserSelector } from "@/features/user/components/user-selector"
 import { useQueryClient } from "@tanstack/react-query"
+import { MemberRoleBadge } from "./member-client"
 
 export const MemberDialog = ({
   values,

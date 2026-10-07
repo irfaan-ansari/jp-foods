@@ -22,8 +22,8 @@ import {
   ClipboardAdd,
   UserId,
   ChatRoundDots,
-  LetterUnread,
   UndoLeftSquare,
+  Station,
 } from "@solar-icons/react"
 
 export const ORG_NAV = [
@@ -31,18 +31,19 @@ export const ORG_NAV = [
     label: "",
     items: [
       { label: "Dashboard", icon: GraphUp, href: "/org/dashboard", items: [] },
+      {
+        label: "Live Orders",
+        icon: Station,
+        href: "/org/live-orders",
+        items: [],
+      },
     ],
   },
   {
     label: "Sales",
     items: [
       { label: "Orders", icon: InboxLine, href: "/org/orders", items: [] },
-      {
-        label: "Live Orders",
-        icon: ClipboardAdd,
-        href: "/org/live-orders",
-        items: [],
-      },
+
       {
         label: "Returns",
         icon: UndoLeftSquare,

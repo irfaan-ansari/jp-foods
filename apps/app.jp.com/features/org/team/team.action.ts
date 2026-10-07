@@ -1,6 +1,6 @@
 "use server"
 import { auth } from "@jp/auth"
-import { and, eq } from "drizzle-orm"
+import { and, eq } from "@jp/db/query"
 import { AppError } from "@jp/utils/error"
 import { db, team, teamMember, teamProduct } from "@jp/db"
 import { orgActionClient } from "@/lib/safe-action"

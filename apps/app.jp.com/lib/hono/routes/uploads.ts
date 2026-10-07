@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client"
+import { handleUpload, type HandleUploadBody } from "@jp/utils/blob/server"
 
 const app = new Hono()
 
@@ -16,7 +16,12 @@ export const uploadRoutes = app.post("/", async (c) => {
         // if (!user) throw new Error("Not authenticated")
 
         return {
-          allowedContentTypes: ["image/jpeg", "image/png", "image/webp"],
+          allowedContentTypes: [
+            "image/jpeg",
+            "image/png",
+            "image/webp",
+            "application/pdf",
+          ],
           addRandomSuffix: true,
         }
       },

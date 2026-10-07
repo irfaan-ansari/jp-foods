@@ -1,5 +1,5 @@
 import { Document, Text, View, Image } from "@react-pdf/renderer"
-import { format, isValid, parseISO } from "date-fns"
+import { format, isValid, parseISO } from "@jp/utils/date"
 import { ApplicationPage } from "./application-layout"
 import { COLORS, styles } from "./styles"
 

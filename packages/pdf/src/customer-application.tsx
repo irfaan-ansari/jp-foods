@@ -1,4 +1,4 @@
-import { format, isValid, parseISO } from "date-fns"
+import { format, isValid, parseISO } from "@jp/utils/date"
 import type { CustomerApplicationSelectType } from "@jp/db"
 import { ApplicationPage } from "./application-layout"
 import { COLORS, styles } from "./styles"

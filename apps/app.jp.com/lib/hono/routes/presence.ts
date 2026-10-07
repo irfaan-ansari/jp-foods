@@ -1,7 +1,7 @@
 import { Hono } from "hono"
 import type { AppContext } from "../middlewares/context"
 import { db, user } from "@jp/db"
-import { desc, eq, gte } from "drizzle-orm"
+import { desc, eq, gte } from "@jp/db/query"
 import { authMiddleware } from "../middlewares/auth"
 
 export const presenceRoutes = new Hono<AppContext>()

@@ -8,13 +8,11 @@ import {
 } from "./catalog.schema"
 import { CustomerInviteSelectType, customerInvite, db } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { sendEmail } from "@jp/notifications"
 import { CatalogAccessStatusUpdateEmail } from "@jp/notifications/templates"
-import { waitUntil } from "@vercel/functions"
-
-const getCatalogAccessUrl = (token: string) =>
-  `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.NEXT_PUBLIC_AUTH_URL}/products`
+import { waitUntil } from "@jp/utils/functions"
+import { getCatalogAccessUrl } from "./catalog.utils"
 
 async function sendCatalogAccessEmail({
   inquiry,
@@ -36,7 +34,7 @@ async function sendCatalogAccessEmail({
       company: inquiry.companyName ?? "",
       message: inquiry.message ?? undefined,
       status: status as any,
-      link: token ? getCatalogAccessUrl(token) : undefined,
+      link: getCatalogAccessUrl(token ?? null),
     }),
   })
 }
@@ -122,7 +120,6 @@ export const deleteCatalogInquiry = authActionClient({
 })
   .inputSchema(deleteCatalogInquirySchema)
   .action(async ({ ctx, clientInput }) => {
-    const { user } = ctx
     const { id } = clientInput
 
     const exist = await db.query.customerInvite.findFirst({

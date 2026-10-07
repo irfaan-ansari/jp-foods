@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 const lineItemSchema = z.object({
   productId: z.number().positive(),

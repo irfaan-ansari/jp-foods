@@ -1,5 +1,6 @@
 export { OrderInvoice } from "./order-invoice"
 export { JobApplicationPDF } from "./job-application"
+export { JobAgreementPDF } from "./job-agreement"
 export { CustomerApplicationPDF, CustomerPDF } from "./customer-application"
 export { PackingSlip } from "./packing-slip"
 export { CatalogPDF } from "./catalog"

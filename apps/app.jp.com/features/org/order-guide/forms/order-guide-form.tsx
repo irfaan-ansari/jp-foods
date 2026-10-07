@@ -1,5 +1,5 @@
 "use client"
-import { useAppForm } from "@/hooks/use-app-form"
+import { useAppForm } from "@jp/ui/forms"
 import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
 import { Button } from "@jp/ui/components/button"
 import {

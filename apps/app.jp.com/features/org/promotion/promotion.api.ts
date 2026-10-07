@@ -1,5 +1,5 @@
 import { Hono } from "hono"
-import { and, count, eq, ilike, inArray, or, SQL } from "drizzle-orm"
+import { and, count, eq, ilike, inArray, or, SQL } from "@jp/db/query"
 
 import { db, product, promotion, promotionTarget } from "@jp/db"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"

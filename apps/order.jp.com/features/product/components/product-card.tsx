@@ -3,7 +3,7 @@ import Image from "next/image"
 import type { Product } from "../product.type"
 
 import { cn } from "@jp/ui/lib/utils"
-import { format } from "date-fns/format"
+import { format } from "@jp/utils/date"
 
 import { Label } from "@jp/ui/components/label"
 import { Badge } from "@jp/ui/components/badge"
@@ -96,27 +96,46 @@ const ProductRow = React.memo(function ProductRow({
   return (
     <Card
       size="sm"
-      className={`relative h-full cursor-pointer gap-0 py-3 shadow-xs transition select-none hover:-translate-y-0.5 hover:shadow-sm`}
+      data-sortable={sortable}
+      className="@container/product-row relative cursor-pointer gap-0 py-0 shadow-xs transition-colors select-none hover:bg-secondary/20"
       onClick={() => addToCart(quantity + 1)}
     >
       <ProductCheckbox id={data.id} />
       {sortable && (
-        <SortableItemHandle className="absolute top-1/2 left-1 z-1 inline-flex size-7 -translate-y-1/2 items-center justify-center self-center rounded-lg bg-background/50 shadow-sm backdrop-blur-sm">
+        <SortableItemHandle className="absolute top-3 left-2 z-1 inline-flex size-7 items-center justify-center rounded-lg bg-background/80 text-muted-foreground">
           <GripVertical className="size-4" />
         </SortableItemHandle>
       )}
 
-      <CardContent className="flex flex-row items-stretch gap-3 px-3">
-        <ProductMedia data={data} />
+      <CardContent
+        className={cn(
+          "grid grid-cols-[64px_minmax(0,1fr)] items-center gap-x-4 gap-y-3 p-4 @xl/product-row:grid-cols-[72px_minmax(0,1fr)_auto]",
+          sortable && "pl-10"
+        )}
+      >
+        <ProductMedia
+          data={data}
+          className="size-16 shrink-0 rounded-lg @xl/product-row:size-18"
+        />
 
-        <div className="flex min-w-0 flex-1 flex-col gap-1">
-          <ProductMeta data={data} />
+        <div className="min-w-0 space-y-1">
+          <CardTitle className="text-base leading-snug font-medium">
+            {data.title}
+          </CardTitle>
+          <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-muted-foreground">
+            {!!data.categories?.length && (
+              <span>{data.categories.join(" · ")}</span>
+            )}
+          </div>
           <ProductLastOrder data={data} />
         </div>
 
-        <div className="flex gap-3 self-center">
-          <ProductUnits className="min-w-36" data={data} />
-          <ProductCartAction className="max-w-36 self-center" data={data} />
+        <div className="col-span-2 flex flex-wrap items-center justify-between gap-4 border-t pt-3 @xl/product-row:col-span-1 @xl/product-row:min-w-40 @xl/product-row:flex-col @xl/product-row:items-end @xl/product-row:gap-2 @xl/product-row:border-t-0 @xl/product-row:pt-0">
+          <ProductUnits
+            className="max-w-full min-w-0 @xl/product-row:items-end @xl/product-row:text-right"
+            data={data}
+          />
+          <ProductCartAction className="shrink-0" data={data} />
         </div>
       </CardContent>
     </Card>
@@ -171,6 +190,7 @@ const ProductImage = ({ data }: { data: Product }) =>
       width={320}
       height={320}
       alt={data.title}
+      loading="eager"
       className="absolute inset-0 size-full object-contain mix-blend-multiply"
     />
   ) : (
@@ -211,22 +231,21 @@ const ProductMedia = ({
         <ProductImage data={data} />
       </div>
     </HoverCardTrigger>
-
-    <HoverCardContent
-      side="right"
-      align="start"
-      className="w-72 overflow-hidden bg-secondary p-0"
-    >
-      <div className="relative flex aspect-video items-center justify-center">
-        <ProductImage data={data} />
-      </div>
-      <div className="space-y-2 rounded-t-2xl bg-background p-3">
-        <ProductMeta data={data} />
-        <ProductLastOrder data={data} />
-        <ProductUnits data={data} />
-        <ProductCartAction data={data} />
-      </div>
-    </HoverCardContent>
+    {data.image && (
+      <HoverCardContent
+        side="top"
+        align="center"
+        className="w-72 overflow-hidden bg-background p-0"
+        onClick={(e) => {
+          e.preventDefault()
+          e.stopPropagation()
+        }}
+      >
+        <div className="relative flex aspect-square items-center justify-center">
+          <ProductImage data={data} />
+        </div>
+      </HoverCardContent>
+    )}
   </HoverCard>
 )
 

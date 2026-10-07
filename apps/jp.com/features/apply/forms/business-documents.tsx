@@ -6,7 +6,7 @@ import {
   type Translations,
   useTranslation,
 } from "@/components/language-selector"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms/public"
 import { CustomerFormType } from "../customer.schema"
 
 export const Documents = withForm({

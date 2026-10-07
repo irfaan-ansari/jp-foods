@@ -5,14 +5,13 @@ import { Toaster } from "@jp/ui/components/sonner"
 import { TooltipProvider } from "@jp/ui/components/tooltip"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ConfirmDialogProvider } from "@jp/ui/components/jp"
-import { teamQueryOptions } from "@/features/team/team.data"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { presenceApiClient } from "@/lib/api-client"
 
 const HEARTBEAT_INTERVAL = 30 * 1000
 
 const postPresence = async () => {
-  await presenceApiClient.post<{ success: boolean }>("/")
+  await presenceApiClient.post<{ success: boolean }>("/presence")
 }
 
 const PresenceHeartbeat = () => {
@@ -56,7 +55,6 @@ export const Provider = ({
         },
       },
     })
-    client.prefetchQuery(teamQueryOptions)
     return client
   })
 

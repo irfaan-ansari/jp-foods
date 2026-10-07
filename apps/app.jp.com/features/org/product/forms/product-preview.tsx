@@ -8,7 +8,7 @@ import {
 } from "@jp/ui/components/card"
 import { cn } from "@jp/ui/lib/utils"
 import { ImageUp, Minus, Plus } from "lucide-react"
-import { withForm } from "@/hooks/use-app-form"
+import { withForm } from "@jp/ui/forms"
 import { Input } from "@jp/ui/components/input"
 import { ProductFormSchema } from "../product.schema"
 import { FieldLabel, FieldLegend } from "@jp/ui/components/field"

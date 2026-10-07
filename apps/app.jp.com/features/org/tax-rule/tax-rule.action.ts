@@ -7,7 +7,7 @@ import {
   updateTaxRuleSchema,
 } from "./tax-rule.schema"
 import { db, taxRule } from "@jp/db"
-import { eq } from "drizzle-orm"
+import { eq } from "@jp/db/query"
 import { AppError } from "@jp/utils/error"
 
 export const createTaxRule = orgActionClient({ taxRule: ["create"] })

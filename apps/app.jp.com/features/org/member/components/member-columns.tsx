@@ -13,9 +13,16 @@ import {
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
 import { formatDate, formatPhone } from "@jp/utils"
 import type { Member } from "../member.type"
-import { MemberRoleBadge } from "./member-card"
+
 import { MemberDropdown } from "./member-dropdown"
 import { isUserActive } from "@/features/shared/shared.utils"
+import { MemberRoleBadge } from "./member-client"
+import { Badge } from "@jp/ui/components/badge"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@jp/ui/components/hover-card"
 
 const column = createColumnHelper<DataTableFeatures, Member>()
 
@@ -25,7 +32,7 @@ function MemberLink({ member }: { member: Member }) {
 
   return (
     <Link
-      href={`/org/settings/members/${member.id}${query ? `?${query}` : ""}`}
+      href={`/settings/users/${member.userId}${query ? `?${query}` : ""}`}
       className="flex min-w-48 items-center gap-3"
     >
       <Avatar className="shrink-0">
@@ -69,28 +76,61 @@ export const memberColumns = column.columns([
   column.display({
     id: "customers",
     header: "Customers",
-    cell: ({ row }) => (
-      <div className="grid">
-        {row.original.accounts.length > 0
-          ? row.original.accounts.map((acc) => (
-              <Link
-                href={`/org/customers/${acc.id}`}
-                className="text-muted-foreground hover:text-foreground hover:underline"
-              >
+    cell: ({ row }) => {
+      const accounts = row.original.accounts
+      const visible = accounts.slice(0, 3)
+      const hidden = accounts.slice(3)
+
+      return accounts.length === 0 ? (
+        <span className="text-muted-foreground">-</span>
+      ) : (
+        <div className="flex flex-wrap items-center gap-1.5">
+          {visible.map((acc) => (
+            <Link key={acc.id} href={`/org/customers/${acc.id}`}>
+              <Badge variant="outline" className="px-2 py-0.5">
                 {acc.name}
-              </Link>
-            ))
-          : "-"}
-      </div>
-    ),
+              </Badge>
+            </Link>
+          ))}
+
+          {hidden.length > 0 && (
+            <HoverCard openDelay={100} closeDelay={100}>
+              <HoverCardTrigger asChild>
+                <Badge
+                  variant="outline"
+                  className="cursor-default font-normal text-muted-foreground"
+                >
+                  +{hidden.length}{" "}
+                  {hidden.length === 1 ? "account" : "accounts"}
+                </Badge>
+              </HoverCardTrigger>
+              <HoverCardContent align="start" className="w-64 p-2">
+                <ul className="flex flex-col">
+                  {hidden.map((acc) => (
+                    <li key={acc.id}>
+                      <Link
+                        href={`/org/customers/${acc.id}`}
+                        className="block rounded-sm px-2 py-1.5 text-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground"
+                      >
+                        {acc.name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </HoverCardContent>
+            </HoverCard>
+          )}
+        </div>
+      )
+    },
   }),
   column.display({
     id: "lastActive",
     header: "Last active",
     cell: ({ row }) => (
       <span className="text-muted-foreground">
-        {row.original.lastSession
-          ? formatDate(row.original.lastSession)
+        {row.original.user.lastSeenAt
+          ? formatDate(row.original.user.lastSeenAt)
           : "Never"}
       </span>
     ),

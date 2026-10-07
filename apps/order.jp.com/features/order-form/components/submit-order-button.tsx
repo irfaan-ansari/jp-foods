@@ -3,8 +3,9 @@ import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { createOrder, updateOrder } from "../order-form.action"
 import { useOrderFormStore } from "../order-form.store"
-import { useConfirm, useLoader } from "@jp/ui/components/jp"
+import { useConfirm } from "@jp/ui/components/jp"
 import { useQueryClient } from "@tanstack/react-query"
+import { Loader2 } from "lucide-react"
 
 type SubmitOrderButtonProps = {
   children: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>
@@ -12,9 +13,9 @@ type SubmitOrderButtonProps = {
 
 export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
   const router = useRouter()
-  const loader = useLoader()
   const { open } = useConfirm()
   const queryClient = useQueryClient()
+  const [isLoading, setIsLoading] = React.useState(false)
 
   const order = useOrderFormStore((state) => state.order)
   const clearCart = useOrderFormStore((state) => state.clear)
@@ -24,8 +25,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
 
     if (e.defaultPrevented) return
 
-    loader.show()
-
+    setIsLoading(true)
     let result = null
 
     if (order.id) {
@@ -46,7 +46,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
         result.serverError?.message ??
           "Check the products and quantities in your order."
       )
-      loader.hide()
+      setIsLoading(false)
       return
     }
 
@@ -63,7 +63,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
 
     if (order.id) {
       router.replace(`/orders/${order.id}`)
-      loader.hide()
+      setIsLoading(false)
       return
     }
     clearCart()
@@ -82,12 +82,17 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
       },
     })
 
-    loader.hide()
+    setIsLoading(false)
   }
 
   return React.cloneElement(children, {
-    disabled: children.props.disabled,
+    disabled: children.props.disabled || isLoading,
     onClick: handleClick,
-    children: children.props.children,
+    children: (
+      <>
+        {isLoading && <Loader2 className="size-4 animate-spin" />}
+        {children.props.children}
+      </>
+    ),
   })
 }

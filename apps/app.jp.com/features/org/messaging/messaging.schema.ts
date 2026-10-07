@@ -1,4 +1,4 @@
-import z from "zod"
+import z from "@jp/utils/validation"
 
 export const messageRecipientSchema = z.object({
   id: z.string(),

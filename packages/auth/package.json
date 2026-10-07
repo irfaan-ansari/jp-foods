@@ -17,10 +17,10 @@
     "@jp/db": "workspace:*",
     "@jp/notifications": "workspace:*",
     "better-auth": "1.6.20",
-    "zod": "4.4.3"
+    "@jp/utils": "workspace:*"
   },
   "peerDependencies": {
-    "@vercel/functions": "^3.7.2"
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@jp/typescript-config": "workspace:*",

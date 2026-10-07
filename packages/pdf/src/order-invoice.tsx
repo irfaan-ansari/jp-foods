@@ -1,4 +1,4 @@
-import { format } from "date-fns"
+import { format } from "@jp/utils/date"
 import { styles } from "./styles"
 import { formatUSD } from "@jp/utils"
 import { Document, Page, Text, View } from "@react-pdf/renderer"

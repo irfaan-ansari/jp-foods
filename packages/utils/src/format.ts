@@ -64,3 +64,5 @@ export function formatDate(date: Date | string | null | undefined): string {
 
   return format(value, "MMM d, yyyy")
 }
+
+export { format }

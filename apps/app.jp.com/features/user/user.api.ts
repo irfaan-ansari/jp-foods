@@ -1,7 +1,7 @@
 import { Hono } from "hono"
-import { db, session, user } from "@jp/db"
+import { db, user } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { and, count, eq, ilike, inArray, max, or } from "drizzle-orm"
+import { and, count, eq, ilike, or } from "@jp/db/query"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { AppContext, authMiddleware } from "@/lib/hono/middlewares"
 
@@ -38,29 +38,9 @@ export const userRoutes = new Hono<AppContext>()
       db.$count(user, and(...conditions)),
     ])
 
-    const userIds = response.map((r) => r.id)
-
-    const latestSession = await db
-      .select({
-        userId: session.userId,
-        lastSession: max(session.createdAt).as("lastSession"),
-      })
-      .from(session)
-      .where(inArray(session.userId, userIds))
-      .groupBy(session.userId)
-
-    const lastSessionByUser = new Map(
-      latestSession.map((s) => [s.userId, s.lastSession])
-    )
-
-    const users = response.map((user) => ({
-      ...user,
-      lastSession: lastSessionByUser.get(user.id) ?? null,
-    }))
-
     return c.json({
       success: true,
-      data: users,
+      data: response,
       pagination: {
         page: page,
         limit: limit,
@@ -99,18 +79,10 @@ export const userRoutes = new Hono<AppContext>()
 
     if (!response) throw new AppError("NOT_FOUND")
 
-    const [latestSession] = await db
-      .select({
-        lastSession: max(session.createdAt).as("lastSession"),
-      })
-      .from(session)
-      .where(eq(session.userId, id))
-
     return c.json({
       success: true,
       data: {
         ...response,
-        lastSession: latestSession?.lastSession ?? null,
       },
     })
   })

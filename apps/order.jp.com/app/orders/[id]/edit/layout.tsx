@@ -8,10 +8,7 @@ import {
   OrderPageHeader,
   StickyCartAction,
 } from "@/features/order-form/components"
-import {
-  initOrderForm,
-  useOrderFormStore,
-} from "@/features/order-form/order-form.store"
+import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { Button } from "@jp/ui/components/button"
 import { useOrder } from "@/features/order/order.data"
 import { BagCheck, BagCross } from "@solar-icons/react"
@@ -19,25 +16,26 @@ import { PageContent } from "@/components/page-content"
 import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
 import { ErrorState } from "@jp/ui/components/jp"
+import { useOrderForm } from "@/features/order-form/order-form.hook"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams()
 
   const { data, isPending, isError, error } = useOrder(params.id as string)
   const items = useOrderFormStore((state) => state.order.items)
-  const cartReady = useOrderFormStore((state) => state.ready)
-  const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
 
+  const cartOrderId = useOrderFormStore((state) => state.order.id)
+
+  const setCartOpen = useOrderFormUI((state) => state.setCartOpen)
+  const { init, ready } = useOrderForm()
   const initializedRef = React.useRef(false)
 
   React.useEffect(() => {
     if (initializedRef.current) return
 
-    if (isPending || isError) return
-
+    if (!ready || isPending || isError || !data?.data) return
     const { lineItems, ...order } = data.data
-
-    initOrderForm(undefined, {
+    init({
       id: order.id,
       taxRule: {
         name: order.taxName ?? "",
@@ -80,27 +78,36 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
       subtotal: Number(order.subtotal),
       total: Number(order.total),
     })
-
     initializedRef.current = true
-  }, [data, isError, isPending])
+  }, [init, ready, data, isError, isPending])
+
+  const formReady = ready && String(cartOrderId) === String(params.id)
 
   return (
     <React.Fragment>
       <OrderPageHeader>
-        <Button onClick={() => setCartOpen(true)}>
+        <Button
+          disabled={!formReady || isError}
+          onClick={() => setCartOpen(true)}
+        >
           {items.length > 0 ? <BagCheck /> : <BagCross />}
           View Cart ({items.length})
         </Button>
       </OrderPageHeader>
-      <PageContent className="space-y-6" loading={isPending || !cartReady}>
-        <OrderFormToolbar />
+      <PageContent
+        className="space-y-6"
+        loading={!isError && (isPending || !formReady)}
+      >
         {isError ? (
           <ErrorState title={error.message} description={error.description} />
         ) : (
-          children
+          <>
+            <OrderFormToolbar />
+            {children}
+          </>
         )}
       </PageContent>
-      {!isPending && !isError && (
+      {formReady && !isPending && !isError && (
         <>
           <Cart />
           <StickyCartAction />
