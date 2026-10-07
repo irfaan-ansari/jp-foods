@@ -230,7 +230,7 @@ export const teamRoutes = app
           totalOrders: count(),
           activeOrders: sql<number>`
               count(*) filter (
-                where ${order.status} = 'in_progress'
+                where ${order.status} = 'placed'
               )::int
             `,
           totalSpend: sql<number>`

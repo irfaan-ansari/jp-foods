@@ -132,20 +132,18 @@ const CustomerApplicationActions = ({
               {action.label}
             </Button>
           ))}
+          <Button asChild variant="outline">
+            <a
+              href={`/api/v1/crm/customers/${data.id}/pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <DocumentText /> View PDF
+            </a>
+          </Button>
         </div>
       </CardContent>
-      <CardContent className="grid gap-2 border-t border-dashed pt-4">
-        <CardTitle>PDF</CardTitle>
-        <Button asChild variant="outline">
-          <a
-            href={`/api/v1/crm/customers/${data.id}/pdf`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <DocumentText /> View PDF
-          </a>
-        </Button>
-      </CardContent>
+
       <CustomerApplicationStatusDialog
         id={data.id}
         data={{ ...data, status: actionDialog ?? "on_hold" }}

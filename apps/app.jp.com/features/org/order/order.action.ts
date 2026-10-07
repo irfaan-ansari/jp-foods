@@ -70,7 +70,7 @@ export const cancelOrder = orgActionClient({ order: ["cancel"] })
         and(
           eq(order.id, id),
           eq(order.organizationId, ctx.organizationId),
-          eq(order.status, "in_progress")
+          eq(order.status, "placed")
         )
       )
       .returning({ id: order.id })
@@ -96,9 +96,9 @@ export const completeOrder = orgActionClient({ order: ["update"] })
 
     if (!existing) throw new AppError("NOT_FOUND")
 
-    if (existing.status !== "in_progress") {
+    if (existing.status !== "processing") {
       throw new AppError("CONFLICT", {
-        message: "Only in-progress orders can be marked as complete.",
+        message: "Only processing orders can be marked as complete.",
       })
     }
     const submittedWeights = new Map(
@@ -175,7 +175,7 @@ export const completeOrder = orgActionClient({ order: ["update"] })
           and(
             eq(order.id, id),
             eq(order.organizationId, ctx.organizationId),
-            eq(order.status, "in_progress")
+            eq(order.status, "processing")
           )
         ) as BatchItem<"pg">
     )
@@ -220,7 +220,7 @@ export const rescheduleOrder = orgActionClient({ order: ["update"] })
         and(
           eq(order.id, id),
           eq(order.organizationId, ctx.organizationId),
-          eq(order.status, "in_progress")
+          eq(order.status, "placed")
         )
       )
       .returning({ id: order.id })

@@ -19,6 +19,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@jp/utils": "workspace:*",
     "@neondatabase/serverless": "^1.1.0",
     "dotenv": "^17.4.2",
     "server-only": "^0.0.1",

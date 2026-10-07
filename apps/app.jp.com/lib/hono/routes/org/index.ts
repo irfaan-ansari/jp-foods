@@ -16,6 +16,7 @@ import { orderGuideRoutes } from "@/features/org/order-guide/order-guide.api"
 import { dashboardRoutes } from "@/features/org/dashboard/dashboard.api"
 import { promotionRoutes } from "@/features/org/promotion/promotion.api"
 import { messagingRoutes } from "@/features/org/messaging/messaging.api"
+import { cartRoutes } from "@/features/org/cart/cart.api"
 
 export const orgRoutes = new Hono<OrgAppContext>()
 
@@ -33,3 +34,4 @@ export const orgRoutes = new Hono<OrgAppContext>()
   .route("/tax-rules", taxRulesRoutes)
   .route("/promotions", promotionRoutes)
   .route("/messaging", messagingRoutes)
+  .route("/cart", cartRoutes)

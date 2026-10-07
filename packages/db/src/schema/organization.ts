@@ -324,7 +324,7 @@ export const order = pgTable(
     status: text("status")
       .notNull()
       .default(
-        "in_progress"
+        "placed"
       ) /* placed |  processing | packed | completed | invoiced | cancelled */,
     invoiceStatus:
       text("invoice_status").default("pending") /** pending | invoiced | */,

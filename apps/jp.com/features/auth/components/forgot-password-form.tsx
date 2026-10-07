@@ -50,7 +50,7 @@ export function ForgotPasswordForm({
         {
           email: value.username,
           redirectTo:
-            process.env.NEXT_PUBLIC_SITE_URL + "/auth/create-password",
+            process.env.NEXT_PUBLIC_PUBLIC_URL + "/auth/create-password",
         },
         {
           onError: (error) => {

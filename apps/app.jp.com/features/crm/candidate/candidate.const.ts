@@ -20,19 +20,16 @@ export const APPLICATION_STATUS: Record<string, BadgeStatus> = {
     value: "new",
     color: "#3B82F6",
   },
-  // under_verification
-  verification_in_progress: {
+  under_verification: {
     label: "Under Verification",
     value: "under_verification",
     color: "#F59E0B",
   },
-  // agreement_sent
-  pending: {
+  agreement_sent: {
     label: "Agreement Sent",
-    value: "pending",
+    value: "agreement_sent",
     color: "#8B5CF6",
   },
-  // agreement_signed
   agreement_signed: {
     label: "Agreement Signed",
     value: "agreement_signed",

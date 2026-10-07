@@ -92,9 +92,7 @@ export const catalogInquiryRoutes = app
       success: true,
       data: {
         ...inquiry,
-        url: token
-          ? `${process.env.BETTER_AUTH_URL}/api/v1/products/access?token=${token}&redirect=${process.env.JP_APP_URL}/products`
-          : "",
+        url: getCatalogAccessUrl(token),
       },
     })
   })

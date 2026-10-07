@@ -1,7 +1,8 @@
 import { type CreateEmailOptions, Resend } from "resend"
 import { ReactElement } from "react"
+import { env } from "@jp/utils/env"
 
-export const resend = new Resend(process.env.RESEND_API_KEY)
+export const resend = new Resend(env.RESEND_API_KEY)
 
 const FROM_EMAIL = "Jimenez Produce <no-reply@jimenezproduce.com>"
 const ADMIN_EMAILS = ["info@jimenezproduce.net"]
@@ -23,10 +24,6 @@ export async function sendEmail({
   replyTo,
   attachments,
 }: SendEmailOptions) {
-  if (!process.env.RESEND_API_KEY) {
-    throw new Error("RESEND_API_KEY is required to send email")
-  }
-
   const { data, error } = await resend.emails.send({
     from,
     to,

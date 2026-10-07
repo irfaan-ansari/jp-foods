@@ -1,4 +1,5 @@
 import type { ReactNode } from "react"
+import { env } from "@jp/utils/env"
 import { emailStyles } from "../../config/email-styles"
 import {
   Body,
@@ -41,7 +42,7 @@ export function EmailLayout({
               <Row>
                 <Column className="w-20 align-middle">
                   <Img
-                    src="https://jimenezproduce.com/logo.png"
+                    src={`${env.NEXT_PUBLIC_PUBLIC_URL}/logo.png`}
                     alt="Jimenez Produce"
                     className="h-auto w-20"
                   />

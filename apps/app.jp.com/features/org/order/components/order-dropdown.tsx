@@ -5,7 +5,7 @@ import { useState } from "react"
 import { Button } from "@jp/ui/components/button"
 
 import { useQueryClient } from "@tanstack/react-query"
-import type { Order } from "@/features/org/order/order.type"
+import type { Order, OrderWithLineItems } from "@/features/org/order/order.type"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { useConfirm } from "@jp/ui/components/jp/confirm-dialog"
 import { cancelOrder, updateOrder } from "@/features/org/order/order.action"
@@ -19,12 +19,13 @@ import {
 import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
 import { OrderInvoiceDialog } from "./order-invoice-dialog"
+import { OrderCompleteDialog } from "./order-complete-dialog"
 
 export const OrderDropdown = ({
   data,
   children,
 }: {
-  data: Order
+  data: Order & Partial<Pick<OrderWithLineItems, "lineItems">>
   children: React.ReactNode
 }) => {
   const { open } = useConfirm()
@@ -142,8 +143,37 @@ export const OrderDropdown = ({
         </>
       )}
 
+      {status === "processing" && (
+        <OrgAccess permission={{ order: ["update"] }}>
+          {(disabled) => (
+            <OrderCompleteDialog
+              id={id}
+              lineItems={(data.lineItems ?? [])
+                .filter((item) => item.catchWeight)
+                .map((item) => ({
+                  lineItemId: item.id,
+                  title: item.title ?? "",
+                  price: item.price,
+                  stockUOM: item.stockUOM,
+                  quantity: item.quantity,
+                  unit: item.unit,
+                  unitQuantity: item.unitQuantity,
+                }))}
+            >
+              <Button
+                variant="ghost"
+                className="justify-start"
+                disabled={disabled}
+              >
+                <BillCheck /> Mark as Completed
+              </Button>
+            </OrderCompleteDialog>
+          )}
+        </OrgAccess>
+      )}
+
       {status === "completed" &&
-        (data.invoiceStatus === "issued" ? (
+        (data.invoiceStatus === "invoiced" ? (
           <Button variant="ghost" asChild>
             <a
               href={`/api/v1/org/orders/${id}/invoice`}

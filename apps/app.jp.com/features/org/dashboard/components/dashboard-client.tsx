@@ -47,7 +47,7 @@ export function DashboardClient() {
     {
       title: "Open Orders",
       query: ordersCount,
-      status: "in_progress",
+      status: "placed",
       icon: Inbox,
       color: "text-amber-500",
     },

@@ -9,7 +9,7 @@ import {
 } from "@jp/ui/components/card"
 import { Button } from "@jp/ui/components/button"
 import { useConfirm } from "@jp/ui/components/jp"
-import { Document2, DocumentText, PenNewSquare } from "@solar-icons/react"
+import { DocumentText, PenNewSquare } from "@solar-icons/react"
 import { useQueryClient } from "@tanstack/react-query"
 import { CandidateApplication } from "../candidate.type"
 import { CandidateApplicationNotesDialog } from "./candidate-notes-dialog"
@@ -59,17 +59,41 @@ export const CandidateApplicationActions = ({
         })
         return
 
-      case "verification_in_progress":
+      case "under_verification":
         open({
           variant: "warning",
           title: "Start Verification",
           description:
-            "This will start the applicant verification process through Verified First.",
+            "Send the application and documents to a background check agency.",
           action: {
             action: async () => {
               const { serverError } = await updateCandidateApplication({
                 id: data.id,
-                data: { ...updateData, status: "verification_in_progress" },
+                data: { ...updateData, status: "under_verification" },
+              })
+              if (serverError) toast.message(serverError.message)
+              else {
+                queryClient.invalidateQueries({
+                  queryKey: ["candidate-application"],
+                })
+                queryClient.invalidateQueries({
+                  queryKey: ["/crm/candidates/count"],
+                })
+              }
+            },
+          },
+        })
+        return
+      case "agreement_sent":
+        open({
+          variant: "warning",
+          title: "Send Agreement",
+          description: "Send an email with agreement to candidate.",
+          action: {
+            action: async () => {
+              const { serverError } = await updateCandidateApplication({
+                id: data.id,
+                data: { ...updateData, status: "agreement_sent" },
               })
               if (serverError) toast.message(serverError.message)
               else {
@@ -120,12 +144,20 @@ export const CandidateApplicationActions = ({
           <Button
             variant="outline"
             disabled={
-              data.status === "hired" ||
-              data.status === "verification_in_progress"
+              data.status === "hired" || data.status === "under_verification"
             }
-            onClick={() => handleAction("verification_in_progress")}
+            onClick={() => handleAction("under_verification")}
           >
             Start Verification
+          </Button>
+          <Button
+            variant="outline"
+            disabled={
+              data.status === "hired" || data.status === "agreement_sent"
+            }
+            onClick={() => handleAction("agreement_sent")}
+          >
+            Send Agreement
           </Button>
           <Button
             variant="destructive"
@@ -141,13 +173,18 @@ export const CandidateApplicationActions = ({
         <Button asChild variant="outline">
           <a
             href={`/api/v1/crm/candidates/${data.id}/pdf?includeSSN=true`}
+            rel="noreferrer"
             target="_blank"
           >
             <DocumentText /> PDF with SSN
           </a>
         </Button>
         <Button asChild variant="outline">
-          <a href={`/api/v1/crm/candidates/${data.id}/pdf`} target="_blank">
+          <a
+            href={`/api/v1/crm/candidates/${data.id}/pdf`}
+            rel="noreferrer"
+            target="_blank"
+          >
             <DocumentText />
             PDF Without SSN
           </a>

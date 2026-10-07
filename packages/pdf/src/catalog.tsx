@@ -1,6 +1,7 @@
 import { styles } from "./styles"
 import { format } from "@jp/utils/date"
 import { formatPhone, formatUSD } from "@jp/utils"
+import { env } from "@jp/utils/env"
 import { OrganizationSelectType, ProductSelectType } from "@jp/db"
 import { Document, Page, Text, View, Image } from "@react-pdf/renderer"
 
@@ -63,7 +64,7 @@ export const CatalogPDF = (data: CatalogProps) => {
               }}
             >
               <Image
-                src={process.env.NEXT_PUBLIC_LOGO_URL}
+                src={`${env.NEXT_PUBLIC_PUBLIC_URL}/logo.png`}
                 style={{ ...styles.logo, width: 50 }}
               />
             </View>
@@ -306,7 +307,7 @@ export const CatalogPDF = (data: CatalogProps) => {
             }}
           >
             <Image
-              src={process.env.BETTER_AUTH_URL + "/icons/leaf.png"}
+                src={env.NEXT_PUBLIC_API_URL + "/icons/leaf.png"}
               style={{ width: 28, height: 28 }}
             />
             <View>
@@ -326,7 +327,7 @@ export const CatalogPDF = (data: CatalogProps) => {
             }}
           >
             <Image
-              src={process.env.BETTER_AUTH_URL + "/icons/price.png"}
+              src={env.NEXT_PUBLIC_API_URL + "/icons/price.png"}
               style={{ width: 28, height: 28 }}
             />
             <View>
@@ -344,7 +345,7 @@ export const CatalogPDF = (data: CatalogProps) => {
             }}
           >
             <Image
-              src={process.env.BETTER_AUTH_URL + "/icons/truck.png"}
+              src={env.NEXT_PUBLIC_API_URL + "/icons/truck.png"}
               style={{ width: 28, height: 28 }}
             />
             <View>

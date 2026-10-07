@@ -1,4 +1,5 @@
 import { drizzle, NeonHttpDatabase } from "drizzle-orm/neon-http"
+import { env } from "@jp/utils/env"
 
 import * as authSchema from "./schema/auth"
 import * as relations from "./schema/relations"
@@ -16,7 +17,7 @@ const fullSchema = {
 type FullSchema = typeof fullSchema
 
 export const db: NeonHttpDatabase<FullSchema> = drizzle(
-  process.env.DATABASE_URL!,
+  env.DATABASE_URL,
   {
     schema: fullSchema,
   }
