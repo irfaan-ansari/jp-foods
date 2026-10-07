@@ -3,6 +3,7 @@ import { Hono } from "hono"
 import { db, order } from "@jp/db"
 import { and, count, eq, ilike, or, sql } from "@jp/db/query"
 import { AppError } from "@jp/utils"
+import { env } from "@jp/utils/env"
 import { TeamAppContext } from "@/lib/hono/middlewares"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { renderToStream } from "@jp/pdf/server"
@@ -10,7 +11,6 @@ import { OrderInvoice } from "@jp/pdf"
 
 const orderApp = new Hono<TeamAppContext>()
   .get("/", async (c) => {
-    const user = c.get("user")
     const teamId = c.get("teamId")
     const organnizationId = c.get("organizationId")
 
@@ -184,7 +184,7 @@ const orderApp = new Hono<TeamAppContext>()
     const data = {
       ...result,
       estimateUrl:
-        process.env.BETTER_AUTH_URL + `/api/v1/team/orders/${id}/estimate`,
+        env.NEXT_PUBLIC_API_URL + `/api/v1/team/orders/${id}/estimate`,
     }
 
     return c.json({

@@ -1,9 +1,11 @@
+import { env } from "@jp/utils/env"
+
 export * from "./user"
 export * from "./organization"
 
-const ORG = process.env.JP_PORTAL_URL_ADMIN + "/org/dashboard"
-const CRM = process.env.JP_PORTAL_URL_ADMIN + "/crm/dashboard"
-const CUSTOMER = process.env.JP_PORTAL_URL_CUSTOMER
+const ORG = env.NEXT_PUBLIC_ADMIN_URL + "/org/dashboard"
+const CRM = env.NEXT_PUBLIC_ADMIN_URL + "/crm/dashboard"
+const CUSTOMER = env.NEXT_PUBLIC_CUSTOMER_URL
 
 export const PORTAL_URLS = {
   superAdmin: {

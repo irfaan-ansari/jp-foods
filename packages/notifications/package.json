@@ -17,6 +17,7 @@
     "@types/react-dom": "19.2.3"
   },
   "dependencies": {
+    "@jp/utils": "workspace:*",
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-email": "6.9.5",

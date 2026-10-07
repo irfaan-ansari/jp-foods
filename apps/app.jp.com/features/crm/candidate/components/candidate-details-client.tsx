@@ -408,7 +408,7 @@ export const CandidateDetailsClient = ({
 
 const ApplicationStatusInfo = ({ data }: { data: CandidateApplication }) => {
   if (
-    data.status !== "verification_in_progress" &&
+    data.status !== "under_verification" &&
     data.status !== "rejected"
   ) {
     return null

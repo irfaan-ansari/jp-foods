@@ -12,6 +12,7 @@ import { members } from "./members"
 import { products } from "./products"
 import { promotions } from "./promotions"
 import { analytics } from "./analytics"
+import { cart } from "./cart"
 
 export const teamRoutes = new Hono<AppContext>()
 
@@ -21,6 +22,7 @@ export const teamRoutes = new Hono<AppContext>()
   .route("/analytics", analytics)
   .route("/promotions", promotions)
   .route("/orders", orders)
+  .route("/cart", cart)
   .route("/products", products)
   .route("/guides", guides)
   .route("/members", members)

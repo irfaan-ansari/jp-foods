@@ -16,8 +16,8 @@
   "dependencies": {
     "@jp/db": "workspace:*",
     "@jp/notifications": "workspace:*",
-    "better-auth": "1.6.20",
-    "@jp/utils": "workspace:*"
+    "@jp/utils": "workspace:*",
+    "better-auth": "1.6.20"
   },
   "peerDependencies": {
     "zod": "^4.4.3"

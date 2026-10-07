@@ -1,5 +1,6 @@
 import { db } from "@jp/db"
 import { waitUntil } from "@jp/utils/functions"
+import { env, TRUSTED_ORIGINS } from "@jp/utils/env"
 import { betterAuth } from "better-auth"
 import { twilioSendOTP, twilioVerifyOTP } from "@jp/notifications"
 import { sendEmail } from "@jp/notifications"
@@ -22,7 +23,7 @@ import { PORTAL_URLS } from "./permissions"
 const AVATAR = `https://api.dicebear.com/10.x`
 
 export const auth = betterAuth({
-  baseURL: process.env.BETTER_AUTH_URL,
+  baseURL: env.NEXT_PUBLIC_API_URL,
   basepath: "/api/auth",
   database: drizzleAdapter(db, {
     provider: "pg",
@@ -73,6 +74,10 @@ export const auth = betterAuth({
       allowUserToCreateOrganization: async (user) => {
         const allowedRoles = ["admin", "superAdmin"]
         return allowedRoles.includes(user.role)
+      },
+      async sendInvitationEmail(data) {
+        const inviteLink = `${env.NEXT_PUBLIC_PUBLIC_URL}/auth/accept-invitation/${data.id}`
+        console.log("send email:", inviteLink)
       },
       organizationHooks: {
         beforeCreateTeam: async ({ team }) => {
@@ -234,15 +239,12 @@ export const auth = betterAuth({
       }
     }),
   },
-  trustedOrigins: (process.env.BETTER_AUTH_ORIGINS ?? "")
-    .split(",")
-    .map((value) => value.trim())
-    .filter(Boolean),
+  trustedOrigins: TRUSTED_ORIGINS,
   advanced: {
     cookiePrefix: "JP",
     crossSubDomainCookies: {
       enabled: true,
-      domain: getRootDomain(process.env.BETTER_AUTH_URL as string),
+      domain: getRootDomain(env.NEXT_PUBLIC_API_URL),
     },
     defaultCookieAttributes: {
       secure: true,

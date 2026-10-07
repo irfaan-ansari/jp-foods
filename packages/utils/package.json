@@ -5,6 +5,7 @@
   "private": true,
   "exports": {
     ".": "./src/index.ts",
+    "./env": "./src/env/index.ts",
     "./error": "./src/error/index.ts",
     "./commerce": "./src/commerce/index.ts",
     "./date": "./src/date/index.ts",

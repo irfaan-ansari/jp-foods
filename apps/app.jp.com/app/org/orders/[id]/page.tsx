@@ -63,11 +63,10 @@ const OrderPage = () => {
         "This order will be moved to processing and can no longer be canceled or edited.",
       action: {
         action: async () => {
-          const { serverError, validationErrors } = await updateOrder({
+          const { serverError } = await updateOrder({
             id: Number(id),
             data: { status: "processing" },
           })
-          console.log(validationErrors)
           if (serverError) {
             toast.error(serverError.message)
           } else {
@@ -256,7 +255,7 @@ const OrderPage = () => {
                               {item.quantity}
 
                               <div className="text-xs text-muted-foreground">
-                                {data.status !== "in_progress"
+                                {data.status !== "placed"
                                   ? `${item.unitQuantity} ${item.stockUOM} ${item.unit}`
                                   : Number(item.packSize) > 1 &&
                                     (item.displayLabel || item.unit)}
@@ -357,7 +356,7 @@ const OrderPage = () => {
 
                     {/* completed */}
                     {data.status === "completed" &&
-                      (data.invoiceStatus === "issued" ? (
+                      (data.invoiceStatus === "invoiced" ? (
                         <Button className="w-full" asChild>
                           <a
                             href={`/api/v1/org/orders/${data.id}/invoice`}

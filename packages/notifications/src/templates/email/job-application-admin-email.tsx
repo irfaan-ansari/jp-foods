@@ -16,7 +16,7 @@ interface JobApplicationAdminEmailProps {
 const STATUS_MESSAGE = {
   new: "A new job application has been received.",
   interview: "The candidate has been moved to the Interview stage.",
-  pending: "An agreement has been sent to the candidate.",
+  agreement_sent: "An agreement has been sent to the candidate.",
   hired: "Congratulations! The candidate has been officially hired.",
   rejected:
     "The application has been closed and the candidate was not selected.",

@@ -53,7 +53,7 @@ export function OrderCompleteDialog({
       }
       toast.success(`Order #${id} completed.`)
       queryClient.invalidateQueries({ queryKey: ["orders"] })
-      queryClient.invalidateQueries({ queryKey: ["order", id] })
+      queryClient.invalidateQueries({ queryKey: ["orders", id] })
       setOpen(false)
     },
   })
@@ -62,7 +62,7 @@ export function OrderCompleteDialog({
     setOpen(next)
     if (!next) form.reset()
   }
-  console.log(lineItems)
+
   return (
     <AppDialog open={open} onOpenChange={handleOpenChange}>
       <AppDialogTrigger asChild>{children}</AppDialogTrigger>

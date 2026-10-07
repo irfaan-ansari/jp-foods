@@ -12,6 +12,7 @@ export { CustomerApplicationOnHoldEmail } from "./customer-application-on-hold-e
 
 export { CustomerApplicationReceivedEmail } from "./customer-application-received-email"
 export { JobApplicationAdminEmail } from "./job-application-admin-email"
+export { JobApplicationAgreementEmail } from "./job-application-agreement-email"
 export { JobApplicationReceivedEmail } from "./job-application-received-email"
 export { JobApplicationDeclinedEmail } from "./job-application-declined-email"
 export { JobOpportunityInvitationEmail } from "./job-opportunity-invitation-email"

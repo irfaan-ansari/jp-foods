@@ -1,5 +1,6 @@
 import { CustomerApplicationSelectType } from "@jp/db"
 import { sendEmail } from "@jp/notifications"
+import { env } from "@jp/utils/env"
 import {
   CustomerApplicationAdminEmail,
   CustomerApplicationApprovedEmail,
@@ -80,7 +81,7 @@ export const triggerNotification = async ({
           template: CustomerApplicationApprovedEmail({
             name: customerName,
             company: application.companyName,
-            portalUrl: process.env.JP_PORTAL_URL_CUSTOMER,
+            portalUrl: env.NEXT_PUBLIC_CUSTOMER_URL,
           }),
         }),
         adminEmail,

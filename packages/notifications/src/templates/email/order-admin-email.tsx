@@ -1,4 +1,5 @@
 import { Button, Column, Row, Section, Text } from "react-email"
+import { env } from "@jp/utils/env"
 import { EmailLayout } from "./email-layout"
 
 interface OrderAdminEmailProps {
@@ -127,7 +128,7 @@ export const OrderAdminEmail = ({
         </Section>
 
         <Button
-          href="https://jimenezproduce.com/auth/select"
+          href={`${env.NEXT_PUBLIC_PUBLIC_URL}/auth/select`}
           className="bg-brand mt-6 inline-block rounded-md px-5 py-3 text-sm font-semibold text-white no-underline"
         >
           Review order

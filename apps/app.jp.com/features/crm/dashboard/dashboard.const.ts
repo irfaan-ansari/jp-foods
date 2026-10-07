@@ -31,7 +31,7 @@ export const DASHBOARD_SECTIONS = {
     badge: CandidateApplicationBadge,
     segments: [
       candidateStatuses.new!,
-      candidateStatuses.verification_in_progress!,
+      candidateStatuses.under_verification!,
       candidateStatuses.rejected!,
     ],
   },

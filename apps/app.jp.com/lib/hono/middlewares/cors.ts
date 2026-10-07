@@ -1,15 +1,11 @@
 import { cors } from "hono/cors"
-
-const origins = (process.env.BETTER_AUTH_ORIGINS ?? "")
-  .split(",")
-  .map((value) => value.trim())
-  .filter(Boolean)
+import { TRUSTED_ORIGINS } from "@jp/utils/env"
 
 export const corsMiddleware = cors({
   origin: (origin) => {
     if (!origin) return ""
 
-    return origins.includes(origin) ? origin : ""
+    return TRUSTED_ORIGINS.includes(origin) ? origin : ""
   },
   credentials: true,
   allowMethods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

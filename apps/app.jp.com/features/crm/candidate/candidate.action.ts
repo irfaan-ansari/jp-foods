@@ -1,5 +1,7 @@
 "use server"
 
+import { randomUUID } from "crypto"
+
 import { eq } from "@jp/db/query"
 import { AppError } from "@jp/utils"
 import { db, jobApplication } from "@jp/db"
@@ -7,20 +9,15 @@ import { db, jobApplication } from "@jp/db"
 import { authActionClient } from "@/lib/safe-action"
 import {
   deleteCandidateApplicationSchema,
+  candidateApplicationStatusSchema,
   updateCandidateApplicationSchema,
 } from "./candidate.schema"
 
-import { startOnboarding, startVerification } from "./candidate.utils"
-
-import { sendEmail } from "@jp/notifications"
 import {
-  CandidateBackgroundCheckRequestEmail,
-  JobApplicationAdminEmail,
-  JobApplicationDeclinedEmail,
-} from "@jp/notifications/templates"
-import { renderToBuffer } from "@jp/pdf/server"
-import { JobApplicationPDF } from "@jp/pdf"
-import { waitUntil } from "@jp/utils/functions"
+  sendCandidateEmail,
+  startOnboarding,
+  startVerification,
+} from "./candidate.utils"
 
 // update fields
 export const updateCandidateApplication = authActionClient({
@@ -38,75 +35,43 @@ export const updateCandidateApplication = authActionClient({
 
     if (!exist) throw new AppError("NOT_FOUND")
 
+    const token =
+      status === "agreement_sent" ? (exist.token ?? randomUUID()) : undefined
+    const candidateStatus =
+      status ?? candidateApplicationStatusSchema.parse(exist.status)
+
     await db
       .update(jobApplication)
       .set({
         ...rest,
         status,
+        ...(token ? { token } : {}),
         reviewedBy: user.id,
         reviewedAt: new Date(),
       })
       .where(eq(jobApplication.id, id))
 
-    if (status === "rejected") {
-      waitUntil(
-        Promise.all([
-          sendEmail({
-            to: exist.email,
-            subject: "Jimenez Produce - Application Status Update",
-            template: JobApplicationDeclinedEmail({
-              name: exist.firstName,
-              position: exist.position,
-              reason: rest.statusReason ?? "",
-              detailedReason: rest.statusDetails ?? "",
-            }),
-          }),
-          sendEmail({
-            subject: "Candidate Application Status Update",
-            template: CandidateBackgroundCheckRequestEmail({
-              name: exist.firstName,
-              position: exist.position,
-              email: exist.email,
-              phone: exist.phone,
-              reference: `CAND-${exist.id}`,
-            }),
-          }),
-        ])
-      )
-    }
     if (status === "under_verification") {
-      const PDFBuffer = await renderToBuffer(
-        JobApplicationPDF({ data: exist, includeSSN: true })
-      )
-      const files = [
-        { path: exist.drivingLicenseFrontUrl, filename: "Driver's License" },
-        { path: exist.drivingLicenseBackUrl, filename: "Driver's License" },
-        { path: exist.dotFrontUrl, filename: "DOT" },
-        { path: exist.dotBackUrl, filename: "DOT" },
-      ]
-      waitUntil(
-        sendEmail({
-          subject: "Candidate Application Status Update",
-          template: JobApplicationAdminEmail({
-            name: exist.firstName,
-            location: exist.location ?? "",
-            email: exist.email,
-            phone: exist.phone,
-            position: exist.position,
-            status: "under_verification",
-          }),
-          attachments: [
-            ...files.filter((file) => file.path),
-            {
-              content: PDFBuffer.toString("base64"),
-              filename: "Candidate PDF",
-            },
-          ],
-        })
-      )
+      await startVerification()
     }
 
-    return { id: 1 }
+    if (status === "hired") {
+      await startOnboarding()
+    }
+
+    await sendCandidateEmail({
+      candidate: {
+        ...exist,
+        status: candidateStatus,
+        token: token ?? exist.token,
+      },
+      status,
+      statusDetails: rest.statusDetails,
+      statusReason: rest.statusReason,
+      internalNotes: rest.internalNotes,
+    })
+
+    return { id }
   })
 
 // delete
