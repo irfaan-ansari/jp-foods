@@ -13,13 +13,14 @@ import {
 
 import { Button } from "@jp/ui/components/button"
 import { useAppForm } from "@jp/ui/forms/public"
-import { AlertCircleIcon, Loader2, Pencil, X } from "lucide-react"
-import { sendOtp, verifyOtp } from "@/features/auth/auth.action"
+import { AlertCircleIcon, Loader2, X } from "lucide-react"
+
 import { Alert, AlertAction, AlertTitle } from "@jp/ui/components/alert"
 
 import { otpLoginSchema } from "../auth.schema"
 import { formatPhone } from "@jp/utils"
 import { cn } from "@jp/ui/lib/utils"
+import { authClient } from "@jp/auth/client"
 
 export function OTPLoginForm({
   className,
@@ -27,6 +28,7 @@ export function OTPLoginForm({
 }: React.ComponentProps<"form">) {
   const [seconds, setSeconds] = React.useState(0)
   const canResend = seconds === 0
+  const otpRef = React.useRef<HTMLInputElement>(null)
 
   // resend countdown
   React.useEffect(() => {
@@ -40,57 +42,43 @@ export function OTPLoginForm({
       phoneNumber: "",
       code: "",
       step: "send",
-      error: "",
     },
     validators: {
-      onBlur: ({ value }) => {
-        const phone = otpLoginSchema.shape.phoneNumber.safeParse(
-          value.phoneNumber
-        )
-        const code = otpLoginSchema.shape.code.safeParse(value.code)
-        const fields = {
-          phoneNumber: phone.success ? undefined : phone.error.issues[0],
-          code:
-            value.step === "verify" && !code.success
-              ? code.error.issues[0]
-              : undefined,
+      onBlur: ({ value, formApi }) => {
+        const schema =
+          formApi.state.values.step === "send"
+            ? otpLoginSchema.pick({ phoneNumber: true })
+            : otpLoginSchema
+
+        // @ts-expect-error
+        return formApi.parseValuesWithSchema(schema)
+      },
+      onSubmitAsync: async ({ value }) => {
+        const { phoneNumber, code } = value
+        if (value.step !== "verify") return undefined
+
+        const toastId = toast.loading("Please wait...")
+
+        const { error } = await authClient.phoneNumber.verify({
+          phoneNumber,
+          code,
+        })
+
+        if (error) {
+          const message =
+            error.message ?? "Unable to verify the code. Please try again."
+          toast.error(message, { id: toastId })
+
+          return { fields: { code: { message } } }
         }
-        return fields.phoneNumber || fields.code ? { fields } : undefined
+
+        toast.success("Login successful, redirecting...", { id: toastId })
       },
     },
     onSubmit: async ({ value }) => {
-      const { phoneNumber, code } = value
+      if (value.step !== "send") return
 
-      // send otp
-      if (value.step === "send") {
-        await handleSendOtp()
-        return
-      }
-
-      // verify otp
-      form.setFieldValue("error", "")
-      const toastId = toast.loading("Please wait...")
-      try {
-        const result = await verifyOtp({ phoneNumber, code })
-        if (!result?.data || result.serverError || result.validationErrors) {
-          throw new Error(
-            result?.serverError?.message ??
-              "Unable to verify the code. Please try again."
-          )
-        }
-      } catch (error) {
-        toast.dismiss(toastId)
-        form.setFieldValue(
-          "error",
-          error instanceof Error
-            ? error.message
-            : "Unable to sign in. Please try again."
-        )
-        return
-      }
-
-      toast.success("Login successful, redirecting...", { id: toastId })
-      window.location.reload()
+      await handleSendOtp()
     },
   })
 
@@ -98,27 +86,22 @@ export function OTPLoginForm({
    * @description handle send otp
    */
   const handleSendOtp = async () => {
-    form.setFieldValue("error", "")
     const toastId = toast.loading("Sending code...")
 
-    const { serverError, validationErrors } = await sendOtp({
+    const { error } = await authClient.phoneNumber.sendOtp({
       phoneNumber: form.state.values.phoneNumber,
     })
 
-    if (serverError || validationErrors) {
-      toast.error(serverError?.message ?? "Unable to send the code.", {
-        id: toastId,
-      })
+    if (error) {
+      const message = error?.message ?? "Unable to send the code."
+      toast.error(message, { id: toastId })
 
-      form.setFieldValue(
-        "error",
-        serverError?.message ?? "Unable to send the code."
-      )
       return
     }
 
     form.setFieldValue("code", "")
     form.setFieldValue("step", "verify")
+    otpRef.current?.focus()
     setSeconds(60)
     toast.success("OTP sent successfully!", { id: toastId })
   }
@@ -139,12 +122,12 @@ export function OTPLoginForm({
         selector={(state) => ({
           step: state.values.step,
           phoneNumber: state.values.phoneNumber,
-          error: state.values.error,
+
           isSubmitting: state.isSubmitting,
           canSubmit: state.canSubmit,
         })}
       >
-        {({ step, phoneNumber, error, isSubmitting, canSubmit }) => (
+        {({ step, phoneNumber, isSubmitting, canSubmit }) => (
           <React.Fragment>
             {step === "send" && (
               <FieldGroup>
@@ -191,7 +174,6 @@ export function OTPLoginForm({
                       onClick={() => {
                         form.setFieldValue("step", "send")
                         form.setFieldValue("code", "")
-                        form.setFieldValue("error", "")
                       }}
                       type="button"
                     >
@@ -206,12 +188,21 @@ export function OTPLoginForm({
                     const isInvalid =
                       field.state.meta.isTouched && !field.state.meta.isValid
                     return (
-                      <Field>
+                      <Field data-invalid={isInvalid}>
                         <InputOTP
+                          ref={otpRef}
                           id={field.name}
                           name={field.name}
                           value={field.state.value}
-                          onChange={(value) => field.handleChange(value)}
+                          onChange={(value) => {
+                            field.handleChange(value)
+                            if (
+                              value.length === 6 &&
+                              !form.state.isSubmitting
+                            ) {
+                              form.handleSubmit()
+                            }
+                          }}
                           onBlur={field.handleBlur}
                           autoComplete="one-time-code"
                           aria-invalid={isInvalid}
@@ -280,25 +271,6 @@ export function OTPLoginForm({
                   </Button>
                 </div>
               </FieldGroup>
-            )}
-
-            {/* alert */}
-            {error && (
-              <Alert variant="destructive">
-                <AlertCircleIcon />
-                <AlertTitle className="line-clamp-2">{error}</AlertTitle>
-
-                <AlertAction>
-                  <Button
-                    type="button"
-                    size="icon-xs"
-                    variant="outline"
-                    onClick={() => form.setFieldValue("error", "")}
-                  >
-                    <X />
-                  </Button>
-                </AlertAction>
-              </Alert>
             )}
 
             <Field>

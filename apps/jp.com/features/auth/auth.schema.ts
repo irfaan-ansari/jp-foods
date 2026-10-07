@@ -3,7 +3,7 @@ import z from "@jp/utils/validation"
 export const otpLoginSchema = z.object({
   phoneNumber: z
     .string()
-    .regex(/^\+[1-9]\d{7,14}$/, "Enter a valid phone number with country code"),
+    .min(5, "Enter a valid phone number with country code"),
   code: z.string().regex(/^\d{6}$/, "Enter the 6-digit code"),
   step: z.enum(["send", "verify"]),
   error: z.string(),
@@ -13,12 +13,7 @@ export const otpLoginSchema = z.object({
 export const loginFormSchema = z.object({
   username: z.union(
     [
-      z
-        .string()
-        .regex(
-          /^\+[1-9]\d{7,14}$/,
-          "Enter a valid phone number with country code"
-        ),
+      z.string().min(5, "Enter a valid phone number with country code"),
       z.email("Enter a valid email"),
     ],
     "Enter valid email or phone number"
