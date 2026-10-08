@@ -2,6 +2,8 @@ import { Hono } from "hono"
 import { getCookie, setCookie, deleteCookie } from "hono/cookie"
 import { db, product } from "@jp/db"
 import { parsePagination } from "../lib/parse-pagination"
+import { getCatalogCookieDomain } from "../lib/catalog-cookie"
+import { env } from "@jp/utils/env"
 import {
   and,
   arrayContains,
@@ -9,12 +11,16 @@ import {
   eq,
   ilike,
   like,
-  sql,
 } from "@jp/db/query"
 
 const COOKIE_NAME = `JP_product_access`
 
 const cookieOptions = {
+  domain: getCatalogCookieDomain(
+    env.NEXT_PUBLIC_API_URL,
+    env.NEXT_PUBLIC_PUBLIC_URL
+  ),
+  path: "/",
   secure: true,
   sameSite: "None" as const,
   httpOnly: true,
