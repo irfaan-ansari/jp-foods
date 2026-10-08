@@ -18,8 +18,10 @@ import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { useOrderFormStore } from "@/features/order-form/order-form.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
 import { useOrderForm } from "@/features/order-form/order-form.hook"
+import { useCartEvents } from "@/features/order-form/use-cart-events"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
+  useCartEvents()
   const { pathname } = useRouterStuff()
   const selecting = useOrderFormUI((state) => state.selecting)
   const setSelecting = useOrderFormUI((state) => state.setSelecting)

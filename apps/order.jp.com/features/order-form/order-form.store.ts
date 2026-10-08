@@ -6,7 +6,6 @@ import { calculateOrder, DEFAULT_CHARGE } from "@jp/utils/commerce"
 const CART_KEY = "CART"
 const CART_VERSION = 5
 
-
 const initialState: OrderForm = {
   subtotal: 0,
   taxAmount: 0,
@@ -112,7 +111,10 @@ export const useOrderFormStore = create<OrderStore>()(
         }),
 
       getItem: (id) => get().order.items.find((item) => item.id === id),
-      clear: () => set({ order: initialState }),
+      clear: () =>
+        set((state) => ({
+          order: { ...initialState, teamId: state.order.teamId },
+        })),
     }),
     {
       name: CART_KEY,

@@ -1,10 +1,17 @@
 import type z from "@jp/utils/validation"
 
-import type { cartEventPayloadSchema, cartEventSchema } from "./cart.schema"
+import type {
+  cartActivitySchema,
+  cartItemSchema,
+  cartEventPayloadSchema,
+  cartEventSchema,
+} from "./cart.schema"
 
 export type CartEventInput = z.input<typeof cartEventSchema>
 
 export type CartEvent = z.infer<typeof cartEventPayloadSchema>
+export type CartItem = z.infer<typeof cartItemSchema>
+export type CartPublication = CartEvent & { activity: CartActivity[] }
 
 export type CartGroup = {
   user: {
@@ -18,13 +25,11 @@ export type CartGroup = {
     logo: string
   }
   items: CartEvent["items"]
-  status: CartEvent["status"]
+  status: "active" | "checking_out" | "placed"
   orderId?: number
   itemCount: number
   total: number
   updatedAt: string
 }
 
-export type CartActivity = CartGroup & {
-  id: string
-}
+export type CartActivity = z.infer<typeof cartActivitySchema>
