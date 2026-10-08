@@ -13,6 +13,7 @@ export const cart = new Hono<TeamAppContext>().post("/", async (c) => {
     organizationId,
     teamId,
     userId: user.id,
+    userName: user.name,
     event: body,
   })
 

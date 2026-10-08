@@ -1,8 +1,14 @@
 "use client"
 
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 
 import type { CartActivity, CartGroup } from "./cart.type"
+import {
+  getCartGroupKey,
+  mergeCartActivity,
+  reconcileCartGroups,
+} from "./cart.utils"
+export { getCartGroupKey } from "./cart.utils"
 
 export function useLiveCarts() {
   const [groups, setGroups] = useState<CartGroup[]>([])
@@ -10,6 +16,7 @@ export function useLiveCarts() {
   const [selectedKey, setSelectedKey] = useState<string | null>(null)
   const [detailsOpen, setDetailsOpen] = useState(false)
   const [connected, setConnected] = useState(false)
+  const [hasSnapshot, setHasSnapshot] = useState(false)
 
   useEffect(() => {
     const source = new EventSource("/api/v1/org/cart")
@@ -18,21 +25,25 @@ export function useLiveCarts() {
     source.addEventListener("error", () => setConnected(false))
     source.addEventListener("cart.snapshot", (event) => {
       const next = JSON.parse((event as MessageEvent).data) as CartGroup[]
-      setGroups(next)
+      setGroups((current) => reconcileCartGroups(current, next))
+      setHasSnapshot(true)
       setSelectedKey((current) => {
-        if (current && next.some((group) => getCartGroupKey(group) === current)) {
+        if (
+          current &&
+          next.some((group) => getCartGroupKey(group) === current)
+        ) {
           return current
         }
         return next[0] ? getCartGroupKey(next[0]) : null
       })
     })
     source.addEventListener("cart.activity", (event) => {
-      const next = JSON.parse((event as MessageEvent).data) as CartGroup
-      setActivity((current) => [
-        { ...next, id: `${getCartGroupKey(next)}:${next.updatedAt}` },
-        ...current,
-      ].slice(0, 12))
-      setSelectedKey((current) => current ?? getCartGroupKey(next))
+      const next = JSON.parse((event as MessageEvent).data) as CartActivity[]
+      setActivity((current) => mergeCartActivity(current, next))
+    })
+    source.addEventListener("cart.activity.snapshot", (event) => {
+      const next = JSON.parse((event as MessageEvent).data) as CartActivity[]
+      setActivity((current) => mergeCartActivity(current, next))
     })
 
     return () => source.close()
@@ -43,14 +54,15 @@ export function useLiveCarts() {
     [groups, selectedKey]
   )
 
-  const openCart = (key: string) => {
+  const openCart = useCallback((key: string) => {
     setSelectedKey(key)
     setDetailsOpen(true)
-  }
+  }, [])
 
   return {
     activity,
     connected,
+    hasSnapshot,
     detailsOpen,
     groups,
     openCart,
@@ -59,8 +71,4 @@ export function useLiveCarts() {
     setDetailsOpen,
     selectCart: setSelectedKey,
   }
-}
-
-export function getCartGroupKey(group: Pick<CartGroup, "team" | "user">) {
-  return `${group.team.id}:${group.user.id}`
 }

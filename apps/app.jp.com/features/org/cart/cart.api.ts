@@ -9,15 +9,22 @@ import {
   cartRedis,
   getOrganizationCartEvents,
   getOrganizationCartPattern,
+  getOrganizationCartActivity,
 } from "@/features/org/cart/cart.service"
-import type { CartEvent, CartGroup } from "@/features/org/cart/cart.type"
+import type {
+  CartEvent,
+  CartGroup,
+  CartPublication,
+} from "@/features/org/cart/cart.type"
 
 async function getCartGroups(organizationId: string): Promise<CartGroup[]> {
   const events = await getOrganizationCartEvents(organizationId)
   return getCartGroupsFromEvents(events)
 }
 
-async function getCartGroupsFromEvents(events: CartEvent[]): Promise<CartGroup[]> {
+async function getCartGroupsFromEvents(
+  events: CartEvent[]
+): Promise<CartGroup[]> {
   const userIds = [...new Set(events.map((event) => event.userId))]
   const teamIds = [...new Set(events.map((event) => event.teamId))]
 
@@ -55,8 +62,7 @@ async function getCartGroupsFromEvents(events: CartEvent[]): Promise<CartGroup[]
         logo: team?.logo ?? "",
       },
       items: event.items,
-      status: event.status,
-      orderId: event.orderId,
+      status: "active",
       itemCount: event.itemCount,
       total: event.total,
       updatedAt: event.emittedAt,
@@ -74,13 +80,14 @@ async function writeCartSnapshot(
   })
 }
 
-async function writeCartActivity(stream: SSEStreamingApi, event: CartEvent) {
-  const [group] = await getCartGroupsFromEvents([event])
-  if (!group) return
-
+async function writeCartActivity(
+  stream: SSEStreamingApi,
+  event: CartPublication
+) {
+  if (!event.activity.length) return
   await stream.writeSSE({
     event: "cart.activity",
-    data: JSON.stringify(group),
+    data: JSON.stringify(event.activity.slice().reverse()),
   })
 }
 
@@ -89,7 +96,8 @@ export const cartRoutes = new Hono<OrgAppContext>().get("/", (c) => {
   const pattern = getOrganizationCartPattern(organizationId)
 
   return streamSSE(c, async (stream) => {
-    const subscriber = cartRedis.psubscribe<CartEvent>(pattern)
+    const subscriber = cartRedis.psubscribe<CartPublication>(pattern)
+
     const heartbeat = setInterval(() => {
       if (!stream.closed && !stream.aborted) {
         void stream.writeSSE({
@@ -115,6 +123,10 @@ export const cartRoutes = new Hono<OrgAppContext>().get("/", (c) => {
       retry: 5_000,
     })
     await writeCartSnapshot(stream, organizationId)
+    await stream.writeSSE({
+      event: "cart.activity.snapshot",
+      data: JSON.stringify(await getOrganizationCartActivity(organizationId)),
+    })
 
     await new Promise<void>((resolve) => {
       stream.onAbort(resolve)
