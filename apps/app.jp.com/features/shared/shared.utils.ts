@@ -1,4 +1,4 @@
-export const ACTIVE_USER_WINDOW = 5 * 60 * 1000
+export const ACTIVE_USER_WINDOW = 30 * 1000
 
 export const isUserActive = (lastSeenAt: Date | string | null | undefined) => {
   if (!lastSeenAt) return false

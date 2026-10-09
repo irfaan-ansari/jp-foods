@@ -16,7 +16,7 @@ export const presenceRoutes = new Hono<AppContext>()
   })
   .use("*", authMiddleware({ user: ["list"] }))
   .get("/", async (c) => {
-    const fiveMinutesAgo = new Date(Date.now() - 5 * 60 * 1000)
+    const thirtySecondsAgo = new Date(Date.now() - 30 * 1000)
 
     const users = await db
       .select({
@@ -28,7 +28,7 @@ export const presenceRoutes = new Hono<AppContext>()
         lastSeenAt: user.lastSeenAt,
       })
       .from(user)
-      .where(gte(user.lastSeenAt, fiveMinutesAgo))
+      .where(gte(user.lastSeenAt, thirtySecondsAgo))
       .orderBy(desc(user.lastSeenAt))
 
     return c.json({ data: users, success: true })

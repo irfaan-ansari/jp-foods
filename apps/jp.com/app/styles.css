@@ -6,5 +6,5 @@
 }
 
 [data-slot="button"][data-size="xl"] {
-  @apply text-base font-normal;
+  @apply text-base;
 }

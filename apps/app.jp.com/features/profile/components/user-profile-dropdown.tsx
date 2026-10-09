@@ -9,7 +9,12 @@ import { Button } from "@jp/ui/components/button"
 import type { DeviceSessions, AuthType } from "@jp/auth"
 import { PopDrawer } from "@jp/ui/components/jp/pop-drawer"
 import { Logout, ShieldCheck, ShieldCross, User } from "@solar-icons/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@jp/ui/components/avatar"
+import {
+  Avatar,
+  AvatarBadge,
+  AvatarFallback,
+  AvatarImage,
+} from "@jp/ui/components/avatar"
 
 import { authClient } from "@jp/auth/client"
 import { Tooltip, useLoader } from "@jp/ui/components/jp"
@@ -72,6 +77,7 @@ export const UserProfileDropdown = ({
               <AvatarFallback className="bg-sidebar-accent">
                 <User />
               </AvatarFallback>
+              <AvatarBadge className="bg-green-600" />
             </Avatar>
           </Tooltip>
         </Button>

@@ -69,15 +69,13 @@ export const auth = betterAuth({
     adminPlugin({
       ac: userAc,
       roles: userRoles,
+      bannedUserMessage:
+        "Your account has been banned. Contact support for help.",
     }),
     organizationPlugin({
       allowUserToCreateOrganization: async (user) => {
-        const allowedRoles = ["admin", "superAdmin"]
+        const allowedRoles = ["superAdmin"]
         return allowedRoles.includes(user.role)
-      },
-      async sendInvitationEmail(data) {
-        const inviteLink = `${env.NEXT_PUBLIC_PUBLIC_URL}/auth/accept-invitation/${data.id}`
-        console.log("send email:", inviteLink)
       },
       organizationHooks: {
         beforeCreateTeam: async ({ team }) => {

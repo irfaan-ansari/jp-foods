@@ -9,6 +9,7 @@ import {
   unique,
   jsonb,
 } from "drizzle-orm/pg-core"
+import { priceLevel, taxRule } from "./organization"
 
 export const user = pgTable("user", {
   id: text("id").primaryKey(),
@@ -130,8 +131,12 @@ export const team = pgTable(
     ),
     logo: text("logo"),
     email: text("email").notNull(),
-    taxRuleId: integer("tax_rule_id"),
-    priceLevelId: integer("price_level_id"),
+    taxRuleId: integer("tax_rule_id").references(() => taxRule.id, {
+      onDelete: "set null",
+    }),
+    priceLevelId: integer("price_level_id").references(() => priceLevel.id, {
+      onDelete: "set null",
+    }),
     creditUsed: text("credit_used").default(""),
     phoneNumber: text("phone_number").notNull(),
     managerName: text("manager_name").notNull(),
