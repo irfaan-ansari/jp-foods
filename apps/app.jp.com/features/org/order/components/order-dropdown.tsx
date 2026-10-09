@@ -20,7 +20,7 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
 import { OrderInvoiceDialog } from "./order-invoice-dialog"
 import { OrderCompleteDialog } from "./order-complete-dialog"
-import { format } from "@jp/utils/date"
+import { format, isValid } from "@jp/utils/date"
 
 export const OrderDropdown = ({
   data,
@@ -33,6 +33,10 @@ export const OrderDropdown = ({
   const queryClient = useQueryClient()
   const [isOpen, setIsOpen] = useState(false)
   const { id, deliveryDate = "", deliveryWindow = "", status } = data
+  const parsedDeliveryDate = deliveryDate ? new Date(deliveryDate) : null
+  const scheduledDate = isValid(parsedDeliveryDate)
+    ? format(parsedDeliveryDate!, "yyyy-MM-dd")
+    : ""
 
   const handleAction = (action: string) => {
     switch (action) {
@@ -119,7 +123,7 @@ export const OrderDropdown = ({
           <OrderScheduleDialog
             id={id}
             defaultValues={{
-              deliveryDate: format(deliveryDate!, "yyyy-MM-dd"),
+              deliveryDate: scheduledDate,
               deliveryWindow: deliveryWindow!,
             }}
           >

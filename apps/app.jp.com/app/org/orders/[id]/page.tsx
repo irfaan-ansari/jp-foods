@@ -26,7 +26,9 @@ import {
   TableRow,
 } from "@jp/ui/components/table"
 
-import { format, formatUSD } from "@jp/utils"
+import { formatDate, formatUSD } from "@jp/utils"
+import { format, isValid } from "@jp/utils/date"
+
 import { Buildings, MenuDots, Restart, User } from "@solar-icons/react"
 import {
   CheckCircle,
@@ -143,7 +145,7 @@ const OrderPage = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-muted-foreground">
-                      {format(data.deliveryDate!, "yyyy-MM-dd")}
+                      {formatDate(data.deliveryDate ?? "")}
                     </div>
                     <div className="text-sm font-medium text-muted-foreground">
                       {data.deliveryWindow}
@@ -254,14 +256,11 @@ const OrderPage = () => {
                             <TableCell className="px-2 py-1.5 text-right tabular-nums">
                               {item.quantity}
 
-                              <div className="text-xs text-muted-foreground">
-                                {data.status !== "placed"
-                                  ? `${item.unitQuantity} ${item.stockUOM} ${item.unit}`
-                                  : Number(item.packSize) > 1 &&
-                                    (item.displayLabel || item.unit)}
-                              </div>
+                              <span className="ml-1 text-xs text-muted-foreground">
+                                {item.unit}
+                              </span>
                             </TableCell>
-                            <TableCell className="v text-right text-muted-foreground tabular-nums">
+                            <TableCell className="text-right text-muted-foreground tabular-nums">
                               <div>{formatUSD(item.taxAmount ?? 0)}</div>
                             </TableCell>
                             <TableCell className="py-1.5 pr-2 text-right font-semibold tabular-nums">

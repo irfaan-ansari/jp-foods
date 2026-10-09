@@ -6,7 +6,7 @@ const orderIdSchema = z.object({
 
 export const orderSchema = z.object({
   status: z.enum(["completed", "processing"]),
-  deliveryDate: z.string(),
+  deliveryDate: z.iso.date(),
   deliveryWindow: z.string(),
 })
 

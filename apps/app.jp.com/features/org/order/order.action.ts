@@ -10,8 +10,17 @@ import {
 } from "./order.schema"
 import { AppError } from "@jp/utils"
 import { calculateOrder } from "@jp/utils/commerce"
-import { and, eq } from "@jp/db/query"
+import { and, eq, sql, type SQL } from "@jp/db/query"
 import type { BatchItem } from "@jp/db/query/batch"
+
+const getDeliveryTimestamp = (
+  date?: string | null,
+): SQL<Date> | null | undefined => {
+  if (date == null) return date
+  if (!date) return undefined
+
+  return sql<Date>`(${date}::date + LOCALTIME)`
+}
 
 /**
  * update order
@@ -213,7 +222,7 @@ export const rescheduleOrder = orgActionClient({ order: ["update"] })
     const [result] = await db
       .update(order)
       .set({
-        deliveryDate: new Date(deliveryDate),
+        deliveryDate: getDeliveryTimestamp(deliveryDate),
         deliveryWindow,
       })
       .where(
