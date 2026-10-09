@@ -1,11 +1,12 @@
-import { ApplicantConfirmation } from "@/features/careers/forms/applicant-confirmation"
+import { ApplicantDocuments } from "@/features/careers/forms/applicant-documents"
 import {
   applicantAddressSchema,
   applicantSchema,
-  authorizationSchema,
   educationSchema,
   employementSchema,
   licenseSchema,
+  documentSchema,
+  consentSchema,
 } from "@/features/careers/careers.schema"
 import { ApplicantEducation } from "@/features/careers/forms/applicant-education"
 import { ApplicantExperience } from "@/features/careers/forms/applicant-experience"
@@ -14,6 +15,7 @@ import { ApplicantLicense } from "@/features/careers/forms/applicant-license"
 import { ApplicantAddress } from "@/features/careers/forms/applicant-address"
 import { ApplicantDetails } from "@/features/careers/forms/applicant-details"
 import z from "@jp/utils/validation"
+import { ApplicantConsent } from "./forms/applicant-consent"
 
 type StepsType = {
   title: string
@@ -60,10 +62,16 @@ export const steps: StepsType = [
     schema: educationSchema,
   },
   {
-    title: "Documents & Confirmation",
+    title: "Documents",
+    description: "Upload your documents, verify all information is accurate.",
+    component: ApplicantDocuments,
+    schema: documentSchema,
+  },
+  {
+    title: "Authorization",
     description:
-      "Upload your documents, verify all information is accurate, and confirm to complete your application.",
-    component: ApplicantConfirmation,
-    schema: authorizationSchema,
+      "Review the background check disclosure, provide your printed and signature, and authorize the background check.",
+    component: ApplicantConsent,
+    schema: consentSchema,
   },
 ]

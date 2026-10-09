@@ -18,7 +18,7 @@ import {
   AlertTitle,
 } from "@jp/ui/components/alert"
 import { Button } from "@jp/ui/components/button"
-import { ArrowRight, RefreshCcw } from "lucide-react"
+import { Loader2, RefreshCcw } from "lucide-react"
 import {
   Download,
   InfoCircle,
@@ -49,7 +49,7 @@ export const PriceListDialog = ({
     sending: false,
     refreshing: false,
   })
-  const { data, isPending } = useOrganization()
+  const { data } = useOrganization()
 
   const handleRefresh = async () => {
     setListState((prev) => ({ ...prev, refreshing: true }))
@@ -66,17 +66,18 @@ export const PriceListDialog = ({
   }
 
   const handleSend = async () => {
+    const id = toast.loading("Sending...")
     setListState((prev) => ({ ...prev, sending: true }))
     const { serverError } = await emailPriceList({
       email: listState.email,
     })
 
     if (serverError) {
-      toast.error("Failed to send price list. Please try again later.")
+      toast.error("Failed to send price list. Please try again later.", { id })
       return
     }
-    setListState((prev) => ({ ...prev, sending: false }))
-    toast.success("Price list sent successfully!")
+    setListState((prev) => ({ ...prev, sending: false, email: "" }))
+    toast.success("Price list sent successfully.", { id })
   }
 
   return (
@@ -136,9 +137,13 @@ export const PriceListDialog = ({
                 disabled={listState.sending || !listState.email}
                 onClick={handleSend}
                 variant="default"
-                className="h-8 bg-sidebar-accent px-3 hover:bg-sidebar-accent/80"
+                className="h-8 w-16 bg-sidebar-accent px-3 hover:bg-sidebar-accent/80"
               >
-                Send
+                {listState.sending ? (
+                  <Loader2 className="animate-spin" />
+                ) : (
+                  "Send"
+                )}
               </InputGroupButton>
             </InputGroupAddon>
             <InputGroupInput

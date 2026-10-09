@@ -1,3 +1,4 @@
+import React from "react"
 import type { ReactNode } from "react"
 import { Page, Text, View } from "@react-pdf/renderer"
 import { styles } from "./styles"

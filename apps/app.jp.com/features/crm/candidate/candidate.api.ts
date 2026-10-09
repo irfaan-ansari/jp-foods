@@ -5,7 +5,7 @@ import { AppContext } from "@/lib/hono/middlewares"
 import { and, count, eq, ilike, or } from "@jp/db/query"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { renderToStream } from "@jp/pdf/server"
-import { JobApplicationPDF } from "@jp/pdf"
+import { ConsentV1PDF, JobApplicationPDF } from "@jp/pdf"
 
 const app = new Hono<AppContext>()
 
@@ -145,6 +145,34 @@ export const jobApplicationRoutes = app
     return c.json({
       success: true,
       data: transformed,
+    })
+  })
+  // get background consent pdf
+  .get("/:id/consent-pdf", async (c) => {
+    const id = c.req.param("id")
+    const response = await db.query.jobApplication.findFirst({
+      where: (c, { eq }) => eq(c.id, Number(id)),
+    })
+
+    if (!response) throw new AppError("NOT_FOUND")
+
+    const stream = await renderToStream(
+      ConsentV1PDF({
+        data: {
+          driverName: response.applicantName,
+          socialSecurityNumber: response.socialSecurity,
+          signatureUrl: response.signatureUrl,
+          signedAt: response.createdAt,
+        },
+      })
+    )
+
+    return new Response(stream as unknown as BodyInit, {
+      headers: {
+        "Content-Type": "application/pdf",
+        "Cache-Control": "private, no-store",
+        "Content-Disposition": `inline; filename="candidate-${response.id}-consent.pdf"`,
+      },
     })
   })
   // get application pdf

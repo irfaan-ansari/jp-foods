@@ -120,13 +120,15 @@ const educationSchema = z.object({
   otherEducations: z.array(education),
 })
 
-const authorizationSchema = z.object({
+const documentSchema = z.object({
   drivingLicenseFront: fileSchema,
   drivingLicenseBack: fileSchema,
   socialSecurityFront: fileSchema,
   socialSecurityBack: fileSchema,
   dotFront: fileSchema.optional(),
   dotBack: fileSchema.optional(),
+})
+const consentSchema = z.object({
   signature: z
     .file("Signature is required")
     .mime(
@@ -147,7 +149,8 @@ const jobFormSchema = z.object({
   ...licenseSchema.shape,
   ...employementSchema.shape,
   ...educationSchema.shape,
-  ...authorizationSchema.shape,
+  ...documentSchema.shape,
+  ...consentSchema.shape,
 })
 
 const driverFormSchema = z.object({
@@ -168,7 +171,8 @@ export {
   trafficConvictionsSchema,
   employementSchema,
   educationSchema,
-  authorizationSchema,
+  documentSchema,
+  consentSchema,
 }
 
 export type CareersFormValues = z.infer<typeof jobFormSchema>

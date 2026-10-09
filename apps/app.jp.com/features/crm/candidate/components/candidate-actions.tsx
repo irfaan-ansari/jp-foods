@@ -189,6 +189,16 @@ export const CandidateApplicationActions = ({
             PDF Without SSN
           </a>
         </Button>
+        <Button asChild variant="outline">
+          <a
+            href={`/api/v1/crm/candidates/${data.id}/consent-pdf`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <DocumentText />
+            Consent PDF
+          </a>
+        </Button>
       </CardContent>
       <CandidateApplicationStatusDialog
         id={data.id}

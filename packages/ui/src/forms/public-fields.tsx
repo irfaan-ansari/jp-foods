@@ -348,7 +348,10 @@ const SignatureField = ({
   return (
     <Field className={cn("gap-2", className)}>
       {label && <FieldLabel>{label}</FieldLabel>}
-      <div className="relative rounded-xl border-2 border-dashed">
+      <div
+        aria-invalid={isInvalid}
+        className="relative overflow-hidden rounded-xl border-2 border-dashed aria-invalid:border-destructive/50"
+      >
         <SignatureCanvas
           ref={canvasRef}
           canvasProps={{ className: "w-full h-36 bg-secondary block" }}
@@ -376,13 +379,14 @@ const FileField = ({ label, description, className }: FieldProps) => {
 
   const isInvalid = field.state.meta.isTouched && !field.state.meta.isValid
   return (
-    <Field className={className}>
+    <Field className={className} data-invalid={isInvalid}>
       <FieldLegend variant="label" className="m-0">
         {label}
       </FieldLegend>
       <FieldLabel
         htmlFor={field.name}
-        className={`group/label flex h-28 flex-col rounded-2xl border border-dashed p-4 hover:bg-secondary ${field.state.value ? "bg-secondary" : ""}`}
+        aria-invalid={isInvalid}
+        className={`group/label flex h-28 flex-col rounded-2xl border-2 border-dashed p-4 hover:bg-secondary aria-invalid:border-destructive/50 ${field.state.value ? "bg-secondary" : ""}`}
       >
         <CloudUpload className="size-6 text-muted-foreground transition-transform group-hover/label:-translate-y-0.5" />
         <span className="text-muted-foreground">Click to upload/replace</span>
@@ -392,6 +396,7 @@ const FileField = ({ label, description, className }: FieldProps) => {
         <Input
           type="file"
           id={field.name}
+          aria-invalid={isInvalid}
           onChange={(e) => {
             field.handleChange(e.target.files?.[0] as File)
           }}

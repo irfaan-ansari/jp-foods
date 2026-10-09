@@ -8,6 +8,12 @@ import { formatDate, formatPhone } from "@jp/utils"
 import type { CatalogInquiry } from "../catalog.type"
 import { CatalogInquiryBadge } from "./catalog-card"
 import { CatalogDropdown } from "./catalog-dropdown"
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@jp/ui/components/hover-card"
+import { ChevronDown } from "lucide-react"
 
 const column = createColumnHelper<DataTableFeatures, CatalogInquiry>()
 
@@ -58,6 +64,22 @@ export const catalogColumns = column.columns([
       <span className="text-muted-foreground">
         {row.original.phone ? formatPhone(row.original.phone) : "—"}
       </span>
+    ),
+  }),
+  column.accessor("message", {
+    header: "Message",
+    cell: ({ row }) => (
+      <HoverCard>
+        <HoverCardTrigger className="inline-flex max-w-40 items-start gap-1">
+          <span className="line-clamp-2 w-36 min-w-0 whitespace-normal">
+            {row.original.message}
+          </span>
+          <ChevronDown className="mt-0.5 size-4 shrink-0 text-muted-foreground" />
+        </HoverCardTrigger>
+        <HoverCardContent className="no-scrollbar max-h-64 overflow-auto whitespace-pre-wrap">
+          {row.original.message}
+        </HoverCardContent>
+      </HoverCard>
     ),
   }),
   column.display({

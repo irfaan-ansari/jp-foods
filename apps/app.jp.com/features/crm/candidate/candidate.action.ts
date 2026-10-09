@@ -35,8 +35,7 @@ export const updateCandidateApplication = authActionClient({
 
     if (!exist) throw new AppError("NOT_FOUND")
 
-    const token =
-      status === "agreement_sent" ? (exist.token ?? randomUUID()) : undefined
+    const token = status === "agreement_sent" ? randomUUID() : undefined
     const candidateStatus =
       status ?? candidateApplicationStatusSchema.parse(exist.status)
 
