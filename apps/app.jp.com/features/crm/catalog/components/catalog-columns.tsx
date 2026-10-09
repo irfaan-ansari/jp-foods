@@ -14,6 +14,7 @@ import {
   HoverCardTrigger,
 } from "@jp/ui/components/hover-card"
 import { ChevronDown } from "lucide-react"
+import { CopyButton } from "@jp/ui/components/jp/copy-button"
 
 const column = createColumnHelper<DataTableFeatures, CatalogInquiry>()
 
@@ -87,14 +88,7 @@ export const catalogColumns = column.columns([
     header: "Catalog link",
     cell: ({ row }) =>
       row.original.status === "approved" && row.original.url ? (
-        <a
-          href={row.original.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="block max-w-48 truncate text-primary"
-        >
-          Open catalog
-        </a>
+        <CopyButton value={row.original.url} className="max-w-48" />
       ) : (
         <span className="text-muted-foreground">—</span>
       ),
