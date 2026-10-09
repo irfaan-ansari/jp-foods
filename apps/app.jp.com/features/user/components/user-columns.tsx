@@ -33,7 +33,9 @@ function UserLink({ user }: { user: User }) {
         <AvatarFallback>
           <UserIcon className="size-4" />
         </AvatarFallback>
-        {isUserActive(user.lastSeenAt) && <AvatarBadge />}
+        {isUserActive(user.lastSeenAt) && (
+          <AvatarBadge className="bg-green-600" />
+        )}
       </Avatar>
       <div className="min-w-0 space-y-1">
         <div className="flex items-center gap-2">

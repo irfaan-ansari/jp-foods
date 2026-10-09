@@ -1,13 +1,16 @@
 "use client"
 
-import { memo, useMemo, useState } from "react"
+import { memo, useMemo, useRef, useState, useSyncExternalStore } from "react"
 import {
+  Minus,
   Package,
+  Plus,
   Radio,
   Search,
   ShoppingBag,
   Users,
   Wallet,
+  X,
 } from "lucide-react"
 import {
   Avatar,
@@ -41,17 +44,78 @@ import {
   useLiveCarts,
 } from "@/features/org/cart/use-live-carts"
 import type { CartActivity, CartGroup } from "@/features/org/cart/cart.type"
+import { Buildings } from "@solar-icons/react"
 
-const timeLabel = (at: string) =>
-  new Date(at).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-const initials = (name: string) =>
-  name
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2)
-    .map((word) => word[0])
-    .join("")
-    .toUpperCase()
+/* -------------------------------------------------------------------------- */
+/* Live time helpers: one shared 1s ticker for every timestamp on the page    */
+/* -------------------------------------------------------------------------- */
+
+const FRESH_MS = 8_000
+const listeners = new Set<() => void>()
+let tick = 0
+let timer: ReturnType<typeof setInterval> | undefined
+
+function subscribe(listener: () => void) {
+  listeners.add(listener)
+  timer ??= setInterval(() => {
+    tick += 1
+    listeners.forEach((l) => l())
+  }, 1000)
+  return () => {
+    listeners.delete(listener)
+    if (!listeners.size && timer) {
+      clearInterval(timer)
+      timer = undefined
+    }
+  }
+}
+const useTick = () =>
+  useSyncExternalStore(
+    subscribe,
+    () => tick,
+    () => 0
+  )
+
+function timeAgo(at: string) {
+  const seconds = Math.max(0, Math.floor((Date.now() - +new Date(at)) / 1000))
+  if (seconds < 5) return "just now"
+  if (seconds < 60) return `${seconds}s ago`
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`
+  if (seconds < 86_400) return `${Math.floor(seconds / 3600)}h ago`
+  return formatDate(at)
+}
+
+function TimeAgo({ at, className }: { at: string; className?: string }) {
+  useTick()
+  return (
+    <time
+      dateTime={at}
+      title={new Date(at).toLocaleString()}
+      className={className}
+    >
+      {timeAgo(at)}
+    </time>
+  )
+}
+
+/** Pulsing dot that shows for a few seconds after a cart changes. */
+function LiveDot({ at }: { at: string }) {
+  useTick()
+  if (Date.now() - +new Date(at) > FRESH_MS) return null
+  return (
+    <span className="relative flex size-2 shrink-0" aria-label="Just updated">
+      <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
+      <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+    </span>
+  )
+}
+
+/* -------------------------------------------------------------------------- */
+/* Page                                                                       */
+/* -------------------------------------------------------------------------- */
+
+type StatusFilter = "all" | CartGroup["status"]
+const STATUS_KEYS = Object.keys(CART_STATUS_LABEL) as CartGroup["status"][]
 
 export default function LiveOrdersPage() {
   const {
@@ -65,15 +129,38 @@ export default function LiveOrdersPage() {
     selectedKey,
     setDetailsOpen,
   } = useLiveCarts()
+
   const [search, setSearch] = useState("")
+  const [status, setStatus] = useState<StatusFilter>("all")
   const query = search.trim().toLowerCase()
+
+  // Keep the last opened cart so the drawer doesn't go blank while closing.
+  const lastSelected = useRef(selected)
+  if (selected) lastSelected.current = selected
+  const drawerGroup = selected ?? lastSelected.current
+
+  const groupsByKey = useMemo(
+    () => new Map(groups.map((group) => [getCartGroupKey(group), group])),
+    [groups]
+  )
+
+  const statusCounts = useMemo(() => {
+    const counts: Partial<Record<CartGroup["status"], number>> = {}
+    for (const group of groups)
+      counts[group.status] = (counts[group.status] ?? 0) + 1
+    return counts
+  }, [groups])
+
   const visibleGroups = useMemo(
     () =>
-      groups.filter((group) =>
-        `${group.user.name} ${group.team.name}`.toLowerCase().includes(query)
+      groups.filter(
+        (group) =>
+          (status === "all" || group.status === status) &&
+          `${group.user.name} ${group.team.name}`.toLowerCase().includes(query)
       ),
-    [groups, query]
+    [groups, query, status]
   )
+
   const stats = useMemo(() => {
     const summary = groups.reduce(
       (result, group) => {
@@ -116,23 +203,19 @@ export default function LiveOrdersPage() {
       },
     ]
   }, [groups])
-  const availableCartKeys = useMemo(
-    () => new Set(groups.map(getCartGroupKey)),
-    [groups]
-  )
 
   return (
     <>
       <PageHeader title="Live orders">
         <Badge variant={connected ? "success-light" : "secondary"} size="lg">
-          <Radio className="size-3.5" />
+          <Radio className={cn("size-3.5", connected && "animate-pulse")} />
           {connected ? "Live" : hasSnapshot ? "Reconnecting" : "Connecting"}
         </Badge>
       </PageHeader>
       <PageContent className="space-y-6">
         <div className="grid grid-cols-1 items-start gap-6 @4xl/page-content:grid-cols-3">
           <div className="min-w-0 space-y-6 @4xl/page-content:col-span-2">
-            <div className="grid grid-cols-1 gap-4 @2xl/page-content:grid-cols-2 @4xl/page-content:grid-cols-4 @4xl/page-content:gap-6">
+            <div className="grid grid-cols-1 gap-4 @3xl/page-content:grid-cols-2 @6xl/page-content:grid-cols-4 @6xl/page-content:gap-6">
               {stats.map(({ title, value, icon: Icon, color, description }) => (
                 <StatCard
                   key={title}
@@ -148,12 +231,13 @@ export default function LiveOrdersPage() {
                 />
               ))}
             </div>
+
             <DashboardCard
               title="Live carts"
               description="Most recently updated customer carts"
-              action={<Badge variant="secondary">{groups.length}</Badge>}
+              action={<Badge variant="secondary">{visibleGroups.length}</Badge>}
             >
-              <div className="border-b p-4">
+              <div className="space-y-3 border-b p-4">
                 <div className="relative">
                   <Search className="pointer-events-none absolute top-3 left-3 size-4 text-muted-foreground" />
                   <Input
@@ -164,7 +248,29 @@ export default function LiveOrdersPage() {
                     className="pl-9"
                   />
                 </div>
+                <div
+                  className="flex flex-wrap gap-1.5"
+                  role="group"
+                  aria-label="Filter by status"
+                >
+                  <FilterChip
+                    active={status === "all"}
+                    onClick={() => setStatus("all")}
+                    label="All"
+                    count={groups.length}
+                  />
+                  {STATUS_KEYS.filter((key) => statusCounts[key]).map((key) => (
+                    <FilterChip
+                      key={key}
+                      active={status === key}
+                      onClick={() => setStatus(key)}
+                      label={CART_STATUS_LABEL[key]}
+                      count={statusCounts[key] ?? 0}
+                    />
+                  ))}
+                </div>
               </div>
+
               {!hasSnapshot ? (
                 <LoadingRows />
               ) : visibleGroups.length ? (
@@ -183,11 +289,13 @@ export default function LiveOrdersPage() {
                   })}
                 </ul>
               ) : (
-                <p className="p-4 text-sm text-muted-foreground">
-                  {query
-                    ? "No matching customers or teams."
-                    : "No recent carts. Customer carts will appear here as they add products."}
-                </p>
+                <EmptyState
+                  text={
+                    query || status !== "all"
+                      ? "No carts match your filters."
+                      : "No recent carts. Customer carts will appear here as they add products."
+                  }
+                />
               )}
             </DashboardCard>
           </div>
@@ -201,51 +309,80 @@ export default function LiveOrdersPage() {
                 <LoadingRows />
               ) : activity.length ? (
                 <ul>
-                  {activity.map((entry) => {
-                    const available = availableCartKeys.has(
-                      `${entry.teamId}:${entry.userId}`
-                    )
-                    return (
-                      <li key={entry.id} className="not-last:border-b">
-                        <ActivityRow
-                          entry={entry}
-                          available={available}
-                          onOpen={openCart}
-                        />
-                      </li>
-                    )
-                  })}
+                  {activity.map((entry) => (
+                    <li key={entry.id} className="not-last:border-b">
+                      <ActivityRow
+                        entry={entry}
+                        group={groupsByKey.get(
+                          `${entry.teamId}:${entry.userId}`
+                        )}
+                        onOpen={openCart}
+                      />
+                    </li>
+                  ))}
                 </ul>
               ) : (
-                <p className="p-4 text-sm text-muted-foreground">
-                  No recent cart activity.
-                </p>
+                <EmptyState text="No recent cart activity." />
               )}
             </DashboardCard>
           </div>
         </div>
+
         <Drawer
           direction="right"
           open={detailsOpen}
           onOpenChange={setDetailsOpen}
         >
           <DrawerContent className="gap-0 data-[vaul-drawer-direction=right]:sm:max-w-lg">
-            {selected ? (
-              <CartDetailsDrawer group={selected} />
-            ) : (
-              <DrawerHeader>
-                <DrawerTitle>Cart unavailable</DrawerTitle>
-                <DrawerDescription>
-                  This cart is no longer among the latest tracked carts.
-                </DrawerDescription>
-              </DrawerHeader>
-            )}
+            {drawerGroup && <CartDetailsDrawer group={drawerGroup} />}
           </DrawerContent>
         </Drawer>
       </PageContent>
     </>
   )
 }
+
+/* -------------------------------------------------------------------------- */
+/* Pieces                                                                     */
+/* -------------------------------------------------------------------------- */
+
+function statusColor(status: CartGroup["status"]) {
+  return status === "placed"
+    ? "var(--success)"
+    : status === "checking_out"
+      ? "var(--warning)"
+      : "var(--info)"
+}
+
+function FilterChip({
+  active,
+  label,
+  count,
+  onClick,
+}: {
+  active: boolean
+  label: string
+  count: number
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none",
+        active
+          ? "border-transparent bg-primary text-primary-foreground"
+          : "text-muted-foreground hover:bg-secondary/60 hover:text-foreground"
+      )}
+    >
+      {label}
+      <span className="tabular-nums opacity-70">{count}</span>
+    </button>
+  )
+}
+
 const CartRow = memo(function CartRow({
   group,
   selected,
@@ -267,10 +404,15 @@ const CartRow = memo(function CartRow({
       <div className="flex items-center gap-3">
         <Avatar className="size-9">
           <AvatarImage src={group.team.logo} alt={group.team.name} />
-          <AvatarFallback>{initials(group.team.name)}</AvatarFallback>
+          <AvatarFallback>
+            <Buildings className="size-4" />
+          </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1 space-y-0.5">
-          <p className="truncate text-sm font-semibold">{group.team.name}</p>
+          <div className="flex items-center gap-2">
+            <p className="truncate text-sm font-semibold">{group.team.name}</p>
+            <LiveDot at={group.updatedAt} />
+          </div>
           <p className="truncate text-xs text-muted-foreground">
             {group.user.name}
           </p>
@@ -284,6 +426,7 @@ const CartRow = memo(function CartRow({
           </p>
         </div>
       </div>
+
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="flex min-w-0 items-center gap-2.5">
           {group.items.length > 0 && (
@@ -314,23 +457,16 @@ const CartRow = memo(function CartRow({
               )}
             </AvatarGroup>
           )}
-          <span
+          <TimeAgo
+            at={group.updatedAt}
             className="text-[11px] text-muted-foreground"
-            title={`Last active: ${new Date(group.updatedAt).toLocaleString()}`}
-          >
-            Last active {formatDate(group.updatedAt)}
-          </span>
+          />
         </div>
         <StatusBadge
           status={{
             value: group.status,
             label: CART_STATUS_LABEL[group.status],
-            color:
-              group.status === "placed"
-                ? "var(--success)"
-                : group.status === "checking_out"
-                  ? "var(--warning)"
-                  : "var(--info)",
+            color: statusColor(group.status),
           }}
           size="sm"
         />
@@ -338,47 +474,44 @@ const CartRow = memo(function CartRow({
     </button>
   )
 })
+
 const ActivityRow = memo(function ActivityRow({
   entry,
-  available,
+  group,
   onOpen,
 }: {
   entry: CartActivity
-  available: boolean
+  group?: CartGroup
   onOpen: (key: string) => void
 }) {
   const increased = entry.quantity > entry.previousQuantity
+  const delta = Math.abs(entry.quantity - entry.previousQuantity)
+  const team = group?.team.name ?? "Customer"
+
   return (
     <button
       type="button"
-      onClick={() => onOpen(`${entry.teamId}:${entry.userId}`)}
-      disabled={!available}
-      className="flex w-full items-start gap-3 px-4 py-2.5 text-left focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset enabled:hover:bg-secondary/50 disabled:cursor-default"
-      title={available ? "View customer cart" : "Cart is no longer tracked"}
+      disabled={!group}
+      onClick={() => group && onOpen(getCartGroupKey(group))}
+      title={`${team}: ${increased ? "added" : "removed"} ${delta} × ${entry.item.title} (${entry.previousQuantity} → ${entry.quantity})`}
+      className="flex w-full items-start gap-2.5 px-4 py-2.5 text-left text-sm transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset enabled:hover:bg-secondary/40 disabled:cursor-default"
     >
       <Badge
-        variant={increased ? "success" : "destructive"}
-        size="lg"
-        className="gap-0.5 tabular-nums"
+        variant={increased ? "primary-light" : "destructive-light"}
+        className="size-6 shrink-0 p-0"
       >
-        {Math.abs(entry.quantity - entry.previousQuantity)}
+        <span className="tabular-nums">
+          {increased ? "+" : "−"}
+          {delta}
+        </span>
       </Badge>
-      <div className="min-w-0 flex-1 space-y-1">
-        <p className="truncate text-sm font-medium" title={entry.item.title}>
-          {entry.item.title}
-        </p>
-        <p className="truncate text-xs text-muted-foreground">
-          {entry.userName ?? "Customer"}
-        </p>
+      <div className="min-w-0 flex-1 space-y-0.5">
+        <p className="truncate font-medium">{entry.item.title}</p>
+        <p className="truncate text-xs text-muted-foreground">{team}</p>
       </div>
-      <div className="shrink-0 space-y-1 text-right">
-        <p className="text-sm font-semibold tabular-nums">
-          {entry.item.price === undefined ? "—" : formatUSD(entry.item.price)}
-        </p>
-        <p className="text-xs text-muted-foreground tabular-nums">
-          {entry.quantity} {entry.item.unit}
-        </p>
-      </div>
+      <span className="shrink-0 self-start pt-0.5 text-[11px] text-muted-foreground tabular-nums">
+        {formatDate(new Date())}
+      </span>
     </button>
   )
 })
@@ -390,57 +523,56 @@ const CartDetailsDrawer = memo(function CartDetailsDrawer({
 }) {
   return (
     <>
-      <DrawerHeader className="gap-4 border-b p-4">
-        <div className="flex items-center justify-between gap-3">
-          <span className="text-xs font-medium text-muted-foreground">
-            Customer cart
-          </span>
-          <DrawerClose asChild>
-            <Button variant="ghost" size="sm">
-              Close
-            </Button>
-          </DrawerClose>
+      <DrawerHeader className="flex flex-row items-center gap-3 p-3">
+        <Avatar className="shrink-0">
+          <AvatarImage src={group.team.logo} alt={group.team.name} />
+          <AvatarFallback>
+            <Buildings className="size-4" />
+          </AvatarFallback>
+        </Avatar>
+        <div className="min-w-0 flex-1">
+          <DrawerTitle className="truncate text-base font-semibold">
+            {group.team.name}
+          </DrawerTitle>
+          <DrawerDescription className="flex items-center gap-1.5">
+            <span className="truncate">{group.user.name}</span>
+            <span aria-hidden>·</span>
+            <TimeAgo at={group.updatedAt} className="shrink-0" />
+          </DrawerDescription>
         </div>
-        <div className="flex items-center gap-3">
-          <Avatar size="lg">
-            <AvatarImage src={group.team.logo} alt={group.team.name} />
-            <AvatarFallback>{initials(group.team.name)}</AvatarFallback>
-          </Avatar>
-          <div className="min-w-0 space-y-1">
-            <DrawerTitle className="text-base font-semibold">
-              {group.team.name}
-            </DrawerTitle>
-            <DrawerDescription>
-              {group.user.name} · Updated {timeLabel(group.updatedAt)}
-            </DrawerDescription>
-          </div>
-        </div>
-        <div className="flex items-center justify-between">
-          <span className="text-sm text-muted-foreground">Cart items</span>
-          <Badge variant="secondary">
-            {group.itemCount} {pluralize(group.itemCount, "item")}
-          </Badge>
-        </div>
+        <StatusBadge
+          status={{
+            value: group.status,
+            label: CART_STATUS_LABEL[group.status],
+            color: statusColor(group.status),
+          }}
+          size="sm"
+        />
+        <DrawerClose asChild>
+          <Button size="icon-xs" variant="secondary" aria-label="Close">
+            <X />
+          </Button>
+        </DrawerClose>
       </DrawerHeader>
-      <div className="min-h-0 flex-1 overflow-auto px-4">
-        <div className="flex items-center justify-between pt-5 pb-2 text-xs text-muted-foreground">
-          <span>Products</span>
-          <span>Line total</span>
-        </div>
+
+      <div className="min-h-0 flex-1 overflow-auto border-t px-3">
         {group.items.length ? (
           <ul className="divide-y">
             {group.items.map((item) => (
-              <li key={item.id} className="flex items-center gap-3 py-3">
+              <li key={item.id} className="flex items-start gap-3 py-3">
                 <ProductThumbnail
                   title={item.title}
                   image={item.image}
-                  className="size-10 rounded-lg"
+                  className="size-11 rounded-xl"
                 />
-                <div className="min-w-0 flex-1 space-y-1">
-                  <p className="text-sm leading-5 font-medium">{item.title}</p>
+                <div className="min-w-0 flex-1 space-y-0.5">
+                  <p className="line-clamp-2 text-sm leading-5 font-medium">
+                    {item.title}
+                  </p>
                   <p className="text-xs text-muted-foreground tabular-nums">
-                    {item.quantity} {item.unit} <span className="px-1">×</span>{" "}
                     {formatUSD(item.price)}
+                    <span className="px-1">×</span>
+                    {item.quantity} {item.unit}
                   </p>
                 </div>
                 <span className="shrink-0 text-sm font-semibold tabular-nums">
@@ -450,21 +582,27 @@ const CartDetailsDrawer = memo(function CartDetailsDrawer({
             ))}
           </ul>
         ) : (
-          <p className="py-4 text-sm text-muted-foreground">
-            This cart is empty.
-          </p>
+          <EmptyState text="This cart is empty." />
         )}
       </div>
-      <div className="border-t p-4">
-        <div className="flex items-center justify-between">
-          <span className="text-sm font-medium">Cart total</span>
-          <span className="text-base font-semibold tabular-nums">
-            {formatUSD(group.total)}
-          </span>
+
+      <div className="p-3">
+        <div className="space-y-1.5 rounded-2xl border bg-secondary p-3">
+          <div className="flex items-center justify-between text-sm text-muted-foreground">
+            <span>
+              {group.items.length} {pluralize(group.items.length, "product")}
+            </span>
+            <span className="tabular-nums">
+              {group.itemCount} {pluralize(group.itemCount, "item")}
+            </span>
+          </div>
+          <div className="flex items-center justify-between">
+            <span className="text-base font-medium">Total</span>
+            <span className="text-base font-semibold tabular-nums">
+              {formatUSD(group.total)}
+            </span>
+          </div>
         </div>
-        <p className="mt-2 flex items-center gap-1.5 text-xs text-muted-foreground">
-          <Radio className="size-3" /> Reflects the latest customer update
-        </p>
       </div>
     </>
   )
@@ -484,30 +622,29 @@ function ProductThumbnail({
       <AvatarImage
         src={image}
         alt={title}
-        className="rounded-none object-contain"
+        className="rounded-xl object-contain"
       />
-      <AvatarFallback className="rounded-none">
+      <AvatarFallback className="rounded-xl">
         <Package className="size-3.5" />
       </AvatarFallback>
     </Avatar>
   )
 }
 
+function EmptyState({ text }: { text: string }) {
+  return <p className="p-6 text-center text-sm text-muted-foreground">{text}</p>
+}
+
 function LoadingRows() {
   return (
-    <div
-      role="status"
-      aria-label="Loading live carts"
-      className="space-y-3 p-4"
-    >
-      {Array.from({ length: 3 }, (_, index) => (
-        <div key={index} className="flex items-center gap-3">
-          <Skeleton className="size-10 rounded-xl" />
-          <div className="flex-1 space-y-2">
+    <div className="divide-y">
+      {Array.from({ length: 4 }, (_, index) => (
+        <div className="flex items-center gap-3 px-4 py-3" key={index}>
+          <Skeleton className="size-9 rounded-full" />
+          <div className="flex-1 space-y-1.5">
             <Skeleton className="h-4 w-3/4" />
             <Skeleton className="h-3 w-1/2" />
           </div>
-          <Skeleton className="h-4 w-12" />
         </div>
       ))}
     </div>
