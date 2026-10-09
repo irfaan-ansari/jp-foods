@@ -1,11 +1,10 @@
 import { Hono } from "hono"
 
 import { AppError } from "@jp/utils"
-import { db, order,  } from "@jp/db"
+import { db, order } from "@jp/db"
 import { sortLineItems } from "./order.utils"
 import { OrderInvoice, PackingSlip } from "@jp/pdf"
 import { renderToStream } from "@jp/pdf/server"
-import { get } from "@jp/utils/blob/server"
 import { parsePagination, getStatusCounts } from "@/lib/hono/lib"
 import { and, count, eq, ilike, or, sql } from "@jp/db/query"
 import { OrgAppContext, orgPermission } from "@/lib/hono/middlewares"
@@ -146,10 +145,13 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
+    const lineItems = sortLineItems(data.lineItems)
+
     const stream = await renderToStream(
       PackingSlip({
         data: {
           ...data,
+          lineItems,
           organization: data.organization!,
           team: data.team!,
         },
@@ -178,10 +180,12 @@ const orderApp = app
 
     if (!data) throw new AppError("NOT_FOUND")
 
+    const lineItems = sortLineItems(data.lineItems)
     const stream = await renderToStream(
       OrderInvoice({
         data: {
           ...data,
+          lineItems,
           organization: data.organization!,
           team: data.team!,
         },
@@ -194,31 +198,31 @@ const orderApp = app
       "Content-Disposition": `inline; filename="order-${id}.pdf"`,
     })
   })
-  // .get("/:id/invoice", async (c) => {
-  //   const id = Number(c.req.param("id"))
-  //   const organizationId = c.get("organizationId")
+// .get("/:id/invoice", async (c) => {
+//   const id = Number(c.req.param("id"))
+//   const organizationId = c.get("organizationId")
 
-  //   const [issued] = await db
-  //     .select()
-  //     .from(invoice)
-  //     .where(
-  //       and(eq(invoice.orderId, id), eq(invoice.organizationId, organizationId))
-  //     )
-  //   if (!issued || issued.status !== "issued" || !issued.pdfPathname)
-  //     throw new AppError("NOT_FOUND")
-  //   const pdf = await get(issued.pdfPathname, {
-  //     access: "private",
-  //     token: process.env.INVOICE_BLOB_READ_WRITE_TOKEN,
-  //   })
-  //   if (!pdf || pdf.statusCode !== 200) throw new AppError("NOT_FOUND")
+//   const [issued] = await db
+//     .select()
+//     .from(invoice)
+//     .where(
+//       and(eq(invoice.orderId, id), eq(invoice.organizationId, organizationId))
+//     )
+//   if (!issued || issued.status !== "issued" || !issued.pdfPathname)
+//     throw new AppError("NOT_FOUND")
+//   const pdf = await get(issued.pdfPathname, {
+//     access: "private",
+//     token: process.env.INVOICE_BLOB_READ_WRITE_TOKEN,
+//   })
+//   if (!pdf || pdf.statusCode !== 200) throw new AppError("NOT_FOUND")
 
-  //   return new Response(pdf.stream, {
-  //     headers: {
-  //       "Content-Type": "application/pdf",
-  //       "Cache-Control": "private, no-store",
-  //       "Content-Disposition": `inline; filename="invoice-${issued.id}.pdf"`,
-  //     },
-  //   })
-  // })
+//   return new Response(pdf.stream, {
+//     headers: {
+//       "Content-Type": "application/pdf",
+//       "Cache-Control": "private, no-store",
+//       "Content-Disposition": `inline; filename="invoice-${issued.id}.pdf"`,
+//     },
+//   })
+// })
 
 export const orders: Hono<OrgAppContext> = orderApp
