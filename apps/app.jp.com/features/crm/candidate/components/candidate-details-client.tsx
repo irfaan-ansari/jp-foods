@@ -417,11 +417,19 @@ const ApplicationStatusInfo = ({ data }: { data: CandidateApplication }) => {
   return (
     <Alert variant={data.status === "rejected" ? "destructive" : "warning"}>
       <AlertTriangleIcon />
-      <AlertTitle>{data.statusReason}</AlertTitle>
+      <AlertTitle>
+        {data.status === "under_verification"
+          ? "Background check is in progress"
+          : data.statusReason}
+      </AlertTitle>
 
-      {data.statusDetails && (
+      {data.status === "under_verification" ? (
+        <AlertDescription>
+          The candidate’s background check is underway. Results are pending.
+        </AlertDescription>
+      ) : data.statusDetails ? (
         <AlertDescription>{data.statusDetails}</AlertDescription>
-      )}
+      ) : null}
     </Alert>
   )
 }
