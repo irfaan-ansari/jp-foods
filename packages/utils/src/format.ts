@@ -4,6 +4,7 @@ import {
   format,
   isToday,
   isYesterday,
+  isValid,
 } from "date-fns"
 import { parsePhoneNumberFromString } from "libphonenumber-js"
 
@@ -44,6 +45,7 @@ export function formatDate(date: Date | string | null | undefined): string {
   if (!date) return "Never"
 
   const value = typeof date === "string" ? new Date(date) : date
+  if (!isValid(value)) return "—"
   const now = new Date()
 
   if (isToday(value)) {

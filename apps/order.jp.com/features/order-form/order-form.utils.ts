@@ -70,7 +70,7 @@ export const toInsertOrder = ({
 }: {
   data: {
     po?: string | null
-    deliveryDate: string
+    deliveryDate?: string | null
     deliveryWindow?: string | null
     deliveryInstruction?: string | null
   }
@@ -95,7 +95,7 @@ export const toInsertOrder = ({
 }) => {
   return {
     po: data.po,
-    deliveryDate: new Date(data.deliveryDate ?? undefined),
+    deliveryDate: data.deliveryDate,
     deliveryWindow: data.deliveryWindow,
     deliveryInstruction: data.deliveryInstruction,
     lineItemCount: totals.lineItemCount,

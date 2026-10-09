@@ -2,7 +2,7 @@
 
 import { db, lineItem, order } from "@jp/db"
 import { AppError } from "@jp/utils"
-import { and, eq, inArray } from "@jp/db/query"
+import { and, eq, inArray, sql, type SQL } from "@jp/db/query"
 import type { BatchItem } from "@jp/db/query/batch"
 
 import { orgActionClient } from "@/lib/safe-action"
@@ -30,6 +30,15 @@ const toOrderEmailItems = (items: OrderItem[]) =>
   }))
 
 const isString = (value: string | undefined): value is string => !!value
+
+const getDeliveryTimestamp = (
+  date?: string | null,
+): SQL<Date> | null | undefined => {
+  if (date == null) return date
+  if (!date) return undefined
+
+  return sql<Date>`(${date}::date + LOCALTIME)`
+}
 
 /**
  * create order
@@ -71,7 +80,7 @@ export const createOrder = orgActionClient({ order: ["create"] })
 
     const [created] = await db
       .insert(order)
-      .values(values)
+      .values({ ...values, deliveryDate: getDeliveryTimestamp(data.deliveryDate) })
       .returning({ id: order.id })
 
     if (!created) throw new AppError("INTERNAL_SERVER_ERROR")
@@ -201,7 +210,7 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     const queries: BatchItem<"pg">[] = [
       db
         .update(order)
-        .set({ ...values })
+        .set({ ...values, deliveryDate: getDeliveryTimestamp(data.deliveryDate) })
         .where(eq(order.id, id)),
     ]
 

@@ -4,7 +4,13 @@ import Link from "next/link"
 import { useSearchParams } from "next/navigation"
 import { createColumnHelper } from "@tanstack/react-table"
 import type { DataTableFeatures } from "@jp/ui/components/data-table"
-import { formatDate, formatPhone, formatUSD, pluralize } from "@jp/utils"
+import {
+  format,
+  formatDate,
+  formatPhone,
+  formatUSD,
+  pluralize,
+} from "@jp/utils"
 import type { Order } from "../order.type"
 import { OrderStatusBadge } from "./order-card"
 import { OrderDropdown } from "./order-dropdown"
@@ -101,9 +107,7 @@ export const orderColumns = column.columns([
     header: "Delivery",
     cell: ({ row }) => (
       <span className="text-muted-foreground">
-        {row.original.deliveryDate
-          ? formatDate(row.original.deliveryDate)
-          : "—"}
+        {format(row.original.deliveryDate!, "dd MMM yyyy")}
       </span>
     ),
   }),
