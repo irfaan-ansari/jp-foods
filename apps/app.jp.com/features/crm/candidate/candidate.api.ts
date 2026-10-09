@@ -121,24 +121,24 @@ export const jobApplicationRoutes = app
         { label: "Agreement", field: "agreementUrl", url: agreementUrl },
         { label: "Signature", field: "signatureUrl", url: signatureUrl },
         {
-          label: "Driving License Back",
-          field: "drivingLicenseBackUrl",
-          url: drivingLicenseBackUrl,
-        },
-        {
-          label: "Driving License Front",
+          label: "Driver's License Front",
           field: "drivingLicenseFrontUrl",
           url: drivingLicenseFrontUrl,
         },
         {
-          label: "Social Security Back",
-          field: "socialSecurityBackUrl",
-          url: socialSecurityBackUrl,
+          label: "Driver's License Back",
+          field: "drivingLicenseBackUrl",
+          url: drivingLicenseBackUrl,
         },
         {
           label: "Social Security Front",
           field: "socialSecurityFrontUrl",
           url: socialSecurityFrontUrl,
+        },
+        {
+          label: "Social Security Back",
+          field: "socialSecurityBackUrl",
+          url: socialSecurityBackUrl,
         },
       ].filter((doc) => doc.url),
     }
