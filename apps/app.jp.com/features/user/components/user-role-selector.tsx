@@ -27,6 +27,7 @@ export const UserRoleSelector = ({
 
   const filtered = React.useMemo(() => {
     const query = search.trim().toLowerCase()
+
     if (!query) return USER_ROLES
 
     return Object.entries(USER_ROLES).filter(([_, role]) =>
@@ -59,7 +60,7 @@ export const UserRoleSelector = ({
       <div className="flex flex-col gap-1.5">
         <SearchBar className="h-8 max-w-full" onSearch={setSearch} />
 
-        <div className="no-scrollbar flex-1 overflow-auto">
+        <div className="flex-1 overflow-auto">
           {Object.values(filtered).map((role) => {
             const active = isSelected(role.value)
 

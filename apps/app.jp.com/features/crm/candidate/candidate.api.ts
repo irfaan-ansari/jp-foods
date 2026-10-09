@@ -159,10 +159,10 @@ export const jobApplicationRoutes = app
     const stream = await renderToStream(
       ConsentV1PDF({
         data: {
-          driverName: response.applicantName,
-          socialSecurityNumber: response.socialSecurity,
+          name: response.applicantName,
+          socialSecurity: response.socialSecurity,
           signatureUrl: response.signatureUrl,
-          signedAt: response.createdAt,
+          createdAt: response.createdAt,
         },
       })
     )

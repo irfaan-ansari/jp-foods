@@ -25,16 +25,6 @@ const superAdmin = ac.newRole({
   "catalog-inquiry": ["read", "update", "delete"],
 })
 
-const developer = ac.newRole({
-  ...adminAc.statements,
-  portal: ["organization", "crm"],
-  "customer-invite": ["create", "read", "delete"],
-  "customer-application": ["create", "read", "update", "delete"],
-  "candidate-invite": ["create", "read", "delete"],
-  "candidate-application": ["create", "read", "update", "delete"],
-  "catalog-inquiry": ["read", "update", "delete"],
-})
-
 const admin = ac.newRole({
   ...adminAc.statements,
   portal: ["organization", "crm"],
@@ -63,7 +53,6 @@ const admin = ac.newRole({
 const user = ac.newRole({
   ...adminAc.statements,
   portal: ["organization"],
-  user: ["list"],
 })
 
 const reviewer = ac.newRole({
@@ -87,7 +76,6 @@ const userRoles = {
   user,
   reviewer,
   customer,
-  developer,
 } as const
 
 export { ac as userAc, userRoles }

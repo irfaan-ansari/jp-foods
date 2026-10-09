@@ -4,6 +4,7 @@ import type { PricedSellingUnit } from "@jp/utils/commerce"
 import { ServerMinimalistic, Widget } from "@solar-icons/react"
 import { ClipboardList, Package } from "lucide-react"
 import { SellUnit } from "@jp/utils/commerce"
+import { format } from "@jp/utils/date"
 
 export const LAYOUT_OPTIONS = [
   { label: "List", value: "list", icon: ServerMinimalistic },
@@ -94,7 +95,7 @@ export const toInsertOrder = ({
 }) => {
   return {
     po: data.po,
-    deliveryDate: data.deliveryDate,
+    deliveryDate: new Date(data.deliveryDate ?? undefined),
     deliveryWindow: data.deliveryWindow,
     deliveryInstruction: data.deliveryInstruction,
     lineItemCount: totals.lineItemCount,

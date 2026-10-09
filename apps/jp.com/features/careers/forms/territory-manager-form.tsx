@@ -19,7 +19,7 @@ import { ApplicationFormLayout } from "../components/application-form-layout"
 
 const defaultValues: CareersFormValues = {
   ...DEFAULT_VALUES,
-  step: 5,
+  step: 0,
   position: "",
 }
 

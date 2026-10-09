@@ -318,7 +318,7 @@ export const order = pgTable(
     total: numeric("total", { precision: 12, scale: 2 }).default("0").notNull(),
     po: text("po"),
     notes: text("notes"),
-    deliveryDate: date("delivery_date"),
+    deliveryDate: date("delivery_date", { mode: "date" }),
     deliveryWindow: text("delivery_window"),
     deliveryInstruction: text("delivery_instruction"),
     status: text("status")

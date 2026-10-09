@@ -2,17 +2,20 @@ import "./styles.css"
 import { type Metadata } from "next"
 import { cn } from "@jp/ui/lib/utils"
 import { SITE_CONFIG } from "@/lib/config"
-import { Manrope, Archivo } from "next/font/google"
+import { Plus_Jakarta_Sans, Archivo } from "next/font/google"
 import { SiteProvider } from "@/components/site-provider"
 import { Suspense } from "react"
 import { Spinner } from "@jp/ui/components/jp/empty-state"
 
-const loraHeading = Archivo({
+const heading = Archivo({
   subsets: ["latin"],
   variable: "--font-heading",
 })
 
-const manrope = Manrope({ subsets: ["latin"], variable: "--font-sans" })
+const body = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_CONFIG.url),
@@ -64,8 +67,8 @@ export default function RootLayout({
       className={cn(
         "antialiased",
         "font-sans",
-        manrope.variable,
-        loraHeading.variable
+        heading.variable,
+        body.variable
       )}
     >
       <body>

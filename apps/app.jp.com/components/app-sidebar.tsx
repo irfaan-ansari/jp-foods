@@ -275,7 +275,7 @@ const SidebarIconMenu = ({
                       asChild
                     >
                       {disabled ? (
-                        <span>
+                        <span className="opacity-50">
                           <CompassSquare className="size-5" />
                         </span>
                       ) : (
@@ -307,7 +307,7 @@ const SidebarIconMenu = ({
                       asChild
                     >
                       {disabled ? (
-                        <span>
+                        <span className="opacity-50">
                           <Widget className="size-5" />
                         </span>
                       ) : (
