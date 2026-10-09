@@ -197,8 +197,12 @@ export const updateOrder = orgActionClient({ order: ["update"] })
     const toDelete = existing.lineItems
       .filter((item) => !requestedLineItemIds.has(item.id))
       .map((item) => item.id)
+
     const queries: BatchItem<"pg">[] = [
-      db.update(order).set(values).where(eq(order.id, id)),
+      db
+        .update(order)
+        .set({ ...values })
+        .where(eq(order.id, id)),
     ]
 
     for (const item of items) {

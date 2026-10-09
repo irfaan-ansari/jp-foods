@@ -33,6 +33,7 @@ import { type UserFormSchema, userSchema } from "../user.schema"
 import { UserRoleSelector } from "../components/user-role-selector"
 import { UserRoleBadge } from "../components/user-card"
 import { UserAccess } from "@/features/auth/components/user-permission"
+import { Letter } from "@solar-icons/react"
 
 export const UserDialog = ({
   id,
@@ -52,9 +53,9 @@ export const UserDialog = ({
     name = "",
     phoneNumber = "",
     email = "",
-    role = "user",
+    role = "admin",
   } = values || {}
-
+  console.log(values)
   const form = useAppForm({
     defaultValues: {
       name,
@@ -145,7 +146,11 @@ export const UserDialog = ({
             <form.AppField
               name="email"
               children={(field) => (
-                <field.TextField label="Email" placeholder="name@email.com" />
+                <field.TextField
+                  prefix={<Letter />}
+                  label="Email"
+                  placeholder="name@email.com"
+                />
               )}
             />
             <form.Field
@@ -157,19 +162,19 @@ export const UserDialog = ({
                 return (
                   <Field>
                     <FieldLabel htmlFor={field.name}>Role</FieldLabel>
-                    <UserRoleSelector
-                      selected={field.state.value}
-                      onChange={(value) => {
-                        field.handleChange(value.value)
-                      }}
-                    >
-                      <UserAccess permission={{ user: ["set-role"] }}>
-                        {(disabled) => (
+                    <UserAccess permission={{ user: ["set-role"] }}>
+                      {(disabled) => (
+                        <UserRoleSelector
+                          selected={field.state.value}
+                          onChange={(value) => {
+                            field.handleChange(value.value)
+                          }}
+                        >
                           <Button
+                            disabled={disabled}
                             variant="outline"
                             type="button"
                             id={field.name}
-                            disabled={disabled}
                             className="w-full justify-start text-muted-foreground"
                           >
                             <Plus />
@@ -180,9 +185,9 @@ export const UserDialog = ({
                             )}
                             <ChevronDown className="ml-auto" />
                           </Button>
-                        )}
-                      </UserAccess>
-                    </UserRoleSelector>
+                        </UserRoleSelector>
+                      )}
+                    </UserAccess>
                     <FieldDescription className="text-sm">
                       Not sure which role to assign? View role permissions{" "}
                       <Link

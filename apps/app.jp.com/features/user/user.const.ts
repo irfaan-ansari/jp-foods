@@ -1,6 +1,11 @@
 import type { BadgeStatus } from "@jp/ui/components/jp/status-badge"
 
 export const USER_ROLES: Record<string, BadgeStatus> = {
+  user: {
+    label: "User",
+    value: "user",
+    color: "#3B82F6",
+  },
   admin: {
     label: "Admin",
     value: "admin",

@@ -1,1 +1,6 @@
-export { renderToBuffer, renderToStream, renderToFile } from "@react-pdf/renderer"
+export {
+  renderToBuffer,
+  renderToStream,
+  renderToFile,
+  PDFViewer,
+} from "@react-pdf/renderer"

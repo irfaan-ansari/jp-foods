@@ -1,3 +1,4 @@
+"use client"
 import React from "react"
 import { PageContent, PageHeader } from "@/components/page-content"
 
@@ -6,7 +7,7 @@ const HomePage = async () => {
   return (
     <React.Fragment>
       <PageHeader title="Dashboard" />
-      <PageContent loading={true} />
+      <PageContent loading={true}></PageContent>
     </React.Fragment>
   )
 }

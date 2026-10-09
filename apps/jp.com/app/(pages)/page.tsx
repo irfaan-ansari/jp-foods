@@ -41,7 +41,7 @@ const HomePage = () => {
               <div className="relative max-w-3xl py-32">
                 {/* <span className="absolute -inset-40 bg-black/40 mask-y-from-90% mask-x-from-90% backdrop-blur-xs"></span> */}
                 <div className="relative flex flex-col items-start gap-8 text-primary-foreground">
-                  <h1 className="font-heading text-5xl/tight font-bold md:text-8xl/tight">
+                  <h1 className="font-heading text-5xl font-bold md:text-8xl">
                     {hero.title}
                   </h1>
                   <h2 className="max-w-lg text-xl font-medium">

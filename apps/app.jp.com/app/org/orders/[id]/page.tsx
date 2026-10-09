@@ -26,7 +26,7 @@ import {
   TableRow,
 } from "@jp/ui/components/table"
 
-import { formatUSD } from "@jp/utils"
+import { format, formatUSD } from "@jp/utils"
 import { Buildings, MenuDots, Restart, User } from "@solar-icons/react"
 import {
   CheckCircle,
@@ -143,7 +143,7 @@ const OrderPage = () => {
                   </div>
                   <div className="min-w-0 flex-1">
                     <div className="text-sm font-medium text-muted-foreground">
-                      {data.deliveryDate}
+                      {format(data.deliveryDate!, "yyyy-MM-dd")}
                     </div>
                     <div className="text-sm font-medium text-muted-foreground">
                       {data.deliveryWindow}

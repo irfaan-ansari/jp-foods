@@ -13,20 +13,16 @@ import {
   updateProductSchema,
 } from "./product.schema"
 import { triggerPriceListGeneration } from "./price-list.action"
+import { waitUntil } from "@jp/utils/functions"
 
 const toProductData = (data: ProductFormSchema) => {
-  const {
-    pricingBasis,
-    packSize,
-    splitUnits,
-    ...values
-  } = data
+  const { pricingBasis, packSize, splitUnits, ...values } = data
 
   const pricedSplitUnits =
     splitUnits.map((unit) => {
       return {
         name: unit.name,
-        displayLabel: unit.displayLabel || '',
+        displayLabel: unit.displayLabel || "",
         sellUnitPrice: Number(unit.sellUnitPrice),
         unitConversion: Number(unit.unitConversion),
       }
@@ -172,56 +168,25 @@ export const deleteProduct = orgActionClient({ product: ["delete"] })
 export const importProductPrices = orgActionClient({ product: ["update"] })
   .inputSchema(productPriceImportSchema)
   .action(async ({ parsedInput, ctx }) => {
-    const result = {
-      total: parsedInput.rows.length,
-      updated: 0,
-      notFound: [] as string[],
-      skipped: 0,
-    }
-
+    const promises = []
     for (const row of parsedInput.rows) {
-      const data: Partial<{
-        price: string
-        stock: string
-        stockUOM: string
-        sellUOM: string
-      }> = {}
-
-      if (row.price !== undefined && row.price !== "") data.price = row.price
-      if (row.stock !== undefined && row.stock !== "") data.stock = row.stock
-      if (row.stockUOM !== undefined && row.stockUOM !== "") {
-        data.stockUOM = row.stockUOM
-      }
-      if (row.sellUOM !== undefined && row.sellUOM !== "") {
-        data.sellUOM = row.sellUOM
-      }
-
-      if (Object.keys(data).length === 0) {
-        result.skipped += 1
-        continue
-      }
-
-      const updated = await db
-        .update(product)
-        .set(data)
-        .where(
-          and(
-            eq(product.organizationId, ctx.organizationId),
-            eq(product.itemCode, row.itemCode)
+      promises.push(
+        db
+          .update(product)
+          .set({ price: row.price })
+          .where(
+            and(
+              eq(product.organizationId, ctx.organizationId),
+              eq(product.itemCode, row.itemCode)
+            )
           )
-        )
-        .returning({ id: product.id })
-
-      if (updated.length === 0) {
-        result.notFound.push(row.itemCode)
-      } else {
-        result.updated += 1
-      }
+          .returning({ id: product.id })
+      )
     }
+    await Promise.all(promises)
+    waitUntil(
+      triggerPriceListGeneration({ organizationId: ctx.organizationId })
+    )
 
-    if (result.updated > 0) {
-      await triggerPriceListGeneration({ organizationId: ctx.organizationId })
-    }
-
-    return result
+    return { success: true }
   })

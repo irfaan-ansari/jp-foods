@@ -213,7 +213,7 @@ export const rescheduleOrder = orgActionClient({ order: ["update"] })
     const [result] = await db
       .update(order)
       .set({
-        deliveryDate: deliveryDate,
+        deliveryDate: new Date(deliveryDate),
         deliveryWindow,
       })
       .where(

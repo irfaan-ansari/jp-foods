@@ -20,6 +20,7 @@ import { OrgAccess } from "@/features/auth/components/org-permission"
 import { OrderScheduleDialog } from "./order-schedule-dialog"
 import { OrderInvoiceDialog } from "./order-invoice-dialog"
 import { OrderCompleteDialog } from "./order-complete-dialog"
+import { format } from "@jp/utils/date"
 
 export const OrderDropdown = ({
   data,
@@ -118,7 +119,7 @@ export const OrderDropdown = ({
           <OrderScheduleDialog
             id={id}
             defaultValues={{
-              deliveryDate: deliveryDate!,
+              deliveryDate: format(deliveryDate!, "yyyy-MM-dd"),
               deliveryWindow: deliveryWindow!,
             }}
           >
@@ -187,11 +188,7 @@ export const OrderDropdown = ({
           <OrgAccess permission={{ order: ["update"] }}>
             {(disabled) => (
               <OrderInvoiceDialog id={id}>
-                <Button
-                  variant="ghost"
-                  className="justify-start"
-                  disabled={disabled}
-                >
+                <Button variant="ghost" className="justify-start" disabled>
                   <BillCheck /> Generate Invoice
                 </Button>
               </OrderInvoiceDialog>

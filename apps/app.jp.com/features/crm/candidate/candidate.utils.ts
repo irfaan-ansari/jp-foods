@@ -1,10 +1,11 @@
 import { sendEmail } from "@jp/notifications"
 import {
+  CandidateBackgroundCheckRequestEmail,
   JobApplicationAdminEmail,
   JobApplicationAgreementEmail,
   JobApplicationDeclinedEmail,
 } from "@jp/notifications/templates"
-import { JobApplicationPDF } from "@jp/pdf"
+import { ConsentV1PDF, JobApplicationPDF } from "@jp/pdf"
 import { renderToBuffer } from "@jp/pdf/server"
 import { env } from "@jp/utils/env"
 import { waitUntil } from "@jp/utils/functions"
@@ -81,6 +82,10 @@ export const sendCandidateEmail = async ({
     const pdfBuffer = await renderToBuffer(
       JobApplicationPDF({ data: candidate, includeSSN: true })
     )
+
+    const consentPDFBuffer = await renderToBuffer(
+      ConsentV1PDF({ data: candidate })
+    )
     const files = [
       { path: candidate.drivingLicenseFrontUrl, filename: "Driver's License" },
       { path: candidate.drivingLicenseBackUrl, filename: "Driver's License" },
@@ -89,24 +94,51 @@ export const sendCandidateEmail = async ({
     ]
 
     waitUntil(
-      sendEmail({
-        subject: "Candidate Application Status Update",
-        template: getAdminEmail({ candidate, status }),
-        attachments: [
-          ...files.filter((file) => file.path),
-          {
-            content: pdfBuffer.toString("base64"),
-            filename: "Candidate PDF",
-          },
-        ],
-      })
+      Promise.all([
+        sendEmail({
+          subject: "Candidate Application Status Update",
+          template: getAdminEmail({ candidate, status }),
+          attachments: [
+            ...files.filter((file) => file.path),
+            {
+              content: pdfBuffer.toString("base64"),
+              filename: "Candidate PDF",
+            },
+            {
+              content: consentPDFBuffer.toString("base64"),
+              filename: "Authorization",
+            },
+          ],
+        }),
+
+        sendEmail({
+          to: "compliance@rinehartandassociates.com",
+          subject: `Background Check Request – Jimenez Produce`,
+          template: CandidateBackgroundCheckRequestEmail({
+            name: candidate.firstName + candidate.lastName,
+            email: candidate.email,
+            phone: candidate.phone,
+            position: candidate.position,
+            reference: `APP-${candidate.id}`,
+          }),
+          attachments: [
+            ...files.filter((file) => file.path),
+            {
+              content: pdfBuffer.toString("base64"),
+              filename: "Candidate PDF",
+            },
+            {
+              content: consentPDFBuffer.toString("base64"),
+              filename: "Authorization",
+            },
+          ],
+        }),
+      ])
     )
     return
   }
 
   if (status === "agreement_sent") {
-    if (!candidate.token) return
-
     const agreementUrl = `${env.NEXT_PUBLIC_PUBLIC_URL}/careers/agreement?token=${candidate.token}`
 
     waitUntil(

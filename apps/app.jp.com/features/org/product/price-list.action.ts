@@ -35,9 +35,7 @@ export const triggerPriceListGeneration = async ({
     ? startOfDay(now)
     : startOfDay(previousSaturday(now))
 
-  const effectiveTo = isFriday(now)
-    ? endOfDay(now)
-    : endOfDay(nextFriday(now))
+  const effectiveTo = isFriday(now) ? endOfDay(now) : endOfDay(nextFriday(now))
 
   waitUntil(
     generatePDF({
@@ -95,8 +93,8 @@ export const emailPriceList = orgActionClient({ product: ["update"] })
 
     waitUntil(
       sendEmail({
-        to: [email],
-        subject: "Weekly Product Catalog – Jimenez Produce Food Distribution",
+        to: email,
+        subject: "Weekly Product Catalog – Jimenez Produce",
         template: WeeklyPriceListEmail({
           name: "",
           pdfUrl: org?.priceList?.url || "",

@@ -17,6 +17,7 @@ import { useOrderFormUI } from "@/features/order-form/order-form-ui.store"
 import { OrderFormToolbar } from "@/features/order-form/components/order-form-toolbar"
 import { ErrorState } from "@jp/ui/components/jp"
 import { useOrderForm } from "@/features/order-form/order-form.hook"
+import { format } from "@jp/utils/date"
 
 const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
   const params = useParams()
@@ -46,7 +47,7 @@ const NewOrderLayout = ({ children }: { children: React.ReactNode }) => {
         amount: Number(order.charges?.amount ?? 0),
       },
       po: order.po ?? "",
-      deliveryDate: order.deliveryDate ?? new Date().toISOString().slice(0, 10),
+      deliveryDate: format(order.deliveryDate!, "yyyy-MM-dd"),
       deliveryWindow: order.deliveryWindow ?? "",
       deliveryInstruction: order.deliveryInstruction ?? "",
       items: lineItems.map((item) => ({

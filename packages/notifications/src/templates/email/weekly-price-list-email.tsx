@@ -14,9 +14,9 @@ export const WeeklyPriceListEmail = ({
   digitalUrl,
 }: WeeklyPriceListEmailProps) => {
   return (
-    <EmailLayout template="customer" heading="Weekly Price List">
+    <EmailLayout heading="Weekly Price List">
       <Section className="px-6 pt-3 pb-7 sm:px-8">
-        <Text className="mb-3 text-base font-semibold text-text">
+        <Text className="text-text mb-3 text-base font-semibold">
           Hello {name || "there"},
         </Text>
 
