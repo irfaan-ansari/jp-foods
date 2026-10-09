@@ -46,7 +46,7 @@ export function LoginForm({
           const message =
             response.error.message ?? "Unable to sign in. Please try again."
           toast.error(message, { id: toastId })
-          return { fields: { username: { message }, password: { message } } }
+          return { fields: { password: { message } } }
         }
 
         toast.success("Signed in successfully. Redirecting...", {

@@ -85,9 +85,10 @@ export const UserDropdown = ({ data }: { data: User }) => {
           })
           if (error) {
             toast.error(error.message)
-          } else {
-            queryClient.invalidateQueries({ queryKey: ["users"] })
+            return
           }
+          queryClient.invalidateQueries({ queryKey: ["users"] })
+          toast.success("User deleted successfully.")
         },
       },
     })
