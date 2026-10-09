@@ -1,7 +1,7 @@
 "use client"
 
 import { ComponentType, useId } from "react"
-
+import Image from "next/image"
 import {
   Sidebar,
   SidebarContent,
@@ -231,12 +231,20 @@ const SidebarIconMenu = ({
 }) => {
   const { activePanel, setActivePanel } = useSidebarPanel()
   const { setOpen } = useSidebar()
+
   return (
     <React.Fragment>
-      <SidebarHeader className="gap-6">
-        <span className="inline-flex w-11 items-center justify-center text-base font-black tracking-widest text-primary">
-          JP
-        </span>
+      <SidebarHeader className="items-center gap-6">
+        <div className="relative">
+          <Image
+            src={"/logo.png"}
+            alt="Logo"
+            width={60}
+            height={60}
+            className=""
+            loading="eager"
+          />
+        </div>
 
         <UserAccess permission={{ portal: ["organization"] }}>
           {(disabled) => (
