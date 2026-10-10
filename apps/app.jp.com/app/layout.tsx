@@ -23,6 +23,13 @@ export const metadata: Metadata = {
     default: `Dashboard | ${SITE_CONFIG.name}`,
     template: `%s | ${SITE_CONFIG.name}`,
   },
+  icons: {
+    apple: "/logo.png",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/logo.png",
+    },
+  },
 }
 
 export default async function RootLayout({

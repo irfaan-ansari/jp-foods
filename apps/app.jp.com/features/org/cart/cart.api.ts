@@ -8,7 +8,7 @@ import type { OrgAppContext } from "@/lib/hono/middlewares"
 import {
   cartRedis,
   getOrganizationCartEvents,
-  getOrganizationCartPattern,
+  getCartChannel,
   getOrganizationCartActivity,
 } from "@/features/org/cart/cart.service"
 import type {
@@ -62,7 +62,8 @@ async function getCartGroupsFromEvents(
         logo: team?.logo ?? "",
       },
       items: event.items,
-      status: "active",
+      status: event.status,
+      orderId: event.orderId,
       itemCount: event.itemCount,
       total: event.total,
       updatedAt: event.emittedAt,
@@ -93,10 +94,9 @@ async function writeCartActivity(
 
 export const cartRoutes = new Hono<OrgAppContext>().get("/", (c) => {
   const organizationId = c.get("organizationId")
-  const pattern = getOrganizationCartPattern(organizationId)
 
   return streamSSE(c, async (stream) => {
-    const subscriber = cartRedis.psubscribe<CartPublication>(pattern)
+    const subscriber = cartRedis.subscribe<CartPublication>(getCartChannel())
 
     const heartbeat = setInterval(() => {
       if (!stream.closed && !stream.aborted) {
@@ -112,7 +112,8 @@ export const cartRoutes = new Hono<OrgAppContext>().get("/", (c) => {
       await subscriber.unsubscribe()
     })
 
-    subscriber.on("pmessage", (event) => {
+    subscriber.on("message", (event) => {
+      if (event.message.organizationId !== organizationId) return
       void writeCartActivity(stream, event.message)
       void writeCartSnapshot(stream, event.message.organizationId)
     })

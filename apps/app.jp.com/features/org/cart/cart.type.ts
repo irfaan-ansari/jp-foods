@@ -25,7 +25,7 @@ export type CartGroup = {
     logo: string
   }
   items: CartEvent["items"]
-  status: "active" | "checking_out" | "placed"
+  status: "active" | "submitting" | "placed"
   orderId?: number
   itemCount: number
   total: number

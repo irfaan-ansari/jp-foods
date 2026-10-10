@@ -43,6 +43,7 @@ export function useCartEvents() {
 
     const body = {
       type: "cart.updated" as const,
+      status: "active" as const,
       itemCount: order.lineItemCount,
       total: order.total,
       items: toCartItems(order.items),
