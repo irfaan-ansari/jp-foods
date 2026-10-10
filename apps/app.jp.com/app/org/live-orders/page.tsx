@@ -1,10 +1,10 @@
 "use client"
 
 import { memo, useMemo, useRef, useState, useSyncExternalStore } from "react"
+import Link from "next/link"
 import {
-  Minus,
+  Eye,
   Package,
-  Plus,
   Radio,
   Search,
   ShoppingBag,
@@ -50,7 +50,6 @@ import { Buildings } from "@solar-icons/react"
 /* Live time helpers: one shared 1s ticker for every timestamp on the page    */
 /* -------------------------------------------------------------------------- */
 
-const FRESH_MS = 8_000
 const listeners = new Set<() => void>()
 let tick = 0
 let timer: ReturnType<typeof setInterval> | undefined
@@ -98,14 +97,26 @@ function TimeAgo({ at, className }: { at: string; className?: string }) {
   )
 }
 
-/** Pulsing dot that shows for a few seconds after a cart changes. */
-function LiveDot({ at }: { at: string }) {
-  useTick()
-  if (Date.now() - +new Date(at) > FRESH_MS) return null
+function CartStatusIndicator({ status }: { status: CartGroup["status"] }) {
+  const label = CART_STATUS_LABEL[status]
+  const colors =
+    status === "placed"
+      ? { dot: "bg-emerald-500", text: "text-emerald-700" }
+      : status === "submitting"
+        ? { dot: "bg-amber-500", text: "text-amber-700" }
+        : { dot: "bg-blue-500", text: "text-blue-600" }
+
   return (
-    <span className="relative flex size-2 shrink-0" aria-label="Just updated">
-      <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-500 opacity-60" />
-      <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+    <span className="inline-flex shrink-0 items-center gap-1.5 text-xs font-medium">
+      <span className="relative flex size-2">
+        {status === "active" && (
+          <span className="absolute inline-flex size-full animate-ping rounded-full bg-blue-500 opacity-60" />
+        )}
+        <span
+          className={cn("relative inline-flex size-2 rounded-full", colors.dot)}
+        />
+      </span>
+      <span className={cn("leading-none", colors.text)}>{label}</span>
     </span>
   )
 }
@@ -349,7 +360,7 @@ export default function LiveOrdersPage() {
 function statusColor(status: CartGroup["status"]) {
   return status === "placed"
     ? "var(--success)"
-    : status === "checking_out"
+    : status === "submitting"
       ? "var(--warning)"
       : "var(--info)"
 }
@@ -392,16 +403,16 @@ const CartRow = memo(function CartRow({
   selected: boolean
   onOpen: (key: string) => void
 }) {
+  const key = getCartGroupKey(group)
+
   return (
-    <button
-      type="button"
-      onClick={() => onOpen(getCartGroupKey(group))}
+    <div
       className={cn(
-        "group w-full space-y-3 px-4 py-3 text-left transition-colors hover:bg-secondary/40 focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none focus-visible:ring-inset",
+        "group w-full space-y-3 px-4 py-3 text-left transition-colors",
         selected && "bg-secondary/30"
       )}
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <Avatar className="size-9">
           <AvatarImage src={group.team.logo} alt={group.team.name} />
           <AvatarFallback>
@@ -409,69 +420,71 @@ const CartRow = memo(function CartRow({
           </AvatarFallback>
         </Avatar>
         <div className="min-w-0 flex-1 space-y-0.5">
-          <div className="flex items-center gap-2">
+          <div className="flex min-w-0 items-center gap-2">
             <p className="truncate text-sm font-semibold">{group.team.name}</p>
-            <LiveDot at={group.updatedAt} />
+            <CartStatusIndicator status={group.status} />
           </div>
-          <p className="truncate text-xs text-muted-foreground">
-            {group.user.name}
+          <p className="flex min-w-0 items-center gap-1.5 text-xs text-muted-foreground">
+            <span className="truncate">{group.user.name}</span>
+            <span className="shrink-0" aria-hidden>
+              ·
+            </span>
+            <TimeAgo at={group.updatedAt} className="shrink-0" />
           </p>
+          <div className="mt-2 flex min-w-0 items-center gap-2.5">
+            {group.items.length > 0 && (
+              <AvatarGroup
+                className="-space-x-2"
+                aria-label={`${group.items.length} ${pluralize(group.items.length, "product")} in cart`}
+              >
+                {group.items.slice(0, 3).map((item) => (
+                  <Avatar
+                    key={item.id}
+                    title={item.title}
+                    className="size-7 overflow-hidden bg-card shadow-none ring-1 ring-border/50"
+                  >
+                    <AvatarImage
+                      src={item.image}
+                      alt={item.title}
+                      className="bg-card object-contain"
+                    />
+                    <AvatarFallback>
+                      <Package className="size-3" />
+                    </AvatarFallback>
+                  </Avatar>
+                ))}
+                {group.items.length > 3 && (
+                  <AvatarGroupCount className="size-7 text-[10px] font-medium">
+                    +{group.items.length - 3}
+                  </AvatarGroupCount>
+                )}
+              </AvatarGroup>
+            )}
+            <span className="shrink-0 text-xs text-muted-foreground tabular-nums">
+              {group.itemCount} {pluralize(group.itemCount, "item")}
+            </span>
+          </div>
         </div>
-        <div className="shrink-0 text-right">
+        <div className="flex shrink-0 flex-col items-end gap-2 text-right">
           <p className="text-sm font-semibold tabular-nums">
             {formatUSD(group.total)}
           </p>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            {group.itemCount} {pluralize(group.itemCount, "item")}
-          </p>
-        </div>
-      </div>
-
-      <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
-        <div className="flex min-w-0 items-center gap-2.5">
-          {group.items.length > 0 && (
-            <AvatarGroup
-              className="-space-x-2"
-              aria-label={`${group.items.length} ${pluralize(group.items.length, "product")} in cart`}
-            >
-              {group.items.slice(0, 3).map((item) => (
-                <Avatar
-                  key={item.id}
-                  title={item.title}
-                  className="size-7 overflow-hidden bg-card shadow-none ring-1 ring-border/50"
-                >
-                  <AvatarImage
-                    src={item.image}
-                    alt={item.title}
-                    className="bg-card object-contain"
-                  />
-                  <AvatarFallback>
-                    <Package className="size-3" />
-                  </AvatarFallback>
-                </Avatar>
-              ))}
-              {group.items.length > 3 && (
-                <AvatarGroupCount className="size-7 text-[10px] font-medium">
-                  +{group.items.length - 3}
-                </AvatarGroupCount>
-              )}
-            </AvatarGroup>
+          {group.status === "placed" && group.orderId ? (
+            <Button size="xs" variant="outline" asChild>
+              <Link href={`/org/orders/${group.orderId}`}>
+                <Eye className="size-3.5" />
+                View order
+              </Link>
+            </Button>
+          ) : (
+            <Button size="xs" variant="outline" onClick={() => onOpen(key)}>
+              <Eye className="size-3.5" />
+              View cart
+            </Button>
           )}
-          <TimeAgo
-            at={group.updatedAt}
-            className="text-[11px] text-muted-foreground"
-          />
         </div>
-        <StatusBadge
-          status={{
-            value: group.status,
-            label: CART_STATUS_LABEL[group.status],
-            color: statusColor(group.status),
-          }}
-          size="sm"
-        />
       </div>
-    </button>
+    </div>
   )
 })
 
@@ -510,7 +523,7 @@ const ActivityRow = memo(function ActivityRow({
         <p className="truncate text-xs text-muted-foreground">{team}</p>
       </div>
       <span className="shrink-0 self-start pt-0.5 text-[11px] text-muted-foreground tabular-nums">
-        {formatDate(new Date())}
+        {formatDate(entry.at)}
       </span>
     </button>
   )
@@ -560,11 +573,16 @@ const CartDetailsDrawer = memo(function CartDetailsDrawer({
           <ul className="divide-y">
             {group.items.map((item) => (
               <li key={item.id} className="flex items-start gap-3 py-3">
-                <ProductThumbnail
-                  title={item.title}
-                  image={item.image}
-                  className="size-11 rounded-xl"
-                />
+                <Avatar className="size-11 rounded-xl">
+                  <AvatarImage
+                    title={item.title}
+                    src={item.image}
+                    className="rounded-xl object-contain"
+                  />
+                  <AvatarFallback className="rounded-xl">
+                    <Package className="size-3.5" />
+                  </AvatarFallback>
+                </Avatar>
                 <div className="min-w-0 flex-1 space-y-0.5">
                   <p className="line-clamp-2 text-sm leading-5 font-medium">
                     {item.title}
@@ -607,29 +625,6 @@ const CartDetailsDrawer = memo(function CartDetailsDrawer({
     </>
   )
 })
-
-function ProductThumbnail({
-  title,
-  image,
-  className,
-}: {
-  title: string
-  image: string
-  className?: string
-}) {
-  return (
-    <Avatar className={cn(className)}>
-      <AvatarImage
-        src={image}
-        alt={title}
-        className="rounded-xl object-contain"
-      />
-      <AvatarFallback className="rounded-xl">
-        <Package className="size-3.5" />
-      </AvatarFallback>
-    </Avatar>
-  )
-}
 
 function EmptyState({ text }: { text: string }) {
   return <p className="p-6 text-center text-sm text-muted-foreground">{text}</p>

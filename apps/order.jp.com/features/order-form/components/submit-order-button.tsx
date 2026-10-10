@@ -6,9 +6,43 @@ import { useOrderFormStore } from "../order-form.store"
 import { useConfirm } from "@jp/ui/components/jp"
 import { useQueryClient } from "@tanstack/react-query"
 import { Loader2 } from "lucide-react"
+import { apiClient } from "@/lib/api-client"
+import type { OrderForm, OrderItem } from "../order-form.type"
 
 type SubmitOrderButtonProps = {
   children: React.ReactElement<React.ButtonHTMLAttributes<HTMLButtonElement>>
+}
+
+const toCartItems = (items: OrderItem[]) =>
+  items.map(({ id, title, price, quantity, unit, total, image }) => ({
+    id,
+    title,
+    price,
+    quantity,
+    unit,
+    total,
+    image,
+  }))
+
+const publishCartStatus = async (
+  order: OrderForm,
+  status: "active" | "submitting" | "placed",
+  orderId?: number
+) => {
+  try {
+    await apiClient.post("/cart", {
+      body: {
+        type: "cart.updated",
+        status,
+        orderId,
+        itemCount: order.lineItemCount,
+        total: order.total,
+        items: toCartItems(order.items),
+      },
+    })
+  } catch (error) {
+    console.error("Failed to publish cart status", error)
+  }
 }
 
 export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
@@ -27,6 +61,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
 
     setIsLoading(true)
     let result = null
+    await publishCartStatus(order, "submitting", order.id)
 
     if (order.id) {
       // update
@@ -42,6 +77,7 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
     }
 
     if (result.serverError || result.validationErrors || !result.data) {
+      await publishCartStatus(order, "active", order.id)
       toast.error(
         result.serverError?.message ??
           "Check the products and quantities in your order."
@@ -60,6 +96,8 @@ export function SubmitOrderButton({ children }: SubmitOrderButtonProps) {
     queryClient.invalidateQueries({
       queryKey: ["/orders/count"],
     })
+
+    await publishCartStatus(order, "placed", result.data.id)
 
     if (order.id) {
       router.replace(`/orders/${order.id}`)

@@ -17,6 +17,8 @@ export const cartItemSchema = z.object({
 
 export const cartEventSchema = z.object({
   type: z.literal("cart.updated"),
+  status: z.enum(["active", "submitting", "placed"]).default("active"),
+  orderId: z.number().optional(),
   itemCount: z.number().int().nonnegative(),
   total: z.number(),
   items: z.array(cartItemSchema).max(200),
@@ -32,6 +34,7 @@ export const cartActivitySchema = z.object({
   previousQuantity: z.number(),
   userId: z.string(),
   userName: z.string().optional(),
+  organizationId: z.string(),
   teamId: z.string(),
   at: z.string(),
 })

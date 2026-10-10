@@ -23,6 +23,13 @@ export const metadata: Metadata = {
     default: `${SITE_CONFIG.name} | Reliable Foodservice Distribution Across the Gulf Coast"`,
     template: `%s | ${SITE_CONFIG.name}`,
   },
+  icons: {
+    apple: "/logo.png",
+    other: {
+      rel: "apple-touch-icon-precomposed",
+      url: "/logo.png",
+    },
+  },
   description:
     "Trusted foodservice distributor delivering fresh produce and essential supplies to restaurants and commercial kitchens across the Gulf Coast",
   openGraph: {

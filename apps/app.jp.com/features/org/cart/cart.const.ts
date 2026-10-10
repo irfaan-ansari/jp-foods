@@ -3,14 +3,14 @@ import type { BadgeProps } from "@jp/ui/components/badge"
 import type { CartGroup } from "./cart.type"
 
 export const CART_STATUS_LABEL: Record<CartGroup["status"], string> = {
-  active: "Active cart",
-  checking_out: "Checking out",
-  placed: "Order placed",
+  active: "Active",
+  submitting: "Submitting",
+  placed: "Submitted",
 }
 
 export const CART_STATUS_ACTIVITY_LABEL: Record<CartGroup["status"], string> = {
   active: "Cart updated",
-  checking_out: "Checkout started",
+  submitting: "Submission started",
   placed: "Order created",
 }
 
@@ -19,6 +19,6 @@ export const CART_STATUS_VARIANT: Record<
   NonNullable<BadgeProps["variant"]>
 > = {
   active: "info-light",
-  checking_out: "warning-light",
+  submitting: "warning-light",
   placed: "success-light",
 }
