@@ -62,7 +62,9 @@ export const PriceListDialog = ({
       return
     }
     setListState((prev) => ({ ...prev, refreshing: false }))
-    queryClient.invalidateQueries({ queryKey: ["organization"] })
+    toast.success("Price list refreshed successfully.")
+    window.location.reload()
+    // queryClient.invalidateQueries({ queryKey: ["organization"] })
   }
 
   const handleSend = async () => {
