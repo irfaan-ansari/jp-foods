@@ -68,7 +68,7 @@ export const PresenceUsers = () => {
             </HoverCardTrigger>
             <HoverCardContent className="w-auto max-w-64 p-2" align="start">
               <AvatarGroup>
-                {users.slice(0, MAX_VISIBLE_USERS).map((user) => (
+                {users.slice(MAX_VISIBLE_USERS).map((user) => (
                   <Tooltip key={user.id} content={user.name} side="right">
                     <Avatar>
                       <AvatarImage src={user.image ?? ""} alt={user.name} />

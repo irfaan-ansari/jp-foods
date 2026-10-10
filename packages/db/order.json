@@ -1,0 +1,76 @@
+[
+  {
+    "id": 2667,
+    "shipping_address": {
+      "zip": "",
+      "city": "",
+      "state": "",
+      "street": ""
+    },
+    "line_item_count": "15",
+    "line_item_quantity": "22",
+    "subtotal": "672.60",
+    "discount": "0.00",
+    "notes": "",
+    "delivery_date": "2026-10-09 18:15:15.245988",
+    "delivery_window": "Anytime",
+    "delivery_instruction": "",
+    "created_at": "2026-10-09 18:15:15.245988",
+    "updated_at": "2026-10-09 18:15:15.245988",
+    "line_item_total": "672.60",
+    "po": "",
+    "status": "placed",
+    "payment_status": null,
+    "total": "687.60",
+    "charges": {
+      "type": "Fuel Charge",
+      "amount": "15"
+    },
+    "user_id": "P4SPJtFAfNaNYvOdxL0X1GPpPd1QDQoE",
+    "organization_id": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+    "team_id": "RimnIzS9qcBY6GQZAW3QYz808aOb7ITg",
+    "delivered_at": null,
+    "tax_name": "Santa Rosa County FL",
+    "tax_rate": "7",
+    "taxable_subtotal": "0.00",
+    "non_taxable_subtotal": "672.60",
+    "tax_amount": "0.00"
+  },
+  {
+    "id": 2666,
+    "shipping_address": {
+      "zip": "",
+      "city": "",
+      "state": "",
+      "street": ""
+    },
+    "line_item_count": "43",
+    "line_item_quantity": "62",
+    "subtotal": "2008.30",
+    "discount": "0.00",
+    "notes": "",
+    "delivery_date": "2026-10-09 14:23:50.245108",
+    "delivery_window": "Anytime",
+    "delivery_instruction": "",
+    "created_at": "2026-10-09 14:23:50.245108",
+    "updated_at": "2026-10-09 14:23:50.245108",
+    "line_item_total": "2008.30",
+    "po": "",
+    "status": "placed",
+    "payment_status": null,
+    "total": "2027.81",
+    "charges": {
+      "type": "Fuel Charge",
+      "amount": "15"
+    },
+    "user_id": "9Ksiklnw2T1nkq4E7T8x2kD02KXNKxZF",
+    "organization_id": "mqOPuBzDmgNXU8jv862yiQrvP3bVPB0p",
+    "team_id": "qONLBu2BnCdD7uaIhdXo1ZVZ8K2KPDO7",
+    "delivered_at": null,
+    "tax_name": "Santa Rosa County FL",
+    "tax_rate": "7",
+    "taxable_subtotal": "64.45",
+    "non_taxable_subtotal": "1943.85",
+    "tax_amount": "4.51"
+  }
+]
