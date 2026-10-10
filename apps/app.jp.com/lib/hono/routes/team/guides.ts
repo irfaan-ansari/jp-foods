@@ -14,7 +14,7 @@ export const guides = app.get("/", async (c) => {
   const { q, status, ...rest } = c.req.query()
   const { page, limit, offset } = parsePagination(rest)
 
-  const [results, total] = await Promise.all([
+  const [results, total, privateProducts] = await Promise.all([
     db.query.orderGuide.findMany({
       where: (og, { eq }) => eq(og.teamId, teamId),
       with: {
@@ -45,27 +45,40 @@ export const guides = app.get("/", async (c) => {
       orderBy: (og, { desc, asc }) => [asc(og.position), desc(og.createdAt)],
     }),
     db.$count(orderGuide, eq(orderGuide.teamId, teamId)),
+    db.query.teamProduct.findMany({
+      where: (tp, { eq }) => eq(tp.teamId, teamId),
+      columns: {
+        productId: true,
+      },
+    }),
   ])
+
+  const privateProductIds = new Set(
+    privateProducts.map((item) => item.productId)
+  )
+  const isOrderableProduct = (product: { id: number; status: string | null }) =>
+    !["archived", "draft"].includes(product.status ?? "") &&
+    (product.status === "active" || privateProductIds.has(product.id))
 
   // resolve the price config
   const resolvePrice = await getTeamPriceResolver(teamId)
   const resolvedPrices = results.map(({ orderGuideItems, ...orderGuide }) => ({
     ...orderGuide,
-    items: orderGuideItems.map(({ id: itemId, product }) => {
-      const { lineItems } = product
-
-      const pricedProduct = resolvePrice(product)
-
-      return {
-        ...pricedProduct,
-        sellUnits: withCalculatedPrices({
+    items: orderGuideItems
+      .filter(({ product }) => isOrderableProduct(product))
+      .map(({ id: itemId, product }) => {
+        const { lineItems } = product
+        const pricedProduct = resolvePrice(product)
+        return {
           ...pricedProduct,
-          splitUnits: pricedProduct.splitUnits ?? [],
-        }),
-        itemId,
-        lastOrder: lineItems?.[0],
-      }
-    }),
+          sellUnits: withCalculatedPrices({
+            ...pricedProduct,
+            splitUnits: pricedProduct.splitUnits ?? [],
+          }),
+          itemId,
+          lastOrder: lineItems?.[0],
+        }
+      }),
   }))
 
   return c.json(
